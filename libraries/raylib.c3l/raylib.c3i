@@ -1,3 +1,5 @@
+
+
 module raylib;
  
 const float PI = 3.14159265358979323846f;
@@ -99,7 +101,7 @@ struct Image
     int width;              // Image base width
     int height;             // Image base height
     int mipmaps;            // Mipmap levels, 1 by default
-    int format;             // Data format (PixelFormat type)
+    PixelFormat format;     // Data format (PixelFormat type)
 }
 
 // Texture, tex data stored in GPU memory (VRAM)
@@ -109,7 +111,7 @@ struct Texture
     int width;              // Texture base width
     int height;             // Texture base height
     int mipmaps;            // Mipmap levels, 1 by default
-    int format;             // Data format (PixelFormat type)
+    PixelFormat format;     // Data format (PixelFormat type)
 }
 
 // Texture2D, same as Texture
@@ -137,7 +139,7 @@ struct NPatchInfo
     int top;                // Top border offset
     int right;              // Right border offset
     int bottom;             // Bottom border offset
-    int layout;             // Layout of the n-patch: 3x3, 1x3 or 3x1
+    NPatchLayout layout;    // Layout of the n-patch: 3x3, 1x3 or 3x1
 }
 
 // GlyphInfo, font characters glyphs info
@@ -363,35 +365,12 @@ struct VrStereoConfig
     float[2] scaleIn;               // VR distortion scale in
 }
 
-//----------------------------------------------------------------------------------
-// Enumerators Definition
-//----------------------------------------------------------------------------------
-// System/Window config flags
-// NOTE: Every bit registers one state (use it with bit masks)
-// By default all flags are set to 0
-enum ConfigFlags : int
-{
-    VSYNC_HINT         = 0x00000040,   // Set to try enabling V-Sync on GPU
-    FULLSCREEN_MODE    = 0x00000002,   // Set to run program in fullscreen
-    WINDOW_RESIZABLE   = 0x00000004,   // Set to allow resizable window
-    WINDOW_UNDECORATED = 0x00000008,   // Set to disable window decoration (frame and buttons)
-    WINDOW_HIDDEN      = 0x00000080,   // Set to hide window
-    WINDOW_MINIMIZED   = 0x00000200,   // Set to minimize window (iconify)
-    WINDOW_MAXIMIZED   = 0x00000400,   // Set to maximize window (expanded to monitor)
-    WINDOW_UNFOCUSED   = 0x00000800,   // Set to window non focused
-    WINDOW_TOPMOST     = 0x00001000,   // Set to window always on top
-    WINDOW_ALWAYS_RUN  = 0x00000100,   // Set to allow windows running while minimized
-    WINDOW_TRANSPARENT = 0x00000010,   // Set to allow transparent framebuffer
-    WINDOW_HIGHDPI     = 0x00002000,   // Set to support HighDPI
-    MSAA_4X_HINT       = 0x00000020,   // Set to try enabling MSAA 4X
-    INTERLACED_HINT    = 0x00010000    // Set to try enabling interlaced video format (for V3D)
-} 
 
 // Trace log level
 // NOTE: Organized by priority level
 enum TraceLogLevel : int
 {
-    ALL = 0,        // Display all logs
+    ALL,            // Display all logs (0)
     TRACE,          // Trace logging, intended for internal use only
     DEBUG,          // Debug logging, used for internal debugging, it should be disabled on release builds
     INFO,           // Info logging, used for program execution info
@@ -400,159 +379,42 @@ enum TraceLogLevel : int
     FATAL,          // Fatal logging, used to abort program: exit(EXIT_FAILURE)
     NONE            // Disable logging
 }
-// Keyboard keys (US keyboard layout)
-// NOTE: Use GetKeyPressed() to allow redefining
-// required keys for alternative layouts
-enum KeyboardKey : int 
-{
-    NULL            = 0,        // Key: NULL, used for no key pressed
-    // Alphanumeric keys
-    APOSTROPHE      = 39,       // Key: '
-    COMMA           = 44,       // Key: ,
-    MINUS           = 45,       // Key: -
-    PERIOD          = 46,       // Key: .
-    SLASH           = 47,       // Key: /
-    ZERO            = 48,       // Key: 0
-    ONE             = 49,       // Key: 1
-    TWO             = 50,       // Key: 2
-    THREE           = 51,       // Key: 3
-    FOUR            = 52,       // Key: 4
-    FIVE            = 53,       // Key: 5
-    SIX             = 54,       // Key: 6
-    SEVEN           = 55,       // Key: 7
-    EIGHT           = 56,       // Key: 8
-    NINE            = 57,       // Key: 9
-    SEMICOLON       = 59,       // Key: ;
-    EQUAL           = 61,       // Key: =
-    A               = 65,       // Key: A | a
-    B               = 66,       // Key: B | b
-    C               = 67,       // Key: C | c
-    D               = 68,       // Key: D | d
-    E               = 69,       // Key: E | e
-    F               = 70,       // Key: F | f
-    G               = 71,       // Key: G | g
-    H               = 72,       // Key: H | h
-    I               = 73,       // Key: I | i
-    J               = 74,       // Key: J | j
-    K               = 75,       // Key: K | k
-    L               = 76,       // Key: L | l
-    M               = 77,       // Key: M | m
-    N               = 78,       // Key: N | n
-    O               = 79,       // Key: O | o
-    P               = 80,       // Key: P | p
-    Q               = 81,       // Key: Q | q
-    R               = 82,       // Key: R | r
-    S               = 83,       // Key: S | s
-    T               = 84,       // Key: T | t
-    U               = 85,       // Key: U | u
-    V               = 86,       // Key: V | v
-    W               = 87,       // Key: W | w
-    X               = 88,       // Key: X | x
-    Y               = 89,       // Key: Y | y
-    Z               = 90,       // Key: Z | z
-    LEFT_BRACKET    = 91,       // Key: [
-    BACKSLASH       = 92,       // Key: '\'
-    RIGHT_BRACKET   = 93,       // Key: ]
-    GRAVE           = 96,       // Key: `
-    // Function keys
-    SPACE           = 32,       // Key: Space
-    ESCAPE          = 256,      // Key: Esc
-    ENTER           = 257,      // Key: Enter
-    TAB             = 258,      // Key: Tab
-    BACKSPACE       = 259,      // Key: Backspace
-    INSERT          = 260,      // Key: Ins
-    DELETE          = 261,      // Key: Del
-    RIGHT           = 262,      // Key: Cursor right
-    LEFT            = 263,      // Key: Cursor left
-    DOWN            = 264,      // Key: Cursor down
-    UP              = 265,      // Key: Cursor up
-    PAGE_UP         = 266,      // Key: Page up
-    PAGE_DOWN       = 267,      // Key: Page down
-    HOME            = 268,      // Key: Home
-    END             = 269,      // Key: End
-    CAPS_LOCK       = 280,      // Key: Caps lock
-    SCROLL_LOCK     = 281,      // Key: Scroll down
-    NUM_LOCK        = 282,      // Key: Num lock
-    PRINT_SCREEN    = 283,      // Key: Print screen
-    PAUSE           = 284,      // Key: Pause
-    F1              = 290,      // Key: F1
-    F2              = 291,      // Key: F2
-    F3              = 292,      // Key: F3
-    F4              = 293,      // Key: F4
-    F5              = 294,      // Key: F5
-    F6              = 295,      // Key: F6
-    F7              = 296,      // Key: F7
-    F8              = 297,      // Key: F8
-    F9              = 298,      // Key: F9
-    F10             = 299,      // Key: F10
-    F11             = 300,      // Key: F11
-    F12             = 301,      // Key: F12
-    LEFT_SHIFT      = 340,      // Key: Shift left
-    LEFT_CONTROL    = 341,      // Key: Control left
-    LEFT_ALT        = 342,      // Key: Alt left
-    LEFT_SUPER      = 343,      // Key: Super left
-    RIGHT_SHIFT     = 344,      // Key: Shift right
-    RIGHT_CONTROL   = 345,      // Key: Control right
-    RIGHT_ALT       = 346,      // Key: Alt right
-    RIGHT_SUPER     = 347,      // Key: Super right
-    KB_MENU         = 348,      // Key: KB menu
-    // Keypad keys
-    KP_0            = 320,      // Key: Keypad 0
-    KP_1            = 321,      // Key: Keypad 1
-    KP_2            = 322,      // Key: Keypad 2
-    KP_3            = 323,      // Key: Keypad 3
-    KP_4            = 324,      // Key: Keypad 4
-    KP_5            = 325,      // Key: Keypad 5
-    KP_6            = 326,      // Key: Keypad 6
-    KP_7            = 327,      // Key: Keypad 7
-    KP_8            = 328,      // Key: Keypad 8
-    KP_9            = 329,      // Key: Keypad 9
-    KP_DECIMAL      = 330,      // Key: Keypad .
-    KP_DIVIDE       = 331,      // Key: Keypad /
-    KP_MULTIPLY     = 332,      // Key: Keypad *
-    KP_SUBTRACT     = 333,      // Key: Keypad -
-    KP_ADD          = 334,      // Key: Keypad +
-    KP_ENTER        = 335,      // Key: Keypad Enter
-    KP_EQUAL        = 336,      // Key: Keypad =
-    // Android key buttons
-    BACK            = 4,        // Key: Android back button
-    MENU            = 82,       // Key: Android menu button
-    VOLUME_UP       = 24,       // Key: Android volume up button
-    VOLUME_DOWN     = 25        // Key: Android volume down button
-}
+
 
 // Mouse buttons
 enum MouseButton : int
 {
-    BUTTON_LEFT    = 0,       // Mouse button left
-    BUTTON_RIGHT   = 1,       // Mouse button right
-    BUTTON_MIDDLE  = 2,       // Mouse button middle (pressed wheel)
-    BUTTON_SIDE    = 3,       // Mouse button side (advanced mouse device)
-    BUTTON_EXTRA   = 4,       // Mouse button extra (advanced mouse device)
-    BUTTON_FORWARD = 5,       // Mouse button fordward (advanced mouse device)
-    BUTTON_BACK    = 6,       // Mouse button back (advanced mouse device)
+    BUTTON_LEFT,       // Mouse button left
+    BUTTON_RIGHT,      // Mouse button right
+    BUTTON_MIDDLE,     // Mouse button middle (pressed wheel)
+    BUTTON_SIDE,       // Mouse button side (advanced mouse device)
+    BUTTON_EXTRA,      // Mouse button extra (advanced mouse device)
+    BUTTON_FORWARD,    // Mouse button fordward (advanced mouse device)
+    BUTTON_BACK,       // Mouse button back (advanced mouse device)
 } 
 
 // Mouse cursor
 enum MouseCursor : int
 {
-    CURSOR_DEFAULT       = 0,     // Default pointer shape
-    CURSOR_ARROW         = 1,     // Arrow shape
-    CURSOR_IBEAM         = 2,     // Text writing cursor shape
-    CURSOR_CROSSHAIR     = 3,     // Cross shape
-    CURSOR_POINTING_HAND = 4,     // Pointing hand cursor
-    CURSOR_RESIZE_EW     = 5,     // Horizontal resize/move arrow shape
-    CURSOR_RESIZE_NS     = 6,     // Vertical resize/move arrow shape
-    CURSOR_RESIZE_NWSE   = 7,     // Top-left to bottom-right diagonal resize/move arrow shape
-    CURSOR_RESIZE_NESW   = 8,     // The top-right to bottom-left diagonal resize/move arrow shape
-    CURSOR_RESIZE_ALL    = 9,     // The omni-directional resize/move cursor shape
-    CURSOR_NOT_ALLOWED   = 10     // The operation-not-allowed shape
+    CURSOR_DEFAULT,       // Default pointer shape
+    CURSOR_ARROW,         // Arrow shape
+    CURSOR_IBEAM,         // Text writing cursor shape
+    CURSOR_CROSSHAIR,     // Cross shape
+    CURSOR_POINTING_HAND, // Pointing hand cursor
+    CURSOR_RESIZE_EW,     // Horizontal resize/move arrow shape
+    CURSOR_RESIZE_NS,     // Vertical resize/move arrow shape
+    CURSOR_RESIZE_NWSE,   // Top-left to bottom-right diagonal resize/move arrow shape
+    CURSOR_RESIZE_NESW,   // The top-right to bottom-left diagonal resize/move arrow shape
+    CURSOR_RESIZE_ALL,    // The omni-directional resize/move cursor shape
+    CURSOR_NOT_ALLOWED    // The operation-not-allowed shape
 }
+
+$assert(MouseCursor.CURSOR_DEFAULT == 0);
 
 // Gamepad buttons
 enum GamepadButton : int 
 {
-    UNKNOWN = 0,         // Unknown button, just for error checking
+    UNKNOWN,             // Unknown button, just for error checking
     LEFT_FACE_UP,        // Gamepad left DPAD up button
     LEFT_FACE_RIGHT,     // Gamepad left DPAD right button
     LEFT_FACE_DOWN,      // Gamepad left DPAD down button
@@ -572,20 +434,24 @@ enum GamepadButton : int
     RIGHT_THUMB          // Gamepad joystick pressed button right
 } 
 
+$assert(GamepadButton.UNKNOWN == 0);
+
 enum GamepadAxis : int
 {
-    LEFT_X        = 0,     // Gamepad left stick X axis
-    LEFT_Y        = 1,     // Gamepad left stick Y axis
-    RIGHT_X       = 2,     // Gamepad right stick X axis
-    RIGHT_Y       = 3,     // Gamepad right stick Y axis
-    LEFT_TRIGGER  = 4,     // Gamepad back trigger left, pressure level: [1..-1]
-    RIGHT_TRIGGER = 5      // Gamepad back trigger right, pressure level: [1..-1]
+    LEFT_X,           // Gamepad left stick X axis
+    LEFT_Y,           // Gamepad left stick Y axis
+    RIGHT_X,          // Gamepad right stick X axis
+    RIGHT_Y,          // Gamepad right stick Y axis
+    LEFT_TRIGGER,     // Gamepad back trigger left, pressure level: [1..-1]
+    RIGHT_TRIGGER     // Gamepad back trigger right, pressure level: [1..-1]
 }
+
+$assert(GamepadAxis.LEFT_X == 0);
 
 // Material map index
 enum MaterialMapIndex : int
 {
-    ALBEDO    = 0,     // Albedo material (same as: MATERIAL_MAP_DIFFUSE)
+    ALBEDO,            // Albedo material (same as: MATERIAL_MAP_DIFFUSE)
     METALNESS,         // Metalness material (same as: MATERIAL_MAP_SPECULAR)
     NORMAL,            // Normal material
     ROUGHNESS,         // Roughness material
@@ -598,13 +464,15 @@ enum MaterialMapIndex : int
     BRDF               // Brdf material
 }
 
+$assert(MaterialMapIndex.ALBEDO == 0);
+
 // #define MATERIAL_MAP_DIFFUSE      MATERIAL_MAP_ALBEDO
 // #define MATERIAL_MAP_SPECULAR     MATERIAL_MAP_METALNESS
 
 // Shader location index
 enum ShaderLocationIndex : int 
 {
-    VERTEX_POSITION = 0, // Shader location: vertex attribute: position
+    VERTEX_POSITION,     // Shader location: vertex attribute: position
     VERTEX_TEXCOORD01,   // Shader location: vertex attribute: texcoord01
     VERTEX_TEXCOORD02,   // Shader location: vertex attribute: texcoord02
     VERTEX_NORMAL,       // Shader location: vertex attribute: normal
@@ -632,13 +500,15 @@ enum ShaderLocationIndex : int
     MAP_BRDF             // Shader location: sampler2d texture: brdf
 }
 
+$assert(ShaderLocationIndex.VERTEX_POSITION == 0);
+
 //#define SHADER_LOC_MAP_DIFFUSE      SHADER_LOC_MAP_ALBEDO
 //#define SHADER_LOC_MAP_SPECULAR     SHADER_LOC_MAP_METALNESS
 
 // Shader uniform data type
 enum ShaderUniformDataType 
 {
-    FLOAT = 0,       // Shader uniform type: float
+    FLOAT,           // Shader uniform type: float
     VEC2,            // Shader uniform type: vec2 (2 float)
     VEC3,            // Shader uniform type: vec3 (3 float)
     VEC4,            // Shader uniform type: vec4 (4 float)
@@ -649,20 +519,25 @@ enum ShaderUniformDataType
     SAMPLER2D        // Shader uniform type: sampler2d
 }
 
+$assert(ShaderUniformDataType.FLOAT == 0);
+
 // Shader attribute data types
 enum ShaderAttributeDataType
 {
-    FLOAT = 0,        // Shader attribute type: float
+    FLOAT,            // Shader attribute type: float
     VEC2,             // Shader attribute type: vec2 (2 float)
     VEC3,             // Shader attribute type: vec3 (3 float)
     VEC4              // Shader attribute type: vec4 (4 float)
 }
 
+$assert(ShaderAttributeDataType.FLOAT == 0);
+
 // Pixel formats
 // NOTE: Support depends on OpenGL version and platform
 enum PixelFormat : int
 {
-    UNCOMPRESSED_GRAYSCALE = 1, // 8 bit per pixel (no alpha)
+	NONE,
+    UNCOMPRESSED_GRAYSCALE,     // 8 bit per pixel (no alpha)
     UNCOMPRESSED_GRAY_ALPHA,    // 8*2 bpp (2 channels)
     UNCOMPRESSED_R5G6B5,        // 16 bpp
     UNCOMPRESSED_R8G8B8,        // 24 bpp
@@ -685,12 +560,14 @@ enum PixelFormat : int
     COMPRESSED_ASTC_8X8_RGBA    // 2 bpp
 }
 
+$assert(PixelFormat.UNCOMPRESSED_GRAYSCALE == 1);
+
 // Texture parameters: filter mode
 // NOTE 1: Filtering considers mipmaps if available in the texture
 // NOTE 2: Filter is accordingly set for minification and magnification
 enum TextureFilter : int
 {
-    POINT = 0,               // No filter, just pixel approximation
+    POINT,                   // No filter, just pixel approximation
     BILINEAR,                // Linear filtering
     TRILINEAR,               // Trilinear filtering (linear with mipmaps)
     ANISOTROPIC_4X,          // Anisotropic filtering 4x
@@ -698,19 +575,23 @@ enum TextureFilter : int
     ANISOTROPIC_16X,         // Anisotropic filtering 16x
 }
 
+$assert(TextureFilter.POINT == 0);
+
 // Texture parameters: wrap mode
 enum TextureWrap 
 {
-    REPEAT = 0,                // Repeats texture in tiled mode
+    REPEAT,                    // Repeats texture in tiled mode
     CLAMP,                     // Clamps texture to edge pixel in tiled mode
     MIRROR_REPEAT,             // Mirrors and repeats the texture in tiled mode
     MIRROR_CLAMP               // Mirrors and clamps to border the texture in tiled mode
 }
 
+$assert(TextureWrap.REPEAT == 0);
+
 // Cubemap layouts
 enum CubemapLayout
 {
-    AUTO_DETECT = 0,         // Automatically detect layout type
+    AUTO_DETECT,             // Automatically detect layout type
     LINE_VERTICAL,           // Layout is defined by a vertical line with faces
     LINE_HORIZONTAL,         // Layout is defined by an horizontal line with faces
     CROSS_THREE_BY_FOUR,     // Layout is defined by a 3x4 cross with cubemap faces
@@ -718,18 +599,22 @@ enum CubemapLayout
     PANORAMA                 // Layout is defined by a panorama image (equirectangular map)
 }
 
+$assert(CubemapLayout.AUTO_DETECT == 0);
+
 // Font type, defines generation method
 enum FontType
 {
-    DEFAULT = 0,               // Default font generation, anti-aliased
+    DEFAULT,                   // Default font generation, anti-aliased
     BITMAP,                    // Bitmap font generation, no anti-aliasing
     SDF                        // SDF font generation, requires external shader
 }
 
+$assert(FontType.DEFAULT == 0);
+
 // Color blending modes (pre-defined)
 enum BlendMode : int
 {
-    ALPHA = 0,                // Blend textures considering alpha (default)
+    ALPHA,                    // Blend textures considering alpha (default)
     ADDITIVE,                 // Blend textures adding colors
     MULTIPLIED,               // Blend textures multiplying colors
     ADD_COLORS,               // Blend textures adding colors (alternative)
@@ -737,6 +622,8 @@ enum BlendMode : int
     ALPHA_PREMUL,             // Blend premultiplied textures considering alpha
     CUSTOM                    // Blend textures using custom src/dst factors (use rlSetBlendMode())
 }
+
+$assert(BlendMode.ALPHA == 0);
 
 // Gesture
 // NOTE: It could be used as flags to enable only some gestures
@@ -758,27 +645,33 @@ enum Gesture
 // Camera system modes
 enum CameraMode
 {
-    CUSTOM = 0,              // Custom camera
+    CUSTOM,                  // Custom camera
     FREE,                    // Free camera
     ORBITAL,                 // Orbital camera
     FIRST_PERSON,            // First person camera
     THIRD_PERSON             // Third person camera
 }
 
+$assert(CameraMode.CUSTOM == 0);
+
 // Camera projection
 enum CameraProjection
 {
-    PERSPECTIVE = 0,         // Perspective projection
+    PERSPECTIVE,             // Perspective projection
     ORTHOGRAPHIC             // Orthographic projection
 }
+
+$assert(CameraProjection.PERSPECTIVE == 0);
 
 // N-patch layout
 enum NPatchLayout 
 {
-    NINE_PATCH = 0,          // Npatch layout: 3x3 tiles
+    NINE_PATCH,              // Npatch layout: 3x3 tiles
     THREE_PATCH_VERTICAL,    // Npatch layout: 1x3 tiles
     THREE_PATCH_HORIZONTAL   // Npatch layout: 3x1 tiles
 }
+
+$assert(NPatchLayout.NINE_PATCH == 0);
 
 // Callbacks to hook some internal functions
 // WARNING: This callbacks are intended for advance users
@@ -899,9 +792,9 @@ fn double get_time() @extname("GetTime");                                       
 
 // Misc. functions
 fn int get_random_value(int min, int max) @extname("GetRandomValue");                         // Get a random value between min and max (both included)
-fn void set_ranomd_seed(uint seed) @extname("SetRandomSeed");                                 // Set the seed for the random number generator
+fn void set_random_seed(uint seed) @extname("SetRandomSeed");                                 // Set the seed for the random number generator
 fn void take_screenshot(char* fileName) @extname("TakeScreenshot");                           // Takes a screenshot of current screen (filename extension defines format)
-fn void set_config_flags(uint flags) @extname("SetConfigFlags");                              // Setup init configuration flags (view FLAGS)
+fn void set_config_flags(ConfigFlag flags) @extname("SetConfigFlags");                              // Setup init configuration flags (view FLAGS)
 
 fn void trace_log(TraceLogLevel logLevel, char* text, ...) @extname("TraceLog");              // Show trace log messages (LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR...)
 fn void set_trace_log_level(TraceLogLevel logLevel) @extname("SetTraceLogLevel");             // Set the current threshold (minimum) log level
@@ -991,15 +884,15 @@ fn void open_url(char* url) @extname("OpenURL");
 
 // Input-related functions: keyboard
 // Check if a key has been pressed once
-fn bool is_key_pressed(int key) @extname("IsKeyPressed");                             
+fn bool is_key_pressed(KeyboardKey key) @extname("IsKeyPressed");
 // Check if a key is being pressed
-fn bool is_key_down(int key) @extname("IsKeyDown");                                
+fn bool is_key_down(KeyboardKey key) @extname("IsKeyDown");
 // Check if a key has been released once
-fn bool is_key_released(int key) @extname("IsKeyReleased");                            
+fn bool is_key_released(KeyboardKey key) @extname("IsKeyReleased");
 // Check if a key is NOT being pressed
-fn bool is_key_up(int key) @extname("IsKeyUp");                                  
+fn bool is_key_up(KeyboardKey key) @extname("IsKeyUp");
 // Set a custom key to exit program (default is ESC)
-fn void set_exit_key(int key) @extname("SetExitKey");                               
+fn void set_exit_key(KeyboardKey key) @extname("SetExitKey");
 // Get key pressed (keycode), call it multiple times for keys queued, returns 0 when the queue is empty
 fn int get_key_pressed() @extname("GetKeyPressed");                                
 // Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty
@@ -1260,7 +1153,7 @@ fn Image image_text(char* text, int fontSize, Color color) @extname("ImageText")
 // Create an image from text (custom sprite font)
 fn Image image_text_ex(Font font, char* text, float fontSize, float spacing, Color tint) @extname("ImageTextEx");
 // Convert image data to desired format
-fn void image_format(Image *image, int newFormat) @extname("ImageFormat");
+fn void image_format(Image *image, PixelFormat newFormat) @extname("ImageFormat");
 // Convert image to POT (power-of-two)
 fn void image_to_pot(Image *image, Color fill) @extname("ImageToPOT");
 // Crop an image to a defined rectangle
@@ -1370,7 +1263,7 @@ fn void update_texture_rec(Texture2D texture, Rectangle rec, void* pixels) @extn
 // Generate GPU mipmaps for a texture
 fn void gen_texture_mipmaps(Texture2D *texture) @extname("GenTextureMipmaps");
 // Set texture scaling filter mode
-fn void set_texture_filter(Texture2D texture, int filter) @extname("SetTextureFilter");
+fn void set_texture_filter(Texture2D texture, TextureFilter filter) @extname("SetTextureFilter");
 // Set texture wrapping mode
 fn void set_texture_wrap(Texture2D texture, int wrap) @extname("SetTextureWrap");
 
@@ -1416,9 +1309,9 @@ fn Color get_color(uint hexValue) @extname("GetColor");
 // Get Color from a source pixel pointer of certain format
 fn Color get_pixel_color(void* srcPtr, int format) @extname("GetPixelColor");
 // Set color formatted into destination pixel pointer
-fn void set_pixel_color(void* dstPtr, Color color, int format) @extname("SetPixelColor");
+fn void set_pixel_color(void* dstPtr, Color color, PixelFormat format) @extname("SetPixelColor");
 // Get pixel data size in bytes for certain format
-fn int get_pixel_data_size(int width, int height, int format) @extname("GetPixelDataSize");
+fn int get_pixel_data_size(int width, int height, PixelFormat format) @extname("GetPixelDataSize");
 
 //------------------------------------------------------------------------------------
 // Font Loading and Text Drawing Functions (Module: text)
@@ -1817,3 +1710,152 @@ fn void set_audio_stream_pitch(AudioStream stream, float pitch) @extname("SetAud
 fn void set_audio_stream_pan(AudioStream stream, float pan) @extname("SetAudioStreamPan");
 // Default size for new audio streams
 fn void set_audio_stream_buffer_size_default(int size) @extname("SetAudioStreamBufferSizeDefault");
+
+module raylib::config;
+
+//----------------------------------------------------------------------------------
+// Enumerators Definition
+//----------------------------------------------------------------------------------
+// System/Window config flags
+// NOTE: Every bit registers one state (use it with bit masks)
+// By default all flags are set to 0
+
+define ConfigFlag = distinct uint;
+
+const ConfigFlag VSYNC_HINT         = 0x00000040;   // Set to try enabling V-Sync on GPU
+const ConfigFlag FULLSCREEN_MODE    = 0x00000002;   // Set to run program in fullscreen
+const ConfigFlag WINDOW_RESIZABLE   = 0x00000004;   // Set to allow resizable window
+const ConfigFlag WINDOW_UNDECORATED = 0x00000008;   // Set to disable window decoration (frame and buttons)
+const ConfigFlag WINDOW_HIDDEN      = 0x00000080;   // Set to hide window
+const ConfigFlag WINDOW_MINIMIZED   = 0x00000200;   // Set to minimize window (iconify)
+const ConfigFlag WINDOW_MAXIMIZED   = 0x00000400;   // Set to maximize window (expanded to monitor)
+const ConfigFlag WINDOW_UNFOCUSED   = 0x00000800;   // Set to window non focused
+const ConfigFlag WINDOW_TOPMOST     = 0x00001000;   // Set to window always on top
+const ConfigFlag WINDOW_ALWAYS_RUN  = 0x00000100;   // Set to allow windows running while minimized
+const ConfigFlag WINDOW_TRANSPARENT = 0x00000010;   // Set to allow transparent framebuffer
+const ConfigFlag WINDOW_HIGHDPI     = 0x00002000;   // Set to support HighDPI
+const ConfigFlag MSAA_4X_HINT       = 0x00000020;   // Set to try enabling MSAA 4X
+const ConfigFlag INTERLACED_HINT    = 0x00010000;   // Set to try enabling interlaced video format (for V3D)
+
+module raylib::keyboard;
+
+// Keyboard keys (US keyboard layout)
+// NOTE: Use GetKeyPressed() to allow redefining
+// required keys for alternative layouts
+
+define KeyboardKey = distinct int;
+
+const KeyboardKey NULL            = 0;        // Key: NULL; used for no key pressed
+// Alphanumeric keys
+const KeyboardKey APOSTROPHE      = 39;       // Key: '
+const KeyboardKey COMMA           = 44;       // Key: ;
+const KeyboardKey MINUS           = 45;       // Key: -
+const KeyboardKey PERIOD          = 46;       // Key: .
+const KeyboardKey SLASH           = 47;       // Key: /
+const KeyboardKey ZERO            = 48;       // Key: 0
+const KeyboardKey ONE             = 49;       // Key: 1
+const KeyboardKey TWO             = 50;       // Key: 2
+const KeyboardKey THREE           = 51;       // Key: 3
+const KeyboardKey FOUR            = 52;       // Key: 4
+const KeyboardKey FIVE            = 53;       // Key: 5
+const KeyboardKey SIX             = 54;       // Key: 6
+const KeyboardKey SEVEN           = 55;       // Key: 7
+const KeyboardKey EIGHT           = 56;       // Key: 8
+const KeyboardKey NINE            = 57;       // Key: 9
+const KeyboardKey SEMICOLON       = 59;       // Key: ;
+const KeyboardKey EQUAL           = 61;       // Key: =
+const KeyboardKey A               = 65;       // Key: A | a
+const KeyboardKey B               = 66;       // Key: B | b
+const KeyboardKey C               = 67;       // Key: C | c
+const KeyboardKey D               = 68;       // Key: D | d
+const KeyboardKey E               = 69;       // Key: E | e
+const KeyboardKey F               = 70;       // Key: F | f
+const KeyboardKey G               = 71;       // Key: G | g
+const KeyboardKey H               = 72;       // Key: H | h
+const KeyboardKey I               = 73;       // Key: I | i
+const KeyboardKey J               = 74;       // Key: J | j
+const KeyboardKey K               = 75;       // Key: K | k
+const KeyboardKey L               = 76;       // Key: L | l
+const KeyboardKey M               = 77;       // Key: M | m
+const KeyboardKey N               = 78;       // Key: N | n
+const KeyboardKey O               = 79;       // Key: O | o
+const KeyboardKey P               = 80;       // Key: P | p
+const KeyboardKey Q               = 81;       // Key: Q | q
+const KeyboardKey R               = 82;       // Key: R | r
+const KeyboardKey S               = 83;       // Key: S | s
+const KeyboardKey T               = 84;       // Key: T | t
+const KeyboardKey U               = 85;       // Key: U | u
+const KeyboardKey V               = 86;       // Key: V | v
+const KeyboardKey W               = 87;       // Key: W | w
+const KeyboardKey X               = 88;       // Key: X | x
+const KeyboardKey Y               = 89;       // Key: Y | y
+const KeyboardKey Z               = 90;       // Key: Z | z
+const KeyboardKey LEFT_BRACKET    = 91;       // Key: [
+const KeyboardKey BACKSLASH       = 92;       // Key: '\'
+const KeyboardKey RIGHT_BRACKET   = 93;       // Key: ]
+const KeyboardKey GRAVE           = 96;       // Key: `
+// Function keys
+const KeyboardKey SPACE           = 32;       // Key: Space
+const KeyboardKey ESCAPE          = 256;      // Key: Esc
+const KeyboardKey ENTER           = 257;      // Key: Enter
+const KeyboardKey TAB             = 258;      // Key: Tab
+const KeyboardKey BACKSPACE       = 259;      // Key: Backspace
+const KeyboardKey INSERT          = 260;      // Key: Ins
+const KeyboardKey DELETE          = 261;      // Key: Del
+const KeyboardKey RIGHT           = 262;      // Key: Cursor right
+const KeyboardKey LEFT            = 263;      // Key: Cursor left
+const KeyboardKey DOWN            = 264;      // Key: Cursor down
+const KeyboardKey UP              = 265;      // Key: Cursor up
+const KeyboardKey PAGE_UP         = 266;      // Key: Page up
+const KeyboardKey PAGE_DOWN       = 267;      // Key: Page down
+const KeyboardKey HOME            = 268;      // Key: Home
+const KeyboardKey END             = 269;      // Key: End
+const KeyboardKey CAPS_LOCK       = 280;      // Key: Caps lock
+const KeyboardKey SCROLL_LOCK     = 281;      // Key: Scroll down
+const KeyboardKey NUM_LOCK        = 282;      // Key: Num lock
+const KeyboardKey PRINT_SCREEN    = 283;      // Key: Print screen
+const KeyboardKey PAUSE           = 284;      // Key: Pause
+const KeyboardKey F1              = 290;      // Key: F1
+const KeyboardKey F2              = 291;      // Key: F2
+const KeyboardKey F3              = 292;      // Key: F3
+const KeyboardKey F4              = 293;      // Key: F4
+const KeyboardKey F5              = 294;      // Key: F5
+const KeyboardKey F6              = 295;      // Key: F6
+const KeyboardKey F7              = 296;      // Key: F7
+const KeyboardKey F8              = 297;      // Key: F8
+const KeyboardKey F9              = 298;      // Key: F9
+const KeyboardKey F10             = 299;      // Key: F10
+const KeyboardKey F11             = 300;      // Key: F11
+const KeyboardKey F12             = 301;      // Key: F12
+const KeyboardKey LEFT_SHIFT      = 340;      // Key: Shift left
+const KeyboardKey LEFT_CONTROL    = 341;      // Key: Control left
+const KeyboardKey LEFT_ALT        = 342;      // Key: Alt left
+const KeyboardKey LEFT_SUPER      = 343;      // Key: Super left
+const KeyboardKey RIGHT_SHIFT     = 344;      // Key: Shift right
+const KeyboardKey RIGHT_CONTROL   = 345;      // Key: Control right
+const KeyboardKey RIGHT_ALT       = 346;      // Key: Alt right
+const KeyboardKey RIGHT_SUPER     = 347;      // Key: Super right
+const KeyboardKey KB_MENU         = 348;      // Key: KB menu
+// Keypad keys
+const KeyboardKey KP_0            = 320;      // Key: Keypad 0
+const KeyboardKey KP_1            = 321;      // Key: Keypad 1
+const KeyboardKey KP_2            = 322;      // Key: Keypad 2
+const KeyboardKey KP_3            = 323;      // Key: Keypad 3
+const KeyboardKey KP_4            = 324;      // Key: Keypad 4
+const KeyboardKey KP_5            = 325;      // Key: Keypad 5
+const KeyboardKey KP_6            = 326;      // Key: Keypad 6
+const KeyboardKey KP_7            = 327;      // Key: Keypad 7
+const KeyboardKey KP_8            = 328;      // Key: Keypad 8
+const KeyboardKey KP_9            = 329;      // Key: Keypad 9
+const KeyboardKey KP_DECIMAL      = 330;      // Key: Keypad .
+const KeyboardKey KP_DIVIDE       = 331;      // Key: Keypad /
+const KeyboardKey KP_MULTIPLY     = 332;      // Key: Keypad *
+const KeyboardKey KP_SUBTRACT     = 333;      // Key: Keypad -
+const KeyboardKey KP_ADD          = 334;      // Key: Keypad +
+const KeyboardKey KP_ENTER        = 335;      // Key: Keypad Enter
+const KeyboardKey KP_EQUAL        = 336;      // Key: Keypad =
+// Android key buttons
+const KeyboardKey BACK            = 4;        // Key: Android back button
+const KeyboardKey MENU            = 82;       // Key: Android menu button
+const KeyboardKey VOLUME_UP       = 24;       // Key: Android volume up button
+const KeyboardKey VOLUME_DOWN     = 25;       // Key: Android volume down button
