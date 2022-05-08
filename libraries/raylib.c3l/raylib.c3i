@@ -625,22 +625,6 @@ enum BlendMode : int
 
 $assert(BlendMode.ALPHA == 0);
 
-// Gesture
-// NOTE: It could be used as flags to enable only some gestures
-enum Gesture
-{
-    NONE        = 0,        // No gesture
-    TAP         = 1,        // Tap gesture
-    DOUBLETAP   = 2,        // Double tap gesture
-    HOLD        = 4,        // Hold gesture
-    DRAG        = 8,        // Drag gesture
-    SWIPE_RIGHT = 16,       // Swipe right gesture
-    SWIPE_LEFT  = 32,       // Swipe left gesture
-    SWIPE_UP    = 64,       // Swipe up gesture
-    SWIPE_DOWN  = 128,      // Swipe down gesture
-    PINCH_IN    = 256,      // Pinch in gesture
-    PINCH_OUT   = 512       // Pinch out gesture
-}
 
 // Camera system modes
 enum CameraMode
@@ -964,11 +948,11 @@ fn int get_touch_point_count() @extname("GetTouchPointCount");
 // Gestures and Touch Handling Functions (Module: rgestures)
 //------------------------------------------------------------------------------------
 // Enable a set of gestures using flags
-fn void set_gestures_enabled(uint flags) @extname("SetGesturesEnabled");
+fn void set_gestures_enabled(Gesture flags) @extname("SetGesturesEnabled");
 // Check if a gesture have been detected
-fn bool is_gesture_detected(int gesture) @extname("IsGestureDetected");
+fn bool is_gesture_detected(Gesture gesture) @extname("IsGestureDetected");
 // Get latest detected gesture
-fn int get_gesture_detected() @extname("GetGestureDetected");
+fn Gesture get_gesture_detected() @extname("GetGestureDetected");
 // Get gesture hold time in milliseconds
 fn float get_gesture_hold_duration() @extname("GetGestureHoldDuration");
 // Get gesture drag vector
@@ -1859,3 +1843,21 @@ const KeyboardKey BACK            = 4;        // Key: Android back button
 const KeyboardKey MENU            = 82;       // Key: Android menu button
 const KeyboardKey VOLUME_UP       = 24;       // Key: Android volume up button
 const KeyboardKey VOLUME_DOWN     = 25;       // Key: Android volume down button
+
+module raylib::gesture;
+
+define Gesture = distinct int;
+// Gesture
+// NOTE: It could be used as flags to enable only some gestures
+const Gesture NONE        = 0;      // No gesture
+const Gesture TAP         = 1;        // Tap gesture
+const Gesture DOUBLETAP   = 2;        // Double tap gesture
+const Gesture HOLD        = 4;        // Hold gesture
+const Gesture DRAG        = 8;        // Drag gesture
+const Gesture SWIPE_RIGHT = 16;       // Swipe right gesture
+const Gesture SWIPE_LEFT  = 32;       // Swipe left gesture
+const Gesture SWIPE_UP    = 64;       // Swipe up gesture
+const Gesture SWIPE_DOWN  = 128;      // Swipe down gesture
+const Gesture PINCH_IN    = 256;      // Pinch in gesture
+const Gesture PINCH_OUT   = 512;      // Pinch out gesture
+
