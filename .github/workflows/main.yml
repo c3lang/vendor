@@ -20,6 +20,7 @@ jobs:
 
       - name: Run package
         run: |
+          brew install ruby
           ruby package.rb
 
       - name: upload artifacts
