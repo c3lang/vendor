@@ -11,16 +11,16 @@ jobs:
   update-packages:
     runs-on: macos-latest
     strategy:
-      fail-fast: false
-    defaults:
-      run:
-        shell: cmd
+      fail-fast: true
     steps:
       - uses: actions/checkout@v3
 
-      - name: Run package
+      - name: prepare
         run: |
           brew install ruby
+
+      - name: package
+        run: |
           ruby package.rb
 
       - name: upload artifacts
@@ -28,3 +28,53 @@ jobs:
         with:
           name: packages
           path: temp/*.c3l
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [update-packages]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+      - name: delete tag
+        continue-on-error: true
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.git.deleteRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'tags/latest',
+              sha: context.sha
+            })
+      - name: create tag
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/latest',
+              sha: context.sha
+            })
+
+      - uses: actions/download-artifact@v3
+
+      - id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: latest
+          release_name: Latest
+          draft: false
+          prerelease: false
+
+      - name: upload raylib
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: packages/raylib.c3l
+          asset_name: raylib.c3l
+          asset_content_type: application/zip
