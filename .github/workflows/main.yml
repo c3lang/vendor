@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  update-packages:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+    defaults:
+      run:
+        shell: cmd
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run package
+        run: |
+          ruby package.rb
+
+      - name: upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: packages
+          path: temp/*.c3l
