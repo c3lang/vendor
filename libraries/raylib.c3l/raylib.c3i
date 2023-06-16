@@ -814,7 +814,8 @@ fn char* load_file_data(char* file_name, uint* bytes_read) @extern("LoadFileData
 fn void unload_file_data(char* data) @extern("UnloadFileData");
 // Save data to file from byte array (write), returns true on success
 fn bool save_file_data(char* file_name, void* data, uint bytes_to_write) @extern("SaveFileData");
-fn bool export_data_as_code(char* data, uint size, char *file_name) @extern("ExportDataAsCode"); // Export data to code (.h), returns true on success
+// Export data to code (.h), returns true on success
+fn bool export_data_as_code(char* data, uint size, char *file_name) @extern("ExportDataAsCode");
 // Load text data from file (read), returns a '\0' terminated string
 fn char* load_file_text(char* file_name) @extern("LoadFileText");
 // Unload file text data allocated by LoadFileText()
@@ -843,10 +844,6 @@ fn char* get_prev_directory_path(char* dir_path) @extern("GetPrevDirectoryPath")
 fn char* get_working_directory() @extern("GetWorkingDirectory");
 // Get the directory if the running application (uses static string)
 fn char* get_application_directory() @extern("GetApplicationDirectory");
-// Get filenames in a directory path (memory should be freed)
-fn char** get_directory_files(char* dir_path, int* count) @extern("GetDirectoryFiles");
-// Clear directory files paths buffers (free memory)
-fn void clear_directory_files() @extern("ClearDirectoryFiles");
 // Change working directory, return true on success
 fn bool change_directory(char* dir) @extern("ChangeDirectory");
 // Check if a given path is a file or a directory
@@ -856,7 +853,7 @@ fn FilePathList load_directory_files(char *dir_path) @extern("LoadDirectoryFiles
 // Load directory filepaths with extension filtering and recursive directory scan
 fn FilePathList load_directory_files_ex(char *base_path, char *filter, bool scan_subdirs) @extern("LoadDirectoryFilesEx");
 // Unload filepaths
-fn void unliad_directory_files(FilePathList files) @extern("UnloadDirectoryFiles");
+fn void unload_directory_files(FilePathList files) @extern("UnloadDirectoryFiles");
 // Check if a file has been dropped into window
 fn bool is_file_dropped() @extern("IsFileDropped");
 // Load dropped filepaths
@@ -875,12 +872,6 @@ fn char* decompress_data(char* comp_data, int comp_data_size, int *data_size) @e
 fn char* encode_data_base64(char* data, int data_size, int *output_size) @extern("EncodeDataBase64");
 // Decode Base64 string data
 fn char* decode_data_base64(char* data, int *output_size) @extern("DecodeDataBase64");
-
-// Persistent storage management
-// Save integer value to storage file (to defined position), returns true on success
-fn bool save_storage_value(uint position, int value) @extern("SaveStorageValue");
-// Load integer value from storage file (from defined position)
-fn int load_storage_value(uint position) @extern("LoadStorageValue");
 
 //------------------------------------------------------------------------------------
 // Input Handling Functions (Module: core)
