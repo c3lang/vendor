@@ -1,0 +1,1960 @@
+// sdl2.c3i
+// Created 14/07/2023
+// Updated 15/07/2023
+// Originally created Kenta @ https://github.com/Its-Kenta
+
+module sdl2;
+
+const uint INIT_TIMER = 0x00000001u;
+const uint INIT_AUDIO = 0x00000010u;
+const uint INIT_VIDEO = 0x00000020u; 
+const uint INIT_JOYSTICK = 0x00000200u;
+const uint INIT_HAPTIC = 0x00001000u;
+const uint INIT_GAMECONTROLLER = 0x00002000u;
+const uint INIT_EVENTS = 0x00004000u;
+const uint INIT_SENSOR = 0x00008000u;
+const uint INIT_NOPARACHUTE = 0x00100000u;
+const uint INIT_EVERYTHING = (INIT_TIMER | INIT_AUDIO | INIT_VIDEO | INIT_EVENTS | INIT_JOYSTICK | INIT_HAPTIC | INIT_GAMECONTROLLER | INIT_SENSOR );
+
+enum AssertState : int
+{
+    ASSERTION_RETRY,
+    ASSERTION_BREAK,
+    ASSERTION_ABORT,
+    ASSERTION_IGNORE,
+    ASSERTION_ALWAYS_IGNORE
+}
+
+struct AssertData 
+{
+	int alwaysIgnore;
+	uint triggerCount;
+	char* condition;
+	char* filename;
+	int linenum;
+	char* function;
+	AssertData* next;
+}
+
+def SpinLock = int;
+
+struct AtomicT 
+{
+	int value;
+}
+
+enum ErrorCode : int
+{
+    ENOMEM,
+    EFREAD,
+    EFWRITE,
+    EFSEEK,
+    UNSUPPORTED,
+    LASTERROR
+}
+
+def Mutex = void;
+def Sem = void;
+def Cond = void;
+def ThreadID = void;
+def TlSID = ulong;
+
+enum ThreadPriority : int
+{
+    THREAD_PRIORITY_LOW,
+    THREAD_PRIORITY_NORMAL,
+    THREAD_PRIORITY_HIGH,
+    THREAD_PRIORITY_TIME_CRITICAL
+}
+
+// NEEDS IMPLEMENTATION IN C3
+struct RWops
+{
+
+}
+
+def AudioFormat = int;
+
+// NEED TO IMPLEMENT AudioCallback
+
+struct AudioSpec
+{
+
+}
+
+// NEEDS IMPLEMENTATION IN C3
+struct AudioCVT
+{
+
+}
+
+// NEED TO IMPLEMENT AudioFilter
+
+def AudioDeviceID = uint;
+
+enum AudioStatus : int
+{
+    AUDIO_STOPPED,
+    AUDIO_PLAYING,
+    AUDIO_PAUSED
+}
+
+def AudioStream = void;
+
+enum PixelType : int
+{
+    PIXELTYPE_UNKNOWN,
+    PIXELTYPE_INDEX1,
+    PIXELTYPE_INDEX4,
+    PIXELTYPE_INDEX8,
+    PIXELTYPE_PACKED8,
+    PIXELTYPE_PACKED16,
+    PIXELTYPE_PACKED32,
+    PIXELTYPE_ARRAYU8,
+    PIXELTYPE_ARRAYU16,
+    PIXELTYPE_ARRAYU32,
+    PIXELTYPE_ARRAYF16,
+    PIXELTYPE_ARRAYF32
+}
+
+enum BitmapOrder : int
+{
+    BITMAPORDER_NONE,
+    BITMAPORDER_4321,
+    BITMAPORDER_1234
+}
+
+enum PackedOrder : int
+{
+    PACKEDORDER_NONE,
+    PACKEDORDER_XRGB,
+    PACKEDORDER_RGBX,
+    PACKEDORDER_ARGB,
+    PACKEDORDER_RGBA,
+    PACKEDORDER_XBGR,
+    PACKEDORDER_BGRX,
+    PACKEDORDER_ABGR,
+    PACKEDORDER_BGRA
+}
+
+enum ArrayOrder : int
+{
+    ARRAYORDER_NONE,
+    ARRAYORDER_RGB,
+    ARRAYORDER_RGBA,
+    ARRAYORDER_ARGB,
+    ARRAYORDER_BGR,
+    ARRAYORDER_BGRA,
+    ARRAYORDER_ABGR
+}
+
+enum PackedLayout : int
+{
+    PACKEDLAYOUT_NONE,
+    PACKEDLAYOUT_332,
+    PACKEDLAYOUT_4444,
+    PACKEDLAYOUT_1555,
+    PACKEDLAYOUT_5551,
+    PACKEDLAYOUT_565,
+    PACKEDLAYOUT_8888,
+    PACKEDLAYOUT_2101010,
+    PACKEDLAYOUT_1010102
+}
+
+struct PixelFormat {
+	uint format;
+	Palette* palette;
+	char bitsPerPixel;
+	char bytesPerPixel;
+	char[2] padding;
+	uint rMask;
+	uint gMask;
+	uint bMask;
+	uint aMask;
+	char rLoss;
+	char gLoss;
+	char bLoss;
+	char aLoss;
+	char rShift;
+	char gShift;
+	char bShift;
+	char aShift;
+	int refCount;
+	PixelFormat* next;
+}
+
+def PixelFormatEnum = distinct int;
+const PixelFormatEnum PIXELFORMAT_UNKNOWN = 0;
+const PixelFormatEnum PIXELFORMAT_INDEX1LSB = 286261504;
+const PixelFormatEnum PIXELFORMAT_INDEX1MSB = 287310080;
+const PixelFormatEnum PIXELFORMAT_INDEX4LSB = 303039488;
+const PixelFormatEnum PIXELFORMAT_INDEX4MSB = 304088064;
+const PixelFormatEnum PIXELFORMAT_INDEX8 = 318769153;
+const PixelFormatEnum PIXELFORMAT_RGB332 = 336660481;
+const PixelFormatEnum PIXELFORMAT_XRGB4444 = 353504258;
+const PixelFormatEnum PIXELFORMAT_RGB444 = 353504258;
+const PixelFormatEnum PIXELFORMAT_XBGR4444 = 357698562;
+const PixelFormatEnum PIXELFORMAT_BGR444 = 357698562;
+const PixelFormatEnum PIXELFORMAT_XRGB1555 = 353570562;
+const PixelFormatEnum PIXELFORMAT_RGB555 = 353570562;
+const PixelFormatEnum PIXELFORMAT_XBGR1555 = 357764866;
+const PixelFormatEnum PIXELFORMAT_BGR555 = 357764866;
+const PixelFormatEnum PIXELFORMAT_ARGB4444 = 355602434;
+const PixelFormatEnum PIXELFORMAT_RGBA4444 = 356651010;
+const PixelFormatEnum PIXELFORMAT_ABGR4444 = 359796738;
+const PixelFormatEnum PIXELFORMAT_BGRA4444 = 360845314;
+const PixelFormatEnum PIXELFORMAT_ARGB1555 = 355667970;
+const PixelFormatEnum PIXELFORMAT_RGBA5551 = 356782082;
+const PixelFormatEnum PIXELFORMAT_ABGR1555 = 359862274;
+const PixelFormatEnum PIXELFORMAT_BGRA5551 = 360976386;
+const PixelFormatEnum PIXELFORMAT_RGB565 = 353701890;
+const PixelFormatEnum PIXELFORMAT_BGR565 = 357896194;
+const PixelFormatEnum PIXELFORMAT_RGB24 = 386930691;
+const PixelFormatEnum PIXELFORMAT_BGR24 = 390076419;
+const PixelFormatEnum PIXELFORMAT_XRGB8888 = 370546692;
+const PixelFormatEnum PIXELFORMAT_RGB888 = 370546692;
+const PixelFormatEnum PIXELFORMAT_RGBX8888 = 371595268;
+const PixelFormatEnum PIXELFORMAT_XBGR8888 = 374740996;
+const PixelFormatEnum PIXELFORMAT_BGR888 = 374740996;
+const PixelFormatEnum PIXELFORMAT_BGRX8888 = 375789572;
+const PixelFormatEnum PIXELFORMAT_ARGB8888 = 372645892;
+const PixelFormatEnum PIXELFORMAT_RGBA8888 = 373694468;
+const PixelFormatEnum PIXELFORMAT_ABGR8888 = 376840196;
+const PixelFormatEnum PIXELFORMAT_BGRA8888 = 377888772;
+const PixelFormatEnum PIXELFORMAT_ARGB2101010 = 372711428;
+const PixelFormatEnum PIXELFORMAT_RGBA32 = 376840196;
+const PixelFormatEnum PIXELFORMAT_ARGB32 = 377888772;
+const PixelFormatEnum PIXELFORMAT_BGRA32 = 372645892;
+const PixelFormatEnum PIXELFORMAT_ABGR32 = 373694468;
+const PixelFormatEnum PIXELFORMAT_YV12 = 842094169;
+const PixelFormatEnum PIXELFORMAT_IYUV = 1448433993;
+const PixelFormatEnum PIXELFORMAT_YUY2 = 844715353;
+const PixelFormatEnum PIXELFORMAT_UYVY = 1498831189;
+const PixelFormatEnum PIXELFORMAT_YVYU = 1431918169;
+const PixelFormatEnum PIXELFORMAT_NV12 = 842094158;
+const PixelFormatEnum PIXELFORMAT_NV21 = 825382478;
+const PixelFormatEnum PIXELFORMAT_EXTERNAL_OES = 542328143;
+
+struct Color 
+{
+	char r;
+	char g;
+	char b;
+	char a;
+}
+
+struct Palette 
+{
+	int nColors;
+	Color* colors;
+	uint version;
+	int refCount;
+}
+
+struct Point 
+{
+	int x;
+	int y;
+}
+
+struct FPoint 
+{
+	float x;
+	float y;
+}
+
+struct Rect 
+{
+	int x;
+	int y;
+    int w;
+    int h;
+}
+
+struct FRect 
+{
+	float x;
+	float y;
+    float w;
+    float h;
+}
+
+def BlendMode = distinct int;
+const BlendMode BLENDMODE_NONE = 0;
+const BlendMode BLENDMODE_BLEND = 1;
+const BlendMode BLENDMODE_ADD = 2;
+const BlendMode BLENDMODE_MOD = 4;
+const BlendMode BLENDMODE_MUL = 8;
+const BlendMode BLENDMODE_INVALID = 2147483647;
+
+enum BlendOperation : int
+{
+    BLENDOPERATION_ADD,
+    BLENDOPERATION_SUBTRACT,
+    BLENDOPERATION_REV_SUBTRACT,
+    BLENDOPERATION_MINIMUM,
+    BLENDOPERATION_MAXIMUM
+}
+
+enum BlendFactor : int
+{
+    BLENDFACTOR_ZERO,
+    BLENDFACTOR_ONE,
+    BLENDFACTOR_SRC_COLOR,
+    BLENDFACTOR_ONE_MINUS_SRC_COLOR,
+    BLENDFACTOR_SRC_ALPHA,
+    BLENDFACTOR_ONE_MINUS_SRC_ALPHA,
+    BLENDFACTOR_DST_COLOR,
+    BLENDFACTOR_ONE_MINUS_DST_COLOR,
+    BLENDFACTOR_DST_ALPHA,
+    BLENDFACTOR_ONE_MINUS_DST_ALPHA,
+}
+
+// NEED TO IMPLEMENT SDL_BLITMAP
+
+// NEED TO IMPLEMENT SURFACE
+struct Surface
+{
+
+}
+
+// NEED TO IMPLEMENT SDL_BLIT
+
+enum YUVConversionMode : int
+{
+  YUV_CONVERSION_JPEG,
+  YUV_CONVERSION_BT601,
+  YUV_CONVERSION_BT709,
+  YUV_CONVERSION_AUTOMATIC
+}
+
+struct DisplayMode 
+{
+	uint format;
+	int w;
+	int h;
+	int refreshRate;
+	void* driverData;
+}
+
+def Window = void;
+
+def WindowFlags = distinct int;
+const WindowFlags WINDOW_FULLSCREEN = 1;
+const WindowFlags WINDOW_OPENGL = 2;
+const WindowFlags WINDOW_SHOWN = 4;
+const WindowFlags WINDOW_HIDDEN = 8;
+const WindowFlags WINDOW_BORDERLESS = 16;
+const WindowFlags WINDOW_RESIZABLE = 32;
+const WindowFlags WINDOW_MINIMIZED = 64;
+const WindowFlags WINDOW_MAXIMIZED = 128;
+const WindowFlags WINDOW_MOUSE_GRABBED = 256;
+const WindowFlags WINDOW_INPUT_FOCUS = 512;
+const WindowFlags WINDOW_MOUSE_FOCUS = 1024;
+const WindowFlags WINDOW_FULLSCREEN_DESKTOP = 4097;
+const WindowFlags WINDOW_FOREIGN = 2048;
+const WindowFlags WINDOW_ALLOW_HIGHDPI = 8192;
+const WindowFlags WINDOW_MOUSE_CAPTURE = 16384;
+const WindowFlags WINDOW_ALWAYS_ON_TOP = 32768;
+const WindowFlags WINDOW_SKIP_TASKBAR = 65536;
+const WindowFlags WINDOW_UTILITY = 131072;
+const WindowFlags WINDOW_TOOLTIP = 262144;
+const WindowFlags WINDOW_POPUP_MENU = 524288;
+const WindowFlags WINDOW_KEYBOARD_GRABBED = 1048576;
+const WindowFlags WINDOW_VULKAN = 268435456;
+const WindowFlags WINDOW_METAL = 536870912;
+const WindowFlags WINDOW_INPUT_GRABBED = 256;
+
+def Scancode = distinct int;
+const Scancode SCANCODE_UNKNOWN = 0;
+const Scancode SCANCODE_A = 4;
+const Scancode SCANCODE_B = 5;
+const Scancode SCANCODE_C = 6;
+const Scancode SCANCODE_D = 7;
+const Scancode SCANCODE_E = 8;
+const Scancode SCANCODE_F = 9;
+const Scancode SCANCODE_G = 10;
+const Scancode SCANCODE_H = 11;
+const Scancode SCANCODE_I = 12;
+const Scancode SCANCODE_J = 13;
+const Scancode SCANCODE_K = 14;
+const Scancode SCANCODE_L = 15;
+const Scancode SCANCODE_M = 16;
+const Scancode SCANCODE_N = 17;
+const Scancode SCANCODE_O = 18;
+const Scancode SCANCODE_P = 19;
+const Scancode SCANCODE_Q = 20;
+const Scancode SCANCODE_R = 21;
+const Scancode SCANCODE_S = 22;
+const Scancode SCANCODE_T = 23;
+const Scancode SCANCODE_U = 24;
+const Scancode SCANCODE_V = 25;
+const Scancode SCANCODE_W = 26;
+const Scancode SCANCODE_X = 27;
+const Scancode SCANCODE_Y = 28;
+const Scancode SCANCODE_Z = 29;
+const Scancode SCANCODE_1 = 30;
+const Scancode SCANCODE_2 = 31;
+const Scancode SCANCODE_3 = 32;
+const Scancode SCANCODE_4 = 33;
+const Scancode SCANCODE_5 = 34;
+const Scancode SCANCODE_6 = 35;
+const Scancode SCANCODE_7 = 36;
+const Scancode SCANCODE_8 = 37;
+const Scancode SCANCODE_9 = 38;
+const Scancode SCANCODE_0 = 39;
+const Scancode SCANCODE_RETURN = 40;
+const Scancode SCANCODE_ESCAPE = 41;
+const Scancode SCANCODE_BACKSPACE = 42;
+const Scancode SCANCODE_TAB = 43;
+const Scancode SCANCODE_SPACE = 44;
+const Scancode SCANCODE_MINUS = 45;
+const Scancode SCANCODE_EQUALS = 46;
+const Scancode SCANCODE_LEFTBRACKET = 47;
+const Scancode SCANCODE_RIGHTBRACKET = 48;
+const Scancode SCANCODE_BACKSLASH = 49;
+const Scancode SCANCODE_NONUSHASH = 50;
+const Scancode SCANCODE_SEMICOLON = 51;
+const Scancode SCANCODE_APOSTROPHE = 52;
+const Scancode SCANCODE_GRAVE = 53;
+const Scancode SCANCODE_COMMA = 54;
+const Scancode SCANCODE_PERIOD = 55;
+const Scancode SCANCODE_SLASH = 56;
+const Scancode SCANCODE_CAPSLOCK = 57;
+const Scancode SCANCODE_F1 = 58;
+const Scancode SCANCODE_F2 = 59;
+const Scancode SCANCODE_F3 = 60;
+const Scancode SCANCODE_F4 = 61;
+const Scancode SCANCODE_F5 = 62;
+const Scancode SCANCODE_F6 = 63;
+const Scancode SCANCODE_F7 = 64;
+const Scancode SCANCODE_F8 = 65;
+const Scancode SCANCODE_F9 = 66;
+const Scancode SCANCODE_F10 = 67;
+const Scancode SCANCODE_F11 = 68;
+const Scancode SCANCODE_F12 = 69;
+const Scancode SCANCODE_PRINTSCREEN = 70;
+const Scancode SCANCODE_SCROLLLOCK = 71;
+const Scancode SCANCODE_PAUSE = 72;
+const Scancode SCANCODE_INSERT = 73;
+const Scancode SCANCODE_HOME = 74;
+const Scancode SCANCODE_PAGEUP = 75;
+const Scancode SCANCODE_DELETE = 76;
+const Scancode SCANCODE_END = 77;
+const Scancode SCANCODE_PAGEDOWN = 78;
+const Scancode SCANCODE_RIGHT = 79;
+const Scancode SCANCODE_LEFT = 80;
+const Scancode SCANCODE_DOWN = 81;
+const Scancode SCANCODE_UP = 82;
+const Scancode SCANCODE_NUMLOCKCLEAR = 83;
+const Scancode SCANCODE_KP_DIVIDE = 84;
+const Scancode SCANCODE_KP_MULTIPLY = 85;
+const Scancode SCANCODE_KP_MINUS = 86;
+const Scancode SCANCODE_KP_PLUS = 87;
+const Scancode SCANCODE_KP_ENTER = 88;
+const Scancode SCANCODE_KP_1 = 89;
+const Scancode SCANCODE_KP_2 = 90;
+const Scancode SCANCODE_KP_3 = 91;
+const Scancode SCANCODE_KP_4 = 92;
+const Scancode SCANCODE_KP_5 = 93;
+const Scancode SCANCODE_KP_6 = 94;
+const Scancode SCANCODE_KP_7 = 95;
+const Scancode SCANCODE_KP_8 = 96;
+const Scancode SCANCODE_KP_9 = 97;
+const Scancode SCANCODE_KP_0 = 98;
+const Scancode SCANCODE_KP_PERIOD = 99;
+const Scancode SCANCODE_NONUSBACKSLASH = 100;
+const Scancode SCANCODE_APPLICATION = 101;
+const Scancode SCANCODE_POWER = 102;
+const Scancode SCANCODE_KP_EQUALS = 103;
+const Scancode SCANCODE_F13 = 104;
+const Scancode SCANCODE_F14 = 105;
+const Scancode SCANCODE_F15 = 106;
+const Scancode SCANCODE_F16 = 107;
+const Scancode SCANCODE_F17 = 108;
+const Scancode SCANCODE_F18 = 109;
+const Scancode SCANCODE_F19 = 110;
+const Scancode SCANCODE_F20 = 111;
+const Scancode SCANCODE_F21 = 112;
+const Scancode SCANCODE_F22 = 113;
+const Scancode SCANCODE_F23 = 114;
+const Scancode SCANCODE_F24 = 115;
+const Scancode SCANCODE_EXECUTE = 116;
+const Scancode SCANCODE_HELP = 117;
+const Scancode SCANCODE_MENU = 118;
+const Scancode SCANCODE_SELECT = 119;
+const Scancode SCANCODE_STOP = 120;
+const Scancode SCANCODE_AGAIN = 121;
+const Scancode SCANCODE_UNDO = 122;
+const Scancode SCANCODE_CUT = 123;
+const Scancode SCANCODE_COPY = 124;
+const Scancode SCANCODE_PASTE = 125;
+const Scancode SCANCODE_FIND = 126;
+const Scancode SCANCODE_MUTE = 127;
+const Scancode SCANCODE_VOLUMEUP = 128;
+const Scancode SCANCODE_VOLUMEDOWN = 129;
+const Scancode SCANCODE_KP_COMMA = 133;
+const Scancode SCANCODE_KP_EQUALSAS400 = 134;
+const Scancode SCANCODE_INTERNATIONAL1 = 135;
+const Scancode SCANCODE_INTERNATIONAL2 = 136;
+const Scancode SCANCODE_INTERNATIONAL3 = 137;
+const Scancode SCANCODE_INTERNATIONAL4 = 138;
+const Scancode SCANCODE_INTERNATIONAL5 = 139;
+const Scancode SCANCODE_INTERNATIONAL6 = 140;
+const Scancode SCANCODE_INTERNATIONAL7 = 141;
+const Scancode SCANCODE_INTERNATIONAL8 = 142;
+const Scancode SCANCODE_INTERNATIONAL9 = 143;
+const Scancode SCANCODE_LANG1 = 144;
+const Scancode SCANCODE_LANG2 = 145;
+const Scancode SCANCODE_LANG3 = 146;
+const Scancode SCANCODE_LANG4 = 147;
+const Scancode SCANCODE_LANG5 = 148;
+const Scancode SCANCODE_LANG6 = 149;
+const Scancode SCANCODE_LANG7 = 150;
+const Scancode SCANCODE_LANG8 = 151;
+const Scancode SCANCODE_LANG9 = 152;
+const Scancode SCANCODE_ALTERASE = 153;
+const Scancode SCANCODE_SYSREQ = 154;
+const Scancode SCANCODE_CANCEL = 155;
+const Scancode SCANCODE_CLEAR = 156;
+const Scancode SCANCODE_PRIOR = 157;
+const Scancode SCANCODE_RETURN2 = 158;
+const Scancode SCANCODE_SEPARATOR = 159;
+const Scancode SCANCODE_OUT = 160;
+const Scancode SCANCODE_OPER = 161;
+const Scancode SCANCODE_CLEARAGAIN = 162;
+const Scancode SCANCODE_CRSEL = 163;
+const Scancode SCANCODE_EXSEL = 164;
+const Scancode SCANCODE_KP_00 = 176;
+const Scancode SCANCODE_KP_000 = 177;
+const Scancode SCANCODE_THOUSANDSSEPARATOR = 178;
+const Scancode SCANCODE_DECIMALSEPARATOR = 179;
+const Scancode SCANCODE_CURRENCYUNIT = 180;
+const Scancode SCANCODE_CURRENCYSUBUNIT = 181;
+const Scancode SCANCODE_KP_LEFTPAREN = 182;
+const Scancode SCANCODE_KP_RIGHTPAREN = 183;
+const Scancode SCANCODE_KP_LEFTBRACE = 184;
+const Scancode SCANCODE_KP_RIGHTBRACE = 185;
+const Scancode SCANCODE_KP_TAB = 186;
+const Scancode SCANCODE_KP_BACKSPACE = 187;
+const Scancode SCANCODE_KP_A = 188;
+const Scancode SCANCODE_KP_B = 189;
+const Scancode SCANCODE_KP_C = 190;
+const Scancode SCANCODE_KP_D = 191;
+const Scancode SCANCODE_KP_E = 192;
+const Scancode SCANCODE_KP_F = 193;
+const Scancode SCANCODE_KP_XOR = 194;
+const Scancode SCANCODE_KP_POWER = 195;
+const Scancode SCANCODE_KP_PERCENT = 196;
+const Scancode SCANCODE_KP_LESS = 197;
+const Scancode SCANCODE_KP_GREATER = 198;
+const Scancode SCANCODE_KP_AMPERSAND = 199;
+const Scancode SCANCODE_KP_DBLAMPERSAND = 200;
+const Scancode SCANCODE_KP_VERTICALBAR = 201;
+const Scancode SCANCODE_KP_DBLVERTICALBAR = 202;
+const Scancode SCANCODE_KP_COLON = 203;
+const Scancode SCANCODE_KP_HASH = 204;
+const Scancode SCANCODE_KP_SPACE = 205;
+const Scancode SCANCODE_KP_AT = 206;
+const Scancode SCANCODE_KP_EXCLAM = 207;
+const Scancode SCANCODE_KP_MEMSTORE = 208;
+const Scancode SCANCODE_KP_MEMRECALL = 209;
+const Scancode SCANCODE_KP_MEMCLEAR = 210;
+const Scancode SCANCODE_KP_MEMADD = 211;
+const Scancode SCANCODE_KP_MEMSUBTRACT = 212;
+const Scancode SCANCODE_KP_MEMMULTIPLY = 213;
+const Scancode SCANCODE_KP_MEMDIVIDE = 214;
+const Scancode SCANCODE_KP_PLUSMINUS = 215;
+const Scancode SCANCODE_KP_CLEAR = 216;
+const Scancode SCANCODE_KP_CLEARENTRY = 217;
+const Scancode SCANCODE_KP_BINARY = 218;
+const Scancode SCANCODE_KP_OCTAL = 219;
+const Scancode SCANCODE_KP_DECIMAL = 220;
+const Scancode SCANCODE_KP_HEXADECIMAL = 221;
+const Scancode SCANCODE_LCTRL = 224;
+const Scancode SCANCODE_LSHIFT = 225;
+const Scancode SCANCODE_LALT = 226;
+const Scancode SCANCODE_LGUI = 227;
+const Scancode SCANCODE_RCTRL = 228;
+const Scancode SCANCODE_RSHIFT = 229;
+const Scancode SCANCODE_RALT = 230;
+const Scancode SCANCODE_RGUI = 231;
+const Scancode SCANCODE_MODE = 257;
+const Scancode SCANCODE_AUDIONEXT = 258;
+const Scancode SCANCODE_AUDIOPREV = 259;
+const Scancode SCANCODE_AUDIOSTOP = 260;
+const Scancode SCANCODE_AUDIOPLAY = 261;
+const Scancode SCANCODE_AUDIOMUTE = 262;
+const Scancode SCANCODE_MEDIASELECT = 263;
+const Scancode SCANCODE_WWW = 264;
+const Scancode SCANCODE_MAIL = 265;
+const Scancode SCANCODE_CALCULATOR = 266;
+const Scancode SCANCODE_COMPUTER = 267;
+const Scancode SCANCODE_AC_SEARCH = 268;
+const Scancode SCANCODE_AC_HOME = 269;
+const Scancode SCANCODE_AC_BACK = 270;
+const Scancode SCANCODE_AC_FORWARD = 271;
+const Scancode SCANCODE_AC_STOP = 272;
+const Scancode SCANCODE_AC_REFRESH = 273;
+const Scancode SCANCODE_AC_BOOKMARKS = 274;
+const Scancode SCANCODE_BRIGHTNESSDOWN = 275;
+const Scancode SCANCODE_BRIGHTNESSUP = 276;
+const Scancode SCANCODE_DISPLAYSWITCH = 277;
+const Scancode SCANCODE_KBDILLUMTOGGLE = 278;
+const Scancode SCANCODE_KBDILLUMDOWN = 279;
+const Scancode SCANCODE_KBDILLUMUP = 280;
+const Scancode SCANCODE_EJECT = 281;
+const Scancode SCANCODE_SLEEP = 282;
+const Scancode SCANCODE_APP1 = 283;
+const Scancode SCANCODE_APP2 = 284;
+const Scancode SCANCODE_AUDIOREWIND = 285;
+const Scancode SCANCODE_AUDIOFASTFORWARD = 286;
+const Scancode SCANCODE_SOFTLEFT = 287;
+const Scancode SCANCODE_SOFTRIGHT = 288;
+const Scancode SCANCODE_CALL = 289;
+const Scancode SCANCODE_ENDCALL = 290;
+const Scancode NUM_SCANCODES = 512;
+
+def Keycode = distinct int;
+const Keycode SDLK_UNKNOWN = 0;
+const Keycode SDLK_RETURN = 13;
+const Keycode SDLK_ESCAPE = 27;
+const Keycode SDLK_BACKSPACE = 8;
+const Keycode SDLK_TAB = 9;
+const Keycode SDLK_SPACE = 32;
+const Keycode SDLK_EXCLAIM = 33;
+const Keycode SDLK_QUOTEDBL = 34;
+const Keycode SDLK_HASH = 35;
+const Keycode SDLK_PERCENT = 37;
+const Keycode SDLK_DOLLAR = 36;
+const Keycode SDLK_AMPERSAND = 38;
+const Keycode SDLK_QUOTE = 39;
+const Keycode SDLK_LEFTPAREN = 40;
+const Keycode SDLK_RIGHTPAREN = 41;
+const Keycode SDLK_ASTERISK = 42;
+const Keycode SDLK_PLUS = 43;
+const Keycode SDLK_COMMA = 44;
+const Keycode SDLK_MINUS = 45;
+const Keycode SDLK_PERIOD = 46;
+const Keycode SDLK_SLASH = 47;
+const Keycode SDLK_0 = 48;
+const Keycode SDLK_1 = 49;
+const Keycode SDLK_2 = 50;
+const Keycode SDLK_3 = 51;
+const Keycode SDLK_4 = 52;
+const Keycode SDLK_5 = 53;
+const Keycode SDLK_6 = 54;
+const Keycode SDLK_7 = 55;
+const Keycode SDLK_8 = 56;
+const Keycode SDLK_9 = 57;
+const Keycode SDLK_COLON = 58;
+const Keycode SDLK_SEMICOLON = 59;
+const Keycode SDLK_LESS = 60;
+const Keycode SDLK_EQUALS = 61;
+const Keycode SDLK_GREATER = 62;
+const Keycode SDLK_QUESTION = 63;
+const Keycode SDLK_AT = 64;
+const Keycode SDLK_LEFTBRACKET = 91;
+const Keycode SDLK_BACKSLASH = 92;
+const Keycode SDLK_RIGHTBRACKET = 93;
+const Keycode SDLK_CARET = 94;
+const Keycode SDLK_UNDERSCORE = 95;
+const Keycode SDLK_BACKQUOTE = 96;
+const Keycode SDLK_A = 97;
+const Keycode SDLK_B = 98;
+const Keycode SDLK_C = 99;
+const Keycode SDLK_D = 100;
+const Keycode SDLK_E = 101;
+const Keycode SDLK_F = 102;
+const Keycode SDLK_G = 103;
+const Keycode SDLK_H = 104;
+const Keycode SDLK_I = 105;
+const Keycode SDLK_J = 106;
+const Keycode SDLK_K = 107;
+const Keycode SDLK_L = 108;
+const Keycode SDLK_M = 109;
+const Keycode SDLK_N = 110;
+const Keycode SDLK_O = 111;
+const Keycode SDLK_P = 112;
+const Keycode SDLK_Q = 113;
+const Keycode SDLK_R = 114;
+const Keycode SDLK_S = 115;
+const Keycode SDLK_T = 116;
+const Keycode SDLK_U = 117;
+const Keycode SDLK_V = 118;
+const Keycode SDLK_W = 119;
+const Keycode SDLK_X = 120;
+const Keycode SDLK_Y = 121;
+const Keycode SDLK_Z = 122;
+const Keycode SDLK_CAPSLOCK = 1073741881;
+const Keycode SDLK_F1 = 1073741882;
+const Keycode SDLK_F2 = 1073741883;
+const Keycode SDLK_F3 = 1073741884;
+const Keycode SDLK_F4 = 1073741885;
+const Keycode SDLK_F5 = 1073741886;
+const Keycode SDLK_F6 = 1073741887;
+const Keycode SDLK_F7 = 1073741888;
+const Keycode SDLK_F8 = 1073741889;
+const Keycode SDLK_F9 = 1073741890;
+const Keycode SDLK_F10 = 1073741891;
+const Keycode SDLK_F11 = 1073741892;
+const Keycode SDLK_F12 = 1073741893;
+const Keycode SDLK_PRINTSCREEN = 1073741894;
+const Keycode SDLK_SCROLLLOCK = 1073741895;
+const Keycode SDLK_PAUSE = 1073741896;
+const Keycode SDLK_INSERT = 1073741897;
+const Keycode SDLK_HOME = 1073741898;
+const Keycode SDLK_PAGEUP = 1073741899;
+const Keycode SDLK_DELETE = 127;
+const Keycode SDLK_END = 1073741901;
+const Keycode SDLK_PAGEDOWN = 1073741902;
+const Keycode SDLK_RIGHT = 1073741903;
+const Keycode SDLK_LEFT = 1073741904;
+const Keycode SDLK_DOWN = 1073741905;
+const Keycode SDLK_UP = 1073741906;
+const Keycode SDLK_NUMLOCKCLEAR = 1073741907;
+const Keycode SDLK_KP_DIVIDE = 1073741908;
+const Keycode SDLK_KP_MULTIPLY = 1073741909;
+const Keycode SDLK_KP_MINUS = 1073741910;
+const Keycode SDLK_KP_PLUS = 1073741911;
+const Keycode SDLK_KP_ENTER = 1073741912;
+const Keycode SDLK_KP_1 = 1073741913;
+const Keycode SDLK_KP_2 = 1073741914;
+const Keycode SDLK_KP_3 = 1073741915;
+const Keycode SDLK_KP_4 = 1073741916;
+const Keycode SDLK_KP_5 = 1073741917;
+const Keycode SDLK_KP_6 = 1073741918;
+const Keycode SDLK_KP_7 = 1073741919;
+const Keycode SDLK_KP_8 = 1073741920;
+const Keycode SDLK_KP_9 = 1073741921;
+const Keycode SDLK_KP_0 = 1073741922;
+const Keycode SDLK_KP_PERIOD = 1073741923;
+const Keycode SDLK_APPLICATION = 1073741925;
+const Keycode SDLK_POWER = 1073741926;
+const Keycode SDLK_KP_EQUALS = 1073741927;
+const Keycode SDLK_F13 = 1073741928;
+const Keycode SDLK_F14 = 1073741929;
+const Keycode SDLK_F15 = 1073741930;
+const Keycode SDLK_F16 = 1073741931;
+const Keycode SDLK_F17 = 1073741932;
+const Keycode SDLK_F18 = 1073741933;
+const Keycode SDLK_F19 = 1073741934;
+const Keycode SDLK_F20 = 1073741935;
+const Keycode SDLK_F21 = 1073741936;
+const Keycode SDLK_F22 = 1073741937;
+const Keycode SDLK_F23 = 1073741938;
+const Keycode SDLK_F24 = 1073741939;
+const Keycode SDLK_EXECUTE = 1073741940;
+const Keycode SDLK_HELP = 1073741941;
+const Keycode SDLK_MENU = 1073741942;
+const Keycode SDLK_SELECT = 1073741943;
+const Keycode SDLK_STOP = 1073741944;
+const Keycode SDLK_AGAIN = 1073741945;
+const Keycode SDLK_UNDO = 1073741946;
+const Keycode SDLK_CUT = 1073741947;
+const Keycode SDLK_COPY = 1073741948;
+const Keycode SDLK_PASTE = 1073741949;
+const Keycode SDLK_FIND = 1073741950;
+const Keycode SDLK_MUTE = 1073741951;
+const Keycode SDLK_VOLUMEUP = 1073741952;
+const Keycode SDLK_VOLUMEDOWN = 1073741953;
+const Keycode SDLK_KP_COMMA = 1073741957;
+const Keycode SDLK_KP_EQUALSAS400 = 1073741958;
+const Keycode SDLK_ALTERASE = 1073741977;
+const Keycode SDLK_SYSREQ = 1073741978;
+const Keycode SDLK_CANCEL = 1073741979;
+const Keycode SDLK_CLEAR = 1073741980;
+const Keycode SDLK_PRIOR = 1073741981;
+const Keycode SDLK_RETURN2 = 1073741982;
+const Keycode SDLK_SEPARATOR = 1073741983;
+const Keycode SDLK_OUT = 1073741984;
+const Keycode SDLK_OPER = 1073741985;
+const Keycode SDLK_CLEARAGAIN = 1073741986;
+const Keycode SDLK_CRSEL = 1073741987;
+const Keycode SDLK_EXSEL = 1073741988;
+const Keycode SDLK_KP_00 = 1073742000;
+const Keycode SDLK_KP_000 = 1073742001;
+const Keycode SDLK_THOUSANDSSEPARATOR = 1073742002;
+const Keycode SDLK_DECIMALSEPARATOR = 1073742003;
+const Keycode SDLK_CURRENCYUNIT = 1073742004;
+const Keycode SDLK_CURRENCYSUBUNIT = 1073742005;
+const Keycode SDLK_KP_LEFTPAREN = 1073742006;
+const Keycode SDLK_KP_RIGHTPAREN = 1073742007;
+const Keycode SDLK_KP_LEFTBRACE = 1073742008;
+const Keycode SDLK_KP_RIGHTBRACE = 1073742009;
+const Keycode SDLK_KP_TAB = 1073742010;
+const Keycode SDLK_KP_BACKSPACE = 1073742011;
+const Keycode SDLK_KP_A = 1073742012;
+const Keycode SDLK_KP_B = 1073742013;
+const Keycode SDLK_KP_C = 1073742014;
+const Keycode SDLK_KP_D = 1073742015;
+const Keycode SDLK_KP_E = 1073742016;
+const Keycode SDLK_KP_F = 1073742017;
+const Keycode SDLK_KP_XOR = 1073742018;
+const Keycode SDLK_KP_POWER = 1073742019;
+const Keycode SDLK_KP_PERCENT = 1073742020;
+const Keycode SDLK_KP_LESS = 1073742021;
+const Keycode SDLK_KP_GREATER = 1073742022;
+const Keycode SDLK_KP_AMPERSAND = 1073742023;
+const Keycode SDLK_KP_DBLAMPERSAND = 1073742024;
+const Keycode SDLK_KP_VERTICALBAR = 1073742025;
+const Keycode SDLK_KP_DBLVERTICALBAR = 1073742026;
+const Keycode SDLK_KP_COLON = 1073742027;
+const Keycode SDLK_KP_HASH = 1073742028;
+const Keycode SDLK_KP_SPACE = 1073742029;
+const Keycode SDLK_KP_AT = 1073742030;
+const Keycode SDLK_KP_EXCLAM = 1073742031;
+const Keycode SDLK_KP_MEMSTORE = 1073742032;
+const Keycode SDLK_KP_MEMRECALL = 1073742033;
+const Keycode SDLK_KP_MEMCLEAR = 1073742034;
+const Keycode SDLK_KP_MEMADD = 1073742035;
+const Keycode SDLK_KP_MEMSUBTRACT = 1073742036;
+const Keycode SDLK_KP_MEMMULTIPLY = 1073742037;
+const Keycode SDLK_KP_MEMDIVIDE = 1073742038;
+const Keycode SDLK_KP_PLUSMINUS = 1073742039;
+const Keycode SDLK_KP_CLEAR = 1073742040;
+const Keycode SDLK_KP_CLEARENTRY = 1073742041;
+const Keycode SDLK_KP_BINARY = 1073742042;
+const Keycode SDLK_KP_OCTAL = 1073742043;
+const Keycode SDLK_KP_DECIMAL = 1073742044;
+const Keycode SDLK_KP_HEXADECIMAL = 1073742045;
+const Keycode SDLK_LCTRL = 1073742048;
+const Keycode SDLK_LSHIFT = 1073742049;
+const Keycode SDLK_LALT = 1073742050;
+const Keycode SDLK_LGUI = 1073742051;
+const Keycode SDLK_RCTRL = 1073742052;
+const Keycode SDLK_RSHIFT = 1073742053;
+const Keycode SDLK_RALT = 1073742054;
+const Keycode SDLK_RGUI = 1073742055;
+const Keycode SDLK_MODE = 1073742081;
+const Keycode SDLK_AUDIONEXT = 1073742082;
+const Keycode SDLK_AUDIOPREV = 1073742083;
+const Keycode SDLK_AUDIOSTOP = 1073742084;
+const Keycode SDLK_AUDIOPLAY = 1073742085;
+const Keycode SDLK_AUDIOMUTE = 1073742086;
+const Keycode SDLK_MEDIASELECT = 1073742087;
+const Keycode SDLK_WWW = 1073742088;
+const Keycode SDLK_MAIL = 1073742089;
+const Keycode SDLK_CALCULATOR = 1073742090;
+const Keycode SDLK_COMPUTER = 1073742091;
+const Keycode SDLK_AC_SEARCH = 1073742092;
+const Keycode SDLK_AC_HOME = 1073742093;
+const Keycode SDLK_AC_BACK = 1073742094;
+const Keycode SDLK_AC_FORWARD = 1073742095;
+const Keycode SDLK_AC_STOP = 1073742096;
+const Keycode SDLK_AC_REFRESH = 1073742097;
+const Keycode SDLK_AC_BOOKMARKS = 1073742098;
+const Keycode SDLK_BRIGHTNESSDOWN = 1073742099;
+const Keycode SDLK_BRIGHTNESSUP = 1073742100;
+const Keycode SDLK_DISPLAYSWITCH = 1073742101;
+const Keycode SDLK_KBDILLUMTOGGLE = 1073742102;
+const Keycode SDLK_KBDILLUMDOWN = 1073742103;
+const Keycode SDLK_KBDILLUMUP = 1073742104;
+const Keycode SDLK_EJECT = 1073742105;
+const Keycode SDLK_SLEEP = 1073742106;
+const Keycode SDLK_APP1 = 1073742107;
+const Keycode SDLK_APP2 = 1073742108;
+const Keycode SDLK_AUDIOREWIND = 1073742109;
+const Keycode SDLK_AUDIOFASTFORWARD = 1073742110;
+const Keycode SDLK_SOFTLEFT = 1073742111;
+const Keycode SDLK_SOFTRIGHT = 1073742112;
+const Keycode SDLK_CALL = 1073742113;
+const Keycode SDLK_ENDCALL = 1073742114;
+
+def Keymod = distinct int;
+const Keymod KMOD_NONE = 0;
+const Keymod KMOD_LSHIFT = 1;
+const Keymod KMOD_RSHIFT = 2;
+const Keymod KMOD_LCTRL = 64;
+const Keymod KMOD_RCTRL = 128;
+const Keymod KMOD_LALT = 256;
+const Keymod KMOD_RALT = 512;
+const Keymod KMOD_LGUI = 1024;
+const Keymod KMOD_RGUI = 2048;
+const Keymod KMOD_NUM = 4096;
+const Keymod KMOD_CAPS = 8192;
+const Keymod KMOD_MODE = 16384;
+const Keymod KMOD_SCROLL = 32768;
+const Keymod KMOD_CTRL = 192;
+const Keymod KMOD_SHIFT = 3;
+const Keymod KMOD_ALT = 768;
+const Keymod KMOD_GUI = 3072;
+const Keymod KMOD_RESERVED = 32768;
+
+enum WindowEventID : int
+{
+    WINDOWEVENT_NONE,
+    WINDOWEVENT_SHOWN,
+    WINDOWEVENT_HIDDEN,
+    WINDOWEVENT_EXPOSED,
+    WINDOWEVENT_MOVED,
+    WINDOWEVENT_RESIZED,
+    WINDOWEVENT_SIZE_CHANGED,
+    WINDOWEVENT_MINIMIZED,
+    WINDOWEVENT_MAXIMIZED,
+    WINDOWEVENT_RESTORED,
+    WINDOWEVENT_ENTER,
+    WINDOWEVENT_LEAVE,
+    WINDOWEVENT_FOCUS_GAINED,
+    WINDOWEVENT_FOCUS_LOST,
+    WINDOWEVENT_CLOSE,
+    WINDOWEVENT_TAKE_FOCUS,
+    WINDOWEVENT_HIT_TEST,
+    WINDOWEVENT_ICCPROF_CHANGED,
+    WINDOWEVENT_DISPLAY_CHANGED
+}
+
+enum DisplayEventID : int
+{
+    DISPLAYEVENT_NONE,
+    DISPLAYEVENT_ORIENTATION,
+    DISPLAYEVENT_CONNECTED,
+    DISPLAYEVENT_DISCONNECTED,
+    DISPLAYEVENT_MOVED
+}
+
+enum DisplayOrientation : int
+{
+    ORIENTATION_UNKNOWN,
+    ORIENTATION_LANDSCAPE,
+    ORIENTATION_LANDSCAPE_FLIPPED,
+    ORIENTATION_PORTRAIT,
+    ORIENTATION_PORTRAIT_FLIPPED
+}
+
+enum FlashOperation : int
+{
+    FLASH_CANCEL,
+    FLASH_BRIEFLY,
+    FLASH_UNTIL_FOCUSED
+}
+
+// NEED TO IMPLEMENT SD_GLCONTEXT
+
+enum GLattr : int
+{
+    GL_RED_SIZE,
+    GL_GREEN_SIZE,
+    GL_BLUE_SIZE,
+    GL_ALPHA_SIZE,
+    GL_BUFFER_SIZE,
+    GL_DOUBLEBUFFER,
+    GL_DEPTH_SIZE,
+    GL_STENCIL_SIZE,
+    GL_ACCUM_RED_SIZE,
+    GL_ACCUM_GREEN_SIZE,
+    GL_ACCUM_BLUE_SIZE,
+    GL_ACCUM_ALPHA_SIZE,
+    GL_STEREO,
+    GL_MULTISAMPLEBUFFERS,
+    GL_MULTISAMPLESAMPLES,
+    GL_ACCELERATED_VISUAL,
+    GL_RETAINED_BACKING,
+    GL_CONTEXT_MAJOR_VERSION,
+    GL_CONTEXT_MINOR_VERSION,
+    GL_CONTEXT_EGL,
+    GL_CONTEXT_FLAGS,
+    GL_CONTEXT_PROFILE_MASK,
+    GL_SHARE_WITH_CURRENT_CONTEXT,
+    GL_FRAMEBUFFER_SRGB_CAPABLE,
+    GL_CONTEXT_RELEASE_BEHAVIOR,
+    GL_CONTEXT_RESET_NOTIFICATION,
+    GL_CONTEXT_NO_ERROR,
+    GL_FLOATBUFFERS
+}
+
+def GLProfile = distinct int;
+const GLProfile GL_CONTEXT_PROFILE_CORE = 1;
+const GLProfile GL_CONTEXT_PROFILE_COMPATIBILITY = 2;
+const GLProfile GL_CONTEXT_PROFILE_ES = 4;
+
+
+def GLContextFlag = distinct int;
+const GLContextFlag GL_CONTEXT_DEBUG_FLAG = 1;
+const GLContextFlag GL_CONTEXT_FORWARD_COMPATIBLE_FLAG = 2;
+const GLContextFlag GL_CONTEXT_ROBUST_ACCESS_FLAG = 4;
+const GLContextFlag GL_CONTEXT_RESET_ISOLATION_FLAG = 8;
+
+enum GLContextReleaseFlag : int
+{
+    GL_CONTEXT_RELEASE_BEHAVIOR_NONE,
+    GL_CONTEXT_RELEASE_BEHAVIOR_FLUSH
+}
+
+enum GLContextResetNotification : int
+{
+    GL_CONTEXT_RESET_NO_NOTIFICATION,
+    GL_CONTEXT_RESET_LOSE_CONTEXT
+}
+
+enum HitTestResult : int
+{
+  HITTEST_NORMAL,
+  HITTEST_DRAGGABLE,
+  HITTEST_RESIZE_TOPLEFT,
+  HITTEST_RESIZE_TOP,
+  HITTEST_RESIZE_TOPRIGHT,
+  HITTEST_RESIZE_RIGHT,
+  HITTEST_RESIZE_BOTTOMRIGHT,
+  HITTEST_RESIZE_BOTTOM,
+  HITTEST_RESIZE_BOTTOMLEFT,
+  HITTEST_RESIZE_LEFT
+}
+
+// NEED TO IMPLEMENT SDL_HitTest
+
+struct Keysym 
+{
+	Scancode scancode;
+	Keycode sym;
+	ushort mod;
+	uint unused;
+}
+
+def Cursor = void;
+
+enum SystemCursor : int
+{
+    SYSTEM_CURSOR_ARROW,
+    SYSTEM_CURSOR_IBEAM,
+    SYSTEM_CURSOR_WAIT,
+    SYSTEM_CURSOR_CROSSHAIR,
+    SYSTEM_CURSOR_WAITARROW,
+    SYSTEM_CURSOR_SIZENWSE,
+    SYSTEM_CURSOR_SIZENESW,
+    SYSTEM_CURSOR_SIZEWE,
+    SYSTEM_CURSOR_SIZENS,
+    SYSTEM_CURSOR_SIZEALL,
+    SYSTEM_CURSOR_NO,
+    SYSTEM_CURSOR_HAND,
+    NUM_SYSTEM_CURSORS
+}
+
+enum MouseWheelDirection : int
+{
+    MOUSEWHEEL_NORMAL,
+    MOUSEWHEEL_FLIPPED
+}
+
+struct Guid 
+{
+	char[16] data;
+}
+
+def Joystick = void;
+def JoystickGUID = Guid;
+def JoystickID = int;
+
+enum JoystickType : int
+{
+    JOYSTICK_TYPE_UNKNOWN,
+    JOYSTICK_TYPE_GAMECONTROLLER,
+    JOYSTICK_TYPE_WHEEL,
+    JOYSTICK_TYPE_ARCADE_STICK,
+    JOYSTICK_TYPE_FLIGHT_STICK,
+    JOYSTICK_TYPE_DANCE_PAD,
+    JOYSTICK_TYPE_GUITAR,
+    JOYSTICK_TYPE_DRUM_KIT,
+    JOYSTICK_TYPE_ARCADE_PAD,
+    JOYSTICK_TYPE_THROTTLE
+}
+
+enum JoystickPowerLevel : int
+{
+    MOUSEWHEEL_NORMAL,
+    MOUSEWHEEL_FLIPPED
+}
+
+def JoystickPowerLevel = distinct int;
+const Joystickpowerlevel JOYSTICK_POWER_UNKNOWN = -1;
+const Joystickpowerlevel JOYSTICK_POWER_EMPTY = 0;
+const Joystickpowerlevel JOYSTICK_POWER_LOW = 1;
+const Joystickpowerlevel JOYSTICK_POWER_MEDIUM = 2;
+const Joystickpowerlevel JOYSTICK_POWER_FULL = 3;
+const Joystickpowerlevel JOYSTICK_POWER_WIRED = 4;
+const Joystickpowerlevel JOYSTICK_POWER_MAX = 5;
+
+// NEED TO IMPLEMENT SDL_VirtualJoystickDesc
+
+
+fn char* getPlatform() @extern("SDL_GetPlatform");
+fn void* malloc(usz size) @extern("SDL_malloc");
+fn void* calloc(usz nmemb, usz size) @extern("SDL_calloc");
+fn void* realloc(void* mem, usz size) @extern("SDL_realloc");
+fn void* free(void* mem) @extern("SDL_free");
+
+// NEEDS CALLBACK FUNC IMPLEMENTATIONS
+// fn void* getOriginalMemoryfns(malloc_func: *SDL_malloc_func, calloc_func: *SDL_calloc_func, realloc_func: *SDL_realloc_func, free_func: *SDL_free_func) @extern("SDL_GetOriginalMemoryfns");
+// fn void* getMemoryfns(malloc_func: *SDL_malloc_func, calloc_func: *SDL_calloc_func, realloc_func: *SDL_realloc_func, free_func: *SDL_free_func) @extern("SDL_GetMemoryfns");
+// fn int setMemoryfns(malloc_func: SDL_malloc_func, calloc_func: SDL_calloc_func, realloc_func: SDL_realloc_func, free_func: SDL_free_func) @extern("SDL_SetMemoryfns");
+
+fn int getNumAllocations() @extern("SDL_GetNumAllocations");
+fn char* getenv(char* name)  @extern("SDL_getenv");
+fn int setenv(char* name, char* value, int overwrite) @extern("SDL_setenv");
+
+// NEEDS C3 IMPLEMENTATION
+// fn void* qsort(void* base, usz nmemb, usz size, compare: fn(a1: void*, a2: void*): int) @extern("SDL_qsort");
+
+// NEEDS C3 IMPLEMENTATION
+// fn void* bsearch(void* key, void* base, usz nmemb, usz size, compare: fn(a1: void*, a2: void*): int) @extern("SDL_bsearch");
+
+fn int abs(int x) @extern("SDL_abs");
+fn int isalpha(int x) @extern("SDL_isalpha");
+fn int isalnum(int x) @extern("SDL_isalnum");
+fn int isblank(int x) @extern("SDL_isblank");
+fn int iscntrl(int x) @extern("SDL_iscntrl");
+fn int isdigit(int x) @extern("SDL_isdigit");
+fn int isxdigit(int x) @extern("SDL_isxdigit");
+fn int ispunct(int x) @extern("SDL_ispunct");
+fn int isspace(int x) @extern("SDL_isspace");
+fn int isupper(int x) @extern("SDL_isupper");
+fn int islower(int x) @extern("SDL_islower");
+fn int isprint(int x) @extern("SDL_isprint");
+fn int isgraph(int x) @extern("SDL_isgraph");
+fn int toupper(int x) @extern("SDL_toupper");
+fn int tolower(int x) @extern("SDL_tolower");
+fn ushort crc16(ushort crc, void* data, usz len) @extern("SDL_crc16");
+fn uint crc32(uint crc, void* data, usz len) @extern("SDL_crc32");
+fn void* memset(void* dst, int c, usz len) @extern("SDL_memset");
+fn void* memset4(void* dst, uint val, usz dwords) @extern("SDL_memset4");
+fn void* memcpy(void* dst, void* src, usz len) @extern("SDL_memcpy");
+fn void* memmove(void* dst, void* src, usz len) @extern("SDL_memmove");
+fn int memcmp(void* s1, void* s2, usz len) @extern("SDL_memcmp");
+fn usz wcslen(char* wstr) @extern("SDL_wcslen");
+fn usz wcslcpy(char* dst, char* src, usz maxlen) @extern("SDL_wcslcpy");
+fn usz wcslcat(char* dst, char* src, usz maxlen) @extern("SDL_wcslcat");
+fn char* wcsdup(char* wstr) @extern("SDL_wcsdup");
+fn char* wcsstr(char* haystack, char* needle) @extern("SDL_wcsstr");
+fn int wcscmp(char* str1, char* str2) @extern("");
+fn int wcsncmp(char* str1, char* str2, usz maxlen) @extern("SDL_wcsncmp");
+fn int wcscasecmp(char* str1, char* str2) @extern("SDL_wcscasecmp");
+fn int wcsncasecmp(char* str1, char* str2, usz len) @extern("SDL_wcsncasecmp");
+fn usz strlen(char* str) @extern("SDL_strlen");
+fn usz strlcpy(char* dst, char* src, usz maxlen) @extern("SDL_strlcpy");
+fn usz utf8strlcpy(char* dst, char* src, usz dst_bytes) @extern("SDL_utf8strlcpy");
+fn usz strlcat(char* dst, char* src, usz maxlen) @extern("SDL_strlcat");
+fn char* strdup(char* str) @extern("SDL_strdup");
+fn char* strrev(char* str) @extern("SDL_strrev");
+fn char* strupr(char* str) @extern("SDL_strupr");
+fn char* strlwr(char* str) @extern("SDL_strlwr");
+fn char* strchr(char* str, int c) @extern("SDL_strchr");
+fn char* strrchr(char* str, int c) @extern("SDL_strrchr");
+fn char* strstr(char* haystack, char* needle) @extern("SDL_strstr");
+fn char* strcasestr(char* haystack, char* needle) @extern("SDL_strcasestr");
+fn char* strtokr(char* s1, char* s2, char* saveptr) @extern("SDL_strtokr");
+fn usz utf8strlen(char* str) @extern("SDL_utf8strlen");
+fn usz utf8strnlen(char* str, usz bytes) @extern("SDL_utf8strnlen");
+fn char* itoa(int value, char* str, int radix) @extern("SDL_itoa");
+fn char* uitoa(uint value, char* str, int radix) @extern("SDL_uitoa");
+fn char* ltoa(long value, char* str, int radix) @extern("SDL_ltoa");
+fn char* ultoa(ulong value, char* str, int radix) @extern("SDL_ultoa");
+fn char* lltoa(long value, char* str, int radix) @extern("SDL_lltoa");
+fn char* ulltoa(ulong value, char* str, int radix) @extern("SDL_ulltoa");
+fn int atoi(char* str) @extern("SDL_atoi");
+fn double atof(char* str) @extern("SDL_atof");
+fn long strtol(char* str, char** endp, int base) @extern("SDL_strtol");
+fn ulong strtoul(char* str, char** endp, int base) @extern("SDL_strtoul");
+fn long strtoll(char* str, char** endp, int base) @extern("SDL_strtoll");
+fn ulong strtoull(char* str, char** endp, int base) @extern("SDL_strtoull");
+fn double strtod(char* str, char** endp) @extern("SDL_strtod");
+fn int strcmp(char* str1, char* str2) @extern("SDL_strcmp");
+fn int strncmp(char* str1, char* str2, usz maxlen) @extern("SDL_strncmp");
+fn int strcasecmp(char* str1, char* str2) @extern("SDL_strcasecmp");
+fn int strncasecmp(char* str1, char* str2, usz len) @extern("SDL_strncasecmp");
+
+// NEEDS C3 IMPLEMENTATION
+// fn int sscanf(char* text, char* fmt, ...) @extern("SDL_sscanf");
+// fn int vsscanf(char* text, char* fmt, cvalist ap) @extern("SDL_vsscanf");
+// fn int snprintf(char* text, usz maxlen, char* fmt, ...) @extern("SDL_snprintf");
+// fn int vsnprintf(char* text, usz maxlen, char* fmt, cvalist ap) @extern("SDL_vsnprintf");
+// fn int asprintf(char** strp, char* fmt, ...) @extern("SDL_asprintf");
+// fn int vasprintf(char** strp, char* fmt, cvalist ap) @extern("SDL_vasprintf");
+
+fn double acos(double x) @extern("SDL_acos");
+fn float acosf(float x) @extern("SDL_acosf");
+fn double asin(double x) @extern("SDL_asin");
+fn float asinf(float x) @extern("SDL_asinf");
+fn double atan(double x) @extern("SDL_atan");
+fn float atanf(float x) @extern("SDL_atanf");
+fn double atan2(double y, double x) @extern("SDL_atan2");
+fn float atan2f(float y, float x) @extern("SDL_atan2f");
+fn double ceil(double x) @extern("SDL_ceil");
+fn float ceilf(float x) @extern("SDL_ceilf");
+fn double copysign(double x, double y) @extern("SDL_copysign");
+fn float copysignf(float x, float y) @extern("SDL_copysignf");
+fn double cos(double x) @extern("SDL_cos");
+fn float cosf(float x) @extern("SDL_cosf");
+fn double exp(double x) @extern("SDL_exp");
+fn float expf(float x) @extern("SDL_expf");
+fn double fabs(double x) @extern("SDL_fabs");
+fn float fabsf(float x) @extern("SDL_fabsf");
+fn double floor(double x) @extern("SDL_floor");
+fn float floorf(float x) @extern("SDL_floorf");
+fn double trunc(double x) @extern("SDL_trunc");
+fn float truncf(float x) @extern("SDL_truncf");
+fn double fmod(double x, double y) @extern("SDL_fmod");
+fn float fmodf(float x, float y) @extern("SDL_fmodf");
+fn double log(double x) @extern("SDL_log");
+fn float logf(float x) @extern("SDL_logf");
+fn double log10(double x) @extern("SDL_log10");
+fn float log10f(float x) @extern("SDL_log10f");
+fn double pow(double x, double y) @extern("SDL_pow");
+fn float powf(float x, float y) @extern("SDL_powf");
+fn double round(double x) @extern("SDL_round");
+fn float roundf(float x) @extern("SDL_roundf");
+fn long lround(double x) @extern("SDL_lround");
+fn long lroundf(float x) @extern("SDL_lroundf");
+fn double scalbn(double x, int n) @extern("SDL_scalbn");
+fn float scalbnf(float x, int n) @extern("SDL_scalbnf");
+fn double sin(double x) @extern("SDL_sin");
+fn float sinf(float x) @extern("SDL_sinf");
+fn double sqrt(double x) @extern("SDL_sqrt");
+fn float sqrtf(float x) @extern("SDL_sqrtf");
+fn double tan(double x) @extern("SDL_tan");
+fn float tanf(float x) @extern("SDL_tanf");
+fn SDL_iconv_t iconvOpen(char* tocode, char* fromcode) @extern("SDL_iconv_open");
+fn int iconvClose(SDL_iconv_t cd) @extern("SDL_iconv_close");
+fn usz iconV(SDL_iconv_t cd, char** inbuf, usz inbytesleft, char* outbuf, usz* outbytesleft) @extern("SDL_iconv");
+fn char* iconvString(char* tocode, char* fromcode, char* inbuf, usz inbytesleft) @extern("SDL_iconv_string");
+fn void* memcpy4(void* dst, void* src, usz dwords) @extern("SDL_memcpy4");
+fn int sizeMulOverflow(usz a, usz b, usz* ret) @extern("SDL_size_mul_overflow");
+fn int sizeAddOverflow(usz a, usz b, usz* ret) @extern("SDL_size_add_overflow");
+fn int cMain(int argc, char argv) @extern("SDL_main");
+fn void* setMainReady() @extern("SDL_SetMainReady");
+fn AssertState reportAssertion(AssertData a1, char a2, char* a3, int a4) @extern("SDL_ReportAssertion");
+fn void* setAssertionHandler(SDL_AssertionHandler handler, void* userdata) @extern("SDL_SetAssertionHandler");
+fn SDL_AssertionHandler getDefaultAssertionHandler() @extern("SDL_GetDefaultAssertionHandler");
+fn SDL_AssertionHandler getAssertionHandler(void puserdata) @extern("SDL_GetAssertionHandler");
+fn AssertData* getAssertionReport() @extern("SDL_GetAssertionReport");
+fn void* resetAssertionReport() @extern("SDL_ResetAssertionReport");
+fn bool atomicTryLock(SpinLock* lock) @extern("SDL_AtomicTryLock");
+fn void* atomicLock(SpinLock* lock) @extern("SDL_AtomicLock");
+fn void* atomicUnlock(SpinLock* lock) @extern("SDL_AtomicUnlock");
+fn void* memoryBarrierReleasefn() @extern("SDL_MemoryBarrierReleasefn");
+fn void* memoryBarrierAcquirefn() @extern("SDL_MemoryBarrierAcquirefn");
+fn bool atomicCAS(AtomicT* a, int oldval, int newval) @extern("SDL_AtomicCAS");
+fn int atomicSet(AtomicT* a, int v) @extern("SDL_AtomicSet");
+fn int atomicGet(AtomicT* a) @extern("SDL_AtomicGet");
+fn int atomicAdd(AtomicT* a, int v) @extern("SDL_AtomicAdd");
+fn bool atomicCASPtr(void a, void* oldval, void* newval) @extern("SDL_AtomicCASPtr");
+fn void* atomicSetPtr(void a, void* v) @extern("SDL_AtomicSetPtr");
+fn void* atomicGetPtr(void a) @extern("SDL_AtomicGetPtr");
+fn int setError(char* fmt, ...) @extern("SDL_SetError");
+fn char* getError() @extern("SDL_GetError");
+fn char* getErrorMsg(char* errstr, int maxlen) @extern("SDL_GetErrorMsg");
+fn void* clearError() @extern("SDL_ClearError");
+fn int error(ErrorCode code) @extern("SDL_Error");
+fn float swapFloat(float x) @extern("SDL_SwapFloat");
+fn Mutex* createMutex() @extern("SDL_CreateMutex");
+fn int lockMutex(Mutex* mutex) @extern("SDL_LockMutex");
+fn int tryLockMutex(Mutex* mutex) @extern("SDL_TryLockMutex");
+fn int unlockMutex(Mutex* mutex) @extern("SDL_UnlockMutex");
+fn void* destroyMutex(Mutex* mutex) @extern("SDL_DestroyMutex");
+fn Sem* createSemaphore(uint initial_value) @extern("SDL_CreateSemaphore");
+fn void* destroySemaphore(Sem* sem) @extern("SDL_DestroySemaphore");
+fn int smWait(Sem* sem) @extern("SDL_SemWait");
+fn int smTryWait(Sem* sem) @extern("SDL_SemTryWait");
+fn int smWaitTimeout(Sem* sem, uint timeout) @extern("SDL_SemWaitTimeout");
+fn int smPost(Sem* sem) @extern("SDL_SemPost");
+fn uint semValue(Sem* sem) @extern("SDL_SemValue");
+fn SDL_cond* createCond() @extern("SDL_CreateCond");
+fn void* destroyCond(SDL_cond* cond) @extern("SDL_DestroyCond");
+fn int condSignal(SDL_cond* cond) @extern("SDL_CondSignal");
+fn int condBroadcast(SDL_cond* cond) @extern("SDL_CondBroadcast");
+fn int condWait(SDL_cond* cond, Mutex* mutex) @extern("SDL_CondWait");
+fn int condWaitTimeout(SDL_cond* cond, Mutex* mutex, uint ms) @extern("SDL_CondWaitTimeout");
+
+// NEED TO IMPLEMENT THIS IN C3
+// fn Thread createThread(Threadfn fn, char name, void* data) @extern("SDL_CreateThread");
+
+// NEED TO IMPLEMENT THIS IN C3
+// fn Thread createThreadWithStackSize(Threadfn fn, char name, usz stacksize, void* data) @extern("SDL_CreateThreadWithStackSize");
+
+fn char* getThreadName(Thread* thread) @extern("SDL_GetThreadName");
+fn ThreadID threadID() @extern("SDL_ThreadID");
+fn ThreadID getThreadID(Thread* thread) @extern("SDL_GetThreadID");
+fn int setThreadPriority(ThreadPriority priority) @extern("SDL_SetThreadPriority");
+fn void* waitThread(Thread* thread, int* status) @extern("SDL_WaitThread");
+fn void* detachThread(Thread* thread) @extern("SDL_DetachThread");
+fn TlSID tlsCreate() @extern("SDL_TLSCreate");
+fn void* tlsGet(TlSID id) @extern("SDL_TLSGet");
+
+// NEEDS IMPLEMENTATION IN C3
+// fn int tlsSet(TlSID id, void* value, fn(void*) destructor) @extern("SDL_TLSSet");
+
+fn void* tlsCleanup() @extern("SDL_TLSCleanup");
+fn RWops rwFromFile(char file, char* mode) @extern("SDL_RWFromFile");
+
+// NEED TO LOOK INTO THIS ONE...
+// fn RWops* rwFromFP(FILE* fp, bool autoclose) @extern("SDL_RWFromFP");
+
+fn RWops rwFromMem(void mem, int size) @extern("SDL_RWFromMem");
+fn RWops rwFromConstMem(void mem, int size) @extern("SDL_RWFromConstMem");
+fn RWops* allocRW() @extern("SDL_AllocRW");
+fn void* freeRW(RWops* area) @extern("SDL_FreeRW");
+fn long rwSize(RWops* context) @extern("SDL_RWsize");
+fn long rwSeek(RWops* context, long offset, int whence) @extern("SDL_RWseek");
+fn long rwTell(RWops* context) @extern("SDL_RWtell");
+fn usz rwRead(RWops context, void ptr, usz size, usz maxnum) @extern("SDL_RWread");
+fn usz rwWrite(RWops context, void ptr, usz size, usz num) @extern("SDL_RWwrite");
+fn int rwClose(RWops* context) @extern("SDL_RWclose");
+fn void* loadFile_RW(RWops* src, usz* datasize, int freesrc) @extern("SDL_LoadFile_RW");
+fn void* loadFile(char* file, usz* datasize) @extern("SDL_LoadFile");
+fn char readU8(RWops* src) @extern("SDL_ReadU8");
+fn ushort readLE16(RWops* src) @extern("SDL_ReadLE16");
+fn ushort readBE16(RWops* src) @extern("SDL_ReadBE16");
+fn uint readLE32(RWops* src) @extern("SDL_ReadLE32");
+fn uint readBE32(RWops* src) @extern("SDL_ReadBE32");
+fn ulong readLE64(RWops* src) @extern("SDL_ReadLE64");
+fn ulong readBE64(RWops* src) @extern("SDL_ReadBE64");
+fn usz writeU8(RWops* dst, char value) @extern("SDL_WriteU8");
+fn usz writeLE16(RWops* dst, ushort value) @extern("SDL_WriteLE16");
+fn usz writeBE16(RWops* dst, ushort value) @extern("SDL_WriteBE16");
+fn usz writeLE32(RWops* dst, uint value) @extern("SDL_WriteLE32");
+fn usz writeBE32(RWops* dst, uint value) @extern("SDL_WriteBE32");
+fn usz writeLE64(RWops* dst, ulong value) @extern("SDL_WriteLE64");
+fn usz writeBE64(RWops* dst, ulong value) @extern("SDL_WriteBE64");
+fn int getNumAudioDrivers() @extern("SDL_GetNumAudioDrivers");
+fn char* getAudioDriver(int index) @extern("SDL_GetAudioDriver");
+fn int audioInit(char* driver_name) @extern("SDL_AudioInit");
+fn void* audioQuit() @extern("SDL_AudioQuit");
+fn char* getCurrentAudioDriver() @extern("SDL_GetCurrentAudioDriver");
+fn int openAudio(AudioSpec* desired, AudioSpec* obtained) @extern("SDL_OpenAudio");
+fn int getNumAudioDevices(int iscapture) @extern("SDL_GetNumAudioDevices");
+fn char* getAudioDeviceName(int index, int iscapture) @extern("SDL_GetAudioDeviceName");
+fn int getAudioDeviceSpec(int index, int iscapture, AudioSpec* spec) @extern("SDL_GetAudioDeviceSpec");
+fn int getDefaultAudioInfo(char* name, AudioSpec* spec, int iscapture) @extern("SDL_GetDefaultAudioInfo");
+fn AudioDeviceID openAudioDevice(char* device, int iscapture, AudioSpec* desired, AudioSpec* obtained, int allowed_changes) @extern("SDL_OpenAudioDevice");
+fn AudioStatus getAudioStatus() @extern("SDL_GetAudioStatus");
+fn AudioStatus getAudioDeviceStatus(AudioDeviceID dev) @extern("SDL_GetAudioDeviceStatus");
+fn void* pauseAudio(int pause_on) @extern("SDL_PauseAudio");
+fn void* pauseAudioDevice(AudioDeviceID dev, int pause_on) @extern("SDL_PauseAudioDevice");
+fn AudioSpec* loadWAV_RW(RWops* src, int freesrc, AudioSpec* spec, char** audio_buf, char* audio_len) @extern("SDL_LoadWAV_RW");
+fn void* freeWAV(char* audio_buf) @extern("SDL_FreeWAV");
+fn int buildAudioCVT(AudioCVT* cvt, AudioFormat src_format, char src_channels, int src_rate, AudioFormat dst_format, char dst_channels, int dst_rate) @extern("SDL_BuildAudioCVT");
+fn int convertAudio(AudioCVT* cvt) @extern("SDL_ConvertAudio");
+fn AudioStream* newAudioStream(AudioFormat src_format, char src_channels, int src_rate, AudioFormat dst_format, char dst_channels, int dst_rate) @extern("SDL_NewAudioStream");
+fn int audioStreamPut(AudioStream stream, void buf, int len) @extern("SDL_AudioStreamPut");
+fn int audioStreamGet(AudioStream stream, void buf, int len) @extern("SDL_AudioStreamGet");
+fn int audioStreamAvailable(AudioStream* stream) @extern("SDL_AudioStreamAvailable");
+fn int audioStreamFlush(AudioStream* stream) @extern("SDL_AudioStreamFlush");
+fn void* audioStreamClear(AudioStream* stream) @extern("SDL_AudioStreamClear");
+fn void* freeAudioStream(AudioStream* stream) @extern("SDL_FreeAudioStream");
+fn void* mixAudio(char* dst, char* src, uint len, int volume) @extern("SDL_MixAudio");
+fn void* mixAudioFormat(char* dst, char* src, AudioFormat format, uint len, int volume) @extern("SDL_MixAudioFormat");
+fn int queueAudio(AudioDeviceID dev, void* data, uint len) @extern("SDL_QueueAudio");
+fn uint dequeueAudio(AudioDeviceID dev, void* data, uint len) @extern("SDL_DequeueAudio");
+fn uint getQueuedAudioSize(AudioDeviceID dev) @extern("SDL_GetQueuedAudioSize");
+fn void* clearQueuedAudio(AudioDeviceID dev) @extern("SDL_ClearQueuedAudio");
+fn void* lockAudio() @extern("SDL_LockAudio");
+fn void* lockAudioDevice(AudioDeviceID dev) @extern("SDL_LockAudioDevice");
+fn void* unlockAudio() @extern("SDL_UnlockAudio");
+fn void* unlockAudioDevice(AudioDeviceID dev) @extern("SDL_UnlockAudioDevice");
+fn void* closeAudio() @extern("SDL_CloseAudio");
+fn void* closeAudioDevice(AudioDeviceID dev) @extern("SDL_CloseAudioDevice");
+fn int setClipboardText(char* text) @extern("SDL_SetClipboardText");
+fn char* getClipboardText() @extern("SDL_GetClipboardText");
+fn bool hasClipboardText() @extern("SDL_HasClipboardText");
+fn int setPrimarySelectionText(char* text) @extern("SDL_SetPrimarySelectionText");
+fn char* getPrimarySelectionText() @extern("SDL_GetPrimarySelectionText");
+fn bool hasPrimarySelectionText() @extern("SDL_HasPrimarySelectionText");
+fn int getCPUCount() @extern("SDL_GetCPUCount");
+fn int getCPUCacheLineSize() @extern("SDL_GetCPUCacheLineSize");
+fn bool hasRDTSC() @extern("SDL_HasRDTSC");
+fn bool hasAltiVec() @extern("SDL_HasAltiVec");
+fn bool hasMMX() @extern("SDL_HasMMX");
+fn bool has3DNow() @extern("SDL_Has3DNow");
+fn bool hasSSE() @extern("SDL_HasSSE");
+fn bool hasSSE2() @extern("SDL_HasSSE2");
+fn bool hasSSE3() @extern("SDL_HasSSE3");
+fn bool hasSSE41() @extern("SDL_HasSSE41");
+fn bool hasSSE42() @extern("SDL_HasSSE42");
+fn bool hasAVX() @extern("SDL_HasAVX");
+fn bool hasAx2() @extern("SDL_HasAx2");
+fn bool hasAVX512F() @extern("SDL_HasAVX512F");
+fn bool hasARMSIMD() @extern("SDL_HasARMSIMD");
+fn bool hasNEON() @extern("SDL_HasNEON");
+fn bool hasLSX() @extern("SDL_HasLSX");
+fn bool hasLASX() @extern("SDL_HasLASX");
+fn int getSystemRAM() @extern("SDL_GetSystemRAM");
+fn usz simdGetAlignment() @extern("SDL_SIMDGetAlignment");
+fn void* simdAlloc(usz len) @extern("SDL_SIMDAlloc");
+fn void* simdRealloc(void* mem, usz len) @extern("SDL_SIMDRealloc");
+fn void* simdFree(void* ptr) @extern("SDL_SIMDFree");
+fn char* getPixelFormatName(uint format) @extern("SDL_GetPixelFormatName");
+fn bool pixelFormatEnumToMasks(uint format, int* bpp, uint* rmask, uint* gmask, uint* bmask, uint* amask) @extern("SDL_PixelFormatEnumToMasks");
+fn uint masksToPixelFormatEnum(int bpp, uint rmask, uint gmask, uint bmask, uint amask) @extern("SDL_MasksToPixelFormatEnum");
+fn PixelFormat* allocFormat(uint pixelFormat) @extern("SDL_AllocFormat");
+fn void* freeFormat(PixelFormat* format) @extern("SDL_FreeFormat");
+fn Palette* allocPalette(int ncolors) @extern("SDL_AllocPalette");
+fn int setPixelFormatPalette(PixelFormat* format, Palette* palette) @extern("SDL_SetPixelFormatPalette");
+fn int setPaletteColors(Palette* palette, Color* colors, int firstcolor, int ncolors) @extern("SDL_SetPaletteColors");
+fn void* freePalette(Palette* palette) @extern("SDL_FreePalette");
+fn uint mapRGB(PixelFormat* format, char r, char g, char b) @extern("SDL_MapRGB");
+fn uint mapRGBA(PixelFormat* format, char r, char g, char b, char a) @extern("SDL_MapRGBA");
+fn void* getRGB(uint pixel, PixelFormat* format, char* r, char* g, char* b) @extern("SDL_GetRGB");
+fn void* getRGBA(uint pixel, PixelFormat* format, char* r, char* g, char* b, char* a) @extern("SDL_GetRGBA");
+fn void* calculateGammaRamp(float gamma, ushort* ramp) @extern("SDL_CalculateGammaRamp");
+fn bool pointInRect(Point* p, Rect* r) @extern("SDL_PointInRect");
+fn bool rectEmpty(Rect* r) @extern("SDL_RectEmpty");
+fn bool rectEquals(Rect* a, Rect* b) @extern("SDL_RectEquals");
+fn bool hasIntersection(Rect* a, Rect* b) @extern("SDL_HasIntersection");
+fn bool intersectRect(Rect* a, Rect* b, Rect* result) @extern("SDL_IntersectRect");
+fn void* unionRect(Rect* a, Rect* b, Rect* result) @extern("SDL_UnionRect");
+fn bool enclosePoints(Point* points, int count, Rect* clip, Rect* result) @extern("SDL_EnclosePoints");
+fn bool intersectRectAndLine(Rect* rect, int* x1, int* y1, int* x2, int* y2) @extern("SDL_IntersectRectAndLine");
+fn bool pointInFRect(FPoint* p, FRect* r) @extern("SDL_PointInFRect");
+fn bool fRectEmpty(FRect* r) @extern("FRectEmpty");
+fn bool fRectEqualsEpsilon(FRect* a, FRect* b, float epsilon) @extern("FRectEqualsEpsilon");
+fn bool fRectEquals(FRect* a, FRect* b) @extern("FRectEquals");
+fn bool hasIntersectionF(FRect* a, FRect* b) @extern("SDL_HasIntersectionF");
+fn bool intersectFRect(FRect* a, FRect* b, FRect* result) @extern("SDL_IntersectFRect");
+fn void* unionFRect(FRect* a, FRect* b, FRect* result) @extern("SDL_UnionFRect");
+fn bool encloseFPoints(FPoint* points, int count, FRect* clip, FRect* result) @extern("SDL_EncloseFPoints");
+fn bool intersectFRectAndLine(FRect* rect, float* x1, float* y1, float* x2, float* y2) @extern("SDL_IntersectFRectAndLine");
+fn BlendMode composeCustomBlendMode(BlendFactor srcColorFactor, BlendFactor dstColorFactor, BlendOperation colorOperation, BlendFactor srcAlphaFactor, BlendFactor dstAlphaFactor, BlendOperation alphaOperation) @extern("SDL_ComposeCustomBlendMode");
+fn Surface* createRGBSurface(uint flags, int width, int height, int depth, uint rmask, uint gmask, uint bmask, uint amask) @extern("SDL_CreateRGBSurface");
+fn Surface* createRGBSurfaceWithFormat(uint flags, int width, int height, int depth, uint format) @extern("SDL_CreateRGBSurfaceWithFormat");
+fn Surface createRGBSurfaceFrom(void pixels, int width, int height, int depth, int pitch, uint rmask, uint gmask, uint bmask, uint amask) @extern("SDL_CreateRGBSurfaceFrom");
+fn Surface createRGBSurfaceWithFormatFrom(void pixels, int width, int height, int depth, int pitch, uint format) @extern("SDL_CreateRGBSurfaceWithFormatFrom");
+fn void* freeSurface(Surface* surface) @extern("SDL_FreeSurface");
+fn int setSurfacePalette(Surface* surface, Palette* palette) @extern("SDL_SetSurfacePalette");
+fn int lockSurface(Surface* surface) @extern("SDL_LockSurface");
+fn void* unlockSurface(Surface* surface) @extern("SDL_UnlockSurface");
+fn Surface* loadBMP_RW(RWops* src, int freesrc) @extern("SDL_LoadBMP_RW");
+fn int saveBMP_RW(Surface* surface, RWops* dst, int freedst) @extern("SDL_SaveBMP_RW");
+fn int setSurfaceRLE(Surface* surface, int flag) @extern("SDL_SetSurfaceRLE");
+fn bool hasSurfaceRLE(Surface* surface) @extern("SDL_HasSurfaceRLE");
+fn int setColorKey(Surface* surface, int flag, uint key) @extern("SDL_SetColorKey");
+fn bool hasColorKey(Surface* surface) @extern("SDL_HasColorKey");
+fn int getColorKey(Surface* surface, uint* key) @extern("SDL_GetColorKey");
+fn int setSurfaceColorMod(Surface* surface, char r, char g, char b) @extern("SDL_SetSurfaceColorMod");
+fn int getSurfaceColorMod(Surface* surface, char* r, char* g, char* b) @extern("SDL_GetSurfaceColorMod");
+fn int setSurfaceAlphaMod(Surface* surface, char alpha) @extern("SDL_SetSurfaceAlphaMod");
+fn int getSurfaceAlphaMod(Surface* surface, char* alpha) @extern("SDL_GetSurfaceAlphaMod");
+fn int setSurfaceBlendMode(Surface* surface, BlendMode blendMode) @extern("SDL_SetSurfaceBlendMode");
+fn int getSurfaceBlendMode(Surface* surface, BlendMode* blendMode) @extern("SDL_GetSurfaceBlendMode");
+fn bool setClipRect(Surface* surface, Rect* rect) @extern("SDL_SetClipRect");
+fn void* getClipRect(Surface* surface, Rect* rect) @extern("SDL_GetClipRect");
+fn Surface* duplicateSurface(Surface* surface) @extern("SDL_DuplicateSurface");
+fn Surface* convertSurface(Surface* src, PixelFormat* fmt, uint flags) @extern("SDL_ConvertSurface");
+fn Surface* convertSurfaceFormat(Surface* src, uint pixelFormat, uint flags) @extern("SDL_ConvertSurfaceFormat");
+fn int convertPixels(int width, int height, uint src_format, void* src, int src_pitch, uint dst_format, void* dst, int dst_pitch) @extern("SDL_ConvertPixels");
+fn int premultiplyAlpha(int width, int height, uint src_format, void* src, int src_pitch, uint dst_format, void* dst, int dst_pitch) @extern("SDL_PremultiplyAlpha");
+fn int fillRect(Surface* dst, Rect* rect, uint color) @extern("SDL_FillRect");
+fn int fillRects(Surface* dst, Rect* rects, int count, uint color) @extern("SDL_FillRects");
+fn int upperBlit(Surface* src, Rect* srcrect, Surface* dst, Rect* dstrect) @extern("SDL_UpperBlit");
+fn int lowerBlit(Surface* src, Rect* srcrect, Surface* dst, Rect* dstrect) @extern("SDL_LowerBlit");
+fn int softStretch(Surface* src, Rect* srcrect, Surface* dst, Rect* dstrect) @extern("SDL_SoftStretch");
+fn int softStretchLinear(Surface* src, Rect* srcrect, Surface* dst, Rect* dstrect) @extern("SDL_SoftStretchLinear");
+fn int upperBlitScaled(Surface* src, Rect* srcrect, Surface* dst, Rect* dstrect) @extern("SDL_UpperBlitScaled");
+fn int lowerBlitScaled(Surface* src, Rect* srcrect, Surface* dst, Rect* dstrect) @extern("SDL_LowerBlitScaled");
+
+// NEED TO RENAME AND CREATYE ENUM/STRUCT
+// fn void* setYUVConversionMode(YUVConversionMode mode) @extern("SDL_SetYUVConversionMode");
+// fn SDL_YUV_CONVERSION_MODE getYUVConversionMode() @extern("SDL_GetYUVConversionMode");
+// fn SDL_YUV_CONVERSION_MODE getYUVConversionModeForResolution(int width, int height) @extern("SDL_GetYUVConversionModeForResolution");
+
+fn int getNumVideoDrivers() @extern("SDL_GetNumVideoDrivers");
+fn char* getVideoDriver(int index) @extern("SDL_GetVideoDriver");
+fn int videoInit(char* driver_name) @extern("SDL_VideoInit");
+fn void* videoQuit() @extern("SDL_VideoQuit");
+fn char* getCurrentVideoDriver() @extern("SDL_GetCurrentVideoDriver");
+fn int getNumVideoDisplays() @extern("SDL_GetNumVideoDisplays");
+fn char* getDisplayName(int displayIndex) @extern("SDL_GetDisplayName");
+fn int getDisplayBounds(int displayIndex, Rect* rect) @extern("SDL_GetDisplayBounds");
+fn int getDisplayUsableBounds(int displayIndex, Rect* rect) @extern("SDL_GetDisplayUsableBounds");
+fn int getDisplayDPI(int displayIndex, float* ddpi, float* hdpi, float* vdpi) @extern("SDL_GetDisplayDPI");
+fn DisplayOrientation getDisplayOrientation(int displayIndex) @extern("SDL_GetDisplayOrientation");
+fn int getNumDisplayModes(int displayIndex) @extern("SDL_GetNumDisplayModes");
+fn int getDisplayMode(int displayIndex, int modeIndex, DisplayMode* mode) @extern("SDL_GetDisplayMode");
+fn int getDesktopDisplayMode(int displayIndex, DisplayMode* mode) @extern("SDL_GetDesktopDisplayMode");
+fn int getCurrentDisplayMode(int displayIndex, DisplayMode* mode) @extern("SDL_GetCurrentDisplayMode");
+fn DisplayMode* getClosestDisplayMode(int displayIndex, DisplayMode* mode, DisplayMode* closest) @extern("SDL_GetClosestDisplayMode");
+fn int getPointDisplayIndex(Point* point) @extern("SDL_GetPointDisplayIndex");
+fn int getRectDisplayIndex(Rect* rect) @extern("SDL_GetRectDisplayIndex");
+fn int getWindowDisplayIndex(Window* window) @extern("SDL_GetWindowDisplayIndex");
+fn int setWindowDisplayMode(Window* window, DisplayMode* mode) @extern("SDL_SetWindowDisplayMode");
+fn int getWindowDisplayMode(Window* window, DisplayMode* mode) @extern("SDL_GetWindowDisplayMode");
+fn void getWindowICCProfile(Window* window, usz size) @extern("SDL_GetWindowICCProfile");
+fn uint getWindowPixelFormat(Window* window) @extern("SDL_GetWindowPixelFormat");
+fn Window* createWindow(char* title, int x, int y, int w, int h, uint flags) @extern("SDL_CreateWindow");
+fn Window* createWindowFrom(void* data) @extern("SDL_CreateWindowFrom");
+fn uint getWindowID(Window* window) @extern("SDL_GetWindowID");
+fn Window* getWindowFromID(uint id) @extern("SDL_GetWindowFromID");
+fn uint getWindowFlags(Window* window) @extern("SDL_GetWindowFlags");
+fn void* setWindowTitle(Window* window, char* title) @extern("SDL_SetWindowTitle");
+fn char* getWindowTitle(Window* window) @extern("SDL_GetWindowTitle");
+fn void* setWindowIcon(Window* window, Surface* icon) @extern("SDL_SetWindowIcon");
+fn void* setWindowData(Window* window, char* name, void* userdata) @extern("SDL_SetWindowData");
+fn void* getWindowData(Window* window, char* name) @extern("SDL_GetWindowData");
+fn void* setWindowPosition(Window* window, int x, int y) @extern("SDL_SetWindowPosition");
+fn void* getWindowPosition(Window* window, int* x, int* y) @extern("SDL_GetWindowPosition");
+fn void* setWindowSize(Window* window, int w, int h) @extern("SDL_SetWindowSize");
+fn void* getWindowSize(Window* window, int* w, int* h) @extern("SDL_GetWindowSize");
+fn int getWindowBordersSize(Window* window, int* top, int* left, int* bottom, int* right) @extern("SDL_GetWindowBordersSize");
+fn void* getWindowSizeInPixels(Window* window, int* w, int* h) @extern("SDL_GetWindowSizeInPixels");
+fn void* setWindowMinimumSize(Window* window, int min_w, int min_h) @extern("SDL_SetWindowMinimumSize");
+fn void* getWindowMinimumSize(Window* window, int* w, int* h) @extern("SDL_GetWindowMinimumSize");
+fn void* setWindowMaximumSize(Window* window, int max_w, int max_h) @extern("SDL_SetWindowMaximumSize");
+fn void* getWindowMaximumSize(Window* window, int* w, int* h) @extern("SDL_GetWindowMaximumSize");
+fn void* setWindowBordered(Window* window, bool bordered) @extern("SDL_SetWindowBordered");
+fn void* setWindowResizable(Window* window, bool resizable) @extern("SDL_SetWindowResizable");
+fn void* setWindowAlwaysOnTop(Window* window, bool on_top) @extern("SDL_SetWindowAlwaysOnTop");
+fn void* showWindow(Window* window) @extern("SDL_ShowWindow");
+fn void* hideWindow(Window* window) @extern("SDL_HideWindow");
+fn void* raiseWindow(Window* window) @extern("SDL_RaiseWindow");
+fn void* maximizeWindow(Window* window) @extern("SDL_MaximizeWindow");
+fn void* minimizeWindow(Window* window) @extern("SDL_MinimizeWindow");
+fn void* restoreWindow(Window* window) @extern("SDL_RestoreWindow");
+fn int setWindowFullscreen(Window* window, uint flags) @extern("SDL_SetWindowFullscreen");
+fn bool hasWindowSurface(Window* window) @extern("SDL_HasWindowSurface");
+fn Surface* getWindowSurface(Window* window) @extern("SDL_GetWindowSurface");
+fn int updateWindowSurface(Window* window) @extern("SDL_UpdateWindowSurface");
+fn int updateWindowSurfaceRects(Window* window, Rect* rects, int numrects) @extern("SDL_UpdateWindowSurfaceRects");
+fn int destroyWindowSurface(Window* window) @extern("SDL_DestroyWindowSurface");
+fn void* setWindowGrab(Window* window, bool grabbed) @extern("SDL_SetWindowGrab");
+fn void* setWindowKeyboardGrab(Window* window, bool grabbed) @extern("SDL_SetWindowKeyboardGrab");
+fn void* setWindowMouseGrab(Window* window, bool grabbed) @extern("SDL_SetWindowMouseGrab");
+fn bool getWindowGrab(Window* window) @extern("SDL_GetWindowGrab");
+fn bool getWindowKeyboardGrab(Window* window) @extern("SDL_GetWindowKeyboardGrab");
+fn bool getWindowMouseGrab(Window* window) @extern("SDL_GetWindowMouseGrab");
+fn Window* getGrabbedWindow() @extern("SDL_GetGrabbedWindow");
+fn int setWindowMouseRect(Window* window, Rect* rect) @extern("SDL_SetWindowMouseRect");
+fn Rect* getWindowMouseRect(Window* window) @extern("SDL_GetWindowMouseRect");
+fn int setWindowBrightness(Window* window, float brightness) @extern("SDL_SetWindowBrightness");
+fn float getWindowBrightness(Window* window) @extern("SDL_GetWindowBrightness");
+fn int setWindowOpacity(Window* window, float opacity) @extern("SDL_SetWindowOpacity");
+fn int getWindowOpacity(Window* window, float* out_opacity) @extern("SDL_GetWindowOpacity");
+fn int setWindowModalFor(Window* modal_window, Window* parent_window) @extern("SDL_SetWindowModalFor");
+fn int setWindowInputFocus(Window* window) @extern("SDL_SetWindowInputFocus");
+fn int setWindowGammaRamp(Window* window, ushort* red, ushort* green, ushort* blue) @extern("SDL_SetWindowGammaRamp");
+fn int getWindowGammaRamp(Window* window, ushort* red, ushort* green, ushort* blue) @extern("SDL_GetWindowGammaRamp");
+
+// Callback function required
+//fn int setWindowHitTest(Window* window, SDL_HitTest callback, void* callback_data) @extern("SDL_SetWindowHitTest");
+
+fn int flashWindow(Window* window, FlashOperation operation) @extern("SDL_FlashWindow");
+fn void* destroyWindow(Window* window) @extern("SDL_DestroyWindow");
+fn bool isScreenSaverEnabled() @extern("SDL_IsScreenSaverEnabled");
+fn void* enableScreenSaver() @extern("SDL_EnableScreenSaver");
+fn void* disableScreenSaver() @extern("SDL_DisableScreenSaver");
+fn int glLoadLibrary(char* path) @extern("SDL_GL_LoadLibrary");
+fn void* glGetProcAddress(char* proc) @extern("SDL_GL_GetProcAddress");
+fn void* glUnloadLibrary() @extern("SDL_GL_UnloadLibrary");
+fn bool glExtensionSupported(char* extension) @extern("SDL_GL_ExtensionSupported");
+fn void* glResetAttributes() @extern("SDL_GL_ResetAttributes");
+fn int glSetAttribute(GLattr attr, int value) @extern("SDL_GL_SetAttribute");
+fn int glGetAttribute(GLattr attr, int* value) @extern("SDL_GL_GetAttribute");
+fn SDL_GLContext glCreateContext(Window* window) @extern("SDL_GL_CreateContext");
+fn int glMakeCurrent(Window* window, SDL_GLContext context) @extern("SDL_GL_MakeCurrent");
+fn Window* glGetCurrentWindow() @extern("SDL_GL_GetCurrentWindow");
+fn SDL_GLContext glGetCurrentContext() @extern("SDL_GL_GetCurrentContext");
+fn void* glGetDrawableSize(Window* window, int* w, int* h) @extern("SDL_GL_GetDrawableSize");
+fn int glSetSwapInterval(int interval) @extern("SDL_GL_SetSwapInterval");
+fn int glGetSwapInterval() @extern("SDL_GL_GetSwapInterval");
+fn void* glSwapWindow(Window* window) @extern("SDL_GL_SwapWindow");
+fn void* glDeleteContext(SDL_GLContext context) @extern("SDL_GL_DeleteContext");
+fn Window* getKeyboardFocus() @extern("SDL_GetKeyboardFocus");
+fn char* getKeyboardState(int* numkeys) @extern("SDL_GetKeyboardState");
+fn void* resetKeyboard() @extern("SDL_ResetKeyboard");
+fn Keymod getModState() @extern("SDL_GetModState");
+fn void* setModState(Keymod modstate) @extern("SDL_SetModState");
+fn Keycode getKeyFromScancode(Scancode scancode) @extern("SDL_GetKeyFromScancode");
+fn Scancode getScancodeFromKey(Keycode key) @extern("SDL_GetScancodeFromKey");
+fn char* getScancodeName(Scancode scancode) @extern("SDL_GetScancodeName");
+fn Scancode getScancodeFromName(char* name) @extern("SDL_GetScancodeFromName");
+fn char* getKeyName(Keycode key) @extern("SDL_GetKeyName");
+fn Keycode getKeyFromName(char* name) @extern("SDL_GetKeyFromName");
+fn void* startTextInput() @extern("SDL_StartTextInput");
+fn bool isTextInputActive() @extern("SDL_IsTextInputActive");
+fn void* stopTextInput() @extern("SDL_StopTextInput");
+fn void* clearComposition() @extern("SDL_ClearComposition");
+fn bool isTextInputShown() @extern("SDL_IsTextInputShown");
+fn void* setTextInputRect(Rect* rect) @extern("SDL_SetTextInputRect");
+fn bool hasScreenKeyboardSupport() @extern("SDL_HasScreenKeyboardSupport");
+fn bool isScreenKeyboardShown(Window* window) @extern("SDL_IsScreenKeyboardShown");
+fn Window* getMouseFocus() @extern("SDL_GetMouseFocus");
+fn uint getMouseState(int* x, int* y) @extern("SDL_GetMouseState");
+fn uint getGlobalMouseState(int* x, int* y) @extern("SDL_GetGlobalMouseState");
+fn uint getRelativeMouseState(int* x, int* y) @extern("SDL_GetRelativeMouseState");
+fn void* warpMouseInWindow(Window* window, int x, int y) @extern("SDL_WarpMouseInWindow");
+fn int warpMouseGlobal(int x, int y) @extern("SDL_WarpMouseGlobal");
+fn int setRelativeMouseMode(bool enabled) @extern("SDL_SetRelativeMouseMode");
+fn int captureMouse(bool enabled) @extern("SDL_CaptureMouse");
+fn bool getRelativeMouseMode() @extern("SDL_GetRelativeMouseMode");
+fn Cursor* createCursor(char* data, char* mask, int w, int h, int hot_x, int hot_y) @extern("SDL_CreateCursor");
+fn Cursor* createColorCursor(Surface* surface, int hot_x, int hot_y) @extern("SDL_CreateColorCursor");
+fn Cursor* createSystemCursor(SystemCursor id) @extern("SDL_CreateSystemCursor");
+fn void* setCursor(Cursor* cursor) @extern("SDL_SetCursor");
+fn Cursor* getCursor() @extern("SDL_GetCursor");
+fn Cursor* getDefaultCursor() @extern("SDL_GetDefaultCursor");
+fn void* freeCursor(Cursor* cursor) @extern("SDL_FreeCursor");
+fn int showCursor(int toggle) @extern("SDL_ShowCursor");
+fn void* guidToString(Guid guid, char* pszGUID, int cbGUID) @extern("SDL_GUIDToString");
+fn Guid guidFromString(char* pchGUID) @extern("SDL_GUIDFromString");
+fn void* lockJoysticks() @extern("SDL_LockJoysticks");
+fn void* unlockJoysticks() @extern("SDL_UnlockJoysticks");
+fn int numJoysticks() @extern("SDL_NumJoysticks");
+fn char* joystickNameForIndex(int device_index) @extern("SDL_JoystickNameForIndex");
+fn char* joystickPathForIndex(int device_index) @extern("SDL_JoystickPathForIndex");
+fn int joystickGetDevicePlayerIndex(int device_index) @extern("SDL_JoystickGetDevicePlayerIndex");
+fn SDL_JoystickGUID joystickGetDeviceGUID(int device_index) @extern("SDL_JoystickGetDeviceGUID");
+fn ushort joystickGetDeviceVendor(int device_index) @extern("SDL_JoystickGetDeviceVendor");
+fn ushort joystickGetDeviceProduct(int device_index) @extern("SDL_JoystickGetDeviceProduct");
+fn ushort joystickGetDeviceProductVersion(int device_index) @extern("SDL_JoystickGetDeviceProductVersion");
+fn SDL_JoystickType joystickGetDeviceType(int device_index) @extern("SDL_JoystickGetDeviceType");
+fn SDL_JoystickID joystickGetDeviceInstanceID(int device_index) @extern("SDL_JoystickGetDeviceInstanceID");
+fn SDL_Joystick* joystickOpen(int device_index) @extern("SDL_JoystickOpen");
+fn SDL_Joystick* joystickFromInstanceID(SDL_JoystickID instance_id) @extern("SDL_JoystickFromInstanceID");
+fn SDL_Joystick* joystickFromPlayerIndex(int player_index) @extern("SDL_JoystickFromPlayerIndex");
+fn int joystickAttachVirtual(SDL_JoystickType type, int naxes, int nbuttons, int nhats) @extern("SDL_JoystickAttachVirtual");
+fn int joystickAttachVirtualEx(SDL_VirtualJoystickDesc* desc) @extern("SDL_JoystickAttachVirtualEx");
+fn int joystickDetachVirtual(int device_index) @extern("SDL_JoystickDetachVirtual");
+fn bool joystickIsVirtual(int device_index) @extern("SDL_JoystickIsVirtual");
+fn int joystickSetVirtualAxis(SDL_Joystick* joystick, int axis, int value) @extern("SDL_JoystickSetVirtualAxis");
+fn int joystickSetVirtualButton(SDL_Joystick* joystick, int button, char value) @extern("SDL_JoystickSetVirtualButton");
+fn int joystickSetVirtualHat(SDL_Joystick* joystick, int hat, char value) @extern("SDL_JoystickSetVirtualHat");
+fn char* joystickName(SDL_Joystick* joystick) @extern("SDL_JoystickName");
+fn char* joystickPath(SDL_Joystick* joystick) @extern("SDL_JoystickPath");
+fn int joystickGetPlayerIndex(SDL_Joystick* joystick) @extern("SDL_JoystickGetPlayerIndex");
+fn void* joystickSetPlayerIndex(SDL_Joystick* joystick, int player_index) @extern("SDL_JoystickSetPlayerIndex");
+fn SDL_JoystickGUID joystickGetGUID(SDL_Joystick* joystick) @extern("SDL_JoystickGetGUID");
+fn ushort joystickGetVendor(SDL_Joystick* joystick) @extern("SDL_JoystickGetVendor");
+fn ushort joystickGetProduct(SDL_Joystick* joystick) @extern("SDL_JoystickGetProduct");
+fn ushort joystickGetProductVersion(SDL_Joystick* joystick) @extern("SDL_JoystickGetProductVersion");
+fn ushort joystickGetFirmwareVersion(SDL_Joystick* joystick) @extern("SDL_JoystickGetFirmwareVersion");
+fn char* joystickGetSerial(SDL_Joystick* joystick) @extern("SDL_JoystickGetSerial");
+fn SDL_JoystickType joystickGetType(SDL_Joystick* joystick) @extern("SDL_JoystickGetType");
+fn void* joystickGetGUIDString(SDL_JoystickGUID guid, char* pszGUID, int cbGUID) @extern("SDL_JoystickGetGUIDString");
+fn SDL_JoystickGUID joystickGetGUIDFromString(char* pchGUID) @extern("SDL_JoystickGetGUIDFromString");
+fn void* getJoystickGUIDInfo(SDL_JoystickGUID guid, ushort* vendor, ushort* product, ushort* version, ushort* crc16) @extern("SDL_GetJoystickGUIDInfo");
+fn bool joystickGetAttached(SDL_Joystick* joystick) @extern("SDL_JoystickGetAttached");
+fn SDL_JoystickID joystickInstanceID(SDL_Joystick* joystick) @extern("SDL_JoystickInstanceID");
+fn int joystickNumAxes(SDL_Joystick* joystick) @extern("SDL_JoystickNumAxes");
+fn int joystickNumBalls(SDL_Joystick* joystick) @extern("SDL_JoystickNumBalls");
+fn int joystickNumHats(SDL_Joystick* joystick) @extern("SDL_JoystickNumHats");
+fn int joystickNumButtons(SDL_Joystick* joystick) @extern("SDL_JoystickNumButtons");
+fn void* joystickUpdate() @extern("SDL_JoystickUpdate");
+fn int joystickEventState(int state) @extern("SDL_JoystickEventState");
+fn int joystickGetAxis(SDL_Joystick* joystick, int axis) @extern("SDL_JoystickGetAxis");
+fn bool joystickGetAxisInitialState(SDL_Joystick* joystick, int axis, int* state) @extern("SDL_JoystickGetAxisInitialState");
+fn char joystickGetHat(SDL_Joystick* joystick, int hat) @extern("SDL_JoystickGetHat");
+fn int joystickGetBall(SDL_Joystick* joystick, int ball, int* dx, int* dy) @extern("SDL_JoystickGetBall");
+fn char joystickGetButton(SDL_Joystick* joystick, int button) @extern("SDL_JoystickGetButton");
+fn int joystickRumble(SDL_Joystick* joystick, uint low_frequency_rumble, ushort high_frequency_rumble, ushort duration_ms) @extern("SDL_JoystickRumble");
+fn int joystickRumbleTriggers(SDL_Joystick* joystick, ushort left_rumble, ushort right_rumble, uint duration_ms) @extern("SDL_JoystickRumbleTriggers");
+fn bool joystickHasLED(SDL_Joystick* joystick) @extern("SDL_JoystickHasLED");
+fn bool joystickHasRumble(SDL_Joystick* joystick) @extern("SDL_JoystickHasRumble");
+fn bool joystickHasRumbleTriggers(SDL_Joystick* joystick) @extern("SDL_JoystickHasRumbleTriggers");
+fn int joystickSetLED(SDL_Joystick* joystick, char red, char green, char blue) @extern("SDL_JoystickSetLED");
+fn int joystickSendEffect(SDL_Joystick* joystick, void* data, int size) @extern("SDL_JoystickSendEffect");
+fn void* joystickClose(SDL_Joystick* joystick) @extern("SDL_JoystickClose");
+fn SDL_JoystickPowerLevel joystickCurrentPowerLevel(SDL_Joystick* joystick) @extern("SDL_JoystickCurrentPowerLevel");
+fn void* lockSensors() @extern("SDL_LockSensors");
+fn void* unlockSensors() @extern("SDL_UnlockSensors");
+fn int numSensors() @extern("SDL_NumSensors");
+fn char* sensorGetDeviceName(int device_index) @extern("SDL_SensorGetDeviceName");
+fn SDL_SensorType sensorGetDeviceType(int device_index) @extern("SDL_SensorGetDeviceType");
+fn int sensorGetDeviceNonPortableType(int device_index) @extern("SDL_SensorGetDeviceNonPortableType");
+fn SDL_SensorID sensorGetDeviceInstanceID(int device_index) @extern("SDL_SensorGetDeviceInstanceID");
+fn SDL_Sensor* sensorOpen(int device_index) @extern("SDL_SensorOpen");
+fn SDL_Sensor* sensorFromInstanceID(SDL_SensorID instance_id) @extern("SDL_SensorFromInstanceID");
+fn char* sensorGetName(SDL_Sensor* sensor) @extern("SDL_SensorGetName");
+fn SDL_SensorType sensorGetType(SDL_Sensor* sensor) @extern("SDL_SensorGetType");
+fn int sensorGetNonPortableType(SDL_Sensor* sensor) @extern("SDL_SensorGetNonPortableType");
+fn SDL_SensorID sensorGetInstanceID(SDL_Sensor* sensor) @extern("SDL_SensorGetInstanceID");
+fn int sensorGetData(SDL_Sensor* sensor, float* data, int num_values) @extern("SDL_SensorGetData");
+fn int sensorGetDataWithTimestamp(SDL_Sensor* sensor, ulong* timestamp, float* data, int num_values) @extern("SDL_SensorGetDataWithTimestamp");
+fn void* sensorClose(SDL_Sensor* sensor) @extern("SDL_SensorClose");
+fn void* sensorUpdate() @extern("SDL_SensorUpdate");
+fn int gameControllerAddMappingsFromRW(RWops* rw, int freerw) @extern("SDL_GameControllerAddMappingsFromRW");
+fn int gameControllerAddMapping(char* mappingString) @extern("SDL_GameControllerAddMapping");
+fn int gameControllerNumMappings() @extern("SDL_GameControllerNumMappings");
+fn char* gameControllerMappingForIndex(int mapping_index) @extern("SDL_GameControllerMappingForIndex");
+fn char* gameControllerMappingForGUID(SDL_JoystickGUID guid) @extern("SDL_GameControllerMappingForGUID");
+fn char* gameControllerMapping(SDL_GameController* gamecontroller) @extern("SDL_GameControllerMapping");
+fn bool isGameController(int joystick_index) @extern("SDL_IsGameController");
+fn char* gameControllerNameForIndex(int joystick_index) @extern("SDL_GameControllerNameForIndex");
+fn char* gameControllerPathForIndex(int joystick_index) @extern("SDL_GameControllerPathForIndex");
+fn SDL_GameControllerType gameControllerTypeForIndex(int joystick_index) @extern("SDL_GameControllerTypeForIndex");
+fn char* gameControllerMappingForDeviceIndex(int joystick_index) @extern("SDL_GameControllerMappingForDeviceIndex");
+fn SDL_GameController* gameControllerOpen(int joystick_index) @extern("SDL_GameControllerOpen");
+fn SDL_GameController* gameControllerFromInstanceID(SDL_JoystickID joyid) @extern("SDL_GameControllerFromInstanceID");
+fn SDL_GameController* gameControllerFromPlayerIndex(int player_index) @extern("SDL_GameControllerFromPlayerIndex");
+fn char* gameControllerName(SDL_GameController* gamecontroller) @extern("SDL_GameControllerName");
+fn char* gameControllerPath(SDL_GameController* gamecontroller) @extern("SDL_GameControllerPath");
+fn SDL_GameControllerType gameControllerGetType(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetType");
+fn int gameControllerGetPlayerIndex(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetPlayerIndex");
+fn void* gameControllerSetPlayerIndex(SDL_GameController* gamecontroller, int player_index) @extern("SDL_GameControllerSetPlayerIndex");
+fn ushort gameControllerGetVendor(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetVendor");
+fn ushort gameControllerGetProduct(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetProduct");
+fn ushort gameControllerGetProductVersion(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetProductVersion");
+fn ushort gameControllerGetFirmwareVersion(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetFirmwareVersion");
+fn char* gameControllerGetSerial(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetSerial");
+fn bool gameControllerGetAttached(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetAttached");
+fn SDL_Joystick* gameControllerGetJoystick(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetJoystick");
+fn int gameControllerEventState(int state) @extern("SDL_GameControllerEventState");
+fn void* gameControllerUpdate() @extern("SDL_GameControllerUpdate");
+fn SDL_GameControllerAxis gameControllerGetAxisFromString(char* str) @extern("SDL_GameControllerGetAxisFromString");
+fn char* gameControllerGetStringForAxis(SDL_GameControllerAxis axis) @extern("SDL_GameControllerGetStringForAxis");
+fn SDL_GameControllerButtonBind gameControllerGetBindForAxis(SDL_GameController* gamecontroller, SDL_GameControllerAxis axis) @extern("SDL_GameControllerGetBindForAxis");
+fn bool gameControllerHasAxis(SDL_GameController* gamecontroller, SDL_GameControllerAxis axis) @extern("SDL_GameControllerHasAxis");
+fn int gameControllerGetAxis(SDL_GameController* gamecontroller, SDL_GameControllerAxis axis) @extern("SDL_GameControllerGetAxis");
+fn SDL_GameControllerButton gameControllerGetButtonFromString(char* str) @extern("SDL_GameControllerGetButtonFromString");
+fn char* gameControllerGetStringForButton(SDL_GameControllerButton button) @extern("SDL_GameControllerGetStringForButton");
+fn SDL_GameControllerButtonBind gameControllerGetBindForButton(SDL_GameController* gamecontroller, SDL_GameControllerButton button) @extern("SDL_GameControllerGetBindForButton");
+fn bool gameControllerHasButton(SDL_GameController* gamecontroller, SDL_GameControllerButton button) @extern("SDL_GameControllerHasButton");
+fn char gameControllerGetButton(SDL_GameController* gamecontroller, SDL_GameControllerButton button) @extern("SDL_GameControllerGetButton");
+fn int gameControllerGetNumTouchpads(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetNumTouchpads");
+fn int gameControllerGetNumTouchpadFingers(SDL_GameController* gamecontroller, int touchpad) @extern("SDL_GameControllerGetNumTouchpadFingers");
+fn int gameControllerGetTouchpadFinger(SDL_GameController* gamecontroller, int touchpad, int finger, char* state, float* x, float* y, float* pressure) @extern("SDL_GameControllerGetTouchpadFinger");
+fn bool gameControllerHasSensor(SDL_GameController* gamecontroller, SDL_SensorType type) @extern("SDL_GameControllerHasSensor");
+fn int gameControllerSetSensorEnabled(SDL_GameController* gamecontroller, SDL_SensorType type, bool enabled) @extern("SDL_GameControllerSetSensorEnabled");
+fn bool gameControllerIsSensorEnabled(SDL_GameController* gamecontroller, SDL_SensorType type) @extern("SDL_GameControllerIsSensorEnabled");
+fn float gameControllerGetSensorDataRate(SDL_GameController* gamecontroller, SDL_SensorType type) @extern("SDL_GameControllerGetSensorDataRate");
+fn int gameControllerGetSensorData(SDL_GameController* gamecontroller, SDL_SensorType type, float* data, int num_values) @extern("SDL_GameControllerGetSensorData");
+fn int gameControllerGetSensorDataWithTimestamp(SDL_GameController* gamecontroller, SDL_SensorType type, ulong* timestamp, float* data, int num_values) @extern("SDL_GameControllerGetSensorDataWithTimestamp");
+fn int gameControllerRumble(SDL_GameController* gamecontroller, ushort low_frequency_rumble, ushort high_frequency_rumble, uint duration_ms) @extern("SDL_GameControllerRumble");
+fn int gameControllerRumbleTriggers(SDL_GameController* gamecontroller, ushort left_rumble, ushort right_rumble, uint duration_ms) @extern("SDL_GameControllerRumbleTriggers");
+fn bool gameControllerHasLED(SDL_GameController* gamecontroller) @extern("SDL_GameControllerHasLED");
+fn bool gameControllerHasRumble(SDL_GameController* gamecontroller) @extern("SDL_GameControllerHasRumble");
+fn bool gameControllerHasRumbleTriggers(SDL_GameController* gamecontroller) @extern("SDL_GameControllerHasRumbleTriggers");
+fn int gameControllerSetLED(SDL_GameController* gamecontroller, char red, char green, char blue) @extern("SDL_GameControllerSetLED");
+fn int gameControllerSendEffect(SDL_GameController* gamecontroller, void* data, int size) @extern("SDL_GameControllerSendEffect");
+fn void* gameControllerClose(SDL_GameController* gamecontroller) @extern("SDL_GameControllerClose");
+fn char* gameControllerGetAppleSFSymbolsNameForButton(SDL_GameController* gamecontroller, SDL_GameControllerButton button) @extern("SDL_GameControllerGetAppleSFSymbolsNameForButton");
+fn char* gameControllerGetAppleSFSymbolsNameForAxis(SDL_GameController* gamecontroller, SDL_GameControllerAxis axis) @extern("SDL_GameControllerGetAppleSFSymbolsNameForAxis");
+fn int getNumTouchDevices() @extern("SDL_GetNumTouchDevices");
+fn SDL_TouchID getTouchDevice(int index) @extern("SDL_GetTouchDevice");
+fn char* getTouchName(int index) @extern("SDL_GetTouchName");
+fn SDL_TouchDeviceType getTouchDeviceType(SDL_TouchID touchID) @extern("SDL_GetTouchDeviceType");
+fn int getNumTouchFingers(SDL_TouchID touchID) @extern("SDL_GetNumTouchFingers");
+fn SDL_Finger* getTouchFinger(SDL_TouchID touchID, int index) @extern("SDL_GetTouchFinger");
+fn int recordGesture(SDL_TouchID touchId) @extern("SDL_RecordGesture");
+fn int saveAllDollarTemplates(RWops* dst) @extern("SDL_SaveAllDollarTemplates");
+fn int saveDollarTemplate(SDL_GestureID gestureId, RWops* dst) @extern("SDL_SaveDollarTemplate");
+fn int loadDollarTemplates(SDL_TouchID touchId, RWops* src) @extern("SDL_LoadDollarTemplates");
+fn void* pumpEvents() @extern("SDL_PumpEvents");
+fn int peepEvents(SDL_Event* events, int numevents, SDL_eventaction action, uint minType, uint maxType) @extern("SDL_PeepEvents");
+fn bool hasEvent(uint type) @extern("SDL_HasEvent");
+fn bool hasEvents(uint minType, uint maxType) @extern("SDL_HasEvents");
+fn void* flushEvent(uint type) @extern("SDL_FlushEvent");
+fn void* flushEvents(uint minType, uint maxType) @extern("SDL_FlushEvents");
+fn int pollEvent(SDL_Event* event) @extern("SDL_PollEvent");
+fn int waitEvent(SDL_Event* event) @extern("SDL_WaitEvent");
+fn int waitEventTimeout(SDL_Event* event, int timeout) @extern("SDL_WaitEventTimeout");
+fn int pushEvent(SDL_Event* event) @extern("SDL_PushEvent");
+fn void* setEventFilter(SDL_EventFilter filter, void* userdata) @extern("SDL_SetEventFilter");
+fn bool getEventFilter(SDL_EventFilter filter, void userdata) @extern("SDL_GetEventFilter");
+fn void* addEventWatch(SDL_EventFilter filter, void* userdata) @extern("SDL_AddEventWatch");
+fn void* delEventWatch(SDL_EventFilter filter, void* userdata) @extern("SDL_DelEventWatch");
+fn void* filterEvents(SDL_EventFilter filter, void* userdata) @extern("SDL_FilterEvents");
+fn char eventState(uint type, int state) @extern("SDL_EventState");
+fn uint registerEvents(int numevents) @extern("SDL_RegisterEvents");
+fn char* getBasePath() @extern("SDL_GetBasePath");
+fn char* getPrefPath(char* org, char* app) @extern("SDL_GetPrefPath");
+fn int numHaptics() @extern("SDL_NumHaptics");
+fn char* hapticName(int device_index) @extern("SDL_HapticName");
+fn SDL_Haptic* hapticOpen(int device_index) @extern("SDL_HapticOpen");
+fn int hapticOpened(int device_index) @extern("SDL_HapticOpened");
+fn int hapticIndex(SDL_Haptic* haptic) @extern("SDL_HapticIndex");
+fn int mouseIsHaptic() @extern("SDL_MouseIsHaptic");
+fn SDL_Haptic* hapticOpenFromMouse() @extern("SDL_HapticOpenFromMouse");
+fn int joystickIsHaptic(SDL_Joystick* joystick) @extern("SDL_JoystickIsHaptic");
+fn SDL_Haptic hapticOpenFromJoystick(SDL_Joystick joystick) @extern("SDL_HapticOpenFromJoystick");
+fn void hapticClose(SDL_Haptic haptic) @extern("SDL_HapticClose");
+fn int hapticNumEffects(SDL_Haptic* haptic) @extern("SDL_HapticNumEffects");
+fn int hapticNumEffectsPlaying(SDL_Haptic* haptic) @extern("SDL_HapticNumEffectsPlaying");
+fn uint hapticQuery(SDL_Haptic* haptic) @extern("SDL_HapticQuery");
+fn int hapticNumAxes(SDL_Haptic* haptic) @extern("SDL_HapticNumAxes");
+fn int hapticEffectSupported(SDL_Haptic* haptic, SDL_HapticEffect* effect) @extern("SDL_HapticEffectSupported");
+fn int hapticNewEffect(SDL_Haptic* haptic, SDL_HapticEffect* effect) @extern("SDL_HapticNewEffect");
+fn int hapticUpdateEffect(SDL_Haptic* haptic, int effect, SDL_HapticEffect* data) @extern("SDL_HapticUpdateEffect");
+fn int hapticRunEffect(SDL_Haptic* haptic, int effect, uint iterations) @extern("SDL_HapticRunEffect");
+fn int hapticStopEffect(SDL_Haptic* haptic, int effect) @extern("SDL_HapticStopEffect");
+fn void hapticDestroyEffect(SDL_Haptic haptic, int effect) @extern("SDL_HapticDestroyEffect");
+fn int hapticGetEffectStatus(SDL_Haptic* haptic, int effect) @extern("SDL_HapticGetEffectStatus");
+fn int hapticSetGain(SDL_Haptic* haptic, int gain) @extern("SDL_HapticSetGain");
+fn int hapticSetAutocenter(SDL_Haptic* haptic, int autocenter) @extern("SDL_HapticSetAutocenter");
+fn int hapticPause(SDL_Haptic* haptic) @extern("SDL_HapticPause");
+fn int hapticUnpause(SDL_Haptic* haptic) @extern("SDL_HapticUnpause");
+fn int hapticStopAll(SDL_Haptic* haptic) @extern("SDL_HapticStopAll");
+fn int hapticRumbleSupported(SDL_Haptic* haptic) @extern("SDL_HapticRumbleSupported");
+fn int hapticRumbleInit(SDL_Haptic* haptic) @extern("SDL_HapticRumbleInit");
+fn int hapticRumblePlay(SDL_Haptic* haptic, float strength, uint length) @extern("SDL_HapticRumblePlay");
+fn int hapticRumbleStop(SDL_Haptic* haptic) @extern("SDL_HapticRumbleStop");
+fn int hidInit() @extern("SDL_hid_init");
+fn int hidExit() @extern("SDL_hid_exit");
+fn uint hidDeviceChangeCount() @extern("SDL_hid_device_change_count");
+fn SDL_hid_device_info* hidEnumerate(ushort vendorID, ushort productID) @extern("SDL_hid_enumerate");
+fn void hidFreeEnumeration(SDL_hid_device_info* devs) @extern("SDL_hid_free_enumeration");
+fn SDL_hid_device* hidOpen(ushort vendorID, ushort productID, char* serialNumber) @extern("SDL_hid_open");
+fn SDL_hid_device* hidOpenPath(char* path, int bExclusive) @extern("SDL_hid_open_path");
+fn int hidWrite(SDL_hid_device* dev, char* data, usz length) @extern("SDL_hid_write");
+fn int hidReadTimeout(SDL_hid_device* dev, char* data, usz length, int milliseconds) @extern("SDL_hid_read_timeout");
+fn int hidRead(SDL_hid_device* dev, char* data, usz length) @extern("SDL_hid_read");
+fn int hidSetNonBlocking(SDL_hid_device* dev, int nonblock) @extern("SDL_hid_set_nonblocking");
+fn int hidSendFeatureReport(SDL_hid_device* dev, char* data, usz length) @extern("SDL_hid_send_feature_report");
+fn int hidGetFeatureReport(SDL_hid_device* dev, char* data, usz length) @extern("SDL_hid_get_feature_report");
+fn void hidClose(SDL_hid_device* dev) @extern("SDL_hid_close");
+fn int hidGetManufacturerString(SDL_hid_device dev, char* string, usz maxlen) @extern("SDL_hid_get_manufacturer_string");
+fn int hidGetProductString(SDL_hid_device dev, char* string, usz maxlen) @extern("SDL_hid_get_product_string");
+fn int hidGetSerialNumberString(SDL_hid_device dev, char* string, usz maxlen) @extern("SDL_hid_get_serial_number_string");
+fn int hidGetIndexedString(SDL_hid_device dev, int string_index, char* string, usz maxlen) @extern("SDL_hid_get_indexed_string");
+fn void hidBleScan(bool active) @extern("SDL_hid_ble_scan");
+fn bool setHintWithPriority(char* name, char* value, SDL_HintPriority priority) @extern("SDL_SetHintWithPriority");
+fn bool setHint(char* name, char* value) @extern("SDL_SetHint");
+fn bool resetHint(char* name) @extern("SDL_ResetHint");
+fn void resetHints() @extern("SDL_ResetHints");
+fn char* getHint(char* name) @extern("SDL_GetHint");
+fn bool getHintBoolean(char* name, bool default_value) @extern("SDL_GetHintBoolean");
+
+// NEEDS CALLBACK FUNCTIONS
+// fn void* addHintCallback(char* name, SDL_HintCallback callback, void* userdata) @extern("SDL_AddHintCallback");
+// fn void* delHintCallback(char* name, SDL_HintCallback callback, void* userdata) @extern("SDL_DelHintCallback");
+
+fn void clearHints() @extern("SDL_ClearHints");
+fn void* loadObject(char* sofile) @extern("SDL_LoadObject");
+fn void* loadFn(void* handle, char* name) @extern("SDL_Loadfn");
+fn void* unloadObject(void* handle) @extern("SDL_UnloadObject");
+fn void* logSetAllPriority(SDL_LogPriority priority) @extern("SDL_LogSetAllPriority");
+fn void* logSetPriority(int category, SDL_LogPriority priority) @extern("SDL_LogSetPriority");
+fn SDL_LogPriority logGetPriority(int category) @extern("SDL_LogGetPriority");
+fn void* logResetPriorities() @extern("SDL_LogResetPriorities");
+
+// NEEEDS TO BE LOOKED INTO AND IMPLEMENT IN C3
+// NEEDS CALLBACK FUNCTIONS
+// fn void* log(char* fmt, cvarargs) @extern("SDL_Log");
+// fn void* logVerbose(int category, char* fmt, cvarargs) @extern("SDL_LogVerbose");
+// fn void* logDebug(int category, char* fmt, cvarargs) @extern("SDL_LogDebug");
+// fn void* logInfo(int category, char* fmt, cvarargs) @extern("SDL_LogInfo");
+// fn void* logWarn(int category, char* fmt, cvarargs) @extern("SDL_LogWarn");
+// fn void* logError(int category, char* fmt, cvarargs) @extern("SDL_LogError");
+// fn void* logCritical(int category, char* fmt, cvarargs) @extern("SDL_LogCritical");
+// fn void* logMessage(int category, SDL_LogPriority priority, char* fmt, cvarargs) @extern("SDL_LogMessage");
+// fn void* logMessageV(int category, SDL_LogPriority priority, char* fmt, cvalist ap) @extern("SDL_LogMessageV");
+// fn void* logGetOutputfn(SDL_LogOutputfn callback, void userdata) @extern("SDL_LogGetOutputfn");
+// fn void* logSetOutputfn(SDL_LogOutputfn callback, void* userdata) @extern("SDL_LogSetOutputfn");
+
+fn int showMessageBox(SDL_MessageBoxData messageboxdata, int buttonid) @extern("SDL_ShowMessageBox");
+fn int showSimpleMessageBox(uint flags, char* title, char* message, Window* window) @extern("SDL_ShowSimpleMessageBox");
+fn SDL_MetalView metalCreateView(Window* window) @extern("SDL_Metal_CreateView");
+fn void* metalDestroyView(SDL_MetalView view) @extern("SDL_Metal_DestroyView");
+fn void* metalGetLayer(SDL_MetalView view) @extern("SDL_Metal_GetLayer");
+fn void* metalGetDrawableSize(Window* window, int* w, int* h) @extern("SDL_Metal_GetDrawableSize");
+fn SDL_PowerState getPowerInfo(int* seconds, int* percent) @extern("SDL_GetPowerInfo");
+fn int getNumRenderDrivers() @extern("SDL_GetNumRenderDrivers");
+fn int getRenderDriverInfo(int index, SDL_RendererInfo info) @extern("SDL_GetRenderDriverInfo");
+fn int createWindowAndRenderer(int width, int height, uint window_flags, SDL_Window window, SDL_Renderer** renderer) @extern("SDL_CreateWindowAndRenderer");
+fn SDL_Renderer* createRenderer(SDL_Window window, int index, uint flags) @extern("SDL_CreateRenderer");
+fn SDL_Renderer* createSoftwareRenderer(Surface surface) @extern("SDL_CreateSoftwareRenderer");
+fn SDL_Renderer* getRenderer(SDL_Window window) @extern("SDL_GetRenderer");
+fn Window* renderGetWindow(SDL_Renderer* renderer) @extern("SDL_RenderGetWindow");
+fn int getRendererInfo(SDL_Renderer* renderer, SDL_RendererInfo* info) @extern("SDL_GetRendererInfo");
+fn int getRendererOutputSize(SDL_Renderer* renderer, int* w, int* h) @extern("SDL_GetRendererOutputSize");
+fn SDL_Texture* createTexture(SDL_Renderer* renderer, uint format, int access, int w, int h) @extern("SDL_CreateTexture");
+fn SDL_Texture* createTextureFromSurface(SDL_Renderer* renderer, Surface surface) @extern("SDL_CreateTextureFromSurface");
+fn int queryTexture(SDL_Texture* texture, uint* format, int* access, int* w, int* h) @extern("SDL_QueryTexture");
+fn int setTextureColorMod(SDL_Texture* texture, char r, char g, char b) @extern("SDL_SetTextureColorMod");
+fn int getTextureColorMod(SDL_Texture* texture, char* r, char* g, char* b) @extern("SDL_GetTextureColorMod");
+fn int setTextureAlphaMod(SDL_Texture* texture, char alpha) @extern("SDL_SetTextureAlphaMod");
+fn int getTextureAlphaMod(SDL_Texture* texture, char* alpha) @extern("SDL_GetTextureAlphaMod");
+fn int setTextureBlendMode(SDL_Texture* texture, BlendMode blendMode) @extern("SDL_SetTextureBlendMode");
+fn int getTextureBlendMode(SDL_Texture* texture, BlendMode* blendMode) @extern("SDL_GetTextureBlendMode");
+fn int setTextureScaleMode(SDL_Texture* texture, SDL_ScaleMode scaleMode) @extern("SDL_SetTextureScaleMode");
+fn int getTextureScaleMode(SDL_Texture* texture, SDL_ScaleMode* scaleMode) @extern("SDL_GetTextureScaleMode");
+fn int setTextureUserData(SDL_Texture* texture, void* userdata) @extern("SDL_SetTextureUserData");
+fn void* getTextureUserData(SDL_Texture* texture) @extern("SDL_GetTextureUserData");
+fn int updateTexture(SDL_Texture* texture, Rect* rect, void* pixels, int pitch) @extern("SDL_UpdateTexture");
+fn int updateYUVTexture(SDL_Texture* texture, Rect* rect, char* yPlane, int yPitch, char* uPlane, int uPitch, char* vPlane, int vPitch) @extern("SDL_UpdateYUVTexture");
+fn int updateNVTexture(SDL_Texture* texture, Rect* rect, char* yPlane, int yPitch, char* uvPlane, int uvPitch) @extern("SDL_UpdateNVTexture");
+fn int lockTexture(SDL_Texture* texture, Rect* rect, void** pixels, int* pitch) @extern("SDL_LockTexture");
+fn int lockTextureToSurface(SDL_Texture* texture, Rect* rect, Surface* surface) @extern("SDL_LockTextureToSurface");
+fn void* unlockTexture(SDL_Texture* texture) @extern("SDL_UnlockTexture");
+fn bool renderTargetSupported(SDL_Renderer* renderer) @extern("SDL_RenderTargetSupported");
+fn int setRenderTarget(SDL_Renderer* renderer, SDL_Texture* texture) @extern("SDL_SetRenderTarget");
+fn SDL_Texture* getRenderTarget(SDL_Renderer* renderer) @extern("SDL_GetRenderTarget");
+fn int renderSetLogicalSize(SDL_Renderer* renderer, int w, int h) @extern("SDL_RenderSetLogicalSize");
+fn void* renderGetLogicalSize(SDL_Renderer* renderer, int* w, int* h) @extern("SDL_RenderGetLogicalSize");
+fn int renderSetIntegerScale(SDL_Renderer* renderer, bool enable) @extern("SDL_RenderSetIntegerScale");
+fn bool renderGetIntegerScale(SDL_Renderer* renderer) @extern("SDL_RenderGetIntegerScale");
+fn int renderSetViewport(SDL_Renderer* renderer, SDL_Rect rect) @extern("SDL_RenderSetViewport");
+fn void* renderGetViewport(SDL_Renderer* renderer, Rect* rect) @extern("SDL_RenderGetViewport");
+fn int renderSetClipRect(SDL_Renderer* renderer, SDL_Rect rect) @extern("SDL_RenderSetClipRect");
+fn void* renderGetClipRect(SDL_Renderer* renderer, Rect* rect) @extern("SDL_RenderGetClipRect");
+fn bool renderIsClipEnabled(SDL_Renderer* renderer) @extern("SDL_RenderIsClipEnabled");
+fn int renderSetScale(SDL_Renderer* renderer, float scaleX, float scaleY) @extern("SDL_RenderSetScale");
+fn void* renderGetScale(SDL_Renderer* renderer, float* scaleX, float* scaleY) @extern("SDL_RenderGetScale");
+fn void* renderWindowToLogical(SDL_Renderer* renderer, int windowX, int windowY, float* logicalX, float* logicalY) @extern("SDL_RenderWindowToLogical");
+fn void* renderLogicalToWindow(SDL_Renderer* renderer, float logicalX, float logicalY, int* windowX, int* windowY) @extern("SDL_RenderLogicalToWindow");
+fn int setRenderDrawColor(SDL_Renderer* renderer, char r, char g, char b, char a) @extern("SDL_SetRenderDrawColor");
+fn int getRenderDrawColor(SDL_Renderer* renderer, char* r, char* g, char* b, char* a) @extern("SDL_GetRenderDrawColor");
+fn int setRenderDrawBlendMode(SDL_Renderer* renderer, BlendMode blendMode) @extern("SDL_SetRenderDrawBlendMode");
+fn int getRenderDrawBlendMode(SDL_Renderer* renderer, BlendMode* blendMode) @extern("SDL_GetRenderDrawBlendMode");
+fn int renderClear(SDL_Renderer* renderer) @extern("SDL_RenderClear");
+fn int renderDrawPoint(SDL_Renderer* renderer, int x, int y) @extern("SDL_RenderDrawPoint");
+fn int renderDrawPoints(SDL_Renderer* renderer, Point* points, int count) @extern("SDL_RenderDrawPoints");
+fn int renderDrawLine(SDL_Renderer* renderer, int x1, int y1, int x2, int y2) @extern("SDL_RenderDrawLine");
+fn int renderDrawLines(SDL_Renderer* renderer, Point* points, int count) @extern("SDL_RenderDrawLines");
+fn int renderDrawRect(SDL_Renderer* renderer, SDL_Rect rect) @extern("SDL_RenderDrawRect");
+fn int renderDrawRects(SDL_Renderer* renderer, Rect* rects, int count) @extern("SDL_RenderDrawRects");
+fn int renderFillRect(SDL_Renderer* renderer, SDL_Rect rect) @extern("SDL_RenderFillRect");
+fn int renderFillRects(SDL_Renderer* renderer, Rect* rects, int count) @extern("SDL_RenderFillRects");
+fn int renderCopy(SDL_Renderer* renderer, SDL_Texture* texture, Rect* srcrect, Rect* dstrect) @extern("SDL_RenderCopy");
+fn int renderCopyEx(SDL_Renderer* renderer, SDL_Texture* texture, Rect* srcrect, Rect* dstrect, double angle, Point* center, SDL_RendererFlip flip) @extern("SDL_RenderCopyEx");
+fn int renderDrawPointF(SDL_Renderer* renderer, float x, float y) @extern("SDL_RenderDrawPointF");
+fn int renderDrawPointsF(SDL_Renderer* renderer, FPoint* points, int count) @extern("SDL_RenderDrawPointsF");
+fn int renderDrawLineF(SDL_Renderer* renderer, float x1, float y1, float x2, float y2) @extern("SDL_RenderDrawLineF");
+fn int renderDrawLinesF(SDL_Renderer* renderer, FPoint* points, int count) @extern("SDL_RenderDrawLinesF");
+fn int renderDrawRectF(SDL_Renderer* renderer, FRect rect) @extern("SDL_RenderDrawRectF");
+fn int renderDrawRectsF(SDL_Renderer* renderer, FRect* rects, int count) @extern("SDL_RenderDrawRectsF");
+fn int renderFillRectF(SDL_Renderer* renderer, FRect rect) @extern("SDL_RenderFillRectF");
+fn int renderFillRectsF(SDL_Renderer* renderer, FRect* rects, int count) @extern("SDL_RenderFillRectsF");
+fn int renderCopyF(SDL_Renderer* renderer, SDL_Texture* texture, Rect* srcrect, FRect dstrect) @extern("SDL_RenderCopyF");
+fn int renderCopyExF(SDL_Renderer* renderer, SDL_Texture* texture, Rect* srcrect, FRect dstrect, double angle, FPoint* center, SDL_RendererFlip flip) @extern("SDL_RenderCopyExF");
+fn int renderGeometry(SDL_Renderer* renderer, SDL_Texture* texture, SDL_Vertex* vertices, int num_vertices, int* indices, int num_indices) @extern("SDL_RenderGeometry");
+fn int renderGeometryRaw(SDL_Renderer* renderer, SDL_Texture* texture, float* xy, int xy_stride, Color* color, int color_stride, float* uv, int uv_stride, int num_vertices, void* indices, int num_indices, int size_indices) @extern("SDL_RenderGeometryRaw");
+fn int renderReadPixels(SDL_Renderer* renderer, SDL_Rect rect, uint format, void* pixels, int pitch) @extern("SDL_RenderReadPixels");
+fn void* renderPresent(SDL_Renderer* renderer) @extern("SDL_RenderPresent");
+fn void* destroyTexture(SDL_Texture* texture) @extern("SDL_DestroyTexture");
+fn void* destroyRenderer(SDL_Renderer* renderer) @extern("SDL_DestroyRenderer");
+fn int renderFlush(SDL_Renderer* renderer) @extern("SDL_RenderFlush");
+fn int glBindTexture(SDL_Texture* texture, float texw, float* texh) @extern("SDL_GL_BindTexture");
+fn int glUnbindTexture(SDL_Texture* texture) @extern("SDL_GL_UnbindTexture");
+fn void* renderGetMetalLayer(SDL_Renderer* renderer) @extern("SDL_RenderGetMetalLayer");
+fn void* renderGetMetalCommandEncoder(SDL_Renderer* renderer) @extern("SDL_RenderGetMetalCommandEncoder");
+fn int renderSetVSync(SDL_Renderer* renderer, int vsync) @extern("SDL_RenderSetVSync");
+fn Window* createShapedWindow(char* title, uint x, uint y, uint w, uint h, uint flags) @extern("SDL_CreateShapedWindow");
+fn bool isShapedWindow(Window* window) @extern("SDL_IsShapedWindow");
+fn int setWindowShape(Window* window, Surface* shape, SDL_WindowShapeMode* shape_mode) @extern("SDL_SetWindowShape");
+fn int setShapedWindowMode(Window* window, SDL_WindowShapeMode* shape_mode) @extern("SDL_GetShapedWindowMode");
+fn int ginuxSetThreadPriority(long threadID, int priority) @extern("SDL_LinuxSetThreadPriority");
+fn int linuxSetThreadPriorityAndPolicy(long threadID, int sdlPriority, int schedPolicy) @extern("SDL_LinuxSetThreadPriorityAndPolicy");
+fn bool isTablet() @extern("SDL_IsTablet");
+fn void* onApplicationWillTerminate() @extern("SDL_OnApplicationWillTerminate");
+fn void* onApplicationDidReceiveMemoryWarning() @extern("SDL_OnApplicationDidReceiveMemoryWarning");
+fn void* onApplicationWillResignActive() @extern("SDL_OnApplicationWillResignActive");
+fn void* onApplicationDidEnterBackground() @extern("SDL_OnApplicationDidEnterBackground");
+fn void* onApplicationWillEnterForeground() @extern("SDL_OnApplicationWillEnterForeground");
+fn void* onApplicationDidBecomeActive() @extern("SDL_OnApplicationDidBecomeActive");
+fn uint getTicks() @extern("SDL_GetTicks");
+fn ulong getTicks64() @extern("SDL_GetTicks64");
+fn ulong getPerformanceCounter() @extern("SDL_GetPerformanceCounter");
+fn ulong getPerformanceFrequency() @extern("SDL_GetPerformanceFrequency");
+fn void* delay(uint ms) @extern("SDL_Delay");
+
+// Callback function required
+//fn SDL_TimerID addTimer(uint interval, SDL_TimerCallback callback, void* param) @extern("SDL_AddTimer");
+
+fn bool removeTimer(SDL_TimerID id) @extern("SDL_RemoveTimer");
+fn void* getVersion(SDL_version* ver) @extern("SDL_GetVersion");
+fn char* getRevision() @extern("SDL_GetRevision");
+fn int getRevisionNumber() @extern("SDL_GetRevisionNumber");
+fn SDL_Locale* getPreferredLocales() @extern("SDL_GetPreferredLocales");
+fn int openURL(char* url) @extern("SDL_OpenURL");
+fn int init(uint flags) @extern("SDL_Init");
+fn int initSubSystem(uint flags) @extern("SDL_InitSubSystem");
+fn void* quitSubSystem(uint flags) @extern("SDL_QuitSubSystem");
+fn uint wasInit(uint flags) @extern("SDL_WasInit");
+fn void* quit() @extern("SDL_Quit");
