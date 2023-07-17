@@ -78,3 +78,33 @@ jobs:
           asset_path: packages/raylib.c3l
           asset_name: raylib.c3l
           asset_content_type: application/zip
+
+      - name: upload sdl2
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: packages/sdl2.c3l
+          asset_name: sdl2.c3l
+          asset_content_type: application/zip
+
+      - name: upload tigr
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: packages/tigr.c3l
+          asset_name: tigr.c3l
+          asset_content_type: application/zip
+
+      - name: upload curl
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: packages/curl.c3l
+          asset_name: curl.c3l
+          asset_content_type: application/zip
