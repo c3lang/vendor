@@ -1,9 +1,9 @@
 // sdl2.c3i
 // Created 14/07/2023
-// Updated 15/07/2023
+// Updated 18/07/2023
 // Originally created Kenta @ https://github.com/Its-Kenta
 
-module sdl2;
+module sdl;
 
 const uint INIT_TIMER = 0x00000001u;
 const uint INIT_AUDIO = 0x00000010u;
@@ -43,6 +43,9 @@ struct AtomicT
 	int value;
 }
 
+def AssertionHandler = fn AssertState(AssertData data, void* userdata);
+
+
 enum ErrorCode : int
 {
     ENOMEM,
@@ -53,10 +56,13 @@ enum ErrorCode : int
     LASTERROR
 }
 
-def Mutex = void;
-def Sem = void;
-def Cond = void;
-def ThreadID = void;
+def Mutex = distinct void*;
+def Sem = distinct void*;
+def Cond = distinct void*;
+def Thread = distinct void*;
+def ThreadID = long;
+def Iconv_t = distinct void*;
+
 def TlSID = ulong;
 
 enum ThreadPriority : int
@@ -70,25 +76,42 @@ enum ThreadPriority : int
 // NEEDS IMPLEMENTATION IN C3
 struct RWops
 {
-
+    int b;
 }
 
 def AudioFormat = int;
 
-// NEED TO IMPLEMENT AudioCallback
+def AudioCallback = fn void(void *userdata, char* stream, int len);
 
 struct AudioSpec
 {
-
+    int freq;
+    AudioFormat format;
+    char channels;
+    char silence;
+    uint samples;
+    uint padding;
+    uint size;
+    AudioCallback callback;
+    void *userdata;
 }
 
-// NEEDS IMPLEMENTATION IN C3
+def AudioFilter = fn void(AudioCVT* cvt, AudioFormat format);
+
 struct AudioCVT
 {
-
+    int needed;
+    AudioFormat src_format;
+    AudioFormat dst_format;
+    double rate_incr;
+    char* buf;
+    int len;
+    int len_cvt;
+    int len_mul;
+    double len_ratio;
+    AudioFilter[10] filters;
+    int filter_index;
 }
-
-// NEED TO IMPLEMENT AudioFilter
 
 def AudioDeviceID = uint;
 
@@ -311,11 +334,29 @@ enum BlendFactor : int
 }
 
 // NEED TO IMPLEMENT SDL_BLITMAP
+def BlitMap = distinct void*;
 
 // NEED TO IMPLEMENT SURFACE
 struct Surface
 {
+    uint flags;
+    PixelFormat *format;
+    int w;
+    int h;
+    int pitch;
+    void *pixels;
 
+    void *userdata;
+
+    int locked;
+
+    void *list_blitmap;
+
+    Rect clip_rect;
+
+    BlitMap *map;
+
+    int refcount;
 }
 
 // NEED TO IMPLEMENT SDL_BLIT
@@ -929,7 +970,7 @@ enum FlashOperation : int
     FLASH_UNTIL_FOCUSED
 }
 
-// NEED TO IMPLEMENT SD_GLCONTEXT
+def GLContext = distinct void*;
 
 enum GLattr : int
 {
@@ -1001,7 +1042,7 @@ enum HitTestResult : int
   HITTEST_RESIZE_LEFT
 }
 
-// NEED TO IMPLEMENT SDL_HitTest
+def HitTest = fn void(Window* win, Point* area, void* data);
 
 struct Keysym 
 {
@@ -1011,7 +1052,11 @@ struct Keysym
 	uint unused;
 }
 
-def Cursor = void;
+struct Cursor
+{
+    Cursor *next;
+    void *driverdata;
+}
 
 enum SystemCursor : int
 {
@@ -1041,7 +1086,7 @@ struct Guid
 	char[16] data;
 }
 
-def Joystick = void;
+def Joystick = void*;
 def JoystickGUID = Guid;
 def JoystickID = int;
 
@@ -1059,23 +1104,867 @@ enum JoystickType : int
     JOYSTICK_TYPE_THROTTLE
 }
 
-enum JoystickPowerLevel : int
-{
-    MOUSEWHEEL_NORMAL,
-    MOUSEWHEEL_FLIPPED
+def JoystickPowerLevel = distinct int;
+const JoystickPowerLevel JOYSTICK_POWER_UNKNOWN = -1;
+const JoystickPowerLevel JOYSTICK_POWER_EMPTY = 0;
+const JoystickPowerLevel JOYSTICK_POWER_LOW = 1;
+const JoystickPowerLevel JOYSTICK_POWER_MEDIUM = 2;
+const JoystickPowerLevel JOYSTICK_POWER_FULL = 3;
+const JoystickPowerLevel JOYSTICK_POWER_WIRED = 4;
+const JoystickPowerLevel JOYSTICK_POWER_MAX = 5;
+
+def Update = fn void(void* userdata);
+def SetPlayerIndex = fn int(void* userdata, int player_index);
+def Rumble = fn int(void* userdata, uint low_frequency_rumble, uint high_frequency_rumble);
+def RumbleTriggers = fn int(void* userdata, uint left_rumble, uint right_rumble);
+def SetLED = fn int(void* userdata, char red, char green, char blue);
+def SendEffect = fn int(void* userdata, void* data, int size);
+
+struct VirtualJoystickDesc {
+    uint version;
+    uint type;
+    uint naxes;
+    uint nbuttons;
+    uint nhats;
+    uint vendor_id;
+    uint product_id;
+    uint padding;
+    uint button_mask;
+                    
+    uint axis_mask; 
+
+    char* name;
+
+    void *userdata;
+    Update update;
+    SetPlayerIndex setPlayerIndex;
+    Rumble rumble;
+    RumbleTriggers rumbleTriggers;
+    SetLED setLED;
+    SendEffect sendEffect;
 }
 
-def JoystickPowerLevel = distinct int;
-const Joystickpowerlevel JOYSTICK_POWER_UNKNOWN = -1;
-const Joystickpowerlevel JOYSTICK_POWER_EMPTY = 0;
-const Joystickpowerlevel JOYSTICK_POWER_LOW = 1;
-const Joystickpowerlevel JOYSTICK_POWER_MEDIUM = 2;
-const Joystickpowerlevel JOYSTICK_POWER_FULL = 3;
-const Joystickpowerlevel JOYSTICK_POWER_WIRED = 4;
-const Joystickpowerlevel JOYSTICK_POWER_MAX = 5;
+def SensorID = int;
 
-// NEED TO IMPLEMENT SDL_VirtualJoystickDesc
+def SensorType = distinct int;
+const SensorType SENSOR_INVALID = -1;
+const SensorType SENSOR_UNKNOWN = 0;
+const SensorType SENSOR_ACCEL = 1;
+const SensorType SENSOR_GYRO = 2;
+const SensorType SENSOR_ACCEL_L = 3;
+const SensorType SENSOR_GYRO_L = 4;
+const SensorType SENSOR_ACCEL_R = 5;
+const SensorType SENSOR_GYRO_R = 6;
 
+def Sensor_hwdata = distinct void*;
+def SensorDriver = distinct void*;
+
+
+struct Sensor
+{
+    SensorID instance_id;
+    char* name;
+    SensorType type;
+    int non_portable_type;
+
+    float [16]data;
+
+    SensorDriver *driver;
+
+    Sensor_hwdata hwdata;
+
+    int ref_count;
+
+    Sensor *next;
+}
+
+def GameController = distinct void*;
+
+enum GameControllerType : int
+{
+    CONTROLLER_TYPE_UNKNOWN,
+    CONTROLLER_TYPE_XBOX360,
+    CONTROLLER_TYPE_XBOXONE,
+    CONTROLLER_TYPE_PS3,
+    CONTROLLER_TYPE_PS4,
+    CONTROLLER_TYPE_NINTENDO_SWITCH_PRO,
+    CONTROLLER_TYPE_VIRTUAL,
+    CONTROLLER_TYPE_PS5,
+    CONTROLLER_TYPE_AMAZON_LUNA,
+    CONTROLLER_TYPE_GOOGLE_STADIA,
+    CONTROLLER_TYPE_NVIDIA_SHIELD,
+    CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_LEFT,
+    CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_RIGHT,
+    CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_PAIR
+}
+
+enum GameControllerBindType : int
+{
+  CONTROLLER_BINDTYPE_NONE,
+  CONTROLLER_BINDTYPE_BUTTON,
+  CONTROLLER_BINDTYPE_AXIS,
+  CONTROLLER_BINDTYPE_HAT
+}
+
+struct GameControllerButtonBind
+{
+    GameControllerBindType bindType;
+    union value {
+        int button;
+        int axis;
+        struct hat{
+            int hat;
+            int hat_mask;
+        }
+    }
+}
+
+def GameControllerAxis = distinct int;
+const GameControllerAxis CONTROLLER_AXIS_INVALID = -1;
+const GameControllerAxis CONTROLLER_AXIS_LEFTX = 0;
+const GameControllerAxis CONTROLLER_AXIS_LEFTY = 1;
+const GameControllerAxis CONTROLLER_AXIS_RIGHTX = 2;
+const GameControllerAxis CONTROLLER_AXIS_RIGHTY = 3;
+const GameControllerAxis CONTROLLER_AXIS_TRIGGERLEFT = 4;
+const GameControllerAxis CONTROLLER_AXIS_TRIGGERRIGHT = 5;
+const GameControllerAxis CONTROLLER_AXIS_MAX = 6;
+
+def GameControllerButton = distinct int;
+const GameControllerButton CONTROLLER_BUTTON_INVALID = -1;
+const GameControllerButton CONTROLLER_BUTTON_A = 0;
+const GameControllerButton CONTROLLER_BUTTON_B = 1;
+const GameControllerButton CONTROLLER_BUTTON_X = 2;
+const GameControllerButton CONTROLLER_BUTTON_Y = 3;
+const GameControllerButton CONTROLLER_BUTTON_BACK = 4;
+const GameControllerButton CONTROLLER_BUTTON_GUIDE = 5;
+const GameControllerButton CONTROLLER_BUTTON_START = 6;
+const GameControllerButton CONTROLLER_BUTTON_LEFTSTICK = 7;
+const GameControllerButton CONTROLLER_BUTTON_RIGHTSTICK = 8;
+const GameControllerButton CONTROLLER_BUTTON_LEFTSHOULDER = 9;
+const GameControllerButton CONTROLLER_BUTTON_RIGHTSHOULDER = 10;
+const GameControllerButton CONTROLLER_BUTTON_DPAD_UP = 11;
+const GameControllerButton CONTROLLER_BUTTON_DPAD_DOWN = 12;
+const GameControllerButton CONTROLLER_BUTTON_DPAD_LEFT = 13;
+const GameControllerButton CONTROLLER_BUTTON_DPAD_RIGHT = 14;
+const GameControllerButton CONTROLLER_BUTTON_MISC1 = 15;
+const GameControllerButton CONTROLLER_BUTTON_PADDLE1 = 16;
+const GameControllerButton CONTROLLER_BUTTON_PADDLE2 = 17;
+const GameControllerButton CONTROLLER_BUTTON_PADDLE3 = 18;
+const GameControllerButton CONTROLLER_BUTTON_PADDLE4 = 19;
+const GameControllerButton CONTROLLER_BUTTON_TOUCHPAD = 20;
+const GameControllerButton CONTROLLER_BUTTON_MAX = 21;
+
+def TouchID = long;
+def FingerID = long;
+
+def TouchDeviceType = distinct int;
+const TouchDeviceType CONTROLLER_BINDTYPE_NONE = -1;
+const TouchDeviceType CONTROLLER_BINDTYPE_BUTTON = 0;
+const TouchDeviceType CONTROLLER_BINDTYPE_AXIS = 1;
+const TouchDeviceType CONTROLLER_BINDTYPE_HAT = 2;
+
+struct Finger
+{
+    FingerID id;
+    float x;
+    float y;
+    float pressure;
+}
+
+def GestureID = long;
+
+def EventType = distinct int;
+const EventType FIRSTEVENT = 0;
+const EventType QUIT = 256;
+const EventType APP_TERMINATING = 257;
+const EventType APP_LOWMEMORY = 258;
+const EventType APP_WILLENTERBACKGROUND = 259;
+const EventType APP_DIDENTERBACKGROUND = 260;
+const EventType APP_WILLENTERFOREGROUND = 261;
+const EventType APP_DIDENTERFOREGROUND = 262;
+const EventType LOCALECHANGED = 263;
+const EventType DISPLAYEVENT = 336;
+const EventType WINDOWEVENT = 512;
+const EventType SYSWMEVENT = 513;
+const EventType KEYDOWN = 768;
+const EventType KEYUP = 769;
+const EventType TEXTEDITING = 770;
+const EventType TEXTINPUT = 771;
+const EventType KEYMAPCHANGED = 772;
+const EventType TEXTEDITING_EXT = 773;
+const EventType MOUSEMOTION = 1024;
+const EventType MOUSEBUTTONDOWN = 1025;
+const EventType MOUSEBUTTONUP = 1026;
+const EventType MOUSEWHEEL = 1027;
+const EventType JOYAXISMOTION = 1536;
+const EventType JOYBALLMOTION = 1537;
+const EventType JOYHATMOTION = 1538;
+const EventType JOYBUTTONDOWN = 1539;
+const EventType JOYBUTTONUP = 1540;
+const EventType JOYDEVICEADDED = 1541;
+const EventType JOYDEVICEREMOVED = 1542;
+const EventType JOYBATTERYUPDATED = 1543;
+const EventType CONTROLLERAXISMOTION = 1616;
+const EventType CONTROLLERBUTTONDOWN = 1617;
+const EventType CONTROLLERBUTTONUP = 1618;
+const EventType CONTROLLERDEVICEADDED = 1619;
+const EventType CONTROLLERDEVICEREMOVED = 1620;
+const EventType CONTROLLERDEVICEREMAPPED = 1621;
+const EventType CONTROLLERTOUCHPADDOWN = 1622;
+const EventType CONTROLLERTOUCHPADMOTION = 1623;
+const EventType CONTROLLERTOUCHPADUP = 1624;
+const EventType CONTROLLERSENSORUPDATE = 1625;
+const EventType FINGERDOWN = 1792;
+const EventType FINGERUP = 1793;
+const EventType FINGERMOTION = 1794;
+const EventType DOLLARGESTURE = 2048;
+const EventType DOLLARRECORD = 2049;
+const EventType MULTIGESTURE = 2050;
+const EventType CLIPBOARDUPDATE = 2304;
+const EventType DROPFILE = 4096;
+const EventType DROPTEXT = 4097;
+const EventType DROPBEGIN = 4098;
+const EventType DROPCOMPLETE = 4099;
+const EventType AUDIODEVICEADDED = 4352;
+const EventType AUDIODEVICEREMOVED = 4353;
+const EventType SENSORUPDATE = 4608;
+const EventType RENDER_TARGETS_RESET = 8192;
+const EventType RENDER_DEVICE_RESET = 8193;
+const EventType POLLSENTINEL = 32512;
+const EventType USEREVENT = 32768;
+const EventType LASTEVENT = 65535;
+
+struct CommonEvent {
+	uint type;
+	uint timestamp;
+}
+
+struct DisplayEvent {
+	uint type;
+	uint timestamp;
+	uint display;
+	char event;
+	char padding1;
+	char padding2;
+	char padding3;
+	int data1;
+}
+
+struct WindowEvent {
+	uint type;
+	uint timestamp;
+	uint windowid;
+	char event;
+	char padding1;
+	char padding2;
+	char padding3;
+	int data1;
+	int data2;
+}
+
+struct KeyboardEvent {
+	uint type;
+	uint timestamp;
+	uint windowid;
+	char state;
+	char repeat;
+	char padding2;
+	char padding3;
+	Keysym keysym;
+}
+
+struct TextEditingEvent {
+	uint type;
+	uint timestamp;
+	uint windowid;
+	char[32] text;
+	int start;
+	int length;
+}
+
+struct TextEditingExtEvent {
+	uint type;
+	uint timestamp;
+	uint windowid;
+	char* text;
+	int start;
+	int length;
+}
+
+struct TextInputEvent {
+	uint type;
+	uint timestamp;
+	uint windowid;
+	char[32] text;
+}
+
+struct MouseMotionEvent {
+	uint type;
+	uint timestamp;
+	uint windowid;
+	uint which;
+	uint state;
+	int x;
+	int y;
+	int xrel;
+	int yrel;
+}
+
+struct MouseButtonEvent {
+	uint type;
+	uint timestamp;
+	uint windowid;
+	uint which;
+	char button;
+	char state;
+	char clicks;
+	char padding1;
+	int x;
+	int y;
+}
+
+struct MouseWheelEvent {
+	uint type;
+	uint timestamp;
+	uint windowid;
+	uint which;
+	int x;
+	int y;
+	uint direction;
+	float precisex;
+	float precisey;
+}
+
+struct JoyAxisEvent {
+	uint type;
+	uint timestamp;
+	JoystickID which;
+	char axis;
+	char padding1;
+	char padding2;
+	char padding3;
+	short value;
+	ushort padding4;
+}
+
+struct JoyBallEvent {
+	uint type;
+	uint timestamp;
+	JoystickID which;
+	char ball;
+	char padding1;
+	char padding2;
+	char padding3;
+	short xrel;
+	short yrel;
+}
+
+struct JoyHatEvent {
+	uint type;
+	uint timestamp;
+	JoystickID which;
+	char hat;
+	char value;
+	char padding1;
+	char padding2;
+}
+
+struct JoyButtonEvent {
+	uint type;
+	uint timestamp;
+	JoystickID which;
+	char button;
+	char state;
+	char padding1;
+	char padding2;
+}
+
+struct JoyDeviceEvent {
+	uint type;
+	uint timestamp;
+	JoystickID which;
+}
+
+struct JoyBatteryEvent {
+	uint type;
+	uint timestamp;
+	JoystickID which;
+	JoystickPowerLevel level;
+}
+
+struct ControllerAxisEvent {
+	uint type;
+	uint timestamp;
+	JoystickID which;
+	char axis;
+	char padding1;
+	char padding2;
+	char padding3;
+	short value;
+	ushort padding4;
+}
+
+struct ControllerButtonEvent {
+	uint type;
+	uint timestamp;
+	int which;
+	char button;
+	char state;
+	char padding1;
+	char padding2;
+}
+
+struct ControllerDeviceEvent {
+	uint type;
+	uint timestamp;
+	int which;
+}
+
+struct ControllerTouchpadEvent {
+	uint type;
+	uint timestamp;
+	int which;
+	int touchpad;
+	int finger;
+	float x;
+	float y;
+	float pressure;
+}
+
+struct ControllerSensorEvent {
+	uint type;
+	uint timestamp;
+	int which;
+	int sensor;
+	float[3] data;
+}
+
+struct AudioDeviceEvent {
+	uint type;
+	uint timestamp;
+	AudioDeviceID which;
+	char iscapture;
+	char padding1;
+	char padding2;
+	char padding3;
+}
+
+struct TouchFingerEvent {
+	uint type;
+	uint timestamp;
+	TouchID touchid;
+	FingerID fingerid;
+	float x;
+	float y;
+	float dx;
+	float dy;
+	float pressure;
+	uint windowid;
+}
+
+struct MultiGestureEvent {
+	uint type;
+	uint timestamp;
+	TouchID touchid;
+	float dtheta;
+	float ddist;
+	float x;
+	float y;
+	ushort numfingers;
+	ushort padding;
+}
+
+struct DollarGestureEvent {
+	uint type;
+	uint timestamp;
+	TouchID touchid;
+	GestureID gestureid;
+	uint numfingers;
+	float error;
+	float x;
+	float y;
+}
+
+struct DropEvent {
+	uint type;
+	uint timestamp;
+	char* file;
+	uint windowid;
+}
+
+struct SensorEvent {
+	uint type;
+	uint timestamp;
+	SensorID which;
+	float[6] data;
+}
+
+struct QuitEvent {
+	uint type;
+	uint timestamp;
+}
+
+struct OsEvent {
+	uint type;
+	uint timestamp;
+}
+
+struct UserEvent {
+	uint type;
+	uint timestamp;
+	uint windowid;
+	int code;
+	void* data1;
+	void* data2;
+}
+
+def SysWMmsg = distinct void*;
+
+struct SysWMEvent {
+	uint type;
+	uint timestamp;
+	SysWMmsg* msg;
+}
+
+union Event {
+	EventType type;
+	CommonEvent common;
+	DisplayEvent display;
+	WindowEvent window;
+	KeyboardEvent key;
+	TextEditingEvent edit;
+	TextEditingExtEvent editext;
+	TextInputEvent text;
+	MouseMotionEvent motion;
+	MouseButtonEvent button;
+	MouseWheelEvent wheel;
+	JoyAxisEvent jaxis;
+	JoyBallEvent jball;
+	JoyHatEvent jhat;
+	JoyButtonEvent jbutton;
+	JoyDeviceEvent jdevice;
+	JoyBatteryEvent jbattery;
+	ControllerAxisEvent caxis;
+	ControllerButtonEvent cbutton;
+	ControllerDeviceEvent cdevice;
+	ControllerTouchpadEvent ctouchpad;
+	ControllerSensorEvent csensor;
+	AudioDeviceEvent adevice;
+	SensorEvent sensor;
+	QuitEvent quit;
+	UserEvent user;
+	SysWMEvent syswm;
+	TouchFingerEvent tfinger;
+	MultiGestureEvent mgesture;
+	DollarGestureEvent dgesture;
+	DropEvent drop;
+	char[128] padding;
+}
+
+enum EventAction : int{
+  ADDEVENT,
+  PEEKEVENT,
+  GETEVENT
+}
+
+def EventFilter = fn int(void* userdata, Event event);
+def Haptic = void*;
+
+struct HapticDirection {
+	char type;
+	int[3] dir;
+}
+
+struct HapticConstant {
+	ushort type;
+	HapticDirection direction;
+	uint length;
+	ushort delay;
+	ushort button;
+	ushort interval;
+	short level;
+	ushort attack_Length;
+	ushort attack_Level;
+	ushort fade_Length;
+	ushort fade_Level;
+}
+
+struct HapticPeriodic {
+	ushort type;
+	HapticDirection direction;
+	uint length;
+	ushort delay;
+	ushort button;
+	ushort interval;
+	ushort period;
+	short magnitude;
+	short offset;
+	ushort phase;
+	ushort attack_Length;
+	ushort attack_Level;
+	ushort fade_Length;
+	ushort fade_Level;
+}
+
+struct HapticCondition {
+	ushort type;
+	HapticDirection direction;
+	uint length;
+	ushort delay;
+	ushort button;
+	ushort interval;
+	ushort[3] right_Sat;
+	ushort[3] left_Sat;
+	short[3] right_Coeff;
+	short[3] left_Coeff;
+	ushort[3] deadband;
+	short[3] center;
+}
+
+struct HapticRamp {
+	ushort type;
+	HapticDirection direction;
+	uint length;
+	ushort delay;
+	ushort button;
+	ushort interval;
+	short start;
+	short end;
+	ushort attack_Length;
+	ushort attack_Level;
+	ushort fade_Length;
+	ushort fade_Level;
+}
+
+struct HapticLeftRight {
+	ushort type;
+	uint length;
+	ushort large_Magnitude;
+	ushort small_Magnitude;
+}
+
+struct HapticCustom {
+	ushort type;
+	HapticDirection direction;
+	uint length;
+	ushort delay;
+	ushort button;
+	ushort interval;
+	char channels;
+	ushort period;
+	ushort samples;
+	ushort* data;
+	ushort attack_Length;
+	ushort attack_Level;
+	ushort fade_Length;
+	ushort fade_Level;
+}
+
+union HapticEffect {
+	ushort type;
+	HapticConstant constant;
+	HapticPeriodic periodic;
+	HapticCondition condition;
+	HapticRamp ramp;
+	HapticLeftRight leftright;
+	HapticCustom custom;
+}
+
+def Hid_Device = void*;
+
+struct Hid_Device_Info {
+	char* path;
+	ushort vendor_Id;
+	ushort product_Id;
+	char* serial_Number;
+	ushort release_Number;
+	char* manufacturer_String;
+	char* product_String;
+	ushort usage_Page;
+	ushort usage;
+	int interface_Number;
+	int interface_Class;
+	int interface_Subclass;
+	int interface_Protocol;
+	Hid_Device_Info* next;
+}
+
+enum HintPriority : int {
+  SDL_HINT_DEFAULT,
+  SDL_HINT_NORMAL,
+  SDL_HINT_OVERRIDE
+}
+
+def HintCallback = fn void(void* userdata, char* name, char* oldValue, char* newValue);
+
+enum LogCategory : int {
+    LOG_CATEGORY_APPLICATION,
+    LOG_CATEGORY_ERROR,
+    LOG_CATEGORY_ASSERT,
+    LOG_CATEGORY_SYSTEM,
+    LOG_CATEGORY_AUDIO,
+    LOG_CATEGORY_VIDEO,
+    LOG_CATEGORY_RENDER,
+    LOG_CATEGORY_INPUT,
+    LOG_CATEGORY_TEST,
+    LOG_CATEGORY_RESERVED1,
+    LOG_CATEGORY_RESERVED2,
+    LOG_CATEGORY_RESERVED3,
+    LOG_CATEGORY_RESERVED4,
+    LOG_CATEGORY_RESERVED5,
+    LOG_CATEGORY_RESERVED6,
+    LOG_CATEGORY_RESERVED7,
+    LOG_CATEGORY_RESERVED8,
+    LOG_CATEGORY_RESERVED9,
+    LOG_CATEGORY_RESERVED10,
+    LOG_CATEGORY_CUSTOM
+}
+
+def LogPriority = distinct int;
+const LogPriority LOG_PRIORITY_VERBOSE = 1;
+const LogPriority LOG_PRIORITY_DEBUG = 2;
+const LogPriority LOG_PRIORITY_INFO = 3;
+const LogPriority LOG_PRIORITY_WARN = 4;
+const LogPriority LOG_PRIORITY_ERROR = 5;
+const LogPriority LOG_PRIORITY_CRITICAL = 6;
+const LogPriority NUM_LOG_PRIORITIES = 7;
+
+def LogOutputFunction = fn void(void* userdata, int category, LogPriority priority, char* message);
+
+def MessageBoxFlags = distinct int;
+const MessageBoxFlags MESSAGEBOX_ERROR = 16;
+const MessageBoxFlags MESSAGEBOX_WARNING = 32;
+const MessageBoxFlags MESSAGEBOX_INFORMATION = 64;
+const MessageBoxFlags MESSAGEBOX_BUTTONS_LEFT_TO_RIGHT = 128;
+const MessageBoxFlags MESSAGEBOX_BUTTONS_RIGHT_TO_LEFT = 256;
+
+def MessageBoxButtonFlags = distinct int;
+const MessageBoxButtonFlags MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT = 1;
+const MessageBoxButtonFlags MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT = 2;
+
+struct MessageBoxButtonData {
+	uint flags;
+	int buttonid;
+	char* text;
+}
+
+struct MessageBoxColor {
+	char r;
+	char g;
+	char b;
+}
+
+enum MessageBoxColorType : int{
+    MESSAGEBOX_COLOR_BACKGROUND,
+    MESSAGEBOX_COLOR_TEXT,
+    MESSAGEBOX_COLOR_BUTTON_BORDER,
+    MESSAGEBOX_COLOR_BUTTON_BACKGROUND,
+    MESSAGEBOX_COLOR_BUTTON_SELECTED,
+    MESSAGEBOX_COLOR_MAX
+}
+
+struct MessageBoxColorScheme {
+	MessageBoxColor[5] colors;
+}
+
+struct MessageBoxData {
+	uint flags;
+	Window* window;
+	char* title;
+	char* message;
+	int numbuttons;
+	MessageBoxButtonData* buttons;
+	MessageBoxColorScheme* colorscheme;
+}
+
+def MetalView = distinct void*;
+
+enum PowerState : int{
+  POWERSTATE_UNKNOWN,
+  POWERSTATE_ON_BATTERY,
+  POWERSTATE_NO_BATTERY,
+  POWERSTATE_CHARGING,
+  POWERSTATE_CHARGED
+}
+
+def RendererFlags = distinct int;
+const RendererFlags RENDERER_SOFTWARE = 1;
+const RendererFlags RENDERER_ACCELERATED = 2;
+const RendererFlags RENDERER_PRESENTVSYNC = 4;
+const RendererFlags RENDERER_TARGETTEXTURE = 8;
+
+struct RendererInfo {
+	char* name;
+	uint flags;
+	uint num_Texture_Formats;
+	uint[16] texture_Formats;
+	int max_Texture_Width;
+	int max_Texture_Height;
+}
+
+struct Vertex {
+	FPoint position;
+	Color color;
+	FPoint tex_Coord;
+}
+
+enum ScaleMode : int{
+    SCALE_MODE_NEAREST,
+    SCALE_MODE_LINEAR,
+    SCALE_MODE_BEST
+}
+
+enum TextureAccess : int{
+    TEXTUREACCESS_STATIC,
+    TEXTUREACCESS_STREAMING,
+    TEXTUREACCESS_TARGET
+}
+enum TextureModulate : int{
+    TEXTUREMODULATE_NONE,
+    TEXTUREMODULATE_COLOR,
+    TEXTUREMODULATE_ALPHA
+}
+enum RendererFlip : int{
+    FLIP_NONE,
+    FLIP_HORIZONTAL,
+    FLIP_VERTICAL
+}
+
+def Renderer = void*;
+def Texture = void*;
+
+enum WindowShapeModeEnum : int{
+    SHAPE_MODE_DEFAULT,
+    SHAPE_MODE_BINARIZE_ALPHA,
+    SHAPE_MODE_REVERSE_BINARIZE_ALPHA,
+    SHAPE_MODE_COLOR_KEY
+}
+
+union WindowShapeParams {
+	char binarizationcutoff;
+	Color colorkey;
+}
+
+
+struct WindowShapeMode {
+	WindowShapeModeEnum mode;
+	WindowShapeParams parameters;
+}
+
+def TimerCallback = fn uint(uint interval, void* param);
+def TimerID = int;
+
+struct Version {
+	char major;
+	char minor;
+	char patch;
+}
+
+
+struct Locale {
+	char* language;
+	char* country;
+}
 
 fn char* getPlatform() @extern("SDL_GetPlatform");
 fn void* malloc(usz size) @extern("SDL_malloc");
@@ -1194,7 +2083,7 @@ fn double trunc(double x) @extern("SDL_trunc");
 fn float truncf(float x) @extern("SDL_truncf");
 fn double fmod(double x, double y) @extern("SDL_fmod");
 fn float fmodf(float x, float y) @extern("SDL_fmodf");
-fn double log(double x) @extern("SDL_log");
+fn double logd(double x) @extern("SDL_log");
 fn float logf(float x) @extern("SDL_logf");
 fn double log10(double x) @extern("SDL_log10");
 fn float log10f(float x) @extern("SDL_log10f");
@@ -1212,9 +2101,9 @@ fn double sqrt(double x) @extern("SDL_sqrt");
 fn float sqrtf(float x) @extern("SDL_sqrtf");
 fn double tan(double x) @extern("SDL_tan");
 fn float tanf(float x) @extern("SDL_tanf");
-fn SDL_iconv_t iconvOpen(char* tocode, char* fromcode) @extern("SDL_iconv_open");
-fn int iconvClose(SDL_iconv_t cd) @extern("SDL_iconv_close");
-fn usz iconV(SDL_iconv_t cd, char** inbuf, usz inbytesleft, char* outbuf, usz* outbytesleft) @extern("SDL_iconv");
+fn Iconv_t iconvOpen(char* tocode, char* fromcode) @extern("SDL_iconv_open");
+fn int iconvClose(Iconv_t cd) @extern("SDL_iconv_close");
+fn usz iconV(Iconv_t cd, char** inbuf, usz inbytesleft, char* outbuf, usz* outbytesleft) @extern("SDL_iconv");
 fn char* iconvString(char* tocode, char* fromcode, char* inbuf, usz inbytesleft) @extern("SDL_iconv_string");
 fn void* memcpy4(void* dst, void* src, usz dwords) @extern("SDL_memcpy4");
 fn int sizeMulOverflow(usz a, usz b, usz* ret) @extern("SDL_size_mul_overflow");
@@ -1222,9 +2111,9 @@ fn int sizeAddOverflow(usz a, usz b, usz* ret) @extern("SDL_size_add_overflow");
 fn int cMain(int argc, char argv) @extern("SDL_main");
 fn void* setMainReady() @extern("SDL_SetMainReady");
 fn AssertState reportAssertion(AssertData a1, char a2, char* a3, int a4) @extern("SDL_ReportAssertion");
-fn void* setAssertionHandler(SDL_AssertionHandler handler, void* userdata) @extern("SDL_SetAssertionHandler");
-fn SDL_AssertionHandler getDefaultAssertionHandler() @extern("SDL_GetDefaultAssertionHandler");
-fn SDL_AssertionHandler getAssertionHandler(void puserdata) @extern("SDL_GetAssertionHandler");
+fn void* setAssertionHandler(AssertionHandler handler, void* userdata) @extern("SDL_SetAssertionHandler");
+fn AssertionHandler getDefaultAssertionHandler() @extern("SDL_GetDefaultAssertionHandler");
+fn AssertionHandler getAssertionHandler(void* puserdata) @extern("SDL_GetAssertionHandler");
 fn AssertData* getAssertionReport() @extern("SDL_GetAssertionReport");
 fn void* resetAssertionReport() @extern("SDL_ResetAssertionReport");
 fn bool atomicTryLock(SpinLock* lock) @extern("SDL_AtomicTryLock");
@@ -1236,33 +2125,33 @@ fn bool atomicCAS(AtomicT* a, int oldval, int newval) @extern("SDL_AtomicCAS");
 fn int atomicSet(AtomicT* a, int v) @extern("SDL_AtomicSet");
 fn int atomicGet(AtomicT* a) @extern("SDL_AtomicGet");
 fn int atomicAdd(AtomicT* a, int v) @extern("SDL_AtomicAdd");
-fn bool atomicCASPtr(void a, void* oldval, void* newval) @extern("SDL_AtomicCASPtr");
-fn void* atomicSetPtr(void a, void* v) @extern("SDL_AtomicSetPtr");
-fn void* atomicGetPtr(void a) @extern("SDL_AtomicGetPtr");
+fn bool atomicCASPtr(void* a, void* oldval, void* newval) @extern("SDL_AtomicCASPtr");
+fn void* atomicSetPtr(void* a, void* v) @extern("SDL_AtomicSetPtr");
+fn void* atomicGetPtr(void* a) @extern("SDL_AtomicGetPtr");
 fn int setError(char* fmt, ...) @extern("SDL_SetError");
 fn char* getError() @extern("SDL_GetError");
 fn char* getErrorMsg(char* errstr, int maxlen) @extern("SDL_GetErrorMsg");
 fn void* clearError() @extern("SDL_ClearError");
 fn int error(ErrorCode code) @extern("SDL_Error");
 fn float swapFloat(float x) @extern("SDL_SwapFloat");
-fn Mutex* createMutex() @extern("SDL_CreateMutex");
-fn int lockMutex(Mutex* mutex) @extern("SDL_LockMutex");
-fn int tryLockMutex(Mutex* mutex) @extern("SDL_TryLockMutex");
-fn int unlockMutex(Mutex* mutex) @extern("SDL_UnlockMutex");
-fn void* destroyMutex(Mutex* mutex) @extern("SDL_DestroyMutex");
-fn Sem* createSemaphore(uint initial_value) @extern("SDL_CreateSemaphore");
-fn void* destroySemaphore(Sem* sem) @extern("SDL_DestroySemaphore");
-fn int smWait(Sem* sem) @extern("SDL_SemWait");
-fn int smTryWait(Sem* sem) @extern("SDL_SemTryWait");
-fn int smWaitTimeout(Sem* sem, uint timeout) @extern("SDL_SemWaitTimeout");
-fn int smPost(Sem* sem) @extern("SDL_SemPost");
-fn uint semValue(Sem* sem) @extern("SDL_SemValue");
-fn SDL_cond* createCond() @extern("SDL_CreateCond");
-fn void* destroyCond(SDL_cond* cond) @extern("SDL_DestroyCond");
-fn int condSignal(SDL_cond* cond) @extern("SDL_CondSignal");
-fn int condBroadcast(SDL_cond* cond) @extern("SDL_CondBroadcast");
-fn int condWait(SDL_cond* cond, Mutex* mutex) @extern("SDL_CondWait");
-fn int condWaitTimeout(SDL_cond* cond, Mutex* mutex, uint ms) @extern("SDL_CondWaitTimeout");
+fn Mutex createMutex() @extern("SDL_CreateMutex");
+fn int lockMutex(Mutex mutex) @extern("SDL_LockMutex");
+fn int tryLockMutex(Mutex mutex) @extern("SDL_TryLockMutex");
+fn int unlockMutex(Mutex mutex) @extern("SDL_UnlockMutex");
+fn void* destroyMutex(Mutex mutex) @extern("SDL_DestroyMutex");
+fn Sem createSemaphore(uint initial_value) @extern("SDL_CreateSemaphore");
+fn void* destroySemaphore(Sem sem) @extern("SDL_DestroySemaphore");
+fn int smWait(Sem sem) @extern("SDL_SemWait");
+fn int smTryWait(Sem sem) @extern("SDL_SemTryWait");
+fn int smWaitTimeout(Sem sem, uint timeout) @extern("SDL_SemWaitTimeout");
+fn int smPost(Sem sem) @extern("SDL_SemPost");
+fn uint semValue(Sem sem) @extern("SDL_SemValue");
+fn Cond createCond() @extern("SDL_CreateCond");
+fn void* destroyCond(Cond cond) @extern("SDL_DestroyCond");
+fn int condSignal(Cond cond) @extern("CondSignal");
+fn int condBroadcast(Cond cond) @extern("CondBroadcast");
+fn int condWait(Cond cond, Mutex mutex) @extern("CondWait");
+fn int condWaitTimeout(Cond cond, Mutex mutex, uint ms) @extern("CondWaitTimeout");
 
 // NEED TO IMPLEMENT THIS IN C3
 // fn Thread createThread(Threadfn fn, char name, void* data) @extern("SDL_CreateThread");
@@ -1288,15 +2177,15 @@ fn RWops rwFromFile(char file, char* mode) @extern("SDL_RWFromFile");
 // NEED TO LOOK INTO THIS ONE...
 // fn RWops* rwFromFP(FILE* fp, bool autoclose) @extern("SDL_RWFromFP");
 
-fn RWops rwFromMem(void mem, int size) @extern("SDL_RWFromMem");
-fn RWops rwFromConstMem(void mem, int size) @extern("SDL_RWFromConstMem");
+fn RWops rwFromMem(void* mem, int size) @extern("SDL_RWFromMem");
+fn RWops rwFromConstMem(void* mem, int size) @extern("SDL_RWFromConstMem");
 fn RWops* allocRW() @extern("SDL_AllocRW");
 fn void* freeRW(RWops* area) @extern("SDL_FreeRW");
 fn long rwSize(RWops* context) @extern("SDL_RWsize");
 fn long rwSeek(RWops* context, long offset, int whence) @extern("SDL_RWseek");
 fn long rwTell(RWops* context) @extern("SDL_RWtell");
-fn usz rwRead(RWops context, void ptr, usz size, usz maxnum) @extern("SDL_RWread");
-fn usz rwWrite(RWops context, void ptr, usz size, usz num) @extern("SDL_RWwrite");
+fn usz rwRead(RWops context, void* ptr, usz size, usz maxnum) @extern("SDL_RWread");
+fn usz rwWrite(RWops context, void* ptr, usz size, usz num) @extern("SDL_RWwrite");
 fn int rwClose(RWops* context) @extern("SDL_RWclose");
 fn void* loadFile_RW(RWops* src, usz* datasize, int freesrc) @extern("SDL_LoadFile_RW");
 fn void* loadFile(char* file, usz* datasize) @extern("SDL_LoadFile");
@@ -1334,8 +2223,8 @@ fn void* freeWAV(char* audio_buf) @extern("SDL_FreeWAV");
 fn int buildAudioCVT(AudioCVT* cvt, AudioFormat src_format, char src_channels, int src_rate, AudioFormat dst_format, char dst_channels, int dst_rate) @extern("SDL_BuildAudioCVT");
 fn int convertAudio(AudioCVT* cvt) @extern("SDL_ConvertAudio");
 fn AudioStream* newAudioStream(AudioFormat src_format, char src_channels, int src_rate, AudioFormat dst_format, char dst_channels, int dst_rate) @extern("SDL_NewAudioStream");
-fn int audioStreamPut(AudioStream stream, void buf, int len) @extern("SDL_AudioStreamPut");
-fn int audioStreamGet(AudioStream stream, void buf, int len) @extern("SDL_AudioStreamGet");
+fn int audioStreamPut(AudioStream stream, void* buf, int len) @extern("SDL_AudioStreamPut");
+fn int audioStreamGet(AudioStream stream, void* buf, int len) @extern("SDL_AudioStreamGet");
 fn int audioStreamAvailable(AudioStream* stream) @extern("SDL_AudioStreamAvailable");
 fn int audioStreamFlush(AudioStream* stream) @extern("SDL_AudioStreamFlush");
 fn void* audioStreamClear(AudioStream* stream) @extern("SDL_AudioStreamClear");
@@ -1415,8 +2304,8 @@ fn bool intersectFRectAndLine(FRect* rect, float* x1, float* y1, float* x2, floa
 fn BlendMode composeCustomBlendMode(BlendFactor srcColorFactor, BlendFactor dstColorFactor, BlendOperation colorOperation, BlendFactor srcAlphaFactor, BlendFactor dstAlphaFactor, BlendOperation alphaOperation) @extern("SDL_ComposeCustomBlendMode");
 fn Surface* createRGBSurface(uint flags, int width, int height, int depth, uint rmask, uint gmask, uint bmask, uint amask) @extern("SDL_CreateRGBSurface");
 fn Surface* createRGBSurfaceWithFormat(uint flags, int width, int height, int depth, uint format) @extern("SDL_CreateRGBSurfaceWithFormat");
-fn Surface createRGBSurfaceFrom(void pixels, int width, int height, int depth, int pitch, uint rmask, uint gmask, uint bmask, uint amask) @extern("SDL_CreateRGBSurfaceFrom");
-fn Surface createRGBSurfaceWithFormatFrom(void pixels, int width, int height, int depth, int pitch, uint format) @extern("SDL_CreateRGBSurfaceWithFormatFrom");
+fn Surface createRGBSurfaceFrom(void* pixels, int width, int height, int depth, int pitch, uint rmask, uint gmask, uint bmask, uint amask) @extern("SDL_CreateRGBSurfaceFrom");
+fn Surface createRGBSurfaceWithFormatFrom(void* pixels, int width, int height, int depth, int pitch, uint format) @extern("SDL_CreateRGBSurfaceWithFormatFrom");
 fn void* freeSurface(Surface* surface) @extern("SDL_FreeSurface");
 fn int setSurfacePalette(Surface* surface, Palette* palette) @extern("SDL_SetSurfacePalette");
 fn int lockSurface(Surface* surface) @extern("SDL_LockSurface");
@@ -1546,15 +2435,15 @@ fn bool glExtensionSupported(char* extension) @extern("SDL_GL_ExtensionSupported
 fn void* glResetAttributes() @extern("SDL_GL_ResetAttributes");
 fn int glSetAttribute(GLattr attr, int value) @extern("SDL_GL_SetAttribute");
 fn int glGetAttribute(GLattr attr, int* value) @extern("SDL_GL_GetAttribute");
-fn SDL_GLContext glCreateContext(Window* window) @extern("SDL_GL_CreateContext");
-fn int glMakeCurrent(Window* window, SDL_GLContext context) @extern("SDL_GL_MakeCurrent");
+fn GLContext glCreateContext(Window* window) @extern("SDL_GL_CreateContext");
+fn int glMakeCurrent(Window* window, GLContext context) @extern("SDL_GL_MakeCurrent");
 fn Window* glGetCurrentWindow() @extern("SDL_GL_GetCurrentWindow");
-fn SDL_GLContext glGetCurrentContext() @extern("SDL_GL_GetCurrentContext");
+fn GLContext glGetCurrentContext() @extern("SDL_GL_GetCurrentContext");
 fn void* glGetDrawableSize(Window* window, int* w, int* h) @extern("SDL_GL_GetDrawableSize");
 fn int glSetSwapInterval(int interval) @extern("SDL_GL_SetSwapInterval");
 fn int glGetSwapInterval() @extern("SDL_GL_GetSwapInterval");
 fn void* glSwapWindow(Window* window) @extern("SDL_GL_SwapWindow");
-fn void* glDeleteContext(SDL_GLContext context) @extern("SDL_GL_DeleteContext");
+fn void* glDeleteContext(GLContext context) @extern("SDL_GL_DeleteContext");
 fn Window* getKeyboardFocus() @extern("SDL_GetKeyboardFocus");
 fn char* getKeyboardState(int* numkeys) @extern("SDL_GetKeyboardState");
 fn void* resetKeyboard() @extern("SDL_ResetKeyboard");
@@ -1599,211 +2488,211 @@ fn int numJoysticks() @extern("SDL_NumJoysticks");
 fn char* joystickNameForIndex(int device_index) @extern("SDL_JoystickNameForIndex");
 fn char* joystickPathForIndex(int device_index) @extern("SDL_JoystickPathForIndex");
 fn int joystickGetDevicePlayerIndex(int device_index) @extern("SDL_JoystickGetDevicePlayerIndex");
-fn SDL_JoystickGUID joystickGetDeviceGUID(int device_index) @extern("SDL_JoystickGetDeviceGUID");
+fn JoystickGUID joystickGetDeviceGUID(int device_index) @extern("SDL_JoystickGetDeviceGUID");
 fn ushort joystickGetDeviceVendor(int device_index) @extern("SDL_JoystickGetDeviceVendor");
 fn ushort joystickGetDeviceProduct(int device_index) @extern("SDL_JoystickGetDeviceProduct");
 fn ushort joystickGetDeviceProductVersion(int device_index) @extern("SDL_JoystickGetDeviceProductVersion");
-fn SDL_JoystickType joystickGetDeviceType(int device_index) @extern("SDL_JoystickGetDeviceType");
-fn SDL_JoystickID joystickGetDeviceInstanceID(int device_index) @extern("SDL_JoystickGetDeviceInstanceID");
-fn SDL_Joystick* joystickOpen(int device_index) @extern("SDL_JoystickOpen");
-fn SDL_Joystick* joystickFromInstanceID(SDL_JoystickID instance_id) @extern("SDL_JoystickFromInstanceID");
-fn SDL_Joystick* joystickFromPlayerIndex(int player_index) @extern("SDL_JoystickFromPlayerIndex");
-fn int joystickAttachVirtual(SDL_JoystickType type, int naxes, int nbuttons, int nhats) @extern("SDL_JoystickAttachVirtual");
-fn int joystickAttachVirtualEx(SDL_VirtualJoystickDesc* desc) @extern("SDL_JoystickAttachVirtualEx");
+fn JoystickType joystickGetDeviceType(int device_index) @extern("SDL_JoystickGetDeviceType");
+fn JoystickID joystickGetDeviceInstanceID(int device_index) @extern("SDL_JoystickGetDeviceInstanceID");
+fn Joystick* joystickOpen(int device_index) @extern("SDL_JoystickOpen");
+fn Joystick* joystickFromInstanceID(JoystickID instance_id) @extern("SDL_JoystickFromInstanceID");
+fn Joystick* joystickFromPlayerIndex(int player_index) @extern("SDL_JoystickFromPlayerIndex");
+fn int joystickAttachVirtual(JoystickType type, int naxes, int nbuttons, int nhats) @extern("SDL_JoystickAttachVirtual");
+fn int joystickAttachVirtualEx(VirtualJoystickDesc* desc) @extern("SDL_JoystickAttachVirtualEx");
 fn int joystickDetachVirtual(int device_index) @extern("SDL_JoystickDetachVirtual");
 fn bool joystickIsVirtual(int device_index) @extern("SDL_JoystickIsVirtual");
-fn int joystickSetVirtualAxis(SDL_Joystick* joystick, int axis, int value) @extern("SDL_JoystickSetVirtualAxis");
-fn int joystickSetVirtualButton(SDL_Joystick* joystick, int button, char value) @extern("SDL_JoystickSetVirtualButton");
-fn int joystickSetVirtualHat(SDL_Joystick* joystick, int hat, char value) @extern("SDL_JoystickSetVirtualHat");
-fn char* joystickName(SDL_Joystick* joystick) @extern("SDL_JoystickName");
-fn char* joystickPath(SDL_Joystick* joystick) @extern("SDL_JoystickPath");
-fn int joystickGetPlayerIndex(SDL_Joystick* joystick) @extern("SDL_JoystickGetPlayerIndex");
-fn void* joystickSetPlayerIndex(SDL_Joystick* joystick, int player_index) @extern("SDL_JoystickSetPlayerIndex");
-fn SDL_JoystickGUID joystickGetGUID(SDL_Joystick* joystick) @extern("SDL_JoystickGetGUID");
-fn ushort joystickGetVendor(SDL_Joystick* joystick) @extern("SDL_JoystickGetVendor");
-fn ushort joystickGetProduct(SDL_Joystick* joystick) @extern("SDL_JoystickGetProduct");
-fn ushort joystickGetProductVersion(SDL_Joystick* joystick) @extern("SDL_JoystickGetProductVersion");
-fn ushort joystickGetFirmwareVersion(SDL_Joystick* joystick) @extern("SDL_JoystickGetFirmwareVersion");
-fn char* joystickGetSerial(SDL_Joystick* joystick) @extern("SDL_JoystickGetSerial");
-fn SDL_JoystickType joystickGetType(SDL_Joystick* joystick) @extern("SDL_JoystickGetType");
-fn void* joystickGetGUIDString(SDL_JoystickGUID guid, char* pszGUID, int cbGUID) @extern("SDL_JoystickGetGUIDString");
-fn SDL_JoystickGUID joystickGetGUIDFromString(char* pchGUID) @extern("SDL_JoystickGetGUIDFromString");
-fn void* getJoystickGUIDInfo(SDL_JoystickGUID guid, ushort* vendor, ushort* product, ushort* version, ushort* crc16) @extern("SDL_GetJoystickGUIDInfo");
-fn bool joystickGetAttached(SDL_Joystick* joystick) @extern("SDL_JoystickGetAttached");
-fn SDL_JoystickID joystickInstanceID(SDL_Joystick* joystick) @extern("SDL_JoystickInstanceID");
-fn int joystickNumAxes(SDL_Joystick* joystick) @extern("SDL_JoystickNumAxes");
-fn int joystickNumBalls(SDL_Joystick* joystick) @extern("SDL_JoystickNumBalls");
-fn int joystickNumHats(SDL_Joystick* joystick) @extern("SDL_JoystickNumHats");
-fn int joystickNumButtons(SDL_Joystick* joystick) @extern("SDL_JoystickNumButtons");
+fn int joystickSetVirtualAxis(Joystick* joystick, int axis, int value) @extern("SDL_JoystickSetVirtualAxis");
+fn int joystickSetVirtualButton(Joystick* joystick, int button, char value) @extern("SDL_JoystickSetVirtualButton");
+fn int joystickSetVirtualHat(Joystick* joystick, int hat, char value) @extern("SDL_JoystickSetVirtualHat");
+fn char* joystickName(Joystick* joystick) @extern("SDL_JoystickName");
+fn char* joystickPath(Joystick* joystick) @extern("SDL_JoystickPath");
+fn int joystickGetPlayerIndex(Joystick* joystick) @extern("SDL_JoystickGetPlayerIndex");
+fn void* joystickSetPlayerIndex(Joystick* joystick, int player_index) @extern("SDL_JoystickSetPlayerIndex");
+fn JoystickGUID joystickGetGUID(Joystick* joystick) @extern("SDL_JoystickGetGUID");
+fn ushort joystickGetVendor(Joystick* joystick) @extern("SDL_JoystickGetVendor");
+fn ushort joystickGetProduct(Joystick* joystick) @extern("SDL_JoystickGetProduct");
+fn ushort joystickGetProductVersion(Joystick* joystick) @extern("SDL_JoystickGetProductVersion");
+fn ushort joystickGetFirmwareVersion(Joystick* joystick) @extern("SDL_JoystickGetFirmwareVersion");
+fn char* joystickGetSerial(Joystick* joystick) @extern("SDL_JoystickGetSerial");
+fn JoystickType joystickGetType(Joystick* joystick) @extern("SDL_JoystickGetType");
+fn void* joystickGetGUIDString(JoystickGUID guid, char* pszGUID, int cbGUID) @extern("SDL_JoystickGetGUIDString");
+fn JoystickGUID joystickGetGUIDFromString(char* pchGUID) @extern("SDL_JoystickGetGUIDFromString");
+fn void* getJoystickGUIDInfo(JoystickGUID guid, ushort* vendor, ushort* product, ushort* version, ushort* crc16) @extern("SDL_GetJoystickGUIDInfo");
+fn bool joystickGetAttached(Joystick* joystick) @extern("SDL_JoystickGetAttached");
+fn JoystickID joystickInstanceID(Joystick* joystick) @extern("SDL_JoystickInstanceID");
+fn int joystickNumAxes(Joystick* joystick) @extern("SDL_JoystickNumAxes");
+fn int joystickNumBalls(Joystick* joystick) @extern("SDL_JoystickNumBalls");
+fn int joystickNumHats(Joystick* joystick) @extern("SDL_JoystickNumHats");
+fn int joystickNumButtons(Joystick* joystick) @extern("SDL_JoystickNumButtons");
 fn void* joystickUpdate() @extern("SDL_JoystickUpdate");
 fn int joystickEventState(int state) @extern("SDL_JoystickEventState");
-fn int joystickGetAxis(SDL_Joystick* joystick, int axis) @extern("SDL_JoystickGetAxis");
-fn bool joystickGetAxisInitialState(SDL_Joystick* joystick, int axis, int* state) @extern("SDL_JoystickGetAxisInitialState");
-fn char joystickGetHat(SDL_Joystick* joystick, int hat) @extern("SDL_JoystickGetHat");
-fn int joystickGetBall(SDL_Joystick* joystick, int ball, int* dx, int* dy) @extern("SDL_JoystickGetBall");
-fn char joystickGetButton(SDL_Joystick* joystick, int button) @extern("SDL_JoystickGetButton");
-fn int joystickRumble(SDL_Joystick* joystick, uint low_frequency_rumble, ushort high_frequency_rumble, ushort duration_ms) @extern("SDL_JoystickRumble");
-fn int joystickRumbleTriggers(SDL_Joystick* joystick, ushort left_rumble, ushort right_rumble, uint duration_ms) @extern("SDL_JoystickRumbleTriggers");
-fn bool joystickHasLED(SDL_Joystick* joystick) @extern("SDL_JoystickHasLED");
-fn bool joystickHasRumble(SDL_Joystick* joystick) @extern("SDL_JoystickHasRumble");
-fn bool joystickHasRumbleTriggers(SDL_Joystick* joystick) @extern("SDL_JoystickHasRumbleTriggers");
-fn int joystickSetLED(SDL_Joystick* joystick, char red, char green, char blue) @extern("SDL_JoystickSetLED");
-fn int joystickSendEffect(SDL_Joystick* joystick, void* data, int size) @extern("SDL_JoystickSendEffect");
-fn void* joystickClose(SDL_Joystick* joystick) @extern("SDL_JoystickClose");
-fn SDL_JoystickPowerLevel joystickCurrentPowerLevel(SDL_Joystick* joystick) @extern("SDL_JoystickCurrentPowerLevel");
+fn int joystickGetAxis(Joystick* joystick, int axis) @extern("SDL_JoystickGetAxis");
+fn bool joystickGetAxisInitialState(Joystick* joystick, int axis, int* state) @extern("SDL_JoystickGetAxisInitialState");
+fn char joystickGetHat(Joystick* joystick, int hat) @extern("SDL_JoystickGetHat");
+fn int joystickGetBall(Joystick* joystick, int ball, int* dx, int* dy) @extern("SDL_JoystickGetBall");
+fn char joystickGetButton(Joystick* joystick, int button) @extern("SDL_JoystickGetButton");
+fn int joystickRumble(Joystick* joystick, uint low_frequency_rumble, ushort high_frequency_rumble, ushort duration_ms) @extern("SDL_JoystickRumble");
+fn int joystickRumbleTriggers(Joystick* joystick, ushort left_rumble, ushort right_rumble, uint duration_ms) @extern("SDL_JoystickRumbleTriggers");
+fn bool joystickHasLED(Joystick* joystick) @extern("SDL_JoystickHasLED");
+fn bool joystickHasRumble(Joystick* joystick) @extern("SDL_JoystickHasRumble");
+fn bool joystickHasRumbleTriggers(Joystick* joystick) @extern("SDL_JoystickHasRumbleTriggers");
+fn int joystickSetLED(Joystick* joystick, char red, char green, char blue) @extern("SDL_JoystickSetLED");
+fn int joystickSendEffect(Joystick* joystick, void* data, int size) @extern("SDL_JoystickSendEffect");
+fn void* joystickClose(Joystick* joystick) @extern("SDL_JoystickClose");
+fn JoystickPowerLevel joystickCurrentPowerLevel(Joystick* joystick) @extern("SDL_JoystickCurrentPowerLevel");
 fn void* lockSensors() @extern("SDL_LockSensors");
 fn void* unlockSensors() @extern("SDL_UnlockSensors");
 fn int numSensors() @extern("SDL_NumSensors");
 fn char* sensorGetDeviceName(int device_index) @extern("SDL_SensorGetDeviceName");
-fn SDL_SensorType sensorGetDeviceType(int device_index) @extern("SDL_SensorGetDeviceType");
+fn SensorType sensorGetDeviceType(int device_index) @extern("SDL_SensorGetDeviceType");
 fn int sensorGetDeviceNonPortableType(int device_index) @extern("SDL_SensorGetDeviceNonPortableType");
-fn SDL_SensorID sensorGetDeviceInstanceID(int device_index) @extern("SDL_SensorGetDeviceInstanceID");
-fn SDL_Sensor* sensorOpen(int device_index) @extern("SDL_SensorOpen");
-fn SDL_Sensor* sensorFromInstanceID(SDL_SensorID instance_id) @extern("SDL_SensorFromInstanceID");
-fn char* sensorGetName(SDL_Sensor* sensor) @extern("SDL_SensorGetName");
-fn SDL_SensorType sensorGetType(SDL_Sensor* sensor) @extern("SDL_SensorGetType");
-fn int sensorGetNonPortableType(SDL_Sensor* sensor) @extern("SDL_SensorGetNonPortableType");
-fn SDL_SensorID sensorGetInstanceID(SDL_Sensor* sensor) @extern("SDL_SensorGetInstanceID");
-fn int sensorGetData(SDL_Sensor* sensor, float* data, int num_values) @extern("SDL_SensorGetData");
-fn int sensorGetDataWithTimestamp(SDL_Sensor* sensor, ulong* timestamp, float* data, int num_values) @extern("SDL_SensorGetDataWithTimestamp");
-fn void* sensorClose(SDL_Sensor* sensor) @extern("SDL_SensorClose");
+fn SensorID sensorGetDeviceInstanceID(int device_index) @extern("SDL_SensorGetDeviceInstanceID");
+fn Sensor* sensorOpen(int device_index) @extern("SDL_SensorOpen");
+fn Sensor* sensorFromInstanceID(SensorID instance_id) @extern("SDL_SensorFromInstanceID");
+fn char* sensorGetName(Sensor* sensor) @extern("SDL_SensorGetName");
+fn SensorType sensorGetType(Sensor* sensor) @extern("SDL_SensorGetType");
+fn int sensorGetNonPortableType(Sensor* sensor) @extern("SDL_SensorGetNonPortableType");
+fn SensorID sensorGetInstanceID(Sensor* sensor) @extern("SDL_SensorGetInstanceID");
+fn int sensorGetData(Sensor* sensor, float* data, int num_values) @extern("SDL_SensorGetData");
+fn int sensorGetDataWithTimestamp(Sensor* sensor, ulong* timestamp, float* data, int num_values) @extern("SDL_SensorGetDataWithTimestamp");
+fn void* sensorClose(Sensor* sensor) @extern("SDL_SensorClose");
 fn void* sensorUpdate() @extern("SDL_SensorUpdate");
 fn int gameControllerAddMappingsFromRW(RWops* rw, int freerw) @extern("SDL_GameControllerAddMappingsFromRW");
 fn int gameControllerAddMapping(char* mappingString) @extern("SDL_GameControllerAddMapping");
 fn int gameControllerNumMappings() @extern("SDL_GameControllerNumMappings");
 fn char* gameControllerMappingForIndex(int mapping_index) @extern("SDL_GameControllerMappingForIndex");
-fn char* gameControllerMappingForGUID(SDL_JoystickGUID guid) @extern("SDL_GameControllerMappingForGUID");
-fn char* gameControllerMapping(SDL_GameController* gamecontroller) @extern("SDL_GameControllerMapping");
+fn char* gameControllerMappingForGUID(JoystickGUID guid) @extern("SDL_GameControllerMappingForGUID");
+fn char* gameControllerMapping(GameController gamecontroller) @extern("SDL_GameControllerMapping");
 fn bool isGameController(int joystick_index) @extern("SDL_IsGameController");
 fn char* gameControllerNameForIndex(int joystick_index) @extern("SDL_GameControllerNameForIndex");
 fn char* gameControllerPathForIndex(int joystick_index) @extern("SDL_GameControllerPathForIndex");
-fn SDL_GameControllerType gameControllerTypeForIndex(int joystick_index) @extern("SDL_GameControllerTypeForIndex");
+fn GameControllerType gameControllerTypeForIndex(int joystick_index) @extern("SDL_GameControllerTypeForIndex");
 fn char* gameControllerMappingForDeviceIndex(int joystick_index) @extern("SDL_GameControllerMappingForDeviceIndex");
-fn SDL_GameController* gameControllerOpen(int joystick_index) @extern("SDL_GameControllerOpen");
-fn SDL_GameController* gameControllerFromInstanceID(SDL_JoystickID joyid) @extern("SDL_GameControllerFromInstanceID");
-fn SDL_GameController* gameControllerFromPlayerIndex(int player_index) @extern("SDL_GameControllerFromPlayerIndex");
-fn char* gameControllerName(SDL_GameController* gamecontroller) @extern("SDL_GameControllerName");
-fn char* gameControllerPath(SDL_GameController* gamecontroller) @extern("SDL_GameControllerPath");
-fn SDL_GameControllerType gameControllerGetType(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetType");
-fn int gameControllerGetPlayerIndex(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetPlayerIndex");
-fn void* gameControllerSetPlayerIndex(SDL_GameController* gamecontroller, int player_index) @extern("SDL_GameControllerSetPlayerIndex");
-fn ushort gameControllerGetVendor(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetVendor");
-fn ushort gameControllerGetProduct(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetProduct");
-fn ushort gameControllerGetProductVersion(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetProductVersion");
-fn ushort gameControllerGetFirmwareVersion(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetFirmwareVersion");
-fn char* gameControllerGetSerial(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetSerial");
-fn bool gameControllerGetAttached(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetAttached");
-fn SDL_Joystick* gameControllerGetJoystick(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetJoystick");
+fn GameController* gameControllerOpen(int joystick_index) @extern("SDL_GameControllerOpen");
+fn GameController* gameControllerFromInstanceID(JoystickID joyid) @extern("SDL_GameControllerFromInstanceID");
+fn GameController* gameControllerFromPlayerIndex(int player_index) @extern("SDL_GameControllerFromPlayerIndex");
+fn char* gameControllerName(GameController gamecontroller) @extern("SDL_GameControllerName");
+fn char* gameControllerPath(GameController gamecontroller) @extern("SDL_GameControllerPath");
+fn GameControllerType gameControllerGetType(GameController gamecontroller) @extern("SDL_GameControllerGetType");
+fn int gameControllerGetPlayerIndex(GameController gamecontroller) @extern("SDL_GameControllerGetPlayerIndex");
+fn void* gameControllerSetPlayerIndex(GameController gamecontroller, int player_index) @extern("SDL_GameControllerSetPlayerIndex");
+fn ushort gameControllerGetVendor(GameController gamecontroller) @extern("SDL_GameControllerGetVendor");
+fn ushort gameControllerGetProduct(GameController gamecontroller) @extern("SDL_GameControllerGetProduct");
+fn ushort gameControllerGetProductVersion(GameController gamecontroller) @extern("SDL_GameControllerGetProductVersion");
+fn ushort gameControllerGetFirmwareVersion(GameController gamecontroller) @extern("SDL_GameControllerGetFirmwareVersion");
+fn char* gameControllerGetSerial(GameController gamecontroller) @extern("SDL_GameControllerGetSerial");
+fn bool gameControllerGetAttached(GameController gamecontroller) @extern("SDL_GameControllerGetAttached");
+fn Joystick* gameControllerGetJoystick(GameController gamecontroller) @extern("SDL_GameControllerGetJoystick");
 fn int gameControllerEventState(int state) @extern("SDL_GameControllerEventState");
 fn void* gameControllerUpdate() @extern("SDL_GameControllerUpdate");
-fn SDL_GameControllerAxis gameControllerGetAxisFromString(char* str) @extern("SDL_GameControllerGetAxisFromString");
-fn char* gameControllerGetStringForAxis(SDL_GameControllerAxis axis) @extern("SDL_GameControllerGetStringForAxis");
-fn SDL_GameControllerButtonBind gameControllerGetBindForAxis(SDL_GameController* gamecontroller, SDL_GameControllerAxis axis) @extern("SDL_GameControllerGetBindForAxis");
-fn bool gameControllerHasAxis(SDL_GameController* gamecontroller, SDL_GameControllerAxis axis) @extern("SDL_GameControllerHasAxis");
-fn int gameControllerGetAxis(SDL_GameController* gamecontroller, SDL_GameControllerAxis axis) @extern("SDL_GameControllerGetAxis");
-fn SDL_GameControllerButton gameControllerGetButtonFromString(char* str) @extern("SDL_GameControllerGetButtonFromString");
-fn char* gameControllerGetStringForButton(SDL_GameControllerButton button) @extern("SDL_GameControllerGetStringForButton");
-fn SDL_GameControllerButtonBind gameControllerGetBindForButton(SDL_GameController* gamecontroller, SDL_GameControllerButton button) @extern("SDL_GameControllerGetBindForButton");
-fn bool gameControllerHasButton(SDL_GameController* gamecontroller, SDL_GameControllerButton button) @extern("SDL_GameControllerHasButton");
-fn char gameControllerGetButton(SDL_GameController* gamecontroller, SDL_GameControllerButton button) @extern("SDL_GameControllerGetButton");
-fn int gameControllerGetNumTouchpads(SDL_GameController* gamecontroller) @extern("SDL_GameControllerGetNumTouchpads");
-fn int gameControllerGetNumTouchpadFingers(SDL_GameController* gamecontroller, int touchpad) @extern("SDL_GameControllerGetNumTouchpadFingers");
-fn int gameControllerGetTouchpadFinger(SDL_GameController* gamecontroller, int touchpad, int finger, char* state, float* x, float* y, float* pressure) @extern("SDL_GameControllerGetTouchpadFinger");
-fn bool gameControllerHasSensor(SDL_GameController* gamecontroller, SDL_SensorType type) @extern("SDL_GameControllerHasSensor");
-fn int gameControllerSetSensorEnabled(SDL_GameController* gamecontroller, SDL_SensorType type, bool enabled) @extern("SDL_GameControllerSetSensorEnabled");
-fn bool gameControllerIsSensorEnabled(SDL_GameController* gamecontroller, SDL_SensorType type) @extern("SDL_GameControllerIsSensorEnabled");
-fn float gameControllerGetSensorDataRate(SDL_GameController* gamecontroller, SDL_SensorType type) @extern("SDL_GameControllerGetSensorDataRate");
-fn int gameControllerGetSensorData(SDL_GameController* gamecontroller, SDL_SensorType type, float* data, int num_values) @extern("SDL_GameControllerGetSensorData");
-fn int gameControllerGetSensorDataWithTimestamp(SDL_GameController* gamecontroller, SDL_SensorType type, ulong* timestamp, float* data, int num_values) @extern("SDL_GameControllerGetSensorDataWithTimestamp");
-fn int gameControllerRumble(SDL_GameController* gamecontroller, ushort low_frequency_rumble, ushort high_frequency_rumble, uint duration_ms) @extern("SDL_GameControllerRumble");
-fn int gameControllerRumbleTriggers(SDL_GameController* gamecontroller, ushort left_rumble, ushort right_rumble, uint duration_ms) @extern("SDL_GameControllerRumbleTriggers");
-fn bool gameControllerHasLED(SDL_GameController* gamecontroller) @extern("SDL_GameControllerHasLED");
-fn bool gameControllerHasRumble(SDL_GameController* gamecontroller) @extern("SDL_GameControllerHasRumble");
-fn bool gameControllerHasRumbleTriggers(SDL_GameController* gamecontroller) @extern("SDL_GameControllerHasRumbleTriggers");
-fn int gameControllerSetLED(SDL_GameController* gamecontroller, char red, char green, char blue) @extern("SDL_GameControllerSetLED");
-fn int gameControllerSendEffect(SDL_GameController* gamecontroller, void* data, int size) @extern("SDL_GameControllerSendEffect");
-fn void* gameControllerClose(SDL_GameController* gamecontroller) @extern("SDL_GameControllerClose");
-fn char* gameControllerGetAppleSFSymbolsNameForButton(SDL_GameController* gamecontroller, SDL_GameControllerButton button) @extern("SDL_GameControllerGetAppleSFSymbolsNameForButton");
-fn char* gameControllerGetAppleSFSymbolsNameForAxis(SDL_GameController* gamecontroller, SDL_GameControllerAxis axis) @extern("SDL_GameControllerGetAppleSFSymbolsNameForAxis");
+fn GameControllerAxis gameControllerGetAxisFromString(char* str) @extern("SDL_GameControllerGetAxisFromString");
+fn char* gameControllerGetStringForAxis(GameControllerAxis axis) @extern("SDL_GameControllerGetStringForAxis");
+fn GameControllerButtonBind gameControllerGetBindForAxis(GameController gamecontroller, GameControllerAxis axis) @extern("SDL_GameControllerGetBindForAxis");
+fn bool gameControllerHasAxis(GameController gamecontroller, GameControllerAxis axis) @extern("SDL_GameControllerHasAxis");
+fn int gameControllerGetAxis(GameController gamecontroller, GameControllerAxis axis) @extern("SDL_GameControllerGetAxis");
+fn GameControllerButton gameControllerGetButtonFromString(char* str) @extern("SDL_GameControllerGetButtonFromString");
+fn char* gameControllerGetStringForButton(GameControllerButton button) @extern("SDL_GameControllerGetStringForButton");
+fn GameControllerButtonBind gameControllerGetBindForButton(GameController gamecontroller, GameControllerButton button) @extern("SDL_GameControllerGetBindForButton");
+fn bool gameControllerHasButton(GameController gamecontroller, GameControllerButton button) @extern("SDL_GameControllerHasButton");
+fn char gameControllerGetButton(GameController gamecontroller, GameControllerButton button) @extern("SDL_GameControllerGetButton");
+fn int gameControllerGetNumTouchpads(GameController gamecontroller) @extern("SDL_GameControllerGetNumTouchpads");
+fn int gameControllerGetNumTouchpadFingers(GameController gamecontroller, int touchpad) @extern("SDL_GameControllerGetNumTouchpadFingers");
+fn int gameControllerGetTouchpadFinger(GameController gamecontroller, int touchpad, int finger, char* state, float* x, float* y, float* pressure) @extern("SDL_GameControllerGetTouchpadFinger");
+fn bool gameControllerHasSensor(GameController gamecontroller, SensorType type) @extern("SDL_GameControllerHasSensor");
+fn int gameControllerSetSensorEnabled(GameController gamecontroller, SensorType type, bool enabled) @extern("SDL_GameControllerSetSensorEnabled");
+fn bool gameControllerIsSensorEnabled(GameController gamecontroller, SensorType type) @extern("SDL_GameControllerIsSensorEnabled");
+fn float gameControllerGetSensorDataRate(GameController gamecontroller, SensorType type) @extern("SDL_GameControllerGetSensorDataRate");
+fn int gameControllerGetSensorData(GameController gamecontroller, SensorType type, float* data, int num_values) @extern("SDL_GameControllerGetSensorData");
+fn int gameControllerGetSensorDataWithTimestamp(GameController gamecontroller, SensorType type, ulong* timestamp, float* data, int num_values) @extern("SDL_GameControllerGetSensorDataWithTimestamp");
+fn int gameControllerRumble(GameController gamecontroller, ushort low_frequency_rumble, ushort high_frequency_rumble, uint duration_ms) @extern("SDL_GameControllerRumble");
+fn int gameControllerRumbleTriggers(GameController gamecontroller, ushort left_rumble, ushort right_rumble, uint duration_ms) @extern("SDL_GameControllerRumbleTriggers");
+fn bool gameControllerHasLED(GameController gamecontroller) @extern("SDL_GameControllerHasLED");
+fn bool gameControllerHasRumble(GameController gamecontroller) @extern("SDL_GameControllerHasRumble");
+fn bool gameControllerHasRumbleTriggers(GameController gamecontroller) @extern("SDL_GameControllerHasRumbleTriggers");
+fn int gameControllerSetLED(GameController gamecontroller, char red, char green, char blue) @extern("SDL_GameControllerSetLED");
+fn int gameControllerSendEffect(GameController gamecontroller, void* data, int size) @extern("SDL_GameControllerSendEffect");
+fn void* gameControllerClose(GameController gamecontroller) @extern("SDL_GameControllerClose");
+fn char* gameControllerGetAppleSFSymbolsNameForButton(GameController gamecontroller, GameControllerButton button) @extern("SDL_GameControllerGetAppleSFSymbolsNameForButton");
+fn char* gameControllerGetAppleSFSymbolsNameForAxis(GameController gamecontroller, GameControllerAxis axis) @extern("SDL_GameControllerGetAppleSFSymbolsNameForAxis");
 fn int getNumTouchDevices() @extern("SDL_GetNumTouchDevices");
-fn SDL_TouchID getTouchDevice(int index) @extern("SDL_GetTouchDevice");
+fn TouchID getTouchDevice(int index) @extern("SDL_GetTouchDevice");
 fn char* getTouchName(int index) @extern("SDL_GetTouchName");
-fn SDL_TouchDeviceType getTouchDeviceType(SDL_TouchID touchID) @extern("SDL_GetTouchDeviceType");
-fn int getNumTouchFingers(SDL_TouchID touchID) @extern("SDL_GetNumTouchFingers");
-fn SDL_Finger* getTouchFinger(SDL_TouchID touchID, int index) @extern("SDL_GetTouchFinger");
-fn int recordGesture(SDL_TouchID touchId) @extern("SDL_RecordGesture");
+fn TouchDeviceType getTouchDeviceType(TouchID touchID) @extern("SDL_GetTouchDeviceType");
+fn int getNumTouchFingers(TouchID touchID) @extern("SDL_GetNumTouchFingers");
+fn Finger* getTouchFinger(TouchID touchID, int index) @extern("SDL_GetTouchFinger");
+fn int recordGesture(TouchID touchId) @extern("SDL_RecordGesture");// 
 fn int saveAllDollarTemplates(RWops* dst) @extern("SDL_SaveAllDollarTemplates");
-fn int saveDollarTemplate(SDL_GestureID gestureId, RWops* dst) @extern("SDL_SaveDollarTemplate");
-fn int loadDollarTemplates(SDL_TouchID touchId, RWops* src) @extern("SDL_LoadDollarTemplates");
+fn int saveDollarTemplate(GestureID gestureId, RWops* dst) @extern("SDL_SaveDollarTemplate");
+fn int loadDollarTemplates(TouchID touchId, RWops* src) @extern("SDL_LoadDollarTemplates");
 fn void* pumpEvents() @extern("SDL_PumpEvents");
-fn int peepEvents(SDL_Event* events, int numevents, SDL_eventaction action, uint minType, uint maxType) @extern("SDL_PeepEvents");
+fn int peepEvents(Event* events, int numevents, EventAction action, uint minType, uint maxType) @extern("SDL_PeepEvents");
 fn bool hasEvent(uint type) @extern("SDL_HasEvent");
 fn bool hasEvents(uint minType, uint maxType) @extern("SDL_HasEvents");
 fn void* flushEvent(uint type) @extern("SDL_FlushEvent");
 fn void* flushEvents(uint minType, uint maxType) @extern("SDL_FlushEvents");
-fn int pollEvent(SDL_Event* event) @extern("SDL_PollEvent");
-fn int waitEvent(SDL_Event* event) @extern("SDL_WaitEvent");
-fn int waitEventTimeout(SDL_Event* event, int timeout) @extern("SDL_WaitEventTimeout");
-fn int pushEvent(SDL_Event* event) @extern("SDL_PushEvent");
-fn void* setEventFilter(SDL_EventFilter filter, void* userdata) @extern("SDL_SetEventFilter");
-fn bool getEventFilter(SDL_EventFilter filter, void userdata) @extern("SDL_GetEventFilter");
-fn void* addEventWatch(SDL_EventFilter filter, void* userdata) @extern("SDL_AddEventWatch");
-fn void* delEventWatch(SDL_EventFilter filter, void* userdata) @extern("SDL_DelEventWatch");
-fn void* filterEvents(SDL_EventFilter filter, void* userdata) @extern("SDL_FilterEvents");
+fn int pollEvent(Event* event) @extern("SDL_PollEvent");
+fn int waitEvent(Event* event) @extern("SDL_WaitEvent");
+fn int waitEventTimeout(Event* event, int timeout) @extern("SDL_WaitEventTimeout");
+fn int pushEvent(Event* event) @extern("SDL_PushEvent");
+fn void* setEventFilter(EventFilter filter, void* userdata) @extern("SDL_SetEventFilter");
+fn bool getEventFilter(EventFilter filter, void* userdata) @extern("SDL_GetEventFilter");
+fn void* addEventWatch(EventFilter filter, void* userdata) @extern("SDL_AddEventWatch");
+fn void* delEventWatch(EventFilter filter, void* userdata) @extern("SDL_DelEventWatch");
+fn void* filterEvents(EventFilter filter, void* userdata) @extern("SDL_FilterEvents");
 fn char eventState(uint type, int state) @extern("SDL_EventState");
 fn uint registerEvents(int numevents) @extern("SDL_RegisterEvents");
 fn char* getBasePath() @extern("SDL_GetBasePath");
 fn char* getPrefPath(char* org, char* app) @extern("SDL_GetPrefPath");
 fn int numHaptics() @extern("SDL_NumHaptics");
 fn char* hapticName(int device_index) @extern("SDL_HapticName");
-fn SDL_Haptic* hapticOpen(int device_index) @extern("SDL_HapticOpen");
+fn Haptic* hapticOpen(int device_index) @extern("SDL_HapticOpen");
 fn int hapticOpened(int device_index) @extern("SDL_HapticOpened");
-fn int hapticIndex(SDL_Haptic* haptic) @extern("SDL_HapticIndex");
+fn int hapticIndex(Haptic* haptic) @extern("SDL_HapticIndex");
 fn int mouseIsHaptic() @extern("SDL_MouseIsHaptic");
-fn SDL_Haptic* hapticOpenFromMouse() @extern("SDL_HapticOpenFromMouse");
-fn int joystickIsHaptic(SDL_Joystick* joystick) @extern("SDL_JoystickIsHaptic");
-fn SDL_Haptic hapticOpenFromJoystick(SDL_Joystick joystick) @extern("SDL_HapticOpenFromJoystick");
-fn void hapticClose(SDL_Haptic haptic) @extern("SDL_HapticClose");
-fn int hapticNumEffects(SDL_Haptic* haptic) @extern("SDL_HapticNumEffects");
-fn int hapticNumEffectsPlaying(SDL_Haptic* haptic) @extern("SDL_HapticNumEffectsPlaying");
-fn uint hapticQuery(SDL_Haptic* haptic) @extern("SDL_HapticQuery");
-fn int hapticNumAxes(SDL_Haptic* haptic) @extern("SDL_HapticNumAxes");
-fn int hapticEffectSupported(SDL_Haptic* haptic, SDL_HapticEffect* effect) @extern("SDL_HapticEffectSupported");
-fn int hapticNewEffect(SDL_Haptic* haptic, SDL_HapticEffect* effect) @extern("SDL_HapticNewEffect");
-fn int hapticUpdateEffect(SDL_Haptic* haptic, int effect, SDL_HapticEffect* data) @extern("SDL_HapticUpdateEffect");
-fn int hapticRunEffect(SDL_Haptic* haptic, int effect, uint iterations) @extern("SDL_HapticRunEffect");
-fn int hapticStopEffect(SDL_Haptic* haptic, int effect) @extern("SDL_HapticStopEffect");
-fn void hapticDestroyEffect(SDL_Haptic haptic, int effect) @extern("SDL_HapticDestroyEffect");
-fn int hapticGetEffectStatus(SDL_Haptic* haptic, int effect) @extern("SDL_HapticGetEffectStatus");
-fn int hapticSetGain(SDL_Haptic* haptic, int gain) @extern("SDL_HapticSetGain");
-fn int hapticSetAutocenter(SDL_Haptic* haptic, int autocenter) @extern("SDL_HapticSetAutocenter");
-fn int hapticPause(SDL_Haptic* haptic) @extern("SDL_HapticPause");
-fn int hapticUnpause(SDL_Haptic* haptic) @extern("SDL_HapticUnpause");
-fn int hapticStopAll(SDL_Haptic* haptic) @extern("SDL_HapticStopAll");
-fn int hapticRumbleSupported(SDL_Haptic* haptic) @extern("SDL_HapticRumbleSupported");
-fn int hapticRumbleInit(SDL_Haptic* haptic) @extern("SDL_HapticRumbleInit");
-fn int hapticRumblePlay(SDL_Haptic* haptic, float strength, uint length) @extern("SDL_HapticRumblePlay");
-fn int hapticRumbleStop(SDL_Haptic* haptic) @extern("SDL_HapticRumbleStop");
+fn Haptic* hapticOpenFromMouse() @extern("SDL_HapticOpenFromMouse");
+fn int joystickIsHaptic(Joystick* joystick) @extern("SDL_JoystickIsHaptic");
+fn Haptic hapticOpenFromJoystick(Joystick joystick) @extern("SDL_HapticOpenFromJoystick");
+fn void hapticClose(Haptic haptic) @extern("SDL_HapticClose");
+fn int hapticNumEffects(Haptic* haptic) @extern("SDL_HapticNumEffects");
+fn int hapticNumEffectsPlaying(Haptic* haptic) @extern("SDL_HapticNumEffectsPlaying");
+fn uint hapticQuery(Haptic* haptic) @extern("SDL_HapticQuery");
+fn int hapticNumAxes(Haptic* haptic) @extern("SDL_HapticNumAxes");
+fn int hapticEffectSupported(Haptic* haptic, HapticEffect* effect) @extern("SDL_HapticEffectSupported");
+fn int hapticNewEffect(Haptic* haptic, HapticEffect* effect) @extern("SDL_HapticNewEffect");
+fn int hapticUpdateEffect(Haptic* haptic, int effect, HapticEffect* data) @extern("SDL_HapticUpdateEffect");
+fn int hapticRunEffect(Haptic* haptic, int effect, uint iterations) @extern("SDL_HapticRunEffect");
+fn int hapticStopEffect(Haptic* haptic, int effect) @extern("SDL_HapticStopEffect");
+fn void hapticDestroyEffect(Haptic haptic, int effect) @extern("SDL_HapticDestroyEffect");
+fn int hapticGetEffectStatus(Haptic* haptic, int effect) @extern("SDL_HapticGetEffectStatus");
+fn int hapticSetGain(Haptic* haptic, int gain) @extern("SDL_HapticSetGain");
+fn int hapticSetAutocenter(Haptic* haptic, int autocenter) @extern("SDL_HapticSetAutocenter");
+fn int hapticPause(Haptic* haptic) @extern("SDL_HapticPause");
+fn int hapticUnpause(Haptic* haptic) @extern("SDL_HapticUnpause");
+fn int hapticStopAll(Haptic* haptic) @extern("SDL_HapticStopAll");
+fn int hapticRumbleSupported(Haptic* haptic) @extern("SDL_HapticRumbleSupported");
+fn int hapticRumbleInit(Haptic* haptic) @extern("SDL_HapticRumbleInit");
+fn int hapticRumblePlay(Haptic* haptic, float strength, uint length) @extern("SDL_HapticRumblePlay");
+fn int hapticRumbleStop(Haptic* haptic) @extern("SDL_HapticRumbleStop");
 fn int hidInit() @extern("SDL_hid_init");
 fn int hidExit() @extern("SDL_hid_exit");
 fn uint hidDeviceChangeCount() @extern("SDL_hid_device_change_count");
-fn SDL_hid_device_info* hidEnumerate(ushort vendorID, ushort productID) @extern("SDL_hid_enumerate");
-fn void hidFreeEnumeration(SDL_hid_device_info* devs) @extern("SDL_hid_free_enumeration");
-fn SDL_hid_device* hidOpen(ushort vendorID, ushort productID, char* serialNumber) @extern("SDL_hid_open");
-fn SDL_hid_device* hidOpenPath(char* path, int bExclusive) @extern("SDL_hid_open_path");
-fn int hidWrite(SDL_hid_device* dev, char* data, usz length) @extern("SDL_hid_write");
-fn int hidReadTimeout(SDL_hid_device* dev, char* data, usz length, int milliseconds) @extern("SDL_hid_read_timeout");
-fn int hidRead(SDL_hid_device* dev, char* data, usz length) @extern("SDL_hid_read");
-fn int hidSetNonBlocking(SDL_hid_device* dev, int nonblock) @extern("SDL_hid_set_nonblocking");
-fn int hidSendFeatureReport(SDL_hid_device* dev, char* data, usz length) @extern("SDL_hid_send_feature_report");
-fn int hidGetFeatureReport(SDL_hid_device* dev, char* data, usz length) @extern("SDL_hid_get_feature_report");
-fn void hidClose(SDL_hid_device* dev) @extern("SDL_hid_close");
-fn int hidGetManufacturerString(SDL_hid_device dev, char* string, usz maxlen) @extern("SDL_hid_get_manufacturer_string");
-fn int hidGetProductString(SDL_hid_device dev, char* string, usz maxlen) @extern("SDL_hid_get_product_string");
-fn int hidGetSerialNumberString(SDL_hid_device dev, char* string, usz maxlen) @extern("SDL_hid_get_serial_number_string");
-fn int hidGetIndexedString(SDL_hid_device dev, int string_index, char* string, usz maxlen) @extern("SDL_hid_get_indexed_string");
+fn Hid_Device_Info* hidEnumerate(ushort vendorID, ushort productID) @extern("SDL_hid_enumerate");
+fn void hidFreeEnumeration(Hid_Device_Info* devs) @extern("SDL_hid_free_enumeration");
+fn Hid_Device hidOpen(ushort vendorID, ushort productID, char* serialNumber) @extern("SDL_hid_open");
+fn Hid_Device hidOpenPath(char* path, int bExclusive) @extern("SDL_hid_open_path");
+fn int hidWrite(Hid_Device dev, char* data, usz length) @extern("SDL_hid_write");
+fn int hidReadTimeout(Hid_Device dev, char* data, usz length, int milliseconds) @extern("SDL_hid_read_timeout");
+fn int hidRead(Hid_Device dev, char* data, usz length) @extern("SDL_hid_read");
+fn int hidSetNonBlocking(Hid_Device dev, int nonblock) @extern("SDL_hid_set_nonblocking");
+fn int hidSendFeatureReport(Hid_Device dev, char* data, usz length) @extern("SDL_hid_send_feature_report");
+fn int hidGetFeatureReport(Hid_Device dev, char* data, usz length) @extern("SDL_hid_get_feature_report");
+fn void hidClose(Hid_Device dev) @extern("SDL_hid_close");
+fn int hidGetManufacturerString(Hid_Device dev, char* string, usz maxlen) @extern("SDL_hid_get_manufacturer_string");
+fn int hidGetProductString(Hid_Device dev, char* string, usz maxlen) @extern("SDL_hid_get_product_string");
+fn int hidGetSerialNumberString(Hid_Device dev, char* string, usz maxlen) @extern("SDL_hid_get_serial_number_string");
+fn int hidGetIndexedString(Hid_Device dev, int string_index, char* string, usz maxlen) @extern("SDL_hid_get_indexed_string");
 fn void hidBleScan(bool active) @extern("SDL_hid_ble_scan");
-fn bool setHintWithPriority(char* name, char* value, SDL_HintPriority priority) @extern("SDL_SetHintWithPriority");
+fn bool setHintWithPriority(char* name, char* value, HintPriority priority) @extern("SDL_SetHintWithPriority");
 fn bool setHint(char* name, char* value) @extern("SDL_SetHint");
 fn bool resetHint(char* name) @extern("SDL_ResetHint");
 fn void resetHints() @extern("SDL_ResetHints");
@@ -1811,124 +2700,123 @@ fn char* getHint(char* name) @extern("SDL_GetHint");
 fn bool getHintBoolean(char* name, bool default_value) @extern("SDL_GetHintBoolean");
 
 // NEEDS CALLBACK FUNCTIONS
-// fn void* addHintCallback(char* name, SDL_HintCallback callback, void* userdata) @extern("SDL_AddHintCallback");
-// fn void* delHintCallback(char* name, SDL_HintCallback callback, void* userdata) @extern("SDL_DelHintCallback");
+// fn void* addHintCallback(char* name, HintCallback callback, void* userdata) @extern("SDL_AddHintCallback");
+// fn void* delHintCallback(char* name, HintCallback callback, void* userdata) @extern("SDL_DelHintCallback");
 
 fn void clearHints() @extern("SDL_ClearHints");
 fn void* loadObject(char* sofile) @extern("SDL_LoadObject");
 fn void* loadFn(void* handle, char* name) @extern("SDL_Loadfn");
 fn void* unloadObject(void* handle) @extern("SDL_UnloadObject");
-fn void* logSetAllPriority(SDL_LogPriority priority) @extern("SDL_LogSetAllPriority");
-fn void* logSetPriority(int category, SDL_LogPriority priority) @extern("SDL_LogSetPriority");
-fn SDL_LogPriority logGetPriority(int category) @extern("SDL_LogGetPriority");
+fn void* logSetAllPriority(LogPriority priority) @extern("SDL_LogSetAllPriority");
+fn void* logSetPriority(int category, LogPriority priority) @extern("SDL_LogSetPriority");
+fn LogPriority logGetPriority(int category) @extern("SDL_LogGetPriority");
 fn void* logResetPriorities() @extern("SDL_LogResetPriorities");
 
 // NEEEDS TO BE LOOKED INTO AND IMPLEMENT IN C3
 // NEEDS CALLBACK FUNCTIONS
-// fn void* log(char* fmt, cvarargs) @extern("SDL_Log");
-// fn void* logVerbose(int category, char* fmt, cvarargs) @extern("SDL_LogVerbose");
-// fn void* logDebug(int category, char* fmt, cvarargs) @extern("SDL_LogDebug");
-// fn void* logInfo(int category, char* fmt, cvarargs) @extern("SDL_LogInfo");
-// fn void* logWarn(int category, char* fmt, cvarargs) @extern("SDL_LogWarn");
-// fn void* logError(int category, char* fmt, cvarargs) @extern("SDL_LogError");
-// fn void* logCritical(int category, char* fmt, cvarargs) @extern("SDL_LogCritical");
-// fn void* logMessage(int category, SDL_LogPriority priority, char* fmt, cvarargs) @extern("SDL_LogMessage");
-// fn void* logMessageV(int category, SDL_LogPriority priority, char* fmt, cvalist ap) @extern("SDL_LogMessageV");
-// fn void* logGetOutputfn(SDL_LogOutputfn callback, void userdata) @extern("SDL_LogGetOutputfn");
-// fn void* logSetOutputfn(SDL_LogOutputfn callback, void* userdata) @extern("SDL_LogSetOutputfn");
+fn void log(char* fmt, ...) @extern("SDL_Log");
+fn void logVerbose(LogCategory category, char* fmt, ...) @extern("SDL_LogVerbose");
+fn void logDebug(LogCategory category, char* fmt, ...) @extern("SDL_LogDebug");
+fn void logInfo(LogCategory category, char* fmt, ...) @extern("SDL_LogInfo");
+fn void logWarn(LogCategory category, char* fmt, ...) @extern("SDL_LogWarn");
+fn void logError(LogCategory category, char* fmt, ...) @extern("SDL_LogError");
+fn void logCritical(LogCategory category, char* fmt, ...) @extern("SDL_LogCritical");
+fn void logMessage(LogCategory category, LogPriority priority, char* fmt, ...) @extern("SDL_LogMessage");
+fn void logGetOutputFunction(LogOutputFunction* callback, void* userdata) @extern("SDL_LogGetOutputFunction");
+fn void logSetOutputFunction(LogOutputFunction callback, void* userdata) @extern("SDL_LogSetOutputFunction");
 
-fn int showMessageBox(SDL_MessageBoxData messageboxdata, int buttonid) @extern("SDL_ShowMessageBox");
+fn int showMessageBox(MessageBoxData messageboxdata, int buttonid) @extern("SDL_ShowMessageBox");
 fn int showSimpleMessageBox(uint flags, char* title, char* message, Window* window) @extern("SDL_ShowSimpleMessageBox");
-fn SDL_MetalView metalCreateView(Window* window) @extern("SDL_Metal_CreateView");
-fn void* metalDestroyView(SDL_MetalView view) @extern("SDL_Metal_DestroyView");
-fn void* metalGetLayer(SDL_MetalView view) @extern("SDL_Metal_GetLayer");
+fn MetalView metalCreateView(Window* window) @extern("SDL_Metal_CreateView");
+fn void* metalDestroyView(MetalView view) @extern("SDL_Metal_DestroyView");
+fn void* metalGetLayer(MetalView view) @extern("SDL_Metal_GetLayer");
 fn void* metalGetDrawableSize(Window* window, int* w, int* h) @extern("SDL_Metal_GetDrawableSize");
-fn SDL_PowerState getPowerInfo(int* seconds, int* percent) @extern("SDL_GetPowerInfo");
+fn PowerState getPowerInfo(int* seconds, int* percent) @extern("SDL_GetPowerInfo");
 fn int getNumRenderDrivers() @extern("SDL_GetNumRenderDrivers");
-fn int getRenderDriverInfo(int index, SDL_RendererInfo info) @extern("SDL_GetRenderDriverInfo");
-fn int createWindowAndRenderer(int width, int height, uint window_flags, SDL_Window window, SDL_Renderer** renderer) @extern("SDL_CreateWindowAndRenderer");
-fn SDL_Renderer* createRenderer(SDL_Window window, int index, uint flags) @extern("SDL_CreateRenderer");
-fn SDL_Renderer* createSoftwareRenderer(Surface surface) @extern("SDL_CreateSoftwareRenderer");
-fn SDL_Renderer* getRenderer(SDL_Window window) @extern("SDL_GetRenderer");
-fn Window* renderGetWindow(SDL_Renderer* renderer) @extern("SDL_RenderGetWindow");
-fn int getRendererInfo(SDL_Renderer* renderer, SDL_RendererInfo* info) @extern("SDL_GetRendererInfo");
-fn int getRendererOutputSize(SDL_Renderer* renderer, int* w, int* h) @extern("SDL_GetRendererOutputSize");
-fn SDL_Texture* createTexture(SDL_Renderer* renderer, uint format, int access, int w, int h) @extern("SDL_CreateTexture");
-fn SDL_Texture* createTextureFromSurface(SDL_Renderer* renderer, Surface surface) @extern("SDL_CreateTextureFromSurface");
-fn int queryTexture(SDL_Texture* texture, uint* format, int* access, int* w, int* h) @extern("SDL_QueryTexture");
-fn int setTextureColorMod(SDL_Texture* texture, char r, char g, char b) @extern("SDL_SetTextureColorMod");
-fn int getTextureColorMod(SDL_Texture* texture, char* r, char* g, char* b) @extern("SDL_GetTextureColorMod");
-fn int setTextureAlphaMod(SDL_Texture* texture, char alpha) @extern("SDL_SetTextureAlphaMod");
-fn int getTextureAlphaMod(SDL_Texture* texture, char* alpha) @extern("SDL_GetTextureAlphaMod");
-fn int setTextureBlendMode(SDL_Texture* texture, BlendMode blendMode) @extern("SDL_SetTextureBlendMode");
-fn int getTextureBlendMode(SDL_Texture* texture, BlendMode* blendMode) @extern("SDL_GetTextureBlendMode");
-fn int setTextureScaleMode(SDL_Texture* texture, SDL_ScaleMode scaleMode) @extern("SDL_SetTextureScaleMode");
-fn int getTextureScaleMode(SDL_Texture* texture, SDL_ScaleMode* scaleMode) @extern("SDL_GetTextureScaleMode");
-fn int setTextureUserData(SDL_Texture* texture, void* userdata) @extern("SDL_SetTextureUserData");
-fn void* getTextureUserData(SDL_Texture* texture) @extern("SDL_GetTextureUserData");
-fn int updateTexture(SDL_Texture* texture, Rect* rect, void* pixels, int pitch) @extern("SDL_UpdateTexture");
-fn int updateYUVTexture(SDL_Texture* texture, Rect* rect, char* yPlane, int yPitch, char* uPlane, int uPitch, char* vPlane, int vPitch) @extern("SDL_UpdateYUVTexture");
-fn int updateNVTexture(SDL_Texture* texture, Rect* rect, char* yPlane, int yPitch, char* uvPlane, int uvPitch) @extern("SDL_UpdateNVTexture");
-fn int lockTexture(SDL_Texture* texture, Rect* rect, void** pixels, int* pitch) @extern("SDL_LockTexture");
-fn int lockTextureToSurface(SDL_Texture* texture, Rect* rect, Surface* surface) @extern("SDL_LockTextureToSurface");
-fn void* unlockTexture(SDL_Texture* texture) @extern("SDL_UnlockTexture");
-fn bool renderTargetSupported(SDL_Renderer* renderer) @extern("SDL_RenderTargetSupported");
-fn int setRenderTarget(SDL_Renderer* renderer, SDL_Texture* texture) @extern("SDL_SetRenderTarget");
-fn SDL_Texture* getRenderTarget(SDL_Renderer* renderer) @extern("SDL_GetRenderTarget");
-fn int renderSetLogicalSize(SDL_Renderer* renderer, int w, int h) @extern("SDL_RenderSetLogicalSize");
-fn void* renderGetLogicalSize(SDL_Renderer* renderer, int* w, int* h) @extern("SDL_RenderGetLogicalSize");
-fn int renderSetIntegerScale(SDL_Renderer* renderer, bool enable) @extern("SDL_RenderSetIntegerScale");
-fn bool renderGetIntegerScale(SDL_Renderer* renderer) @extern("SDL_RenderGetIntegerScale");
-fn int renderSetViewport(SDL_Renderer* renderer, SDL_Rect rect) @extern("SDL_RenderSetViewport");
-fn void* renderGetViewport(SDL_Renderer* renderer, Rect* rect) @extern("SDL_RenderGetViewport");
-fn int renderSetClipRect(SDL_Renderer* renderer, SDL_Rect rect) @extern("SDL_RenderSetClipRect");
-fn void* renderGetClipRect(SDL_Renderer* renderer, Rect* rect) @extern("SDL_RenderGetClipRect");
-fn bool renderIsClipEnabled(SDL_Renderer* renderer) @extern("SDL_RenderIsClipEnabled");
-fn int renderSetScale(SDL_Renderer* renderer, float scaleX, float scaleY) @extern("SDL_RenderSetScale");
-fn void* renderGetScale(SDL_Renderer* renderer, float* scaleX, float* scaleY) @extern("SDL_RenderGetScale");
-fn void* renderWindowToLogical(SDL_Renderer* renderer, int windowX, int windowY, float* logicalX, float* logicalY) @extern("SDL_RenderWindowToLogical");
-fn void* renderLogicalToWindow(SDL_Renderer* renderer, float logicalX, float logicalY, int* windowX, int* windowY) @extern("SDL_RenderLogicalToWindow");
-fn int setRenderDrawColor(SDL_Renderer* renderer, char r, char g, char b, char a) @extern("SDL_SetRenderDrawColor");
-fn int getRenderDrawColor(SDL_Renderer* renderer, char* r, char* g, char* b, char* a) @extern("SDL_GetRenderDrawColor");
-fn int setRenderDrawBlendMode(SDL_Renderer* renderer, BlendMode blendMode) @extern("SDL_SetRenderDrawBlendMode");
-fn int getRenderDrawBlendMode(SDL_Renderer* renderer, BlendMode* blendMode) @extern("SDL_GetRenderDrawBlendMode");
-fn int renderClear(SDL_Renderer* renderer) @extern("SDL_RenderClear");
-fn int renderDrawPoint(SDL_Renderer* renderer, int x, int y) @extern("SDL_RenderDrawPoint");
-fn int renderDrawPoints(SDL_Renderer* renderer, Point* points, int count) @extern("SDL_RenderDrawPoints");
-fn int renderDrawLine(SDL_Renderer* renderer, int x1, int y1, int x2, int y2) @extern("SDL_RenderDrawLine");
-fn int renderDrawLines(SDL_Renderer* renderer, Point* points, int count) @extern("SDL_RenderDrawLines");
-fn int renderDrawRect(SDL_Renderer* renderer, SDL_Rect rect) @extern("SDL_RenderDrawRect");
-fn int renderDrawRects(SDL_Renderer* renderer, Rect* rects, int count) @extern("SDL_RenderDrawRects");
-fn int renderFillRect(SDL_Renderer* renderer, SDL_Rect rect) @extern("SDL_RenderFillRect");
-fn int renderFillRects(SDL_Renderer* renderer, Rect* rects, int count) @extern("SDL_RenderFillRects");
-fn int renderCopy(SDL_Renderer* renderer, SDL_Texture* texture, Rect* srcrect, Rect* dstrect) @extern("SDL_RenderCopy");
-fn int renderCopyEx(SDL_Renderer* renderer, SDL_Texture* texture, Rect* srcrect, Rect* dstrect, double angle, Point* center, SDL_RendererFlip flip) @extern("SDL_RenderCopyEx");
-fn int renderDrawPointF(SDL_Renderer* renderer, float x, float y) @extern("SDL_RenderDrawPointF");
-fn int renderDrawPointsF(SDL_Renderer* renderer, FPoint* points, int count) @extern("SDL_RenderDrawPointsF");
-fn int renderDrawLineF(SDL_Renderer* renderer, float x1, float y1, float x2, float y2) @extern("SDL_RenderDrawLineF");
-fn int renderDrawLinesF(SDL_Renderer* renderer, FPoint* points, int count) @extern("SDL_RenderDrawLinesF");
-fn int renderDrawRectF(SDL_Renderer* renderer, FRect rect) @extern("SDL_RenderDrawRectF");
-fn int renderDrawRectsF(SDL_Renderer* renderer, FRect* rects, int count) @extern("SDL_RenderDrawRectsF");
-fn int renderFillRectF(SDL_Renderer* renderer, FRect rect) @extern("SDL_RenderFillRectF");
-fn int renderFillRectsF(SDL_Renderer* renderer, FRect* rects, int count) @extern("SDL_RenderFillRectsF");
-fn int renderCopyF(SDL_Renderer* renderer, SDL_Texture* texture, Rect* srcrect, FRect dstrect) @extern("SDL_RenderCopyF");
-fn int renderCopyExF(SDL_Renderer* renderer, SDL_Texture* texture, Rect* srcrect, FRect dstrect, double angle, FPoint* center, SDL_RendererFlip flip) @extern("SDL_RenderCopyExF");
-fn int renderGeometry(SDL_Renderer* renderer, SDL_Texture* texture, SDL_Vertex* vertices, int num_vertices, int* indices, int num_indices) @extern("SDL_RenderGeometry");
-fn int renderGeometryRaw(SDL_Renderer* renderer, SDL_Texture* texture, float* xy, int xy_stride, Color* color, int color_stride, float* uv, int uv_stride, int num_vertices, void* indices, int num_indices, int size_indices) @extern("SDL_RenderGeometryRaw");
-fn int renderReadPixels(SDL_Renderer* renderer, SDL_Rect rect, uint format, void* pixels, int pitch) @extern("SDL_RenderReadPixels");
-fn void* renderPresent(SDL_Renderer* renderer) @extern("SDL_RenderPresent");
-fn void* destroyTexture(SDL_Texture* texture) @extern("SDL_DestroyTexture");
-fn void* destroyRenderer(SDL_Renderer* renderer) @extern("SDL_DestroyRenderer");
-fn int renderFlush(SDL_Renderer* renderer) @extern("SDL_RenderFlush");
-fn int glBindTexture(SDL_Texture* texture, float texw, float* texh) @extern("SDL_GL_BindTexture");
-fn int glUnbindTexture(SDL_Texture* texture) @extern("SDL_GL_UnbindTexture");
-fn void* renderGetMetalLayer(SDL_Renderer* renderer) @extern("SDL_RenderGetMetalLayer");
-fn void* renderGetMetalCommandEncoder(SDL_Renderer* renderer) @extern("SDL_RenderGetMetalCommandEncoder");
-fn int renderSetVSync(SDL_Renderer* renderer, int vsync) @extern("SDL_RenderSetVSync");
+fn int getRenderDriverInfo(int index, RendererInfo info) @extern("SDL_GetRenderDriverInfo");
+fn int createWindowAndRenderer(int width, int height, uint window_flags, Window window, Renderer** renderer) @extern("SDL_CreateWindowAndRenderer");
+fn Renderer* createRenderer(Window* window, int index, uint flags) @extern("SDL_CreateRenderer");
+fn Renderer* createSoftwareRenderer(Surface surface) @extern("SDL_CreateSoftwareRenderer");
+fn Renderer* getRenderer(Window window) @extern("SDL_GetRenderer");
+fn Window* renderGetWindow(Renderer* renderer) @extern("SDL_RenderGetWindow");
+fn int getRendererInfo(Renderer* renderer, RendererInfo* info) @extern("SDL_GetRendererInfo");
+fn int getRendererOutputSize(Renderer* renderer, int* w, int* h) @extern("SDL_GetRendererOutputSize");
+fn Texture* createTexture(Renderer* renderer, uint format, int access, int w, int h) @extern("SDL_CreateTexture");
+fn Texture* createTextureFromSurface(Renderer* renderer, Surface surface) @extern("SDL_CreateTextureFromSurface");
+fn int queryTexture(Texture* texture, uint* format, int* access, int* w, int* h) @extern("SDL_QueryTexture");
+fn int setTextureColorMod(Texture* texture, char r, char g, char b) @extern("SDL_SetTextureColorMod");
+fn int getTextureColorMod(Texture* texture, char* r, char* g, char* b) @extern("SDL_GetTextureColorMod");
+fn int setTextureAlphaMod(Texture* texture, char alpha) @extern("SDL_SetTextureAlphaMod");
+fn int getTextureAlphaMod(Texture* texture, char* alpha) @extern("SDL_GetTextureAlphaMod");
+fn int setTextureBlendMode(Texture* texture, BlendMode blendMode) @extern("SDL_SetTextureBlendMode");
+fn int getTextureBlendMode(Texture* texture, BlendMode* blendMode) @extern("SDL_GetTextureBlendMode");
+fn int setTextureScaleMode(Texture* texture, ScaleMode scaleMode) @extern("SDL_SetTextureScaleMode");
+fn int getTextureScaleMode(Texture* texture, ScaleMode* scaleMode) @extern("SDL_GetTextureScaleMode");
+fn int setTextureUserData(Texture* texture, void* userdata) @extern("SDL_SetTextureUserData");
+fn void* getTextureUserData(Texture* texture) @extern("SDL_GetTextureUserData");
+fn int updateTexture(Texture* texture, Rect* rect, void* pixels, int pitch) @extern("SDL_UpdateTexture");
+fn int updateYUVTexture(Texture* texture, Rect* rect, char* yPlane, int yPitch, char* uPlane, int uPitch, char* vPlane, int vPitch) @extern("SDL_UpdateYUVTexture");
+fn int updateNVTexture(Texture* texture, Rect* rect, char* yPlane, int yPitch, char* uvPlane, int uvPitch) @extern("SDL_UpdateNVTexture");
+fn int lockTexture(Texture* texture, Rect* rect, void** pixels, int* pitch) @extern("SDL_LockTexture");
+fn int lockTextureToSurface(Texture* texture, Rect* rect, Surface* surface) @extern("SDL_LockTextureToSurface");
+fn void* unlockTexture(Texture* texture) @extern("SDL_UnlockTexture");
+fn bool renderTargetSupported(Renderer* renderer) @extern("SDL_RenderTargetSupported");
+fn int setRenderTarget(Renderer* renderer, Texture* texture) @extern("SDL_SetRenderTarget");
+fn Texture* getRenderTarget(Renderer* renderer) @extern("SDL_GetRenderTarget");
+fn int renderSetLogicalSize(Renderer* renderer, int w, int h) @extern("SDL_RenderSetLogicalSize");
+fn void* renderGetLogicalSize(Renderer* renderer, int* w, int* h) @extern("SDL_RenderGetLogicalSize");
+fn int renderSetIntegerScale(Renderer* renderer, bool enable) @extern("SDL_RenderSetIntegerScale");
+fn bool renderGetIntegerScale(Renderer* renderer) @extern("SDL_RenderGetIntegerScale");
+fn int renderSetViewport(Renderer* renderer, Rect rect) @extern("SDL_RenderSetViewport");
+fn void* renderGetViewport(Renderer* renderer, Rect* rect) @extern("SDL_RenderGetViewport");
+fn int renderSetClipRect(Renderer* renderer, Rect rect) @extern("SDL_RenderSetClipRect");
+fn void* renderGetClipRect(Renderer* renderer, Rect* rect) @extern("SDL_RenderGetClipRect");
+fn bool renderIsClipEnabled(Renderer* renderer) @extern("SDL_RenderIsClipEnabled");
+fn int renderSetScale(Renderer* renderer, float scaleX, float scaleY) @extern("SDL_RenderSetScale");
+fn void* renderGetScale(Renderer* renderer, float* scaleX, float* scaleY) @extern("SDL_RenderGetScale");
+fn void* renderWindowToLogical(Renderer* renderer, int windowX, int windowY, float* logicalX, float* logicalY) @extern("SDL_RenderWindowToLogical");
+fn void* renderLogicalToWindow(Renderer* renderer, float logicalX, float logicalY, int* windowX, int* windowY) @extern("SDL_RenderLogicalToWindow");
+fn int setRenderDrawColor(Renderer* renderer, char r, char g, char b, char a) @extern("SDL_SetRenderDrawColor");
+fn int getRenderDrawColor(Renderer* renderer, char* r, char* g, char* b, char* a) @extern("SDL_GetRenderDrawColor");
+fn int setRenderDrawBlendMode(Renderer* renderer, BlendMode blendMode) @extern("SDL_SetRenderDrawBlendMode");
+fn int getRenderDrawBlendMode(Renderer* renderer, BlendMode* blendMode) @extern("SDL_GetRenderDrawBlendMode");
+fn int renderClear(Renderer* renderer) @extern("SDL_RenderClear");
+fn int renderDrawPoint(Renderer* renderer, int x, int y) @extern("SDL_RenderDrawPoint");
+fn int renderDrawPoints(Renderer* renderer, Point* points, int count) @extern("SDL_RenderDrawPoints");
+fn int renderDrawLine(Renderer* renderer, int x1, int y1, int x2, int y2) @extern("SDL_RenderDrawLine");
+fn int renderDrawLines(Renderer* renderer, Point* points, int count) @extern("SDL_RenderDrawLines");
+fn int renderDrawRect(Renderer* renderer, Rect rect) @extern("SDL_RenderDrawRect");
+fn int renderDrawRects(Renderer* renderer, Rect* rects, int count) @extern("SDL_RenderDrawRects");
+fn int renderFillRect(Renderer* renderer, Rect rect) @extern("SDL_RenderFillRect");
+fn int renderFillRects(Renderer* renderer, Rect* rects, int count) @extern("SDL_RenderFillRects");
+fn int renderCopy(Renderer* renderer, Texture* texture, Rect* srcrect, Rect* dstrect) @extern("SDL_RenderCopy");
+fn int renderCopyEx(Renderer* renderer, Texture* texture, Rect* srcrect, Rect* dstrect, double angle, Point* center, RendererFlip flip) @extern("SDL_RenderCopyEx");
+fn int renderDrawPointF(Renderer* renderer, float x, float y) @extern("SDL_RenderDrawPointF");
+fn int renderDrawPointsF(Renderer* renderer, FPoint* points, int count) @extern("SDL_RenderDrawPointsF");
+fn int renderDrawLineF(Renderer* renderer, float x1, float y1, float x2, float y2) @extern("SDL_RenderDrawLineF");
+fn int renderDrawLinesF(Renderer* renderer, FPoint* points, int count) @extern("SDL_RenderDrawLinesF");
+fn int renderDrawRectF(Renderer* renderer, FRect rect) @extern("SDL_RenderDrawRectF");
+fn int renderDrawRectsF(Renderer* renderer, FRect* rects, int count) @extern("SDL_RenderDrawRectsF");
+fn int renderFillRectF(Renderer* renderer, FRect rect) @extern("SDL_RenderFillRectF");
+fn int renderFillRectsF(Renderer* renderer, FRect* rects, int count) @extern("SDL_RenderFillRectsF");
+fn int renderCopyF(Renderer* renderer, Texture* texture, Rect* srcrect, FRect dstrect) @extern("SDL_RenderCopyF");
+fn int renderCopyExF(Renderer* renderer, Texture* texture, Rect* srcrect, FRect dstrect, double angle, FPoint* center, RendererFlip flip) @extern("SDL_RenderCopyExF");
+fn int renderGeometry(Renderer* renderer, Texture* texture, Vertex* vertices, int num_vertices, int* indices, int num_indices) @extern("SDL_RenderGeometry");
+fn int renderGeometryRaw(Renderer* renderer, Texture* texture, float* xy, int xy_stride, Color* color, int color_stride, float* uv, int uv_stride, int num_vertices, void* indices, int num_indices, int size_indices) @extern("SDL_RenderGeometryRaw");
+fn int renderReadPixels(Renderer* renderer, Rect rect, uint format, void* pixels, int pitch) @extern("SDL_RenderReadPixels");
+fn void* renderPresent(Renderer* renderer) @extern("SDL_RenderPresent");
+fn void* destroyTexture(Texture* texture) @extern("SDL_DestroyTexture");
+fn void* destroyRenderer(Renderer* renderer) @extern("SDL_DestroyRenderer");
+fn int renderFlush(Renderer* renderer) @extern("SDL_RenderFlush");
+fn int glBindTexture(Texture* texture, float texw, float* texh) @extern("SDL_GL_BindTexture");
+fn int glUnbindTexture(Texture* texture) @extern("SDL_GL_UnbindTexture");
+fn void* renderGetMetalLayer(Renderer* renderer) @extern("SDL_RenderGetMetalLayer");
+fn void* renderGetMetalCommandEncoder(Renderer* renderer) @extern("SDL_RenderGetMetalCommandEncoder");
+fn int renderSetVSync(Renderer* renderer, int vsync) @extern("SDL_RenderSetVSync");
 fn Window* createShapedWindow(char* title, uint x, uint y, uint w, uint h, uint flags) @extern("SDL_CreateShapedWindow");
 fn bool isShapedWindow(Window* window) @extern("SDL_IsShapedWindow");
-fn int setWindowShape(Window* window, Surface* shape, SDL_WindowShapeMode* shape_mode) @extern("SDL_SetWindowShape");
-fn int setShapedWindowMode(Window* window, SDL_WindowShapeMode* shape_mode) @extern("SDL_GetShapedWindowMode");
+fn int setWindowShape(Window* window, Surface* shape, WindowShapeMode* shape_mode) @extern("SDL_SetWindowShape");
+fn int setShapedWindowMode(Window* window, WindowShapeMode* shape_mode) @extern("SDL_GetShapedWindowMode");
 fn int ginuxSetThreadPriority(long threadID, int priority) @extern("SDL_LinuxSetThreadPriority");
 fn int linuxSetThreadPriorityAndPolicy(long threadID, int sdlPriority, int schedPolicy) @extern("SDL_LinuxSetThreadPriorityAndPolicy");
 fn bool isTablet() @extern("SDL_IsTablet");
@@ -1945,13 +2833,13 @@ fn ulong getPerformanceFrequency() @extern("SDL_GetPerformanceFrequency");
 fn void* delay(uint ms) @extern("SDL_Delay");
 
 // Callback function required
-//fn SDL_TimerID addTimer(uint interval, SDL_TimerCallback callback, void* param) @extern("SDL_AddTimer");
+//fn SDL_TimerID addTimer(uint interval, TimerCallback callback, void* param) @extern("SDL_AddTimer");
 
-fn bool removeTimer(SDL_TimerID id) @extern("SDL_RemoveTimer");
-fn void* getVersion(SDL_version* ver) @extern("SDL_GetVersion");
+fn bool removeTimer(TimerID id) @extern("SDL_RemoveTimer");
+fn void* getVersion(Version* ver) @extern("SDL_GetVersion");
 fn char* getRevision() @extern("SDL_GetRevision");
 fn int getRevisionNumber() @extern("SDL_GetRevisionNumber");
-fn SDL_Locale* getPreferredLocales() @extern("SDL_GetPreferredLocales");
+fn Locale* getPreferredLocales() @extern("SDL_GetPreferredLocales");
 fn int openURL(char* url) @extern("SDL_OpenURL");
 fn int init(uint flags) @extern("SDL_Init");
 fn int initSubSystem(uint flags) @extern("SDL_InitSubSystem");
