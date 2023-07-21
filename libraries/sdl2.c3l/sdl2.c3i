@@ -1,6 +1,6 @@
 // sdl2.c3i
 // Created 14/07/2023
-// Updated 19/07/2023
+// Updated 21/07/2023
 // Originally created Kenta @ https://github.com/Its-Kenta
 
 module sdl;
@@ -88,53 +88,44 @@ def WriteFn = fn long(RWops context, void* ptr, long size);
 def CloseFn = fn int(RWops context);
 
 struct RWops {
-		SizeFn* size;
-		SeekFn* seek;
-		ReadFn* read;
-		WriteFn* write;
-		CloseFn* close;
+		SizeFn size;
+		SeekFn seek;
+		ReadFn read;
+		WriteFn write;
+		CloseFn close;
     uint type;
-//     union {
-// #ifdef __ANDROID__
-//         struct
-//         {
-//             void *asset;
-//         } androidio;
+		union hidden {
+			// struct androidio @if(env::ANDROID) {
+			// 	void *asset;
+			// } Android not yet supported in C3
 
-// #elif defined(__WIN32__) || defined(__GDK__)
-//         struct
-//         {
-//             SDL_bool append;
-//             void *h;
-//             struct
-//             {
-//                 void *data;
-//                 size_t size;
-//                 size_t left;
-//             } buffer;
-//         } windowsio;
-// #endif
+			struct windowsio @if(env::WIN32) {
+				bool append;
+				void *h;
+				struct buffer {
+					void *data;
+					usz size;
+					usz left;
+					}
+				}
 
-//         struct
-//         {
-//             SDL_bool autoclose;
-//             void *fp;
-//         } stdio;
+				struct stdio {
+					bool autoclose;
+					void *fp;
+        }
 
-//         struct
-//         {
-//             Uint8 *base;
-//             Uint8 *here;
-//             Uint8 *stop;
-//         } mem;
+        struct mem {
+            char *base;
+            char *here;
+            char *stop;
+        }
 
-//         struct
-//         {
-//             void *data1;
-//             void *data2;
-//         } unknown;
-//     } hidden;
-
+        struct unknown
+        {
+            void *data1;
+            void *data2;
+        }
+		}
 }
 
 def AudioFormat = int;
