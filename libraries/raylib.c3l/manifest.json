@@ -12,7 +12,7 @@
       "linked-libs" : ["raylib", "GLESv2", "glfw3", "c"]
     },
 	"windows-x64" : {
-		"linked-libs" : ["raylib", "kernel32", "user32", "gdi32", "winmm", "winspool", "comdlg32", "advapi32", "shell32", "ole32", "oleaut32", "uuid", "odbc32", "odbccp32"]
+		"linked-libs" : ["raylib", "opengl32", "kernel32", "user32", "gdi32", "winmm", "winspool", "comdlg32", "advapi32", "shell32", "ole32", "oleaut32", "uuid", "odbc32", "odbccp32"]
 	}
   }
 }
