@@ -3067,7 +3067,7 @@ fn Window* createShapedWindow(char* title, uint x, uint y, uint w, uint h, uint 
 fn bool isShapedWindow(Window* window) @extern("SDL_IsShapedWindow");
 fn int setWindowShape(Window* window, Surface* shape, WindowShapeMode* shape_mode) @extern("SDL_SetWindowShape");
 fn int setShapedWindowMode(Window* window, WindowShapeMode* shape_mode) @extern("SDL_GetShapedWindowMode");
-fn int ginuxSetThreadPriority(long threadID, int priority) @extern("SDL_LinuxSetThreadPriority");
+fn int linuxSetThreadPriority(long threadID, int priority) @extern("SDL_LinuxSetThreadPriority");
 fn int linuxSetThreadPriorityAndPolicy(long threadID, int sdlPriority, int schedPolicy) @extern("SDL_LinuxSetThreadPriorityAndPolicy");
 fn bool isTablet() @extern("SDL_IsTablet");
 fn void* onApplicationWillTerminate() @extern("SDL_OnApplicationWillTerminate");
