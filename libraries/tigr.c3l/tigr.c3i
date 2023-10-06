@@ -6,11 +6,12 @@
 
 module tigr;
 
-struct TPixel {
-    char r;
-    char g;
-    char b;
-    char a;
+struct TPixel
+{
+	char r;
+	char g;
+	char b;
+	char a;
 }
 
 // Window flags.
@@ -24,16 +25,17 @@ const int TIGR_NOCURSOR = 32;  // hide cursor
 const int TIGR_FULLSCREEN = 64;  // start in full-screen mode
 
 // A Tigr bitmap.
-struct Tigr {
-    int w;
-    int h;
-    int cx;
-    int cy;
-    int cw;
-    int ch;
-    TPixel *pix;
-    void *handle;
-    int blitMode;
+struct Tigr
+{
+	int w;
+	int h;
+	int cx;
+	int cy;
+	int cw;
+	int ch;
+	TPixel *pix;
+	void *handle;
+	int blitMode;
 }
 
 // Creates a new empty window with a given bitmap size.
@@ -178,9 +180,10 @@ fn void blitAlpha(Tigr *dest, Tigr *src, int dx, int dy, int sx, int sy, int w, 
 // Clips and blends.
 fn void blitTint(Tigr *dest, Tigr *src, int dx, int dy, int sx, int sy, int w, int h, TPixel tint) @extern("tigrBlitTint");
 
-enum BlitMode : int {
-    KEEP_ALPHA,    // Keep destination alpha value
-    BLEND_ALPHA,   // Blend destination alpha (default)
+enum BlitMode : int
+{
+	KEEP_ALPHA,    // Keep destination alpha value
+	BLEND_ALPHA,   // Blend destination alpha (default)
 }
 
 // Set destination bitmap blend mode for blit operations.
@@ -192,21 +195,23 @@ macro TPixel rgba(char r, char g,  char b, char a) => { r, g, b, a };
 
 // Font printing ----------------------------------------------------------
 
-struct Glyph {
-    int code;
-    int x;
-    int y;
-    int w;
-    int h;
+struct Glyph
+{
+	int code;
+	int x;
+	int y;
+	int w;
+	int h;
 }
 
-struct Font {
-    Tigr *bitmap;
-    int numGlyphs;
-    Glyph *glyphs;
+struct Font
+{
+	Tigr *bitmap;
+	int numGlyphs;
+	Glyph *glyphs;
 }
 
-def TCodepage = distinct int;
+distinct TCodepage = int;
 const TCodepage TCP_ASCII = 0;
 const TCodepage TCP_1252 = 1252;
 const TCodepage TCP_UTF32 = 12001;
@@ -242,7 +247,7 @@ fn int textHeight(Font *font, char* text) @extern("tigrTextHeight");
 
 extern Font *tfont;
 
-def TKey = distinct int;
+distinct TKey = int;
 const TKey TK_PAD0 = 128;
 const TKey TK_PAD1 = 129;
 const TKey TK_PAD2 = 130;
@@ -316,9 +321,10 @@ const TKey TK_TICK = 196;
 // Returns mouse input for a window.
 fn void mouse(Tigr *bmp, int *x, int *y, int *buttons) @extern("tigrMouse");
 
-struct TouchPoint{
-    int x;
-    int y;
+struct TouchPoint
+{
+	int x;
+	int y;
 }
 
 // Reads touch input for a window.

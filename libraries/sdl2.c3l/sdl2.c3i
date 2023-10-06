@@ -26,11 +26,11 @@ const int WINDOW_LACKS_SHAPE = -3;
 
 enum AssertState : int
 {
-    ASSERTION_RETRY,
-    ASSERTION_BREAK,
-    ASSERTION_ABORT,
-    ASSERTION_IGNORE,
-    ASSERTION_ALWAYS_IGNORE
+	ASSERTION_RETRY,
+	ASSERTION_BREAK,
+	ASSERTION_ABORT,
+	ASSERTION_IGNORE,
+	ASSERTION_ALWAYS_IGNORE
 }
 
 struct AssertData 
@@ -56,29 +56,29 @@ def AssertionHandler = fn AssertState(AssertData data, void* userdata);
 
 enum ErrorCode : int
 {
-    ENOMEM,
-    EFREAD,
-    EFWRITE,
-    EFSEEK,
-    UNSUPPORTED,
-    LASTERROR
+	ENOMEM,
+	EFREAD,
+	EFWRITE,
+	EFSEEK,
+	UNSUPPORTED,
+	LASTERROR
 }
 
-def Mutex = distinct void*;
-def Sem = distinct void*;
-def Cond = distinct void*;
-def Thread = distinct void*;
+distinct Mutex = void*;
+distinct Sem = void*;
+distinct Cond = void*;
+distinct Thread = void*;
 def ThreadID = long;
-def Iconv_t = distinct void*;
+distinct Iconv_t = void*;
 
 def TlSID = ulong;
 
 enum ThreadPriority : int
 {
-    THREAD_PRIORITY_LOW,
-    THREAD_PRIORITY_NORMAL,
-    THREAD_PRIORITY_HIGH,
-    THREAD_PRIORITY_TIME_CRITICAL
+	THREAD_PRIORITY_LOW,
+	THREAD_PRIORITY_NORMAL,
+	THREAD_PRIORITY_HIGH,
+	THREAD_PRIORITY_TIME_CRITICAL
 }
 
 def SizeFn = fn long(RWops context);
@@ -87,45 +87,51 @@ def ReadFn = fn long(RWops context, void* ptr, long size);
 def WriteFn = fn long(RWops context, void* ptr, long size);
 def CloseFn = fn int(RWops context);
 
-struct RWops {
-		SizeFn size;
-		SeekFn seek;
-		ReadFn read;
-		WriteFn write;
-		CloseFn close;
-    uint type;
-		union hidden {
-			// struct androidio @if(env::ANDROID) {
-			// 	void *asset;
-			// } Android not yet supported in C3
+struct RWops
+{
+	SizeFn size;
+	SeekFn seek;
+	ReadFn read;
+	WriteFn write;
+	CloseFn close;
+	uint type;
+	union hidden
+	{
+		// struct androidio @if(env::ANDROID) {
+		// 	void *asset;
+		// } Android not yet supported in C3
 
-			struct windowsio @if(env::WIN32) {
-				bool append;
-				void *h;
-				struct buffer {
-					void *data;
-					usz size;
-					usz left;
-					}
-				}
-
-				struct stdio {
-					bool autoclose;
-					void *fp;
-        }
-
-        struct mem {
-            char *base;
-            char *here;
-            char *stop;
-        }
-
-        struct unknown
-        {
-            void *data1;
-            void *data2;
-        }
+		struct windowsio @if(env::WIN32)
+		{
+			bool append;
+			void *h;
+			struct buffer
+			{
+				void *data;
+				usz size;
+				usz left;
+			}
 		}
+
+		struct stdio
+		{
+			bool autoclose;
+			void *fp;
+		}
+
+		struct mem
+		{
+			char *base;
+			char *here;
+			char *stop;
+		}
+
+		struct unknown
+		{
+			void *data1;
+			void *data2;
+		}
+	}
 }
 
 def AudioFormat = int;
@@ -134,106 +140,107 @@ def AudioCallback = fn void(void *userdata, char* stream, int len);
 
 struct AudioSpec
 {
-    int freq;
-    AudioFormat format;
-    char channels;
-    char silence;
-    uint samples;
-    uint padding;
-    uint size;
-    AudioCallback callback;
-    void *userdata;
+	int freq;
+	AudioFormat format;
+	char channels;
+	char silence;
+	uint samples;
+	uint padding;
+	uint size;
+	AudioCallback callback;
+	void *userdata;
 }
 
 def AudioFilter = fn void(AudioCVT* cvt, AudioFormat format);
 
 struct AudioCVT
 {
-    int needed;
-    AudioFormat src_format;
-    AudioFormat dst_format;
-    double rate_incr;
-    char* buf;
-    int len;
-    int len_cvt;
-    int len_mul;
-    double len_ratio;
-    AudioFilter[10] filters;
-    int filter_index;
+	int needed;
+	AudioFormat src_format;
+	AudioFormat dst_format;
+	double rate_incr;
+	char* buf;
+	int len;
+	int len_cvt;
+	int len_mul;
+	double len_ratio;
+	AudioFilter[10] filters;
+	int filter_index;
 }
 
 def AudioDeviceID = uint;
 
 enum AudioStatus : int
 {
-    AUDIO_STOPPED,
-    AUDIO_PLAYING,
-    AUDIO_PAUSED
+	AUDIO_STOPPED,
+	AUDIO_PLAYING,
+	AUDIO_PAUSED
 }
 
 def AudioStream = void;
 
 enum PixelType : int
 {
-    PIXELTYPE_UNKNOWN,
-    PIXELTYPE_INDEX1,
-    PIXELTYPE_INDEX4,
-    PIXELTYPE_INDEX8,
-    PIXELTYPE_PACKED8,
-    PIXELTYPE_PACKED16,
-    PIXELTYPE_PACKED32,
-    PIXELTYPE_ARRAYU8,
-    PIXELTYPE_ARRAYU16,
-    PIXELTYPE_ARRAYU32,
-    PIXELTYPE_ARRAYF16,
-    PIXELTYPE_ARRAYF32
+	PIXELTYPE_UNKNOWN,
+	PIXELTYPE_INDEX1,
+	PIXELTYPE_INDEX4,
+	PIXELTYPE_INDEX8,
+	PIXELTYPE_PACKED8,
+	PIXELTYPE_PACKED16,
+	PIXELTYPE_PACKED32,
+	PIXELTYPE_ARRAYU8,
+	PIXELTYPE_ARRAYU16,
+	PIXELTYPE_ARRAYU32,
+	PIXELTYPE_ARRAYF16,
+	PIXELTYPE_ARRAYF32
 }
 
 enum BitmapOrder : int
 {
-    BITMAPORDER_NONE,
-    BITMAPORDER_4321,
-    BITMAPORDER_1234
+	BITMAPORDER_NONE,
+	BITMAPORDER_4321,
+	BITMAPORDER_1234
 }
 
 enum PackedOrder : int
 {
-    PACKEDORDER_NONE,
-    PACKEDORDER_XRGB,
-    PACKEDORDER_RGBX,
-    PACKEDORDER_ARGB,
-    PACKEDORDER_RGBA,
-    PACKEDORDER_XBGR,
-    PACKEDORDER_BGRX,
-    PACKEDORDER_ABGR,
-    PACKEDORDER_BGRA
+	PACKEDORDER_NONE,
+	PACKEDORDER_XRGB,
+	PACKEDORDER_RGBX,
+	PACKEDORDER_ARGB,
+	PACKEDORDER_RGBA,
+	PACKEDORDER_XBGR,
+	PACKEDORDER_BGRX,
+	PACKEDORDER_ABGR,
+	PACKEDORDER_BGRA
 }
 
 enum ArrayOrder : int
 {
-    ARRAYORDER_NONE,
-    ARRAYORDER_RGB,
-    ARRAYORDER_RGBA,
-    ARRAYORDER_ARGB,
-    ARRAYORDER_BGR,
-    ARRAYORDER_BGRA,
-    ARRAYORDER_ABGR
+	ARRAYORDER_NONE,
+	ARRAYORDER_RGB,
+	ARRAYORDER_RGBA,
+	ARRAYORDER_ARGB,
+	ARRAYORDER_BGR,
+	ARRAYORDER_BGRA,
+	ARRAYORDER_ABGR
 }
 
 enum PackedLayout : int
 {
-    PACKEDLAYOUT_NONE,
-    PACKEDLAYOUT_332,
-    PACKEDLAYOUT_4444,
-    PACKEDLAYOUT_1555,
-    PACKEDLAYOUT_5551,
-    PACKEDLAYOUT_565,
-    PACKEDLAYOUT_8888,
-    PACKEDLAYOUT_2101010,
-    PACKEDLAYOUT_1010102
+	PACKEDLAYOUT_NONE,
+	PACKEDLAYOUT_332,
+	PACKEDLAYOUT_4444,
+	PACKEDLAYOUT_1555,
+	PACKEDLAYOUT_5551,
+	PACKEDLAYOUT_565,
+	PACKEDLAYOUT_8888,
+	PACKEDLAYOUT_2101010,
+	PACKEDLAYOUT_1010102
 }
 
-struct PixelFormat {
+struct PixelFormat
+{
 	uint format;
 	Palette* palette;
 	char bitsPerPixel;
@@ -255,7 +262,7 @@ struct PixelFormat {
 	PixelFormat* next;
 }
 
-def PixelFormatEnum = distinct int;
+distinct PixelFormatEnum = int;
 const PixelFormatEnum PIXELFORMAT_UNKNOWN = 0;
 const PixelFormatEnum PIXELFORMAT_INDEX1LSB = 286261504;
 const PixelFormatEnum PIXELFORMAT_INDEX1MSB = 287310080;
@@ -339,19 +346,19 @@ struct Rect
 {
 	int x;
 	int y;
-    int w;
-    int h;
+	int w;
+	int h;
 }
 
 struct FRect 
 {
 	float x;
 	float y;
-    float w;
-    float h;
+	float w;
+	float h;
 }
 
-def BlendMode = distinct int;
+distinct BlendMode = int;
 const BlendMode BLENDMODE_NONE = 0;
 const BlendMode BLENDMODE_BLEND = 1;
 const BlendMode BLENDMODE_ADD = 2;
@@ -361,49 +368,49 @@ const BlendMode BLENDMODE_INVALID = 2147483647;
 
 enum BlendOperation : int
 {
-    BLENDOPERATION_ADD,
-    BLENDOPERATION_SUBTRACT,
-    BLENDOPERATION_REV_SUBTRACT,
-    BLENDOPERATION_MINIMUM,
-    BLENDOPERATION_MAXIMUM
+	BLENDOPERATION_ADD,
+	BLENDOPERATION_SUBTRACT,
+	BLENDOPERATION_REV_SUBTRACT,
+	BLENDOPERATION_MINIMUM,
+	BLENDOPERATION_MAXIMUM
 }
 
 enum BlendFactor : int
 {
-    BLENDFACTOR_ZERO,
-    BLENDFACTOR_ONE,
-    BLENDFACTOR_SRC_COLOR,
-    BLENDFACTOR_ONE_MINUS_SRC_COLOR,
-    BLENDFACTOR_SRC_ALPHA,
-    BLENDFACTOR_ONE_MINUS_SRC_ALPHA,
-    BLENDFACTOR_DST_COLOR,
-    BLENDFACTOR_ONE_MINUS_DST_COLOR,
-    BLENDFACTOR_DST_ALPHA,
-    BLENDFACTOR_ONE_MINUS_DST_ALPHA,
+	BLENDFACTOR_ZERO,
+	BLENDFACTOR_ONE,
+	BLENDFACTOR_SRC_COLOR,
+	BLENDFACTOR_ONE_MINUS_SRC_COLOR,
+	BLENDFACTOR_SRC_ALPHA,
+	BLENDFACTOR_ONE_MINUS_SRC_ALPHA,
+	BLENDFACTOR_DST_COLOR,
+	BLENDFACTOR_ONE_MINUS_DST_COLOR,
+	BLENDFACTOR_DST_ALPHA,
+	BLENDFACTOR_ONE_MINUS_DST_ALPHA,
 }
 
-def BlitMap = distinct void*;
+distinct BlitMap = void*;
 
 struct Surface
 {
-    uint flags;
-    PixelFormat *format;
-    int w;
-    int h;
-    int pitch;
-    void *pixels;
+	uint flags;
+	PixelFormat *format;
+	int w;
+	int h;
+	int pitch;
+	void *pixels;
 
-    void *userdata;
+	void *userdata;
 
-    int locked;
+	int locked;
 
-    void *list_blitmap;
+	void *list_blitmap;
 
-    Rect clip_rect;
+	Rect clip_rect;
 
-    BlitMap *map;
+	BlitMap *map;
 
-    int refcount;
+	int refcount;
 }
 
 enum YUVConversionMode : int
@@ -425,7 +432,7 @@ struct DisplayMode
 
 def Window = void;
 
-def WindowFlags = distinct int;
+distinct WindowFlags = int;
 const WindowFlags WINDOW_FULLSCREEN = 1;
 const WindowFlags WINDOW_OPENGL = 2;
 const WindowFlags WINDOW_SHOWN = 4;
@@ -451,7 +458,8 @@ const WindowFlags WINDOW_VULKAN = 268435456;
 const WindowFlags WINDOW_METAL = 536870912;
 const WindowFlags WINDOW_INPUT_GRABBED = 256;
 
-def Scancode = distinct int;
+distinct Scancode = int;
+
 const Scancode SCANCODE_UNKNOWN = 0;
 const Scancode SCANCODE_A = 4;
 const Scancode SCANCODE_B = 5;
@@ -701,7 +709,7 @@ const Scancode SCANCODE_CALL = 289;
 const Scancode SCANCODE_ENDCALL = 290;
 const Scancode NUM_SCANCODES = 512;
 
-def Keycode = distinct int;
+distinct Keycode = int;
 const Keycode SDLK_UNKNOWN = 0;
 const Keycode SDLK_RETURN = 13;
 const Keycode SDLK_ESCAPE = 27;
@@ -947,7 +955,8 @@ const Keycode SDLK_SOFTRIGHT = 1073742112;
 const Keycode SDLK_CALL = 1073742113;
 const Keycode SDLK_ENDCALL = 1073742114;
 
-def Keymod = distinct int;
+distinct Keymod = int;
+
 const Keymod KMOD_NONE = 0;
 const Keymod KMOD_LSHIFT = 1;
 const Keymod KMOD_RSHIFT = 2;
@@ -969,93 +978,95 @@ const Keymod KMOD_RESERVED = 32768;
 
 enum WindowEventID : int
 {
-    WINDOWEVENT_NONE,
-    WINDOWEVENT_SHOWN,
-    WINDOWEVENT_HIDDEN,
-    WINDOWEVENT_EXPOSED,
-    WINDOWEVENT_MOVED,
-    WINDOWEVENT_RESIZED,
-    WINDOWEVENT_SIZE_CHANGED,
-    WINDOWEVENT_MINIMIZED,
-    WINDOWEVENT_MAXIMIZED,
-    WINDOWEVENT_RESTORED,
-    WINDOWEVENT_ENTER,
-    WINDOWEVENT_LEAVE,
-    WINDOWEVENT_FOCUS_GAINED,
-    WINDOWEVENT_FOCUS_LOST,
-    WINDOWEVENT_CLOSE,
-    WINDOWEVENT_TAKE_FOCUS,
-    WINDOWEVENT_HIT_TEST,
-    WINDOWEVENT_ICCPROF_CHANGED,
-    WINDOWEVENT_DISPLAY_CHANGED
+	WINDOWEVENT_NONE,
+	WINDOWEVENT_SHOWN,
+	WINDOWEVENT_HIDDEN,
+	WINDOWEVENT_EXPOSED,
+	WINDOWEVENT_MOVED,
+	WINDOWEVENT_RESIZED,
+	WINDOWEVENT_SIZE_CHANGED,
+	WINDOWEVENT_MINIMIZED,
+	WINDOWEVENT_MAXIMIZED,
+	WINDOWEVENT_RESTORED,
+	WINDOWEVENT_ENTER,
+	WINDOWEVENT_LEAVE,
+	WINDOWEVENT_FOCUS_GAINED,
+	WINDOWEVENT_FOCUS_LOST,
+	WINDOWEVENT_CLOSE,
+	WINDOWEVENT_TAKE_FOCUS,
+	WINDOWEVENT_HIT_TEST,
+	WINDOWEVENT_ICCPROF_CHANGED,
+	WINDOWEVENT_DISPLAY_CHANGED
 }
 
 enum DisplayEventID : int
 {
-    DISPLAYEVENT_NONE,
-    DISPLAYEVENT_ORIENTATION,
-    DISPLAYEVENT_CONNECTED,
-    DISPLAYEVENT_DISCONNECTED,
-    DISPLAYEVENT_MOVED
+	DISPLAYEVENT_NONE,
+	DISPLAYEVENT_ORIENTATION,
+	DISPLAYEVENT_CONNECTED,
+	DISPLAYEVENT_DISCONNECTED,
+	DISPLAYEVENT_MOVED
 }
 
 enum DisplayOrientation : int
 {
-    ORIENTATION_UNKNOWN,
-    ORIENTATION_LANDSCAPE,
-    ORIENTATION_LANDSCAPE_FLIPPED,
-    ORIENTATION_PORTRAIT,
-    ORIENTATION_PORTRAIT_FLIPPED
+	ORIENTATION_UNKNOWN,
+	ORIENTATION_LANDSCAPE,
+	ORIENTATION_LANDSCAPE_FLIPPED,
+	ORIENTATION_PORTRAIT,
+	ORIENTATION_PORTRAIT_FLIPPED
 }
 
 enum FlashOperation : int
 {
-    FLASH_CANCEL,
-    FLASH_BRIEFLY,
-    FLASH_UNTIL_FOCUSED
+	FLASH_CANCEL,
+	FLASH_BRIEFLY,
+	FLASH_UNTIL_FOCUSED
 }
 
-def GLContext = distinct void*;
+distinct GLContext = void*;
 
 enum GLattr : int
 {
-    GL_RED_SIZE,
-    GL_GREEN_SIZE,
-    GL_BLUE_SIZE,
-    GL_ALPHA_SIZE,
-    GL_BUFFER_SIZE,
-    GL_DOUBLEBUFFER,
-    GL_DEPTH_SIZE,
-    GL_STENCIL_SIZE,
-    GL_ACCUM_RED_SIZE,
-    GL_ACCUM_GREEN_SIZE,
-    GL_ACCUM_BLUE_SIZE,
-    GL_ACCUM_ALPHA_SIZE,
-    GL_STEREO,
-    GL_MULTISAMPLEBUFFERS,
-    GL_MULTISAMPLESAMPLES,
-    GL_ACCELERATED_VISUAL,
-    GL_RETAINED_BACKING,
-    GL_CONTEXT_MAJOR_VERSION,
-    GL_CONTEXT_MINOR_VERSION,
-    GL_CONTEXT_EGL,
-    GL_CONTEXT_FLAGS,
-    GL_CONTEXT_PROFILE_MASK,
-    GL_SHARE_WITH_CURRENT_CONTEXT,
-    GL_FRAMEBUFFER_SRGB_CAPABLE,
-    GL_CONTEXT_RELEASE_BEHAVIOR,
-    GL_CONTEXT_RESET_NOTIFICATION,
-    GL_CONTEXT_NO_ERROR,
-    GL_FLOATBUFFERS
+	GL_RED_SIZE,
+	GL_GREEN_SIZE,
+	GL_BLUE_SIZE,
+	GL_ALPHA_SIZE,
+	GL_BUFFER_SIZE,
+	GL_DOUBLEBUFFER,
+	GL_DEPTH_SIZE,
+	GL_STENCIL_SIZE,
+	GL_ACCUM_RED_SIZE,
+	GL_ACCUM_GREEN_SIZE,
+	GL_ACCUM_BLUE_SIZE,
+	GL_ACCUM_ALPHA_SIZE,
+	GL_STEREO,
+	GL_MULTISAMPLEBUFFERS,
+	GL_MULTISAMPLESAMPLES,
+	GL_ACCELERATED_VISUAL,
+	GL_RETAINED_BACKING,
+	GL_CONTEXT_MAJOR_VERSION,
+	GL_CONTEXT_MINOR_VERSION,
+	GL_CONTEXT_EGL,
+	GL_CONTEXT_FLAGS,
+	GL_CONTEXT_PROFILE_MASK,
+	GL_SHARE_WITH_CURRENT_CONTEXT,
+	GL_FRAMEBUFFER_SRGB_CAPABLE,
+	GL_CONTEXT_RELEASE_BEHAVIOR,
+	GL_CONTEXT_RESET_NOTIFICATION,
+	GL_CONTEXT_NO_ERROR,
+	GL_FLOATBUFFERS
 }
 
-def GLProfile = distinct int;
+distinct GLProfile = int;
+
 const GLProfile GL_CONTEXT_PROFILE_CORE = 1;
 const GLProfile GL_CONTEXT_PROFILE_COMPATIBILITY = 2;
 const GLProfile GL_CONTEXT_PROFILE_ES = 4;
 
 
-def GLContextFlag = distinct int;
+distinct GLContextFlag = int;
+
 const GLContextFlag GL_CONTEXT_DEBUG_FLAG = 1;
 const GLContextFlag GL_CONTEXT_FORWARD_COMPATIBLE_FLAG = 2;
 const GLContextFlag GL_CONTEXT_ROBUST_ACCESS_FLAG = 4;
@@ -1063,28 +1074,28 @@ const GLContextFlag GL_CONTEXT_RESET_ISOLATION_FLAG = 8;
 
 enum GLContextReleaseFlag : int
 {
-    GL_CONTEXT_RELEASE_BEHAVIOR_NONE,
-    GL_CONTEXT_RELEASE_BEHAVIOR_FLUSH
+	GL_CONTEXT_RELEASE_BEHAVIOR_NONE,
+	GL_CONTEXT_RELEASE_BEHAVIOR_FLUSH
 }
 
 enum GLContextResetNotification : int
 {
-    GL_CONTEXT_RESET_NO_NOTIFICATION,
-    GL_CONTEXT_RESET_LOSE_CONTEXT
+	GL_CONTEXT_RESET_NO_NOTIFICATION,
+	GL_CONTEXT_RESET_LOSE_CONTEXT
 }
 
 enum HitTestResult : int
 {
-  HITTEST_NORMAL,
-  HITTEST_DRAGGABLE,
-  HITTEST_RESIZE_TOPLEFT,
-  HITTEST_RESIZE_TOP,
-  HITTEST_RESIZE_TOPRIGHT,
-  HITTEST_RESIZE_RIGHT,
-  HITTEST_RESIZE_BOTTOMRIGHT,
-  HITTEST_RESIZE_BOTTOM,
-  HITTEST_RESIZE_BOTTOMLEFT,
-  HITTEST_RESIZE_LEFT
+	HITTEST_NORMAL,
+	HITTEST_DRAGGABLE,
+	HITTEST_RESIZE_TOPLEFT,
+	HITTEST_RESIZE_TOP,
+	HITTEST_RESIZE_TOPRIGHT,
+	HITTEST_RESIZE_RIGHT,
+	HITTEST_RESIZE_BOTTOMRIGHT,
+	HITTEST_RESIZE_BOTTOM,
+	HITTEST_RESIZE_BOTTOMLEFT,
+	HITTEST_RESIZE_LEFT
 }
 
 def HitTest = fn void(Window* win, Point* area, void* data);
@@ -1099,31 +1110,31 @@ struct Keysym
 
 struct Cursor
 {
-    Cursor *next;
-    void *driverdata;
+	Cursor *next;
+	void *driverdata;
 }
 
 enum SystemCursor : int
 {
-    SYSTEM_CURSOR_ARROW,
-    SYSTEM_CURSOR_IBEAM,
-    SYSTEM_CURSOR_WAIT,
-    SYSTEM_CURSOR_CROSSHAIR,
-    SYSTEM_CURSOR_WAITARROW,
-    SYSTEM_CURSOR_SIZENWSE,
-    SYSTEM_CURSOR_SIZENESW,
-    SYSTEM_CURSOR_SIZEWE,
-    SYSTEM_CURSOR_SIZENS,
-    SYSTEM_CURSOR_SIZEALL,
-    SYSTEM_CURSOR_NO,
-    SYSTEM_CURSOR_HAND,
-    NUM_SYSTEM_CURSORS
+	SYSTEM_CURSOR_ARROW,
+	SYSTEM_CURSOR_IBEAM,
+	SYSTEM_CURSOR_WAIT,
+	SYSTEM_CURSOR_CROSSHAIR,
+	SYSTEM_CURSOR_WAITARROW,
+	SYSTEM_CURSOR_SIZENWSE,
+	SYSTEM_CURSOR_SIZENESW,
+	SYSTEM_CURSOR_SIZEWE,
+	SYSTEM_CURSOR_SIZENS,
+	SYSTEM_CURSOR_SIZEALL,
+	SYSTEM_CURSOR_NO,
+	SYSTEM_CURSOR_HAND,
+	NUM_SYSTEM_CURSORS
 }
 
 enum MouseWheelDirection : int
 {
-    MOUSEWHEEL_NORMAL,
-    MOUSEWHEEL_FLIPPED
+	MOUSEWHEEL_NORMAL,
+	MOUSEWHEEL_FLIPPED
 }
 
 struct Guid 
@@ -1137,19 +1148,19 @@ def JoystickID = int;
 
 enum JoystickType : int
 {
-    JOYSTICK_TYPE_UNKNOWN,
-    JOYSTICK_TYPE_GAMECONTROLLER,
-    JOYSTICK_TYPE_WHEEL,
-    JOYSTICK_TYPE_ARCADE_STICK,
-    JOYSTICK_TYPE_FLIGHT_STICK,
-    JOYSTICK_TYPE_DANCE_PAD,
-    JOYSTICK_TYPE_GUITAR,
-    JOYSTICK_TYPE_DRUM_KIT,
-    JOYSTICK_TYPE_ARCADE_PAD,
-    JOYSTICK_TYPE_THROTTLE
+	JOYSTICK_TYPE_UNKNOWN,
+	JOYSTICK_TYPE_GAMECONTROLLER,
+	JOYSTICK_TYPE_WHEEL,
+	JOYSTICK_TYPE_ARCADE_STICK,
+	JOYSTICK_TYPE_FLIGHT_STICK,
+	JOYSTICK_TYPE_DANCE_PAD,
+	JOYSTICK_TYPE_GUITAR,
+	JOYSTICK_TYPE_DRUM_KIT,
+	JOYSTICK_TYPE_ARCADE_PAD,
+	JOYSTICK_TYPE_THROTTLE
 }
 
-def JoystickPowerLevel = distinct int;
+distinct JoystickPowerLevel = int;
 const JoystickPowerLevel JOYSTICK_POWER_UNKNOWN = -1;
 const JoystickPowerLevel JOYSTICK_POWER_EMPTY = 0;
 const JoystickPowerLevel JOYSTICK_POWER_LOW = 1;
@@ -1166,32 +1177,32 @@ def SetLED = fn int(void* userdata, char red, char green, char blue);
 def SendEffect = fn int(void* userdata, void* data, int size);
 
 struct VirtualJoystickDesc {
-    uint version;
-    uint type;
-    uint naxes;
-    uint nbuttons;
-    uint nhats;
-    uint vendor_id;
-    uint product_id;
-    uint padding;
-    uint button_mask;
-                    
-    uint axis_mask; 
+	uint version;
+	uint type;
+	uint naxes;
+	uint nbuttons;
+	uint nhats;
+	uint vendor_id;
+	uint product_id;
+	uint padding;
+	uint button_mask;
 
-    char* name;
+	uint axis_mask;
 
-    void *userdata;
-    Update update;
-    SetPlayerIndex setPlayerIndex;
-    Rumble rumble;
-    RumbleTriggers rumbleTriggers;
-    SetLED setLED;
-    SendEffect sendEffect;
+	char* name;
+
+	void *userdata;
+	Update update;
+	SetPlayerIndex setPlayerIndex;
+	Rumble rumble;
+	RumbleTriggers rumbleTriggers;
+	SetLED setLED;
+	SendEffect sendEffect;
 }
 
 def SensorID = int;
 
-def SensorType = distinct int;
+distinct SensorType = int;
 const SensorType SENSOR_INVALID = -1;
 const SensorType SENSOR_UNKNOWN = 0;
 const SensorType SENSOR_ACCEL = 1;
@@ -1201,70 +1212,73 @@ const SensorType SENSOR_GYRO_L = 4;
 const SensorType SENSOR_ACCEL_R = 5;
 const SensorType SENSOR_GYRO_R = 6;
 
-def Sensor_hwdata = distinct void*;
-def SensorDriver = distinct void*;
+distinct Sensor_hwdata = void*;
+distinct SensorDriver = void*;
 
 
 struct Sensor
 {
-    SensorID instance_id;
-    char* name;
-    SensorType type;
-    int non_portable_type;
+	SensorID instance_id;
+	char* name;
+	SensorType type;
+	int non_portable_type;
 
-    float [16]data;
+	float [16]data;
 
-    SensorDriver *driver;
+	SensorDriver *driver;
 
-    Sensor_hwdata hwdata;
+	Sensor_hwdata hwdata;
 
-    int ref_count;
+	int ref_count;
 
-    Sensor *next;
+	Sensor *next;
 }
 
-def GameController = distinct void*;
+distinct GameController = void*;
 
 enum GameControllerType : int
 {
-    CONTROLLER_TYPE_UNKNOWN,
-    CONTROLLER_TYPE_XBOX360,
-    CONTROLLER_TYPE_XBOXONE,
-    CONTROLLER_TYPE_PS3,
-    CONTROLLER_TYPE_PS4,
-    CONTROLLER_TYPE_NINTENDO_SWITCH_PRO,
-    CONTROLLER_TYPE_VIRTUAL,
-    CONTROLLER_TYPE_PS5,
-    CONTROLLER_TYPE_AMAZON_LUNA,
-    CONTROLLER_TYPE_GOOGLE_STADIA,
-    CONTROLLER_TYPE_NVIDIA_SHIELD,
-    CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_LEFT,
-    CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_RIGHT,
-    CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_PAIR
+	CONTROLLER_TYPE_UNKNOWN,
+	CONTROLLER_TYPE_XBOX360,
+	CONTROLLER_TYPE_XBOXONE,
+	CONTROLLER_TYPE_PS3,
+	CONTROLLER_TYPE_PS4,
+	CONTROLLER_TYPE_NINTENDO_SWITCH_PRO,
+	CONTROLLER_TYPE_VIRTUAL,
+	CONTROLLER_TYPE_PS5,
+	CONTROLLER_TYPE_AMAZON_LUNA,
+	CONTROLLER_TYPE_GOOGLE_STADIA,
+	CONTROLLER_TYPE_NVIDIA_SHIELD,
+	CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_LEFT,
+	CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_RIGHT,
+	CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_PAIR
 }
 
 enum GameControllerBindType : int
 {
-  CONTROLLER_BINDTYPE_NONE,
-  CONTROLLER_BINDTYPE_BUTTON,
-  CONTROLLER_BINDTYPE_AXIS,
-  CONTROLLER_BINDTYPE_HAT
+	CONTROLLER_BINDTYPE_NONE,
+	CONTROLLER_BINDTYPE_BUTTON,
+	CONTROLLER_BINDTYPE_AXIS,
+	CONTROLLER_BINDTYPE_HAT
 }
 
 struct GameControllerButtonBind
 {
-    GameControllerBindType bindType;
-    union value {
-        int button;
-        int axis;
-        struct hat{
-            int hat;
-            int hat_mask;
-        }
-    }
+	GameControllerBindType bindType;
+	union value
+	{
+		int button;
+		int axis;
+		struct hat
+		{
+			int hat;
+			int hat_mask;
+		}
+	}
 }
 
-def GameControllerAxis = distinct int;
+distinct GameControllerAxis = int;
+
 const GameControllerAxis CONTROLLER_AXIS_INVALID = -1;
 const GameControllerAxis CONTROLLER_AXIS_LEFTX = 0;
 const GameControllerAxis CONTROLLER_AXIS_LEFTY = 1;
@@ -1274,7 +1288,8 @@ const GameControllerAxis CONTROLLER_AXIS_TRIGGERLEFT = 4;
 const GameControllerAxis CONTROLLER_AXIS_TRIGGERRIGHT = 5;
 const GameControllerAxis CONTROLLER_AXIS_MAX = 6;
 
-def GameControllerButton = distinct int;
+distinct GameControllerButton = int;
+
 const GameControllerButton CONTROLLER_BUTTON_INVALID = -1;
 const GameControllerButton CONTROLLER_BUTTON_A = 0;
 const GameControllerButton CONTROLLER_BUTTON_B = 1;
@@ -1302,7 +1317,7 @@ const GameControllerButton CONTROLLER_BUTTON_MAX = 21;
 def TouchID = long;
 def FingerID = long;
 
-def TouchDeviceType = distinct int;
+distinct TouchDeviceType = int;
 const TouchDeviceType CONTROLLER_BINDTYPE_NONE = -1;
 const TouchDeviceType CONTROLLER_BINDTYPE_BUTTON = 0;
 const TouchDeviceType CONTROLLER_BINDTYPE_AXIS = 1;
@@ -1310,15 +1325,15 @@ const TouchDeviceType CONTROLLER_BINDTYPE_HAT = 2;
 
 struct Finger
 {
-    FingerID id;
-    float x;
-    float y;
-    float pressure;
+	FingerID id;
+	float x;
+	float y;
+	float pressure;
 }
 
 def GestureID = long;
 
-def EventType = distinct int;
+distinct EventType = int;
 const EventType FIRSTEVENT = 0;
 const EventType QUIT = 256;
 const EventType APP_TERMINATING = 257;
@@ -1379,12 +1394,14 @@ const EventType POLLSENTINEL = 32512;
 const EventType USEREVENT = 32768;
 const EventType LASTEVENT = 65535;
 
-struct CommonEvent {
+struct CommonEvent
+{
 	uint type;
 	uint timestamp;
 }
 
-struct DisplayEvent {
+struct DisplayEvent
+{
 	uint type;
 	uint timestamp;
 	uint display;
@@ -1395,7 +1412,8 @@ struct DisplayEvent {
 	int data1;
 }
 
-struct WindowEvent {
+struct WindowEvent
+{
 	uint type;
 	uint timestamp;
 	uint windowid;
@@ -1407,7 +1425,8 @@ struct WindowEvent {
 	int data2;
 }
 
-struct KeyboardEvent {
+struct KeyboardEvent
+{
 	uint type;
 	uint timestamp;
 	uint windowid;
@@ -1418,7 +1437,8 @@ struct KeyboardEvent {
 	Keysym keysym;
 }
 
-struct TextEditingEvent {
+struct TextEditingEvent
+{
 	uint type;
 	uint timestamp;
 	uint windowid;
@@ -1427,7 +1447,8 @@ struct TextEditingEvent {
 	int length;
 }
 
-struct TextEditingExtEvent {
+struct TextEditingExtEvent
+{
 	uint type;
 	uint timestamp;
 	uint windowid;
@@ -1436,14 +1457,16 @@ struct TextEditingExtEvent {
 	int length;
 }
 
-struct TextInputEvent {
+struct TextInputEvent
+{
 	uint type;
 	uint timestamp;
 	uint windowid;
 	char[32] text;
 }
 
-struct MouseMotionEvent {
+struct MouseMotionEvent
+{
 	uint type;
 	uint timestamp;
 	uint windowid;
@@ -1455,7 +1478,8 @@ struct MouseMotionEvent {
 	int yrel;
 }
 
-struct MouseButtonEvent {
+struct MouseButtonEvent
+{
 	uint type;
 	uint timestamp;
 	uint windowid;
@@ -1468,7 +1492,8 @@ struct MouseButtonEvent {
 	int y;
 }
 
-struct MouseWheelEvent {
+struct MouseWheelEvent
+{
 	uint type;
 	uint timestamp;
 	uint windowid;
@@ -1480,7 +1505,8 @@ struct MouseWheelEvent {
 	float precisey;
 }
 
-struct JoyAxisEvent {
+struct JoyAxisEvent
+{
 	uint type;
 	uint timestamp;
 	JoystickID which;
@@ -1492,7 +1518,8 @@ struct JoyAxisEvent {
 	ushort padding4;
 }
 
-struct JoyBallEvent {
+struct JoyBallEvent
+{
 	uint type;
 	uint timestamp;
 	JoystickID which;
@@ -1504,7 +1531,8 @@ struct JoyBallEvent {
 	short yrel;
 }
 
-struct JoyHatEvent {
+struct JoyHatEvent
+{
 	uint type;
 	uint timestamp;
 	JoystickID which;
@@ -1514,7 +1542,8 @@ struct JoyHatEvent {
 	char padding2;
 }
 
-struct JoyButtonEvent {
+struct JoyButtonEvent
+{
 	uint type;
 	uint timestamp;
 	JoystickID which;
@@ -1524,20 +1553,23 @@ struct JoyButtonEvent {
 	char padding2;
 }
 
-struct JoyDeviceEvent {
+struct JoyDeviceEvent
+{
 	uint type;
 	uint timestamp;
 	JoystickID which;
 }
 
-struct JoyBatteryEvent {
+struct JoyBatteryEvent
+{
 	uint type;
 	uint timestamp;
 	JoystickID which;
 	JoystickPowerLevel level;
 }
 
-struct ControllerAxisEvent {
+struct ControllerAxisEvent
+{
 	uint type;
 	uint timestamp;
 	JoystickID which;
@@ -1549,7 +1581,8 @@ struct ControllerAxisEvent {
 	ushort padding4;
 }
 
-struct ControllerButtonEvent {
+struct ControllerButtonEvent
+{
 	uint type;
 	uint timestamp;
 	int which;
@@ -1559,13 +1592,15 @@ struct ControllerButtonEvent {
 	char padding2;
 }
 
-struct ControllerDeviceEvent {
+struct ControllerDeviceEvent
+{
 	uint type;
 	uint timestamp;
 	int which;
 }
 
-struct ControllerTouchpadEvent {
+struct ControllerTouchpadEvent
+{
 	uint type;
 	uint timestamp;
 	int which;
@@ -1576,7 +1611,8 @@ struct ControllerTouchpadEvent {
 	float pressure;
 }
 
-struct ControllerSensorEvent {
+struct ControllerSensorEvent
+{
 	uint type;
 	uint timestamp;
 	int which;
@@ -1584,7 +1620,8 @@ struct ControllerSensorEvent {
 	float[3] data;
 }
 
-struct AudioDeviceEvent {
+struct AudioDeviceEvent
+{
 	uint type;
 	uint timestamp;
 	AudioDeviceID which;
@@ -1594,7 +1631,8 @@ struct AudioDeviceEvent {
 	char padding3;
 }
 
-struct TouchFingerEvent {
+struct TouchFingerEvent
+{
 	uint type;
 	uint timestamp;
 	TouchID touchid;
@@ -1607,7 +1645,8 @@ struct TouchFingerEvent {
 	uint windowid;
 }
 
-struct MultiGestureEvent {
+struct MultiGestureEvent
+{
 	uint type;
 	uint timestamp;
 	TouchID touchid;
@@ -1619,7 +1658,8 @@ struct MultiGestureEvent {
 	ushort padding;
 }
 
-struct DollarGestureEvent {
+struct DollarGestureEvent
+{
 	uint type;
 	uint timestamp;
 	TouchID touchid;
@@ -1630,31 +1670,36 @@ struct DollarGestureEvent {
 	float y;
 }
 
-struct DropEvent {
+struct DropEvent
+{
 	uint type;
 	uint timestamp;
 	char* file;
 	uint windowid;
 }
 
-struct SensorEvent {
+struct SensorEvent
+{
 	uint type;
 	uint timestamp;
 	SensorID which;
 	float[6] data;
 }
 
-struct QuitEvent {
+struct QuitEvent
+{
 	uint type;
 	uint timestamp;
 }
 
-struct OsEvent {
+struct OsEvent
+{
 	uint type;
 	uint timestamp;
 }
 
-struct UserEvent {
+struct UserEvent
+{
 	uint type;
 	uint timestamp;
 	uint windowid;
@@ -1663,15 +1708,17 @@ struct UserEvent {
 	void* data2;
 }
 
-def SysWMmsg = distinct void*;
+distinct SysWMmsg = void*;
 
-struct SysWMEvent {
+struct SysWMEvent
+{
 	uint type;
 	uint timestamp;
 	SysWMmsg* msg;
 }
 
-union Event {
+union Event
+{
 	EventType type;
 	CommonEvent common;
 	DisplayEvent display;
@@ -1706,21 +1753,24 @@ union Event {
 	char[128] padding;
 }
 
-enum EventAction : int{
-  ADDEVENT,
-  PEEKEVENT,
-  GETEVENT
+enum EventAction : int
+{
+    ADDEVENT,
+    PEEKEVENT,
+    GETEVENT
 }
 
 def EventFilter = fn int(void* userdata, Event event);
 def Haptic = void*;
 
-struct HapticDirection {
+struct HapticDirection
+{
 	char type;
 	int[3] dir;
 }
 
-struct HapticConstant {
+struct HapticConstant
+{
 	ushort type;
 	HapticDirection direction;
 	uint length;
@@ -1734,7 +1784,8 @@ struct HapticConstant {
 	ushort fade_Level;
 }
 
-struct HapticPeriodic {
+struct HapticPeriodic
+{
 	ushort type;
 	HapticDirection direction;
 	uint length;
@@ -1751,7 +1802,8 @@ struct HapticPeriodic {
 	ushort fade_Level;
 }
 
-struct HapticCondition {
+struct HapticCondition
+{
 	ushort type;
 	HapticDirection direction;
 	uint length;
@@ -1766,7 +1818,8 @@ struct HapticCondition {
 	short[3] center;
 }
 
-struct HapticRamp {
+struct HapticRamp
+{
 	ushort type;
 	HapticDirection direction;
 	uint length;
@@ -1781,14 +1834,16 @@ struct HapticRamp {
 	ushort fade_Level;
 }
 
-struct HapticLeftRight {
+struct HapticLeftRight
+{
 	ushort type;
 	uint length;
 	ushort large_Magnitude;
 	ushort small_Magnitude;
 }
 
-struct HapticCustom {
+struct HapticCustom
+{
 	ushort type;
 	HapticDirection direction;
 	uint length;
@@ -1805,7 +1860,8 @@ struct HapticCustom {
 	ushort fade_Level;
 }
 
-union HapticEffect {
+union HapticEffect
+{
 	ushort type;
 	HapticConstant constant;
 	HapticPeriodic periodic;
@@ -1817,7 +1873,8 @@ union HapticEffect {
 
 def Hid_Device = void*;
 
-struct Hid_Device_Info {
+struct Hid_Device_Info
+{
 	char* path;
 	ushort vendor_Id;
 	ushort product_Id;
@@ -1834,7 +1891,8 @@ struct Hid_Device_Info {
 	Hid_Device_Info* next;
 }
 
-enum HintPriority : int {
+enum HintPriority : int
+{
   SDL_HINT_DEFAULT,
   SDL_HINT_NORMAL,
   SDL_HINT_OVERRIDE
@@ -1842,30 +1900,32 @@ enum HintPriority : int {
 
 def HintCallback = fn void(void* userdata, char* name, char* oldValue, char* newValue);
 
-enum LogCategory : int {
-    LOG_CATEGORY_APPLICATION,
-    LOG_CATEGORY_ERROR,
-    LOG_CATEGORY_ASSERT,
-    LOG_CATEGORY_SYSTEM,
-    LOG_CATEGORY_AUDIO,
-    LOG_CATEGORY_VIDEO,
-    LOG_CATEGORY_RENDER,
-    LOG_CATEGORY_INPUT,
-    LOG_CATEGORY_TEST,
-    LOG_CATEGORY_RESERVED1,
-    LOG_CATEGORY_RESERVED2,
-    LOG_CATEGORY_RESERVED3,
-    LOG_CATEGORY_RESERVED4,
-    LOG_CATEGORY_RESERVED5,
-    LOG_CATEGORY_RESERVED6,
-    LOG_CATEGORY_RESERVED7,
-    LOG_CATEGORY_RESERVED8,
-    LOG_CATEGORY_RESERVED9,
-    LOG_CATEGORY_RESERVED10,
-    LOG_CATEGORY_CUSTOM
+enum LogCategory : int
+{
+	LOG_CATEGORY_APPLICATION,
+	LOG_CATEGORY_ERROR,
+	LOG_CATEGORY_ASSERT,
+	LOG_CATEGORY_SYSTEM,
+	LOG_CATEGORY_AUDIO,
+	LOG_CATEGORY_VIDEO,
+	LOG_CATEGORY_RENDER,
+	LOG_CATEGORY_INPUT,
+	LOG_CATEGORY_TEST,
+	LOG_CATEGORY_RESERVED1,
+	LOG_CATEGORY_RESERVED2,
+	LOG_CATEGORY_RESERVED3,
+	LOG_CATEGORY_RESERVED4,
+	LOG_CATEGORY_RESERVED5,
+	LOG_CATEGORY_RESERVED6,
+	LOG_CATEGORY_RESERVED7,
+	LOG_CATEGORY_RESERVED8,
+	LOG_CATEGORY_RESERVED9,
+	LOG_CATEGORY_RESERVED10,
+	LOG_CATEGORY_CUSTOM
 }
 
-def LogPriority = distinct int;
+distinct LogPriority = int;
+
 const LogPriority LOG_PRIORITY_VERBOSE = 1;
 const LogPriority LOG_PRIORITY_DEBUG = 2;
 const LogPriority LOG_PRIORITY_INFO = 3;
@@ -1876,43 +1936,50 @@ const LogPriority NUM_LOG_PRIORITIES = 7;
 
 def LogOutputFunction = fn void(void* userdata, int category, LogPriority priority, char* message);
 
-def MessageBoxFlags = distinct int;
+distinct MessageBoxFlags = int;
+
 const MessageBoxFlags MESSAGEBOX_ERROR = 16;
 const MessageBoxFlags MESSAGEBOX_WARNING = 32;
 const MessageBoxFlags MESSAGEBOX_INFORMATION = 64;
 const MessageBoxFlags MESSAGEBOX_BUTTONS_LEFT_TO_RIGHT = 128;
 const MessageBoxFlags MESSAGEBOX_BUTTONS_RIGHT_TO_LEFT = 256;
 
-def MessageBoxButtonFlags = distinct int;
+distinct MessageBoxButtonFlags = int;
+
 const MessageBoxButtonFlags MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT = 1;
 const MessageBoxButtonFlags MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT = 2;
 
-struct MessageBoxButtonData {
+struct MessageBoxButtonData
+{
 	uint flags;
 	int buttonid;
 	char* text;
 }
 
-struct MessageBoxColor {
+struct MessageBoxColor
+{
 	char r;
 	char g;
 	char b;
 }
 
-enum MessageBoxColorType : int{
-    MESSAGEBOX_COLOR_BACKGROUND,
-    MESSAGEBOX_COLOR_TEXT,
-    MESSAGEBOX_COLOR_BUTTON_BORDER,
-    MESSAGEBOX_COLOR_BUTTON_BACKGROUND,
-    MESSAGEBOX_COLOR_BUTTON_SELECTED,
-    MESSAGEBOX_COLOR_MAX
+enum MessageBoxColorType : int
+{
+	MESSAGEBOX_COLOR_BACKGROUND,
+	MESSAGEBOX_COLOR_TEXT,
+	MESSAGEBOX_COLOR_BUTTON_BORDER,
+	MESSAGEBOX_COLOR_BUTTON_BACKGROUND,
+	MESSAGEBOX_COLOR_BUTTON_SELECTED,
+	MESSAGEBOX_COLOR_MAX
 }
 
-struct MessageBoxColorScheme {
+struct MessageBoxColorScheme
+{
 	MessageBoxColor[5] colors;
 }
 
-struct MessageBoxData {
+struct MessageBoxData
+{
 	uint flags;
 	Window* window;
 	char* title;
@@ -1922,9 +1989,10 @@ struct MessageBoxData {
 	MessageBoxColorScheme* colorscheme;
 }
 
-def MetalView = distinct void*;
+distinct MetalView = void*;
 
-enum PowerState : int{
+enum PowerState : int
+{
   POWERSTATE_UNKNOWN,
   POWERSTATE_ON_BATTERY,
   POWERSTATE_NO_BATTERY,
@@ -1932,13 +2000,15 @@ enum PowerState : int{
   POWERSTATE_CHARGED
 }
 
-def RendererFlags = distinct int;
+distinct RendererFlags = int;
+
 const RendererFlags RENDERER_SOFTWARE = 1;
 const RendererFlags RENDERER_ACCELERATED = 2;
 const RendererFlags RENDERER_PRESENTVSYNC = 4;
 const RendererFlags RENDERER_TARGETTEXTURE = 8;
 
-struct RendererInfo {
+struct RendererInfo
+{
 	char* name;
 	uint flags;
 	uint num_Texture_Formats;
@@ -1947,51 +2017,58 @@ struct RendererInfo {
 	int max_Texture_Height;
 }
 
-struct Vertex {
+struct Vertex
+{
 	FPoint position;
 	Color color;
 	FPoint tex_Coord;
 }
 
-enum ScaleMode : int{
-    SCALE_MODE_NEAREST,
-    SCALE_MODE_LINEAR,
-    SCALE_MODE_BEST
+enum ScaleMode : int
+{
+	SCALE_MODE_NEAREST,
+	SCALE_MODE_LINEAR,
+	SCALE_MODE_BEST
 }
 
-enum TextureAccess : int{
-    TEXTUREACCESS_STATIC,
-    TEXTUREACCESS_STREAMING,
-    TEXTUREACCESS_TARGET
+enum TextureAccess : int
+{
+	TEXTUREACCESS_STATIC,
+	TEXTUREACCESS_STREAMING,
+	TEXTUREACCESS_TARGET
 }
-enum TextureModulate : int{
-    TEXTUREMODULATE_NONE,
-    TEXTUREMODULATE_COLOR,
-    TEXTUREMODULATE_ALPHA
+enum TextureModulate : int
+{
+	TEXTUREMODULATE_NONE,
+	TEXTUREMODULATE_COLOR,
+	TEXTUREMODULATE_ALPHA
 }
-enum RendererFlip : int{
-    FLIP_NONE,
-    FLIP_HORIZONTAL,
-    FLIP_VERTICAL
+enum RendererFlip : int
+{
+	FLIP_NONE,
+	FLIP_HORIZONTAL,
+	FLIP_VERTICAL
 }
 
 def Renderer = void*;
 def Texture = void*;
 
 enum WindowShapeModeEnum : int{
-    SHAPE_MODE_DEFAULT,
-    SHAPE_MODE_BINARIZE_ALPHA,
-    SHAPE_MODE_REVERSE_BINARIZE_ALPHA,
-    SHAPE_MODE_COLOR_KEY
+	SHAPE_MODE_DEFAULT,
+	SHAPE_MODE_BINARIZE_ALPHA,
+	SHAPE_MODE_REVERSE_BINARIZE_ALPHA,
+	SHAPE_MODE_COLOR_KEY
 }
 
-union WindowShapeParams {
+union WindowShapeParams
+{
 	char binarizationcutoff;
 	Color colorkey;
 }
 
 
-struct WindowShapeMode {
+struct WindowShapeMode
+{
 	WindowShapeModeEnum mode;
 	WindowShapeParams parameters;
 }
@@ -1999,14 +2076,16 @@ struct WindowShapeMode {
 def TimerCallback = fn uint(uint interval, void* param);
 def TimerID = int;
 
-struct Version {
+struct Version
+{
 	char major;
 	char minor;
 	char patch;
 }
 
 
-struct Locale {
+struct Locale
+{
 	char* language;
 	char* country;
 }

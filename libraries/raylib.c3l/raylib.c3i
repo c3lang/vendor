@@ -55,7 +55,8 @@ struct Vector3
 }
 
 // Vector4, 4 components
-struct Vector4 {
+struct Vector4
+{
     float x;                // Vector x component
     float y;                // Vector y component
     float z;                // Vector z component
@@ -305,8 +306,8 @@ struct Wave
     void* data;                 // Buffer data pointer
 }
 
-def AudioBufferRef = distinct void*;
-def AudioProcessorRef = distinct void*;
+distinct AudioBufferRef = void*;
+distinct AudioProcessorRef = void*;
 
 // AudioStream, custom audio stream
 struct AudioStream
@@ -1757,7 +1758,7 @@ module raylib::config;
 // NOTE: Every bit registers one state (use it with bit masks)
 // By default all flags are set to 0
 
-def ConfigFlag = distinct uint;
+distinct ConfigFlag = uint;
 
 const ConfigFlag VSYNC_HINT         = 0x00000040;   // Set to try enabling V-Sync on GPU
 const ConfigFlag FULLSCREEN_MODE    = 0x00000002;   // Set to run program in fullscreen
@@ -1781,7 +1782,7 @@ module raylib::keyboard;
 // NOTE: Use GetKeyPressed() to allow redefining
 // required keys for alternative layouts
 
-def KeyboardKey = distinct int;
+distinct KeyboardKey = int;
 
 const KeyboardKey NULL            = 0;        // Key: NULL; used for no key pressed
 // Alphanumeric keys
@@ -1900,7 +1901,7 @@ const KeyboardKey VOLUME_DOWN     = 25;       // Key: Android volume down button
 
 module raylib::gesture;
 
-def Gesture = distinct int;
+distinct Gesture = int;
 // Gesture
 // NOTE: It could be used as flags to enable only some gestures
 const Gesture NONE        = 0;      // No gesture
