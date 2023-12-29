@@ -1,6 +1,6 @@
 // sdl2.c3i
 // Created 14/07/2023
-// Updated 21/07/2023
+// Updated 29/12/2023
 // Originally created Kenta @ https://github.com/Its-Kenta
 
 module sdl;
@@ -2000,7 +2000,7 @@ enum PowerState : int
   POWERSTATE_CHARGED
 }
 
-distinct RendererFlags = int;
+distinct RendererFlags = uint;
 
 const RendererFlags RENDERER_SOFTWARE = 1;
 const RendererFlags RENDERER_ACCELERATED = 2;
@@ -2307,6 +2307,7 @@ const int IGNORE = 0;
 const int DISABLE = 0;
 const int ENABLE = 1;
 
+const int WINDOWPOS_UNDEFINED = 536805376;
 const int WINDOWPOS_UNDEFINED_MASK = 536805376;
 const int WINDOWPOS_CENTERED_MASK = 805240832;
 const int BUTTON_LEFT = 1;
@@ -2559,8 +2560,8 @@ fn void* freeWAV(char* audio_buf) @extern("SDL_FreeWAV");
 fn int buildAudioCVT(AudioCVT* cvt, AudioFormat src_format, char src_channels, int src_rate, AudioFormat dst_format, char dst_channels, int dst_rate) @extern("SDL_BuildAudioCVT");
 fn int convertAudio(AudioCVT* cvt) @extern("SDL_ConvertAudio");
 fn AudioStream* newAudioStream(AudioFormat src_format, char src_channels, int src_rate, AudioFormat dst_format, char dst_channels, int dst_rate) @extern("SDL_NewAudioStream");
-fn int audioStreamPut(AudioStream stream, void* buf, int len) @extern("SDL_AudioStreamPut");
-fn int audioStreamGet(AudioStream stream, void* buf, int len) @extern("SDL_AudioStreamGet");
+fn int audioStreamPut(AudioStream *stream, void* buf, int len) @extern("SDL_AudioStreamPut");
+fn int audioStreamGet(AudioStream *stream, void* buf, int len) @extern("SDL_AudioStreamGet");
 fn int audioStreamAvailable(AudioStream* stream) @extern("SDL_AudioStreamAvailable");
 fn int audioStreamFlush(AudioStream* stream) @extern("SDL_AudioStreamFlush");
 fn void* audioStreamClear(AudioStream* stream) @extern("SDL_AudioStreamClear");
@@ -3063,10 +3064,10 @@ fn void* metalGetDrawableSize(Window* window, int* w, int* h) @extern("SDL_Metal
 fn PowerState getPowerInfo(int* seconds, int* percent) @extern("SDL_GetPowerInfo");
 fn int getNumRenderDrivers() @extern("SDL_GetNumRenderDrivers");
 fn int getRenderDriverInfo(int index, RendererInfo info) @extern("SDL_GetRenderDriverInfo");
-fn int createWindowAndRenderer(int width, int height, uint window_flags, Window window, Renderer** renderer) @extern("SDL_CreateWindowAndRenderer");
+fn int createWindowAndRenderer(int width, int height, uint window_flags, Window** window, Renderer** renderer) @extern("SDL_CreateWindowAndRenderer");
 fn Renderer* createRenderer(Window* window, int index, uint flags) @extern("SDL_CreateRenderer");
 fn Renderer* createSoftwareRenderer(Surface surface) @extern("SDL_CreateSoftwareRenderer");
-fn Renderer* getRenderer(Window window) @extern("SDL_GetRenderer");
+fn Renderer* getRenderer(Window* window) @extern("SDL_GetRenderer");
 fn Window* renderGetWindow(Renderer* renderer) @extern("SDL_RenderGetWindow");
 fn int getRendererInfo(Renderer* renderer, RendererInfo* info) @extern("SDL_GetRendererInfo");
 fn int getRendererOutputSize(Renderer* renderer, int* w, int* h) @extern("SDL_GetRendererOutputSize");
