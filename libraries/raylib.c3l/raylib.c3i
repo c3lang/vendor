@@ -918,13 +918,13 @@ fn int set_gamepad_mappings(char* mappings) @extern("SetGamepadMappings");
 
 // Input-related functions: mouse
 // Check if a mouse button has been pressed once
-fn bool is_mouse_button_pressed(int button) @extern("IsMouseButtonPressed");
+fn bool is_mouse_button_pressed(MouseButton button) @extern("IsMouseButtonPressed");
 // Check if a mouse button is being pressed
-fn bool is_mouse_button_down(int button) @extern("IsMouseButtonDown");
+fn bool is_mouse_button_down(MouseButton button) @extern("IsMouseButtonDown");
 // Check if a mouse button has been released once
-fn bool is_mouse_button_released(int button) @extern("IsMouseButtonReleased");
+fn bool is_mouse_button_released(MouseButton button) @extern("IsMouseButtonReleased");
 // Check if a mouse button is NOT being pressed
-fn bool is_mouse_button_up(int button) @extern("IsMouseButtonUp");
+fn bool is_mouse_button_up(MouseButton button) @extern("IsMouseButtonUp");
 // Get mouse position X
 fn int get_mouse_x() @extern("GetMouseX");
 // Get mouse position Y
