@@ -1,0 +1,32 @@
+{
+  "provides" : "tree_sitter",
+  "targets" : {
+    "linux-aarch64" : {
+      "linked-libraries" : ["tree-sitter"]
+    },
+    "linux-riscv32" : {
+      "linked-libraries" : ["tree-sitter"]
+    },
+    "linux-riscv64" : {
+      "linked-libraries" : ["tree-sitter"]
+    },
+    "linux-x86" : {
+      "linked-libraries" : ["tree-sitter"]
+    },
+    "linux-x64" : {
+      "linked-libraries" : ["tree-sitter"]
+    },
+    "macos-aarch64" : {
+      "linked-libraries" : ["tree-sitter"]
+    },
+    "macos-x64" : {
+      "linked-libraries" : ["tree-sitter"]
+    },
+    "netbsd-x64" : {
+      "linked-libraries" : ["tree-sitter"]
+    },
+    "openbsd-x64" : {
+      "linked-libraries" : ["tree-sitter"]
+    },
+  },
+}
