@@ -6,6 +6,11 @@
       "dependencies" : [],
       "linked-libs" : ["curl"]
     },
+    "macos-aarch64": {
+      "linkflags": [],
+      "dependencies": [],
+      "linked-libraries": ["curl"]
+    },
     "linux-x64" : {
       "linkflags" : [],
       "dependencies" : [],
