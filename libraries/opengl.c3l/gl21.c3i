@@ -1,0 +1,30 @@
+module opengl::gl21;
+import opengl;
+
+/*=====Constants=====*/
+const GL_PIXEL_PACK_BUFFER              = 0x88EB;
+const GL_PIXEL_UNPACK_BUFFER            = 0x88EC;
+const GL_PIXEL_PACK_BUFFER_BINDING      = 0x88ED;
+const GL_PIXEL_UNPACK_BUFFER_BINDING    = 0x88EF;
+const GL_FLOAT_MAT2X3                   = 0x8B65;
+const GL_FLOAT_MAT2X4                   = 0x8B66;
+const GL_FLOAT_MAT3X2                   = 0x8B67;
+const GL_FLOAT_MAT3X4                   = 0x8B68;
+const GL_FLOAT_MAT4X2                   = 0x8B69;
+const GL_FLOAT_MAT4X3                   = 0x8B6A;
+const GL_SRGB                           = 0x8C40;
+const GL_SRGB8                          = 0x8C41;
+const GL_SRGB_ALPHA                     = 0x8C42;
+const GL_SRGB8_ALPHA8                   = 0x8C43;
+const GL_COMPRESSED_SRGB                = 0x8C48;
+const GL_COMPRESSED_SRGB_ALPHA          = 0x8C49;
+/*=====END=====*/
+
+/*=====Functions=====*/
+fn void uniformMatrix2x3fv (CInt location, usz count, bool transpose, float *value) @extern("glUniformMatrix2x3fv");
+fn void uniformMatrix3x2fv (CInt location, usz count, bool transpose, float *value) @extern("glUniformMatrix3x2fv");
+fn void uniformMatrix2x4fv (CInt location, usz count, bool transpose, float *value) @extern("glUniformMatrix2x4fv");
+fn void uniformMatrix4x2fv (CInt location, usz count, bool transpose, float *value) @extern("glUniformMatrix4x2fv");
+fn void uniformMatrix3x4fv (CInt location, usz count, bool transpose, float *value) @extern("glUniformMatrix3x4fv");
+fn void uniformMatrix4x3fv (CInt location, usz count, bool transpose, float *value) @extern("glUniformMatrix4x3fv");
+/*=====END=====*/

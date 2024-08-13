@@ -1,0 +1,56 @@
+module opengl::gl33;
+import opengl;
+
+/*=====Constants=====*/
+
+const GL_VERTEX_ATTRIB_ARRAY_DIVISOR    = 0x88FE;
+const GL_SRC1_COLOR                     = 0x88F9;
+const GL_ONE_MINUS_SRC1_COLOR           = 0x88FA;
+const GL_ONE_MINUS_SRC1_ALPHA           = 0x88FB;
+const GL_MAX_DUAL_SOURCE_DRAW_BUFFERS   = 0x88FC;
+const GL_ANY_SAMPLES_PASSED             = 0x8C2F;
+const GL_SAMPLER_BINDING                = 0x8919;
+const GL_RGB10_A2UI                     = 0x906F;
+const GL_TEXTURE_SWIZZLE_R              = 0x8E42;
+const GL_TEXTURE_SWIZZLE_G              = 0x8E43;
+const GL_TEXTURE_SWIZZLE_B              = 0x8E44;
+const GL_TEXTURE_SWIZZLE_A              = 0x8E45;
+const GL_TEXTURE_SWIZZLE_RGBA           = 0x8E46;
+const GL_TIME_ELAPSED                   = 0x88BF;
+const GL_TIMESTAMP                      = 0x8E28;
+const GL_INT_2_10_10_10_REV             = 0x8D9F;
+
+/*=====END=====*/
+
+/*=====Functions=====*/
+
+fn void bindFragDataLocationIndexed (CUInt program, CUInt colorNumber, CUInt index, char *name) @extern("glBindFragDataLocationIndexed");
+fn CInt getFragDataIndex (CUInt program, char *name) @extern("glGetFragDataIndex");
+fn void genSamplers (usz count, CUInt *samplers) @extern("glGenSamplers");
+fn void deleteSamplers (usz count, CUInt *samplers) @extern("glDeleteSamplers");
+fn bool isSampler (CUInt sampler) @extern("glIsSampler");
+fn void bindSampler (CUInt unit, CUInt sampler) @extern("glBindSampler");
+fn void samplerParameteri (CUInt sampler, GLenum pname, CInt param) @extern("glSamplerParameteri");
+fn void samplerParameteriv (CUInt sampler, GLenum pname, CInt *param) @extern("glSamplerParameteriv");
+fn void samplerParameterf (CUInt sampler, GLenum pname, float param) @extern("glSamplerParameterf");
+fn void samplerParameterfv (CUInt sampler, GLenum pname, float *param) @extern("glSamplerParameterfv");
+fn void samplerParameterIiv (CUInt sampler, GLenum pname, CInt *param) @extern("glSamplerParameterIiv");
+fn void samplerParameterIuiv (CUInt sampler, GLenum pname, CUInt *param) @extern("glSamplerParameterIuiv");
+fn void getSamplerParameteriv (CUInt sampler, GLenum pname, CInt *params) @extern("glGetSamplerParameteriv");
+fn void getSamplerParameterIiv (CUInt sampler, GLenum pname, CInt *params) @extern("glGetSamplerParameterIiv");
+fn void getSamplerParameterfv (CUInt sampler, GLenum pname, float *params) @extern("glGetSamplerParameterfv");
+fn void getSamplerParameterIuiv (CUInt sampler, GLenum pname, CUInt *params) @extern("glGetSamplerParameterIuiv");
+fn void queryCounter (CUInt id, GLenum target) @extern("glQueryCounter");
+fn void getQueryObjecti64v (CUInt id, GLenum pname, long *params) @extern("glGetQueryObjecti64v");
+fn void getQueryObjectui64v (CUInt id, GLenum pname, ulong *params) @extern("glGetQueryObjectui64v");
+fn void vertexAttribDivisor (CUInt index, CUInt divisor) @extern("glVertexAttribDivisor");
+fn void vertexAttribP1ui (CUInt index, GLenum type, bool normalized, CUInt value) @extern("glVertexAttribP1ui");
+fn void vertexAttribP1uiv (CUInt index, GLenum type, bool normalized, CUInt *value) @extern("glVertexAttribP1uiv");
+fn void vertexAttribP2ui (CUInt index, GLenum type, bool normalized, CUInt value) @extern("glVertexAttribP2ui");
+fn void vertexAttribP2uiv (CUInt index, GLenum type, bool normalized, CUInt *value) @extern("glVertexAttribP2uiv");
+fn void vertexAttribP3ui (CUInt index, GLenum type, bool normalized, CUInt value) @extern("glVertexAttribP3ui");
+fn void vertexAttribP3uiv (CUInt index, GLenum type, bool normalized, CUInt *value) @extern("glVertexAttribP3uiv");
+fn void vertexAttribP4ui (CUInt index, GLenum type, bool normalized, CUInt value) @extern("glVertexAttribP4ui");
+fn void vertexAttribP4uiv (CUInt index, GLenum type, bool normalized, CUInt *value) @extern("glVertexAttribP4uiv");
+
+/*=====END=====*/

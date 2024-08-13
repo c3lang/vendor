@@ -1,0 +1,97 @@
+module opengl::gl32;
+import opengl;
+
+distinct GLsync = uptr;
+
+/*=====Constants=====*/
+
+const GL_CONTEXT_CORE_PROFILE_BIT       = 0x00000001;
+const GL_CONTEXT_COMPATIBILITY_PROFILE_BIT = 0x00000002;
+const GL_LINES_ADJACENCY                = 0x000A;
+const GL_LINE_STRIP_ADJACENCY           = 0x000B;
+const GL_TRIANGLES_ADJACENCY            = 0x000C;
+const GL_TRIANGLE_STRIP_ADJACENCY       = 0x000D;
+const GL_PROGRAM_POINT_SIZE             = 0x8642;
+const GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS = 0x8C29;
+const GL_FRAMEBUFFER_ATTACHMENT_LAYERED = 0x8DA7;
+const GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS = 0x8DA8;
+const GL_GEOMETRY_SHADER                = 0x8DD9;
+const GL_GEOMETRY_VERTICES_OUT          = 0x8916;
+const GL_GEOMETRY_INPUT_TYPE            = 0x8917;
+const GL_GEOMETRY_OUTPUT_TYPE           = 0x8918;
+const GL_MAX_GEOMETRY_UNIFORM_COMPONENTS = 0x8DDF;
+const GL_MAX_GEOMETRY_OUTPUT_VERTICES   = 0x8DE0;
+const GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS = 0x8DE1;
+const GL_MAX_VERTEX_OUTPUT_COMPONENTS   = 0x9122;
+const GL_MAX_GEOMETRY_INPUT_COMPONENTS  = 0x9123;
+const GL_MAX_GEOMETRY_OUTPUT_COMPONENTS = 0x9124;
+const GL_MAX_FRAGMENT_INPUT_COMPONENTS  = 0x9125;
+const GL_CONTEXT_PROFILE_MASK           = 0x9126;
+const GL_DEPTH_CLAMP                    = 0x864F;
+const GL_QUADS_FOLLOW_PROVOKING_VERTEX_CONVENTION = 0x8E4C;
+const GL_FIRST_VERTEX_CONVENTION        = 0x8E4D;
+const GL_LAST_VERTEX_CONVENTION         = 0x8E4E;
+const GL_PROVOKING_VERTEX               = 0x8E4F;
+const GL_TEXTURE_CUBE_MAP_SEAMLESS      = 0x884F;
+const GL_MAX_SERVER_WAIT_TIMEOUT        = 0x9111;
+const GL_OBJECT_TYPE                    = 0x9112;
+const GL_SYNC_CONDITION                 = 0x9113;
+const GL_SYNC_STATUS                    = 0x9114;
+const GL_SYNC_FLAGS                     = 0x9115;
+const GL_SYNC_FENCE                     = 0x9116;
+const GL_SYNC_GPU_COMMANDS_COMPLETE     = 0x9117;
+const GL_UNSIGNALED                     = 0x9118;
+const GL_SIGNALED                       = 0x9119;
+const GL_ALREADY_SIGNALED               = 0x911A;
+const GL_TIMEOUT_EXPIRED                = 0x911B;
+const GL_CONDITION_SATISFIED            = 0x911C;
+const GL_WAIT_FAILED                    = 0x911D;
+const ulong GL_TIMEOUT_IGNORED          = 0xFFFFFFFFFFFFFFFF;
+const GL_SYNC_FLUSH_COMMANDS_BIT        = 0x00000001;
+const GL_SAMPLE_POSITION                = 0x8E50;
+const GL_SAMPLE_MASK                    = 0x8E51;
+const GL_SAMPLE_MASK_VALUE              = 0x8E52;
+const GL_MAX_SAMPLE_MASK_WORDS          = 0x8E59;
+const GL_TEXTURE_2D_MULTISAMPLE         = 0x9100;
+const GL_PROXY_TEXTURE_2D_MULTISAMPLE   = 0x9101;
+const GL_TEXTURE_2D_MULTISAMPLE_ARRAY   = 0x9102;
+const GL_PROXY_TEXTURE_2D_MULTISAMPLE_ARRAY = 0x9103;
+const GL_TEXTURE_BINDING_2D_MULTISAMPLE = 0x9104;
+const GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY = 0x9105;
+const GL_TEXTURE_SAMPLES                = 0x9106;
+const GL_TEXTURE_FIXED_SAMPLE_LOCATIONS = 0x9107;
+const GL_SAMPLER_2D_MULTISAMPLE         = 0x9108;
+const GL_INT_SAMPLER_2D_MULTISAMPLE     = 0x9109;
+const GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE = 0x910A;
+const GL_SAMPLER_2D_MULTISAMPLE_ARRAY   = 0x910B;
+const GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY = 0x910C;
+const GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY = 0x910D;
+const GL_MAX_COLOR_TEXTURE_SAMPLES      = 0x910E;
+const GL_MAX_DEPTH_TEXTURE_SAMPLES      = 0x910F;
+const GL_MAX_INTEGER_SAMPLES            = 0x9110;
+
+/*=====END=====*/
+
+/*=====Functions=====*/
+
+fn void drawElementsBaseVertex (GLenum mode, usz count, GLenum type, void *indices, CInt basevertex) @extern("glDrawElementsBaseVertex");
+fn void drawRangeElementsBaseVertex (GLenum mode, CUInt start, CUInt end, usz count, GLenum type, void *indices, CInt basevertex) @extern("glDrawRangeElementsBaseVertex");
+fn void drawElementsInstancedBaseVertex (GLenum mode, usz count, GLenum type, void *indices, usz instancecount, CInt basevertex) @extern("glDrawElementsInstancedBaseVertex");
+fn void multiDrawElementsBaseVertex (GLenum mode, usz *count, GLenum type, void** indices, usz drawcount, CInt *basevertex) @extern("glMultiDrawElementsBaseVertex");
+fn void provokingVertex (GLenum mode) @extern("glProvokingVertex");
+fn GLsync fenceSync (GLenum condition, GLbitfield flags) @extern("glFenceSync");
+fn bool isSync (GLsync sync) @extern("glIsSync");
+fn void deleteSync (GLsync sync) @extern("glDeleteSync");
+fn GLenum clientWaitSync (GLsync sync, GLbitfield flags, ulong timeout) @extern("glClientWaitSync");
+fn void waitSync (GLsync sync, GLbitfield flags, ulong timeout) @extern("glWaitSync");
+fn void getInteger64v (GLenum pname, long *data) @extern("glGetInteger64v");
+fn void getSynciv (GLsync sync, GLenum pname, usz count, usz *length, CInt *values) @extern("glGetSynciv");
+fn void getInteger64i_v (GLenum target, CUInt index, long *data) @extern("glGetInteger64i_v");
+fn void getBufferParameteri64v (GLenum target, GLenum pname, long *params) @extern("glGetBufferParameteri64v");
+fn void framebufferTexture (GLenum target, GLenum attachment, CUInt texture, CInt level) @extern("glFramebufferTexture");
+fn void texImage2DMultisample (GLenum target, usz samples, GLenum internalformat, usz width, usz height, bool fixedsamplelocations) @extern("glTexImage2DMultisample");
+fn void texImage3DMultisample (GLenum target, usz samples, GLenum internalformat, usz width, usz height, usz depth, bool fixedsamplelocations) @extern("glTexImage3DMultisample");
+fn void getMultisamplefv (GLenum pname, CUInt index, float *val) @extern("glGetMultisamplefv");
+fn void sampleMaski (CUInt maskNumber, GLbitfield mask) @extern("glSampleMaski");
+
+/*=====END=====*/

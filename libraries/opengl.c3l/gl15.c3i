@@ -1,0 +1,55 @@
+module opengl::gl15;
+import opengl;
+
+/*=====Constants=====*/
+const GL_BUFFER_SIZE                    = 0x8764;
+const GL_BUFFER_USAGE                   = 0x8765;
+const GL_QUERY_COUNTER_BITS             = 0x8864;
+const GL_CURRENT_QUERY                  = 0x8865;
+const GL_QUERY_RESULT                   = 0x8866;
+const GL_QUERY_RESULT_AVAILABLE         = 0x8867;
+const GL_ARRAY_BUFFER                   = 0x8892;
+const GL_ELEMENT_ARRAY_BUFFER           = 0x8893;
+const GL_ARRAY_BUFFER_BINDING           = 0x8894;
+const GL_ELEMENT_ARRAY_BUFFER_BINDING   = 0x8895;
+const GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING = 0x889F;
+const GL_READ_ONLY                      = 0x88B8;
+const GL_WRITE_ONLY                     = 0x88B9;
+const GL_READ_WRITE                     = 0x88BA;
+const GL_BUFFER_ACCESS                  = 0x88BB;
+const GL_BUFFER_MAPPED                  = 0x88BC;
+const GL_BUFFER_MAP_POINTER             = 0x88BD;
+const GL_STREAM_DRAW                    = 0x88E0;
+const GL_STREAM_READ                    = 0x88E1;
+const GL_STREAM_COPY                    = 0x88E2;
+const GL_STATIC_DRAW                    = 0x88E4;
+const GL_STATIC_READ                    = 0x88E5;
+const GL_STATIC_COPY                    = 0x88E6;
+const GL_DYNAMIC_DRAW                   = 0x88E8;
+const GL_DYNAMIC_READ                   = 0x88E9;
+const GL_DYNAMIC_COPY                   = 0x88EA;
+const GL_SAMPLES_PASSED                 = 0x8914;
+const GL_SRC1_ALPHA                     = 0x8589;
+/*=====END=====*/
+
+/*=====Functions=====*/
+fn void genQueries (usz n, CUInt *ids) @extern("glGenQueries");
+fn void deleteQueries (usz n, CUInt *ids) @extern("glDeleteQueries");
+fn bool isQuery (CUInt id) @extern("glIsQuery");
+fn void beginQuery (GLenum target, CUInt id) @extern("glBeginQuery");
+fn void endQuery (GLenum target) @extern("glEndQuery");
+fn void getQueryiv (GLenum target, GLenum pname, CInt *params) @extern("glGetQueryiv");
+fn void getQueryObjectiv (CUInt id, GLenum pname, CInt *params) @extern("glGetQueryObjectiv");
+fn void getQueryObjectuiv (CUInt id, GLenum pname, CUInt *params) @extern("glGetQueryObjectuiv");
+fn void bindBuffer (GLenum target, CUInt buffer) @extern("glBindBuffer");
+fn void deleteBuffers (usz n, CUInt *buffers) @extern("glDeleteBuffers");
+fn void genBuffers (usz n, CUInt *buffers) @extern("glGenBuffers");
+fn bool isBuffer (CUInt buffer) @extern("glIsBuffer");
+fn void bufferData (GLenum target, isz* size, void *data, GLenum usage) @extern("glBufferData");
+fn void bufferSubData (GLenum target, int* offset, isz* size, void *data) @extern("glBufferSubData");
+fn void getBufferSubData (GLenum target, int* offset, isz* size, void *data) @extern("glGetBufferSubData");
+fn void* mapBuffer (GLenum target, GLenum access) @extern("glMapBuffer");
+fn bool unmapBuffer (GLenum target) @extern("glUnmapBuffer");
+fn void getBufferParameteriv (GLenum target, GLenum pname, CInt *params) @extern("glGetBufferParameteriv");
+fn void getBufferPointerv (GLenum target, GLenum pname, void **params) @extern("glGetBufferPointerv");
+/*=====END=====*/

@@ -1,0 +1,54 @@
+module opengl::gl11;
+import opengl;
+/*=====Constants=====*/
+def GLclampf = float;
+def GLclampd = double;
+const GL_COLOR_LOGIC_OP = 0x0BF2;
+const GL_POLYGON_OFFSET_UNITS = 0x2A00;
+const GL_POLYGON_OFFSET_POINT = 0x2A01;
+const GL_POLYGON_OFFSET_LINE = 0x2A02;
+const GL_POLYGON_OFFSET_FILL = 0x8037;
+const GL_POLYGON_OFFSET_FACTOR = 0x8038;
+const GL_TEXTURE_BINDING_1D = 0x8068;
+const GL_TEXTURE_BINDING_2D = 0x8069;
+const GL_TEXTURE_INTERNAL_FORMAT = 0x1003;
+const GL_TEXTURE_RED_SIZE = 0x805C;
+const GL_TEXTURE_GREEN_SIZE = 0x805D;
+const GL_TEXTURE_BLUE_SIZE = 0x805E;
+const GL_TEXTURE_ALPHA_SIZE = 0x805F;
+const GL_DOUBLE = 0x140A;
+const GL_PROXY_TEXTURE_1D = 0x8063;
+const GL_PROXY_TEXTURE_2D = 0x8064;
+const GL_R3_G3_B2 = 0x2A10;
+const GL_RGB4 = 0x804F;
+const GL_RGB5 = 0x8050;
+const GL_RGB8 = 0x8051;
+const GL_RGB10 = 0x8052;
+const GL_RGB12 = 0x8053;
+const GL_RGB16 = 0x8054;
+const GL_RGBA2 = 0x8055;
+const GL_RGBA4 = 0x8056;
+const GL_RGB5_A1 = 0x8057;
+const GL_RGBA8 = 0x8058;
+const GL_RGB10_A2 = 0x8059;
+const GL_RGBA12 = 0x805A;
+const GL_RGBA16 = 0x805B;
+const GL_VERTEX_ARRAY = 0x8074;
+/*=====END=====*/
+
+/*=====Functions=====*/
+fn void drawArrays (GLenum mode, CInt first, usz count) @extern("glDrawArrays");
+fn void drawElements (GLenum mode, usz count, GLenum type, void *indices) @extern("glDrawElements");
+fn void getPointerv (GLenum pname, void **params) @extern("glGetPointerv");
+fn void polygonOffset (float factor, float units) @extern("glPolygonOffset");
+fn void copyTexImage1D (GLenum target, CInt level, GLenum internalformat, CInt x, CInt y, usz width, CInt border) @extern("glCopyTexImage1D");
+fn void copyTexImage2D (GLenum target, CInt level, GLenum internalformat, CInt x, CInt y, usz width, usz height, CInt border) @extern("glCopyTexImage2D");
+fn void copyTexSubImage1D (GLenum target, CInt level, CInt xoffset, CInt x, CInt y, usz width) @extern("glCopyTexSubImage1D");
+fn void copyTexSubImage2D (GLenum target, CInt level, CInt xoffset, CInt yoffset, CInt x, CInt y, usz width, usz height) @extern("glCopyTexSubImage2D");
+fn void texSubImage1D (GLenum target, CInt level, CInt xoffset, usz width, GLenum format, GLenum type, void *pixels) @extern("glTexSubImage1D");
+fn void texSubImage2D (GLenum target, CInt level, CInt xoffset, CInt yoffset, usz width, usz height, GLenum format, GLenum type, void *pixels) @extern("glTexSubImage2D");
+fn void bindTexture (GLenum target, CUInt texture) @extern("glBindTexture");
+fn void deleteTextures (usz n, CUInt *textures) @extern("glDeleteTextures");
+fn void genTextures (usz n, CUInt *textures) @extern("glGenTextures");
+fn bool isTexture (CUInt texture) @extern("glIsTexture");
+/*=====END=====*/

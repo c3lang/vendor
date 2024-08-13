@@ -1,0 +1,43 @@
+module opengl::gl14;
+import opengl;
+
+
+/*=====Constants=====*/
+const GL_BLEND_DST_RGB                 = 0x80C8;
+const GL_BLEND_SRC_RGB                 = 0x80C9;
+const GL_BLEND_DST_ALPHA               = 0x80CA;
+const GL_BLEND_SRC_ALPHA               = 0x80CB;
+const GL_POINT_FADE_THRESHOLD_SIZE     = 0x8128;
+const GL_DEPTH_COMPONENT16             = 0x81A5;
+const GL_DEPTH_COMPONENT24             = 0x81A6;
+const GL_DEPTH_COMPONENT32             = 0x81A7;
+const GL_MIRRORED_REPEAT               = 0x8370;
+const GL_MAX_TEXTURE_LOD_BIAS          = 0x84FD;
+const GL_TEXTURE_LOD_BIAS              = 0x8501;
+const GL_INCR_WRAP                     = 0x8507;
+const GL_DECR_WRAP                     = 0x8508;
+const GL_TEXTURE_DEPTH_SIZE            = 0x884A;
+const GL_TEXTURE_COMPARE_MODE          = 0x884C;
+const GL_TEXTURE_COMPARE_FUNC          = 0x884D;
+const GL_BLEND_COLOR                   = 0x8005;
+const GL_BLEND_EQUATION                = 0x8009;
+const GL_CONSTANT_COLOR                = 0x8001;
+const GL_ONE_MINUS_CONSTANT_COLOR      = 0x8002;
+const GL_CONSTANT_ALPHA                = 0x8003;
+const GL_ONE_MINUS_CONSTANT_ALPHA      = 0x8004;
+const GL_FUNC_ADD                      = 0x8006;
+const GL_FUNC_REVERSE_SUBTRACT         = 0x800B;
+const GL_FUNC_SUBTRACT                 = 0x800A;
+const GL_MIN                           = 0x8007;
+const GL_MAX                           = 0x8008;
+/*=====END=====*/
+
+fn void blendFuncSeparate (GLenum sfactorRGB, GLenum dfactorRGB, GLenum sfactorAlpha, GLenum dfactorAlpha) @extern("glBlendFuncSeparate");
+fn void multiDrawArrays (GLenum mode, CInt *first, usz *count, usz drawcount) @extern("glMultiDrawArrays");
+fn void multiDrawElements (GLenum mode, usz *count, GLenum type, void** indices, usz drawcount) @extern("glMultiDrawElements");
+fn void pointParameterf (GLenum pname, float param) @extern("glPointParameterf");
+fn void pointParameterfv (GLenum pname, float *params) @extern("glPointParameterfv");
+fn void pointParameteri (GLenum pname, CInt param) @extern("glPointParameteri");
+fn void pointParameteriv (GLenum pname, CInt *params) @extern("glPointParameteriv");
+fn void blendColor (float red, float green, float blue, float alpha) @extern("glBlendColor");
+fn void blendEquation (GLenum mode) @extern("glBlendEquation");
