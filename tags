@@ -1,0 +1,187 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_EXCMD	mixed	/number, pattern, mixed, or combineV2/
+!_TAG_OUTPUT_FILESEP	slash	/slash or backslash/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PATTERN_LENGTH_LIMIT	96	/0 for no limit/
+!_TAG_PROC_CWD	/home/ellipse12/Projects/c3/vendor/	//
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	5.9.0	//
+0	libraries/curl.c3l/manifest.json	/^		"linked-libs" : ["curl"]$/;"	s	array:targets.windows-x64.linked-libs
+0	libraries/curl.c3l/manifest.json	/^      "linked-libraries": ["curl"]$/;"	s	array:targets.macos-aarch64.linked-libraries
+0	libraries/curl.c3l/manifest.json	/^      "linked-libs" : ["curl"]$/;"	s	array:targets.linux-x64.linked-libs
+0	libraries/curl.c3l/manifest.json	/^      "linked-libs" : ["curl"]$/;"	s	array:targets.macos-x64.linked-libs
+0	libraries/raylib.c3l/manifest.json	/^		"linked-libs" : ["raylib", "opengl32", "kernel32", "user32", "gdi32", "winmm", "winspool", "co/;"	s	array:targets.windows-x64.linked-libs
+0	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "/;"	s	array:targets.macos-aarch64.linked-libs
+0	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "/;"	s	array:targets.macos-x64.linked-libs
+0	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "GLESv2", "glfw3", "c"]$/;"	s	array:targets.linux-x64.linked-libs
+0	libraries/sdl2.c3l/manifest.json	/^      "linked-libs" : ["SDL2"]$/;"	s	array:targets.linux-x64.linked-libs
+0	libraries/tigr.c3l/manifest.json	/^		"linked-libs" : [ "opengl32", "gdi32" ]$/;"	s	array:targets.windows-x64.linked-libs
+0	libraries/tigr.c3l/manifest.json	/^      "linked-libs" : [ "tigr", "GLU", "GL", "X11" ]$/;"	s	array:targets.linux-x64.linked-libs
+0	libraries/tigr.c3l/manifest.json	/^      "linked-libs" : ["tigr", "Cocoa.framework", "OpenGL.framework"]$/;"	s	array:targets.macos-x64.linked-libs
+0	libraries/tree_sitter.c3l/manifest.json	/^      "linked-libraries" : ["tree-sitter"]$/;"	s	array:targets.linux-aarch64.linked-libraries
+0	libraries/tree_sitter.c3l/manifest.json	/^      "linked-libraries" : ["tree-sitter"]$/;"	s	array:targets.linux-riscv32.linked-libraries
+0	libraries/tree_sitter.c3l/manifest.json	/^      "linked-libraries" : ["tree-sitter"]$/;"	s	array:targets.linux-riscv64.linked-libraries
+0	libraries/tree_sitter.c3l/manifest.json	/^      "linked-libraries" : ["tree-sitter"]$/;"	s	array:targets.linux-x64.linked-libraries
+0	libraries/tree_sitter.c3l/manifest.json	/^      "linked-libraries" : ["tree-sitter"]$/;"	s	array:targets.linux-x86.linked-libraries
+0	libraries/tree_sitter.c3l/manifest.json	/^      "linked-libraries" : ["tree-sitter"]$/;"	s	array:targets.macos-aarch64.linked-libraries
+0	libraries/tree_sitter.c3l/manifest.json	/^      "linked-libraries" : ["tree-sitter"]$/;"	s	array:targets.macos-x64.linked-libraries
+0	libraries/tree_sitter.c3l/manifest.json	/^      "linked-libraries" : ["tree-sitter"]$/;"	s	array:targets.netbsd-x64.linked-libraries
+0	libraries/tree_sitter.c3l/manifest.json	/^      "linked-libraries" : ["tree-sitter"]$/;"	s	array:targets.openbsd-x64.linked-libraries
+1	libraries/raylib.c3l/manifest.json	/^		"linked-libs" : ["raylib", "opengl32", "kernel32", "user32", "gdi32", "winmm", "winspool", "co/;"	s	array:targets.windows-x64.linked-libs
+1	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "/;"	s	array:targets.macos-aarch64.linked-libs
+1	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "/;"	s	array:targets.macos-x64.linked-libs
+1	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "GLESv2", "glfw3", "c"]$/;"	s	array:targets.linux-x64.linked-libs
+1	libraries/tigr.c3l/manifest.json	/^		"linked-libs" : [ "opengl32", "gdi32" ]$/;"	s	array:targets.windows-x64.linked-libs
+1	libraries/tigr.c3l/manifest.json	/^      "linked-libs" : [ "tigr", "GLU", "GL", "X11" ]$/;"	s	array:targets.linux-x64.linked-libs
+1	libraries/tigr.c3l/manifest.json	/^      "linked-libs" : ["tigr", "Cocoa.framework", "OpenGL.framework"]$/;"	s	array:targets.macos-x64.linked-libs
+10	libraries/raylib.c3l/manifest.json	/^		"linked-libs" : ["raylib", "opengl32", "kernel32", "user32", "gdi32", "winmm", "winspool", "co/;"	s	array:targets.windows-x64.linked-libs
+11	libraries/raylib.c3l/manifest.json	/^		"linked-libs" : ["raylib", "opengl32", "kernel32", "user32", "gdi32", "winmm", "winspool", "co/;"	s	array:targets.windows-x64.linked-libs
+12	libraries/raylib.c3l/manifest.json	/^		"linked-libs" : ["raylib", "opengl32", "kernel32", "user32", "gdi32", "winmm", "winspool", "co/;"	s	array:targets.windows-x64.linked-libs
+13	libraries/raylib.c3l/manifest.json	/^		"linked-libs" : ["raylib", "opengl32", "kernel32", "user32", "gdi32", "winmm", "winspool", "co/;"	s	array:targets.windows-x64.linked-libs
+14	libraries/raylib.c3l/manifest.json	/^		"linked-libs" : ["raylib", "opengl32", "kernel32", "user32", "gdi32", "winmm", "winspool", "co/;"	s	array:targets.windows-x64.linked-libs
+2	libraries/raylib.c3l/manifest.json	/^		"linked-libs" : ["raylib", "opengl32", "kernel32", "user32", "gdi32", "winmm", "winspool", "co/;"	s	array:targets.windows-x64.linked-libs
+2	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "/;"	s	array:targets.macos-aarch64.linked-libs
+2	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "/;"	s	array:targets.macos-x64.linked-libs
+2	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "GLESv2", "glfw3", "c"]$/;"	s	array:targets.linux-x64.linked-libs
+2	libraries/tigr.c3l/manifest.json	/^      "linked-libs" : [ "tigr", "GLU", "GL", "X11" ]$/;"	s	array:targets.linux-x64.linked-libs
+2	libraries/tigr.c3l/manifest.json	/^      "linked-libs" : ["tigr", "Cocoa.framework", "OpenGL.framework"]$/;"	s	array:targets.macos-x64.linked-libs
+3	libraries/raylib.c3l/manifest.json	/^		"linked-libs" : ["raylib", "opengl32", "kernel32", "user32", "gdi32", "winmm", "winspool", "co/;"	s	array:targets.windows-x64.linked-libs
+3	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "/;"	s	array:targets.macos-aarch64.linked-libs
+3	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "/;"	s	array:targets.macos-x64.linked-libs
+3	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "GLESv2", "glfw3", "c"]$/;"	s	array:targets.linux-x64.linked-libs
+3	libraries/tigr.c3l/manifest.json	/^      "linked-libs" : [ "tigr", "GLU", "GL", "X11" ]$/;"	s	array:targets.linux-x64.linked-libs
+4	libraries/raylib.c3l/manifest.json	/^		"linked-libs" : ["raylib", "opengl32", "kernel32", "user32", "gdi32", "winmm", "winspool", "co/;"	s	array:targets.windows-x64.linked-libs
+4	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "/;"	s	array:targets.macos-aarch64.linked-libs
+4	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "/;"	s	array:targets.macos-x64.linked-libs
+5	libraries/raylib.c3l/manifest.json	/^		"linked-libs" : ["raylib", "opengl32", "kernel32", "user32", "gdi32", "winmm", "winspool", "co/;"	s	array:targets.windows-x64.linked-libs
+5	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "/;"	s	array:targets.macos-aarch64.linked-libs
+5	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "/;"	s	array:targets.macos-x64.linked-libs
+6	libraries/raylib.c3l/manifest.json	/^		"linked-libs" : ["raylib", "opengl32", "kernel32", "user32", "gdi32", "winmm", "winspool", "co/;"	s	array:targets.windows-x64.linked-libs
+6	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "/;"	s	array:targets.macos-aarch64.linked-libs
+6	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "/;"	s	array:targets.macos-x64.linked-libs
+7	libraries/raylib.c3l/manifest.json	/^		"linked-libs" : ["raylib", "opengl32", "kernel32", "user32", "gdi32", "winmm", "winspool", "co/;"	s	array:targets.windows-x64.linked-libs
+8	libraries/raylib.c3l/manifest.json	/^		"linked-libs" : ["raylib", "opengl32", "kernel32", "user32", "gdi32", "winmm", "winspool", "co/;"	s	array:targets.windows-x64.linked-libs
+9	libraries/raylib.c3l/manifest.json	/^		"linked-libs" : ["raylib", "opengl32", "kernel32", "user32", "gdi32", "winmm", "winspool", "co/;"	s	array:targets.windows-x64.linked-libs
+C enums with gaps	README.md	/^#### C enums with gaps$/;"	t	subsection:Vendor""Guide for writing bindings""Translating enums
+C strings (char *)	README.md	/^#### C strings (char *)$/;"	t	subsection:Vendor""Guide for writing bindings""C types
+C types	README.md	/^### C types$/;"	S	section:Vendor""Guide for writing bindings
+Declare in a sub-module with a distinct type.	README.md	/^##### Declare in a sub-module with a distinct type.$/;"	T	subsubsection:Vendor""Guide for writing bindings""Translating enums""C enums with gaps
+Declaring a regular constant	README.md	/^##### Declaring a regular constant$/;"	T	subsubsection:Vendor""Guide for writing bindings""Translating enums""C enums with gaps
+Enum naming	README.md	/^#### Enum naming$/;"	t	subsection:Vendor""Guide for writing bindings""Translating enums
+Function names	README.md	/^### Function names$/;"	S	section:Vendor""Guide for writing bindings
+Global and constant names	README.md	/^### Global and constant names$/;"	S	section:Vendor""Guide for writing bindings
+Guide for writing bindings	README.md	/^## Guide for writing bindings$/;"	s	chapter:Vendor
+If functions are prefixed	README.md	/^#### If functions are prefixed$/;"	t	subsection:Vendor""Guide for writing bindings""Function names
+If functions aren't prefixed or inconsistently prefixed	README.md	/^#### If functions aren't prefixed or inconsistently prefixed$/;"	t	subsection:Vendor""Guide for writing bindings""Function names
+List of libraries	README.md	/^### List of libraries$/;"	S	chapter:Vendor
+Mixed types names	README.md	/^#### Mixed types names$/;"	t	subsection:Vendor""Guide for writing bindings""Type names
+Module name	README.md	/^### Module name$/;"	S	section:Vendor""Guide for writing bindings
+Names in general	README.md	/^### Names in general$/;"	S	section:Vendor""Guide for writing bindings
+Translating enums	README.md	/^### Translating enums$/;"	S	section:Vendor""Guide for writing bindings
+Type names	README.md	/^### Type names$/;"	S	section:Vendor""Guide for writing bindings
+Type names that are not valid C3 type names	README.md	/^#### Type names that are not valid C3 type names$/;"	t	subsection:Vendor""Guide for writing bindings""Type names
+Type names that collide with existing C3 type names	README.md	/^#### Type names that collide with existing C3 type names$/;"	t	subsection:Vendor""Guide for writing bindings""Type names
+Usage Example	libraries/tree_sitter.c3l/README.md	/^## Usage Example$/;"	s	chapter:tree_sitter.c3l
+Using a distinct type	README.md	/^##### Using a distinct type$/;"	T	subsubsection:Vendor""Guide for writing bindings""Translating enums""C enums with gaps
+Vendor	README.md	/^# Vendor$/;"	c
+dependencies	libraries/curl.c3l/manifest.json	/^      "dependencies" : [],$/;"	a	object:targets.linux-x64
+dependencies	libraries/curl.c3l/manifest.json	/^      "dependencies" : [],$/;"	a	object:targets.macos-x64
+dependencies	libraries/curl.c3l/manifest.json	/^      "dependencies": [],$/;"	a	object:targets.macos-aarch64
+dependencies	libraries/raylib.c3l/manifest.json	/^      "dependencies" : [],$/;"	a	object:targets.linux-x64
+dependencies	libraries/raylib.c3l/manifest.json	/^      "dependencies" : [],$/;"	a	object:targets.macos-aarch64
+dependencies	libraries/raylib.c3l/manifest.json	/^      "dependencies" : [],$/;"	a	object:targets.macos-x64
+dependencies	libraries/sdl2.c3l/manifest.json	/^      "dependencies" : [],$/;"	a	object:targets.linux-x64
+dependencies	libraries/sdl2.c3l/manifest.json	/^      "dependencies" : [],$/;"	a	object:targets.macos-aarch64
+dependencies	libraries/sdl2.c3l/manifest.json	/^      "dependencies" : [],$/;"	a	object:targets.macos-x64
+dependencies	libraries/tigr.c3l/manifest.json	/^      "dependencies" : [],$/;"	a	object:targets.linux-x64
+dependencies	libraries/tigr.c3l/manifest.json	/^      "dependencies" : [],$/;"	a	object:targets.macos-x64
+freebsd-x64	libraries/opengl.c3l/manifest.json	/^    "freebsd-x64" : {$/;"	o	object:targets
+linked-libraries	libraries/curl.c3l/manifest.json	/^      "linked-libraries": ["curl"]$/;"	a	object:targets.macos-aarch64
+linked-libraries	libraries/tree_sitter.c3l/manifest.json	/^      "linked-libraries" : ["tree-sitter"]$/;"	a	object:targets.linux-aarch64
+linked-libraries	libraries/tree_sitter.c3l/manifest.json	/^      "linked-libraries" : ["tree-sitter"]$/;"	a	object:targets.linux-riscv32
+linked-libraries	libraries/tree_sitter.c3l/manifest.json	/^      "linked-libraries" : ["tree-sitter"]$/;"	a	object:targets.linux-riscv64
+linked-libraries	libraries/tree_sitter.c3l/manifest.json	/^      "linked-libraries" : ["tree-sitter"]$/;"	a	object:targets.linux-x64
+linked-libraries	libraries/tree_sitter.c3l/manifest.json	/^      "linked-libraries" : ["tree-sitter"]$/;"	a	object:targets.linux-x86
+linked-libraries	libraries/tree_sitter.c3l/manifest.json	/^      "linked-libraries" : ["tree-sitter"]$/;"	a	object:targets.macos-aarch64
+linked-libraries	libraries/tree_sitter.c3l/manifest.json	/^      "linked-libraries" : ["tree-sitter"]$/;"	a	object:targets.macos-x64
+linked-libraries	libraries/tree_sitter.c3l/manifest.json	/^      "linked-libraries" : ["tree-sitter"]$/;"	a	object:targets.netbsd-x64
+linked-libraries	libraries/tree_sitter.c3l/manifest.json	/^      "linked-libraries" : ["tree-sitter"]$/;"	a	object:targets.openbsd-x64
+linked-libs	libraries/curl.c3l/manifest.json	/^		"linked-libs" : ["curl"]$/;"	a	object:targets.windows-x64
+linked-libs	libraries/curl.c3l/manifest.json	/^      "linked-libs" : ["curl"]$/;"	a	object:targets.linux-x64
+linked-libs	libraries/curl.c3l/manifest.json	/^      "linked-libs" : ["curl"]$/;"	a	object:targets.macos-x64
+linked-libs	libraries/raylib.c3l/manifest.json	/^		"linked-libs" : ["raylib", "opengl32", "kernel32", "user32", "gdi32", "winmm", "winspool", "co/;"	a	object:targets.windows-x64
+linked-libs	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "/;"	a	object:targets.macos-aarch64
+linked-libs	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "/;"	a	object:targets.macos-x64
+linked-libs	libraries/raylib.c3l/manifest.json	/^      "linked-libs" : ["raylib", "GLESv2", "glfw3", "c"]$/;"	a	object:targets.linux-x64
+linked-libs	libraries/sdl2.c3l/manifest.json	/^		"linked-libs" : []$/;"	a	object:targets.windows-x64
+linked-libs	libraries/sdl2.c3l/manifest.json	/^      "linked-libs" : ["SDL2"]$/;"	a	object:targets.linux-x64
+linked-libs	libraries/sdl2.c3l/manifest.json	/^      "linked-libs" : []$/;"	a	object:targets.macos-aarch64
+linked-libs	libraries/sdl2.c3l/manifest.json	/^      "linked-libs" : []$/;"	a	object:targets.macos-x64
+linked-libs	libraries/tigr.c3l/manifest.json	/^		"linked-libs" : [ "opengl32", "gdi32" ]$/;"	a	object:targets.windows-x64
+linked-libs	libraries/tigr.c3l/manifest.json	/^      "linked-libs" : [ "tigr", "GLU", "GL", "X11" ]$/;"	a	object:targets.linux-x64
+linked-libs	libraries/tigr.c3l/manifest.json	/^      "linked-libs" : ["tigr", "Cocoa.framework", "OpenGL.framework"]$/;"	a	object:targets.macos-x64
+linkflags	libraries/curl.c3l/manifest.json	/^      "linkflags" : [],$/;"	a	object:targets.linux-x64
+linkflags	libraries/curl.c3l/manifest.json	/^      "linkflags" : [],$/;"	a	object:targets.macos-x64
+linkflags	libraries/curl.c3l/manifest.json	/^      "linkflags": [],$/;"	a	object:targets.macos-aarch64
+linkflags	libraries/raylib.c3l/manifest.json	/^      "linkflags" : [],$/;"	a	object:targets.linux-x64
+linkflags	libraries/raylib.c3l/manifest.json	/^      "linkflags" : [],$/;"	a	object:targets.macos-aarch64
+linkflags	libraries/raylib.c3l/manifest.json	/^      "linkflags" : [],$/;"	a	object:targets.macos-x64
+linkflags	libraries/sdl2.c3l/manifest.json	/^      "linkflags" : [],$/;"	a	object:targets.linux-x64
+linkflags	libraries/sdl2.c3l/manifest.json	/^      "linkflags" : [],$/;"	a	object:targets.macos-aarch64
+linkflags	libraries/sdl2.c3l/manifest.json	/^      "linkflags" : [],$/;"	a	object:targets.macos-x64
+linkflags	libraries/tigr.c3l/manifest.json	/^      "linkflags" : [],$/;"	a	object:targets.linux-x64
+linkflags	libraries/tigr.c3l/manifest.json	/^      "linkflags" : [],$/;"	a	object:targets.macos-x64
+linux-aarch64	libraries/opengl.c3l/manifest.json	/^    "linux-aarch64" : {$/;"	o	object:targets
+linux-aarch64	libraries/tree_sitter.c3l/manifest.json	/^    "linux-aarch64" : {$/;"	o	object:targets
+linux-riscv32	libraries/opengl.c3l/manifest.json	/^    "linux-riscv32" : {$/;"	o	object:targets
+linux-riscv32	libraries/tree_sitter.c3l/manifest.json	/^    "linux-riscv32" : {$/;"	o	object:targets
+linux-riscv64	libraries/opengl.c3l/manifest.json	/^    "linux-riscv64" : {$/;"	o	object:targets
+linux-riscv64	libraries/tree_sitter.c3l/manifest.json	/^    "linux-riscv64" : {$/;"	o	object:targets
+linux-x64	libraries/curl.c3l/manifest.json	/^    "linux-x64" : {$/;"	o	object:targets
+linux-x64	libraries/opengl.c3l/manifest.json	/^    "linux-x64" : {$/;"	o	object:targets
+linux-x64	libraries/raylib.c3l/manifest.json	/^    "linux-x64" : {$/;"	o	object:targets
+linux-x64	libraries/sdl2.c3l/manifest.json	/^    "linux-x64" : {$/;"	o	object:targets
+linux-x64	libraries/tigr.c3l/manifest.json	/^    "linux-x64" : {$/;"	o	object:targets
+linux-x64	libraries/tree_sitter.c3l/manifest.json	/^    "linux-x64" : {$/;"	o	object:targets
+linux-x86	libraries/opengl.c3l/manifest.json	/^    "linux-x86" : {$/;"	o	object:targets
+linux-x86	libraries/tree_sitter.c3l/manifest.json	/^    "linux-x86" : {$/;"	o	object:targets
+macos-aarch64	libraries/curl.c3l/manifest.json	/^    "macos-aarch64": {$/;"	o	object:targets
+macos-aarch64	libraries/opengl.c3l/manifest.json	/^    "macos-aarch64" : {$/;"	o	object:targets
+macos-aarch64	libraries/raylib.c3l/manifest.json	/^    "macos-aarch64" : {$/;"	o	object:targets
+macos-aarch64	libraries/sdl2.c3l/manifest.json	/^    "macos-aarch64" : {$/;"	o	object:targets
+macos-aarch64	libraries/tree_sitter.c3l/manifest.json	/^    "macos-aarch64" : {$/;"	o	object:targets
+macos-x64	libraries/curl.c3l/manifest.json	/^    "macos-x64" : {$/;"	o	object:targets
+macos-x64	libraries/opengl.c3l/manifest.json	/^    "macos-x64" : {$/;"	o	object:targets
+macos-x64	libraries/raylib.c3l/manifest.json	/^    "macos-x64" : {$/;"	o	object:targets
+macos-x64	libraries/sdl2.c3l/manifest.json	/^    "macos-x64" : {$/;"	o	object:targets
+macos-x64	libraries/tigr.c3l/manifest.json	/^    "macos-x64" : {$/;"	o	object:targets
+macos-x64	libraries/tree_sitter.c3l/manifest.json	/^    "macos-x64" : {$/;"	o	object:targets
+netbsd-x64	libraries/opengl.c3l/manifest.json	/^    "netbsd-x64" : {$/;"	o	object:targets
+netbsd-x64	libraries/tree_sitter.c3l/manifest.json	/^    "netbsd-x64" : {$/;"	o	object:targets
+openbsd-x64	libraries/opengl.c3l/manifest.json	/^    "openbsd-x64" : {$/;"	o	object:targets
+openbsd-x64	libraries/tree_sitter.c3l/manifest.json	/^    "openbsd-x64" : {$/;"	o	object:targets
+provides	libraries/curl.c3l/manifest.json	/^  "provides" : "curl",$/;"	s
+provides	libraries/opengl.c3l/manifest.json	/^  "provides" : "opengl",$/;"	s
+provides	libraries/raylib.c3l/manifest.json	/^  "provides" : "raylib",$/;"	s
+provides	libraries/sdl2.c3l/manifest.json	/^  "provides" : "sdl2",$/;"	s
+provides	libraries/tigr.c3l/manifest.json	/^  "provides" : "tigr",$/;"	s
+provides	libraries/tree_sitter.c3l/manifest.json	/^  "provides" : "tree_sitter",$/;"	s
+targets	libraries/curl.c3l/manifest.json	/^  "targets" : {$/;"	o
+targets	libraries/opengl.c3l/manifest.json	/^  "targets" : {$/;"	o
+targets	libraries/raylib.c3l/manifest.json	/^  "targets" : {$/;"	o
+targets	libraries/sdl2.c3l/manifest.json	/^  "targets" : {$/;"	o
+targets	libraries/tigr.c3l/manifest.json	/^  "targets" : {$/;"	o
+targets	libraries/tree_sitter.c3l/manifest.json	/^  "targets" : {$/;"	o
+tree_sitter.c3l	libraries/tree_sitter.c3l/README.md	/^# tree_sitter.c3l$/;"	c
+wasm32	libraries/opengl.c3l/manifest.json	/^    "wasm32" : {$/;"	o	object:targets
+wasm64	libraries/opengl.c3l/manifest.json	/^    "wasm64" : {$/;"	o	object:targets
+wincrt	libraries/raylib.c3l/manifest.json	/^        "wincrt": "none"$/;"	s	object:targets.windows-x64
+windows-aarch64	libraries/opengl.c3l/manifest.json	/^    "windows-aarch64" : {$/;"	o	object:targets
+windows-x64	libraries/curl.c3l/manifest.json	/^	"windows-x64" : {$/;"	o	object:targets
+windows-x64	libraries/opengl.c3l/manifest.json	/^    "windows-x64" : {$/;"	o	object:targets
+windows-x64	libraries/raylib.c3l/manifest.json	/^	"windows-x64" : {$/;"	o	object:targets
+windows-x64	libraries/sdl2.c3l/manifest.json	/^	"windows-x64" : {$/;"	o	object:targets
+windows-x64	libraries/tigr.c3l/manifest.json	/^	"windows-x64" : {$/;"	o	object:targets

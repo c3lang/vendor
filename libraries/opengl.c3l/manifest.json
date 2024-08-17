@@ -3,7 +3,7 @@
   "targets" : {
     "freebsd-x64" : {
       // Extra flags to the linker for this target:
-      "linkflags" : [],
+      "link-args" : [],
       // C3 libraries this target depends on:
       "dependencies" : [],
       // The external libraries to link for this target:
@@ -11,7 +11,7 @@
     },
     "linux-aarch64" : {
       // Extra flags to the linker for this target:
-      "linkflags" : [],
+      "link-args" : [],
       // C3 libraries this target depends on:
       "dependencies" : [],
       // The external libraries to link for this target:
@@ -19,7 +19,7 @@
     },
     "linux-riscv32" : {
       // Extra flags to the linker for this target:
-      "linkflags" : [],
+      "link-args" : [],
       // C3 libraries this target depends on:
       "dependencies" : [],
       // The external libraries to link for this target:
@@ -27,7 +27,7 @@
     },
     "linux-riscv64" : {
       // Extra flags to the linker for this target:
-      "linkflags" : [],
+      "link-args" : [],
       // C3 libraries this target depends on:
       "dependencies" : [],
       // The external libraries to link for this target:
@@ -35,7 +35,7 @@
     },
     "linux-x86" : {
       // Extra flags to the linker for this target:
-      "linkflags" : [],
+      "link-args" : [],
       // C3 libraries this target depends on:
       "dependencies" : [],
       // The external libraries to link for this target:
@@ -43,7 +43,7 @@
     },
     "linux-x64" : {
       // Extra flags to the linker for this target:
-      "linkflags" : [],
+      "link-args" : [],
       // C3 libraries this target depends on:
       "dependencies" : [],
       // The external libraries to link for this target:
@@ -51,7 +51,7 @@
     },
     "macos-aarch64" : {
       // Extra flags to the linker for this target:
-      "linkflags" : ["-framework OpenGL"],
+      "link-args" : ["-framework OpenGL"],
       // C3 libraries this target depends on:
       "dependencies" : [],
       // The external libraries to link for this target:
@@ -59,7 +59,7 @@
     },
     "macos-x64" : {
       // Extra flags to the linker for this target:
-      "linkflags" : ["-framework OpenGL"],
+      "link-args" : ["-framework OpenGL"],
       // C3 libraries this target depends on:
       "dependencies" : [],
       // The external libraries to link for this target:
@@ -67,7 +67,7 @@
     },
     "netbsd-x64" : {
       // Extra flags to the linker for this target:
-      "linkflags" : [],
+      "link-args" : [],
       // C3 libraries this target depends on:
       "dependencies" : [],
       // The external libraries to link for this target:
@@ -75,7 +75,7 @@
     },
     "openbsd-x64" : {
       // Extra flags to the linker for this target:
-      "linkflags" : [],
+      "link-args" : [],
       // C3 libraries this target depends on:
       "dependencies" : [],
       // The external libraries to link for this target:
@@ -83,7 +83,7 @@
     },
     "wasm32" : {
       // Extra flags to the linker for this target:
-      "linkflags" : [],
+      "link-args" : [],
       // C3 libraries this target depends on:
       "dependencies" : [],
       // The external libraries to link for this target:
@@ -91,7 +91,7 @@
     },
     "wasm64" : {
       // Extra flags to the linker for this target:
-      "linkflags" : [],
+      "link-args" : [],
       // C3 libraries this target depends on:
       "dependencies" : [],
       // The external libraries to link for this target:
@@ -99,7 +99,7 @@
     },
     "windows-aarch64" : {
       // Extra flags to the linker for this target:
-      "linkflags" : [],
+      "link-args" : [],
       // C3 libraries this target depends on:
       "dependencies" : [],
       // The external libraries to link for this target:
@@ -107,7 +107,7 @@
     },
     "windows-x64" : {
       // Extra flags to the linker for this target:
-      "linkflags" : [],
+      "link-args" : [],
       // C3 libraries this target depends on:
       "dependencies" : [],
       // The external libraries to link for this target:
