@@ -1,0 +1,25 @@
+module opengl::internal @local;
+const GL_MAX_VERSION = 46;
+macro int gl_version() @public
+{
+    $if $defined(GL_VERSION):
+        return opengl::GL_VERSION;
+    $else
+        return GL_MAX_VERSION;
+    $endif
+}
+
+
+
+module opengl::gl;
+
+/* Global definitions that are used throughout the versions. */
+distinct GLenum = uint;
+distinct GLbitfield = uint;
+distinct GLclampx = int;
+distinct GLclampf = float;
+distinct GLclampd = double;
+distinct GLhalf = ushort;
+distinct GLsync = uptr;
+def GLDebugProc = fn void(GLenum source,GLenum type,CUInt id,GLenum severity,usz length,ZString message, void *userParam);
+fn void debugMessageCallback(GLDebugProc callback, void* userParam) @extern("glDebugMessageCallback");
