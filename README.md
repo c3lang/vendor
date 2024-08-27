@@ -8,6 +8,7 @@ This repository contains external libraries for use with C3.
 - Tigr https://github.com/erkkah/tigr (Needs Windows & macOS static libraries)
 - Curl https://curl.se/docs/manpage.html
 - OpenGL 
+- QOI ([qoi-c3](https://github.com/Hema2-official/qoi-c3)) https://qoiformat.org/
 
 ## Guide for writing bindings
 
