@@ -1057,7 +1057,7 @@ fn void drawCircleV(Vector2 center, float radius, Color color) @extern("DrawCirc
 // Draw circle outline
 fn void drawCircleLines(int centerX, int centerY, float radius, Color color) @extern("DrawCircleLines");
 // Draw circle outline (Vector version)
-fn void drawCricleLinesV(Vector2 center, float radius, Color color) @extern("DrawCircleLinesV");
+fn void drawCircleLinesV(Vector2 center, float radius, Color color) @extern("DrawCircleLinesV");
 // Draw ellipse
 fn void drawEllipse(int centerX, int centerY, float radiusH, float radiusV, Color color) @extern("DrawEllipse");
 // Draw ellipse outline
