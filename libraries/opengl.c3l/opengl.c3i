@@ -22,4 +22,3 @@ distinct GLclampd = double;
 distinct GLhalf = ushort;
 distinct GLsync = uptr;
 def GLDebugProc = fn void(GLenum source,GLenum type,CUInt id,GLenum severity,usz length,ZString message, void *userParam);
-fn void debugMessageCallback(GLDebugProc callback, void* userParam) @extern("glDebugMessageCallback");
