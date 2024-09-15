@@ -1,0 +1,117 @@
+{
+  "provides" : "vulkan",
+  "targets" : {
+    "freebsd-x64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : ["vulkan"]
+    },
+    "linux-aarch64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : ["vulkan"]
+    },
+    "linux-riscv32" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : ["vulkan"]
+    },
+    "linux-riscv64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : ["vulkan"]
+    },
+    "linux-x86" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : ["vulkan"]
+    },
+    "linux-x64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : ["vulkan"]
+    },
+    "macos-aarch64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : ["vulkan"]
+    },
+    "macos-x64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : ["vulkan"]
+    },
+    "netbsd-x64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : ["vulkan"]
+    },
+    "openbsd-x64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : ["vulkan"]
+    },
+    "wasm32" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : ["vulkan"]
+    },
+    "wasm64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : ["vulkan"]
+    },
+    "windows-aarch64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : ["vulkan"]
+    },
+    "windows-x64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : ["vulkan"]
+    },
+  }
+}
