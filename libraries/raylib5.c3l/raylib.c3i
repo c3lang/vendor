@@ -302,16 +302,19 @@ struct Wave
 }
 
 def AudioBufferRef = void*;
+def AudioProcessorRef = void*;
 
 // AudioStream, custom audio stream
 struct AudioStream
 {
-    AudioBufferRef buffer;      // Pointer to internal data used by the audio system
+    AudioBufferRef buffer;       // Pointer to internal data used by the audio system
+	AudioProcessorRef processor; // Pointer to internal data processor, useful for audio effects
 
-    uint sampleRate;            // Frequency (samples per second)
-    uint sampleSize;            // Bit depth (bits per sample): 8, 16, 32 (24 not supported)
-    uint channels;              // Number of channels (1-mono, 2-stereo, ...)
+    uint sampleRate;             // Frequency (samples per second)
+    uint sampleSize;             // Bit depth (bits per sample): 8, 16, 32 (24 not supported)
+    uint channels;               // Number of channels (1-mono, 2-stereo, ...)
 }
+
 
 // Sound
 struct Sound
