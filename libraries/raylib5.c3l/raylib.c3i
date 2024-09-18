@@ -1701,7 +1701,7 @@ fn Sound loadSound(ZString fileName) @extern("LoadSound");
 // Load sound from wave data
 fn Sound loadSoundFromWave(Wave wave) @extern("LoadSoundFromWave");
 // Create a new sound that shares the same sample data as the source sound, does not own the sound data
-fn Sound loadSoundAlias(Sound source) @extern("loadSoundAlias");
+fn Sound loadSoundAlias(Sound source) @extern("LoadSoundAlias");
 // Checks if a sound is ready
 fn bool isSoundReady(Sound sound) @extern("IsSoundReady");
 // Update sound buffer with new data
