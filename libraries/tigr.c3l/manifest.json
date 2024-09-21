@@ -2,17 +2,17 @@
   "provides" : "tigr",
   "targets" : {
     "macos-x64" : {
-      "linkflags" : [],
+      "link-args" : [],
       "dependencies" : [],
-      "linked-libs" : ["tigr", "Cocoa.framework", "OpenGL.framework"]
+      "linked-libraries" : ["tigr", "Cocoa.framework", "OpenGL.framework"]
     },
     "linux-x64" : {
-      "linkflags" : [],
+      "link-args" : [],
       "dependencies" : [],
-      "linked-libs" : [ "tigr", "GLU", "GL", "X11" ]
+      "linked-libraries" : [ "tigr", "GLU", "GL", "X11" ]
     },
 	"windows-x64" : {
-		"linked-libs" : [ "opengl32", "gdi32" ]
+		"linked-libraries" : [ "opengl32", "gdi32" ]
 	}
   }
 }

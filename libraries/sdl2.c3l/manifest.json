@@ -2,22 +2,22 @@
   "provides" : "sdl2",
   "targets" : {
     "macos-x64" : {
-      "linkflags" : [],
+      "link-args" : [],
       "dependencies" : [],
-      "linked-libs" : []
+      "linked-libraries" : []
     },
     "macos-aarch64" : {
-      "linkflags" : [],
+      "link-args" : [],
       "dependencies" : [],
-      "linked-libs" : []
+      "linked-libraries" : []
     },
     "linux-x64" : {
-      "linkflags" : [],
+      "link-args" : [],
       "dependencies" : [],
-      "linked-libs" : ["SDL2"]
+      "linked-libraries" : ["SDL2"]
     },
 	"windows-x64" : {
-		"linked-libs" : []
+		"linked-libraries" : []
 	}
   }
 }

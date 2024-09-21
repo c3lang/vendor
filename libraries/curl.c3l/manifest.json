@@ -2,22 +2,22 @@
   "provides" : "curl",
   "targets" : {
     "macos-x64" : {
-      "linkflags" : [],
+      "link-args" : [],
       "dependencies" : [],
-      "linked-libs" : ["curl"]
+      "linked-libraries" : ["curl"]
     },
     "macos-aarch64": {
-      "linkflags": [],
+      "link-args": [],
       "dependencies": [],
       "linked-libraries": ["curl"]
     },
     "linux-x64" : {
-      "linkflags" : [],
+      "link-args" : [],
       "dependencies" : [],
-      "linked-libs" : ["curl"]
+      "linked-libraries" : ["curl"]
     },
 	"windows-x64" : {
-		"linked-libs" : ["curl"]
+      "linked-libraries" : ["curl"]
 	}
   }
 }
