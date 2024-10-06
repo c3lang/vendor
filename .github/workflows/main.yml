@@ -119,6 +119,26 @@ jobs:
           asset_name: opengl.c3l
           asset_content_type: application/zip
 
+      - name: upload vulkan
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: packages/vulkan.c3l
+          asset_name: vulkan.c3l
+          asset_content_type: application/zip
+
+      - name: upload tree_sitter
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: packages/tree_sitter.c3l
+          asset_name: tree_sitter.c3l
+          asset_content_type: application/zip
+
       - name: upload curl
         uses: actions/upload-release-asset@v1
         env:
