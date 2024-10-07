@@ -7,7 +7,9 @@ This repository contains external libraries for use with C3.
 - SDL2 2.28.x https://libsdl.org/ - WIP
 - Tigr https://github.com/erkkah/tigr (Needs Windows & macOS static libraries)
 - Curl https://curl.se/docs/manpage.html
-- OpenGL 
+- OpenGL
+- Vulkan
+- GLFW https://www.glfw.org/ - WIP
 
 ## Guide for writing bindings
 

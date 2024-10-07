@@ -148,3 +148,13 @@ jobs:
           asset_path: packages/curl.c3l
           asset_name: curl.c3l
           asset_content_type: application/zip
+      
+      - name: upload glfw
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: packages/glfw.c3l
+          asset_name: glfw.c3l
+          asset_content_type: application/zip
