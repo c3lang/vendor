@@ -1,0 +1,56 @@
+module webgpu;
+
+distinct AndroidNativeWindow = void*;
+
+struct SurfaceDescriptorFromAndroidNativeWindow {
+    ChainedStruct chain;
+    AndroidNativeWindow window;
+}
+
+struct SurfaceDescriptorFromCanvasHTMLSelector {
+    ChainedStruct chain;
+    ZString selector;
+}
+
+distinct MetalLayer = void*;
+
+struct SurfaceDescriptorFromMetalLayer {
+    ChainedStruct chain;
+    MetalLayer layer;
+}
+
+distinct WaylandDisplay = void*;
+distinct WaylandSurface = void*;
+
+struct SurfaceSourceWaylandSurface {
+    ChainedStruct chain;
+    WaylandDisplay display;
+    WaylandSurface surface;
+}
+
+distinct HInstance = void*;
+distinct WindowsHWND = void*;
+
+struct SurfaceDescriptorFromWindowsHWND {
+    ChainedStruct chain;
+    HInstance hinstance;
+    WindowsHWND hwnd;
+}
+
+distinct XcbConnection = void*;
+distinct XcbWindow = CUInt;
+
+struct SurfaceDescriptorFromXcbWindow {
+    ChainedStruct chain;
+    XcbConnection connection;
+    XcbWindow window;
+}
+
+distinct X11Display = void*;
+distinct X11Window = CULong;
+
+struct SurfaceDescriptorFromXlibWindow {
+    ChainedStruct chain;
+    X11Display display;
+    X11Window window;
+}

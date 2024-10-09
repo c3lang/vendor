@@ -1,0 +1,183 @@
+module webgpu;
+
+distinct Texture = void*;
+
+fn TextureView Texture.createView(Texture texture, TextureViewDescriptor* descriptor = null) @extern("wgpuTextureCreateView");
+
+fn void Texture.destroy(Texture texture) @extern("wgpuTextureDestroy");
+
+fn CUInt Texture.getDepthOrArrayLayers(Texture texture) @extern("wgpuTextureGetDepthOrArrayLayers");
+
+fn TextureDimension Texture.getDimension(Texture texture) @extern("wgpuTextureGetDimension");
+
+fn TextureFormat Texture.getFormat(Texture texture) @extern("wgpuTextureGetFormat");
+
+fn CUInt Texture.getHeight(Texture texture) @extern("wgpuTextureGetHeight");
+
+fn CUInt Texture.getMipLevelCount(Texture texture) @extern("wgpuTextureGetMipLevelCount");
+
+fn CUInt Texture.getSampleCount(Texture texture) @extern("wgpuTextureGetSampleCount");
+
+fn CUInt Texture.getWidth(Texture texture) @extern("wgpuTextureGetWidth");
+
+fn void Texture.setLabel(Texture texture, ZString label) @extern("wgpuTextureSetLabel");
+
+fn void Texture.reference(Texture texture) @extern("wgpuTextureReference");
+
+fn void Texture.release(Texture texture) @extern("wgpuTextureRelease");
+
+
+struct TextureDescriptor {
+    ChainedStruct* next;
+    ZString label;
+    TextureUsage usage;
+    TextureDimension dimension;
+    Extent3D size;
+    TextureFormat format;
+    CUInt mipLevelCount;
+    CUInt sampleCount;
+    usz viewFormatCount;
+    TextureFormat* viewFormats;
+}
+
+struct ImageCopyTexture {
+    ChainedStruct* next;
+    Texture texture;
+    CUInt mipLevel;
+    Origin3D origin;
+    TextureAspect aspect;
+}
+
+
+struct Origin3D {
+    CUInt x;
+    CUInt y;
+    CUInt z;
+}
+
+struct TextureDataLayout {
+    ChainedStruct* next;
+    CULong offset;
+    CUInt bytesPerRow;
+    CUInt rowsPerImage;
+}
+
+bitstruct TextureUsage: CInt {
+    bool copySource;
+    bool copyDestination;
+    bool textureBinding;
+    bool storageBinding;
+    bool renderAttachment;
+}
+
+
+enum TextureDimension {
+    DIMENSION_1D,
+    DIMENSION_2D,
+    DIMENSION_3D
+}
+
+enum TextureFormat {
+    UNDEFINED,
+    R8_UNORM,
+    R8_SNORM,
+    R8_UINT,
+    R8_SINT,
+    R16_UINT,
+    R16_SINT,
+    R16_FLOAT,
+    RG8_UNORM,
+    RG8_SNORM,
+    RG8_UINT,
+    RG8_SINT,
+    R32_FLOAT,
+    R32_UINT,
+    R32_SINT,
+    RG16_UINT,
+    RG16_SINT,
+    RG16_FLOAT,
+    RGBA8_UNORM,
+    RGBA8_UNORM_SRGB,
+    RGBA8_SNORM,
+    RGBA8_UINT,
+    RGBA8_SINT,
+    BGRA8_UNORM,
+    BGRA8_UNORM_SRGB,
+    RGB10_A2_UINT,
+    RGB10_A2_UNORM,
+    RG11_B10_UFLOAT,
+    RGB9_E5_UFLOAT,
+    RG32_FLOAT,
+    RG32_UINT,
+    RG32_SINT,
+    RGBA16_UINT,
+    RGBA16_SINT,
+    RGBA16_FLOAT,
+    RGBA32_FLOAT,
+    RGBA32_UINT,
+    RGBA32_SINT,
+    STENCIL8,
+    DEPTH16_UNORM,
+    DEPTH24_PLUS,
+    DEPTH24_PLUS_STENCIL8,
+    DEPTH32_FLOAT,
+    DEPTH32_FLOAT_STENCIL8,
+    BC1_RGBAUNORM,
+    BC1_RGBAUNORM_SRGB,
+    BC2_RGBAUNORM,
+    BC2_RGBAUNORM_SRGB,
+    BC3_RGBAUNORM,
+    B3_RGBAUNORM_SRGB,
+    BC4_RUNORM,
+    BC4_RSNORM,
+    BC5_RGUNORM,
+    BC5_RGSNORM,
+    BC6_HRGBUFLOAT,
+    BC6_HRGBFLOAT,
+    BC7_RGBAUNORM,
+    BC7_RGBAUNORM_SRGB,
+    ETC2_RGB8_UNORM,
+    ETC2_RGB8_UNORM_SRGB,
+    ETC2_RGB8_A1_UNORM,
+    ETC2_RGB8_A1_UNORM_SRGB,
+    ETC2_RGBA8_UNORM,
+    ETC2_RGBA8_UNORM_SRGB,
+    EACR11_UNORM,
+    EACR11_SNORM,
+    EACRG11_UNORM,
+    EACRG11_SNORM,
+    ASTC4X4_UNORM,
+    ASTC4X4_UNORM_SRGB,
+    ASTC5X4_UNORM,
+    ASTC5X4_UNORM_SRGB,
+    ASTC5X5_UNORM,
+    ASTC5X5_UNORM_SRGB,
+    ASTC6X5_UNORM,
+    ASTC6X5_UNORM_SRGB,
+    ASTC6X6_UNORM,
+    ASTC6X6_UNORM_SRGB,
+    ASTC8X5_UNORM,
+    ASTC8X5_UNORM_SRGB,
+    ASTC8X6_UNORM,
+    ASTC8X6_UNORM_SRGB,
+    ASTC8X8_UNORM,
+    ASTC8X8_UNORM_SRGB,
+    ASTC10X5_UNORM,
+    ASTC10X5_UNORM_SRGB,
+    ASTC10X6_UNORM,
+    ASTC10X6_UNORM_SRGB,
+    ASTC10X8_UNORM,
+    ASTC10X8_UNORM_SRGB,
+    ASTC10X10_UNORM,
+    ASTC10X10_UNORM_SRGB,
+    ASTC12X10_UNORM,
+    ASTC12X10_UNORM_SRGB,
+    ASTC12X12_UNORM,
+    ASTC12X12_UNORM_SRGB
+}
+
+enum TextureAspect {
+    ALL,
+    STENCIL_ONLY,
+    DEPTH_ONLY
+}

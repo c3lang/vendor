@@ -1,0 +1,46 @@
+module webgpu;
+
+distinct ComputePassEncoder = void*;
+
+fn void ComputePassEncoder.dispatchWorkgroups(ComputePassEncoder encoder,
+    CUInt countX, CUInt countY, CUInt countZ) @extern("wgpuComputePassEncoderDispatchWorkgroups");
+
+fn void ComputePassEncoder.dispatchWorkgroupsIndirect(ComputePassEncoder encoder,
+    Buffer buffer, CULong offset) @extern("wgpuComputePassEncoderDispatchWorkgroupsIndirect");
+
+fn void ComputePassEncoder.end(ComputePassEncoder encoder) @extern("wgpuComputePassEncoderEnd");
+
+fn void ComputePassEncoder.insertDebugMarker(ComputePassEncoder encoder,
+    ZString label) @extern("wgpuComputePassEncoderInsertDebugMarker");
+
+fn void ComputePassEncoder.popDebugGroup(ComputePassEncoder encoder)
+    @extern("wgpuComputePassEncoderPopDebugGroup");
+
+fn void ComputePassEncoder.pushDebugGroup(ComputePassEncoder encoder, ZString label)
+    @extern("wgpuComputePassEncoderPushDebugGroup");
+
+fn void ComputePassEncoder.setBindGroup(ComputePassEncoder encoder, CUInt groupIndex)
+    @extern("wgpuComputePassEncoderSetBindGroup");
+
+fn void ComputePassEncoder.setLabel(ComputePassEncoder encoder, ZString label)
+    @extern("wgpuComputePassEncoderSetLabel");
+
+fn void ComputePassEncoder.setPipeline(ComputePassEncoder encoder, ComputePipeline pipeline)
+    @extern("wgpuComputePassEncoderSetPipeline");
+
+fn void ComputePassEncoder.reference(ComputePassEncoder encoder) @extern("wgpuComputePassEncoderReference");
+
+fn void ComputePassEncoder.release(ComputePassEncoder encoder) @extern("wgpuComputePassEncoderRelease");
+
+
+struct ComputePassTimestampWrites {
+    QuerySet querySet;
+    CUInt beginningOfPassWriteIndex;
+    CUInt endOfPassWriteIndex;
+}
+
+struct ComputePassDescriptor {
+    ChainedStruct* next;
+    ZString label;
+    ComputePassTimestampWrites* timestampWrites;
+}

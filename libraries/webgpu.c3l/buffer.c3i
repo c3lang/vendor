@@ -1,0 +1,84 @@
+module webgpu;
+
+distinct Buffer = void*;
+
+fn void Buffer.destroy(Buffer buffer) @extern("wgpuBufferDestroy");
+
+// wgpuBufferGetConstMappedRange left out, since C3 has no void const *
+
+fn BufferMapState Buffer.getMapState(Buffer buffer, usz offset, usz size) @extern("wgpuBufferGetMapState");
+
+fn BufferMappedRange Buffer.getMappedRange(Buffer buffer) @extern("wgpuBufferGetMappedRange");
+
+fn CULong Buffer.getSize(Buffer buffer) @extern("wgpuBufferGetSize");
+
+fn BufferUsage Buffer.getUsage(Buffer buffer) @extern("wgpuBufferGetUsage");
+
+fn void Buffer.mapAsync(Buffer buffer, MapMode mode, usz offset, usz size,
+    BufferMapAsyncCallback callback, UserData data) @extern("wgpuBufferMapAsync");
+
+fn void Buffer.setLabel(Buffer buffer, ZString label) @extern("wgpuBufferSetLabel");
+
+fn void Buffer.unmap(Buffer buffer) @extern("wgpuBufferUnmap");
+
+fn void Buffer.reference(Buffer buffer) @extern("wgpuBufferReference");
+
+fn void Buffer.release(Buffer buffer) @extern("wgpuBufferRelease");
+
+
+def BufferMapAsyncCallback = fn void(BufferMapAsyncStatus status, UserData data);
+
+distinct BufferMappedRange = void*;
+
+
+struct BufferDescriptor {
+    ChainedStruct* next;
+    ZString label;
+    BufferUsage usage;
+    CULong size;
+    CBool mappedAtCreation;
+}
+
+struct ImageCopyBuffer {
+    ChainedStruct* next;
+    TextureDataLayout layout;
+    Buffer buffer;
+}
+
+bitstruct BufferUsage : CInt {
+   bool mapRead;
+   bool mapWrite;
+   bool copySource;
+   bool copyDestination;
+   bool index;
+   bool vertex;
+   bool uniform;
+   bool storage;
+   bool indirect;
+   bool queryResolve;
+}
+
+
+enum BufferMapAsyncStatus {
+    SUCCESS,
+    VALIDATION_ERROR,
+    UNKNOWN,
+    DEVICE_LOST,
+    DESTROYED_BEFORE_CALLBACK,
+    UNMAPPED_BEFORE_CALLBACK,
+    MAPPING_ALREADY_PENDING,
+    OFFSET_OUT_OF_RANGE,
+    SIZE_OUT_OF_RANGE
+}
+
+enum BufferMapState {
+    UNMAPPED,
+    PENDING,
+    MAPPED
+}
+
+enum MapMode {
+    NONE,
+    READ,
+    WRITE
+}

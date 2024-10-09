@@ -1,0 +1,29 @@
+module webgpu;
+
+distinct QuerySet = void*;
+
+
+fn void QuerySet.destroy(QuerySet querySet) @extern("wgpuQuerySetDestroy");
+
+fn CUInt QuerySet.getCount(QuerySet querySet) @extern("wgpuQuerySetGetCount");
+
+fn QueryType QuerySet.getType(QuerySet querySet) @extern("wgpuQuerySetGetType");
+
+fn void QuerySet.setLabel(QuerySet querySet, ZString label) @extern("wgpuQuerySetSetLabel");
+
+fn void QuerySet.reference(QuerySet querySet) @extern("wgpuQuerySetReference");
+
+fn void QuerySet.release(QuerySet querySet) @extern("wgpuQuerySetRelease");
+
+
+struct QuerySetDescriptor {
+    ChainedStruct next;
+    ZString label;
+    QueryType type;
+    CUInt count;
+}
+
+enum QueryType {
+    OCCLUSION,
+    TIMESTAMP
+}

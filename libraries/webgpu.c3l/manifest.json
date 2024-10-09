@@ -1,0 +1,38 @@
+{
+  "provides" : "webgpu",
+  "targets" : {
+    "android-aarch64" : {
+      "linked-libraries" : ["wgpu_native"]
+    },
+    "ios-aarch64" : {
+      "linked-libraries" : ["wgpu_native"]
+    },
+    "linux-aarch64" : {
+      "linked-libraries" : ["wgpu_native"]
+    },
+    "linux-x86" : {
+      "linked-libraries" : ["wgpu_native"]
+    },
+    "linux-x64" : {
+      "linked-libraries" : ["wgpu_native"]
+    },
+    "macos-aarch64" : {
+      "linked-libraries" : ["wgpu_native"]
+    },
+    "macos-x64" : {
+      "linked-libraries" : ["wgpu_native"]
+    },
+    "windows-aarch64" : {
+      "linked-libraries" : ["wgpu_native"]
+    },
+    "windows-x64" : {
+      "linked-libraries" : ["wgpu_native"]
+    },
+    "wasm32" : {
+      "linked-libraries" : ["wgpu_native"]
+    },
+    "wasm64" : {
+      "linked-libraries" : ["wgpu_native"]
+    }
+  }
+}
