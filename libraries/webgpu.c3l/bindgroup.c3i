@@ -1,0 +1,28 @@
+module webgpu;
+
+distinct BindGroup = void*;
+
+fn void BindGroup.setLabel(BindGroup bindGroup, ZString label) @extern("wgpuBindGroupSetLabel");
+
+fn void BindGroup.reference(BindGroup bindGroup) @extern("wgpuBindGroupReference");
+
+fn void BindGroup.release(BindGroup bindGroup) @extern("wgpuBindGroupRelease");
+
+
+struct BindGroupDescriptor {
+    ChainedStruct* next;
+    ZString label;
+    BindGroupLayout layout;
+    usz entryCount;
+    BindGroupEntry* entries;
+}
+
+struct BindGroupEntry {
+    ChainedStruct* next;
+    CUInt binding;
+    Buffer buffer;
+    CULong offset;
+    CULong size;
+    Sampler sampler;
+    TextureView textureView;
+}

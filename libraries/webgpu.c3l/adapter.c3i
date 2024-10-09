@@ -1,0 +1,84 @@
+module webgpu;
+
+distinct Adapter = void*;
+
+fault AdapterError {
+    REQUEST_FAILED
+}
+
+fn usz Adapter.enumerateFeatures(Adapter adapter, FeatureName* features) @extern("wgpuAdapterEnumerateFeatures");
+
+fn CBool Adapter.getLimits(Adapter adapter, SupportedLimits* limits) @extern("wgpuAdapterGetLimits");
+
+fn void Adapter.getProperties(Adapter adapter, AdapterProperties* properties) @extern("wgpuAdapterGetProperties");
+
+fn CBool Adapter.hasFeature(Adapter adapter, FeatureName feature) @extern("wgpuAdapterHasFeature");
+
+fn void Adapter.requestAdapterInfo(Adapter adapter, RequestAdapterInfoCallback callback, UserData data) @extern("wgpuAdapterRequestAdapterInfo");
+
+fn void Adapter.requestDeviceAsync(Adapter adapter,
+    DeviceDescriptor* descriptor, RequestDeviceCallback callback,
+	UserData data) @extern("wgpuAdapterRequestDevice");
+
+fn void Adapter.reference(Adapter adapter) @extern("wgpuAdapterReference");
+
+fn void Adapter.release(Adapter adapter) @extern("wgpuAdapterRelease");
+
+
+def RequestAdapterInfoCallback = fn void(AdapterInfo info, UserData data);
+
+def RequestDeviceCallback = fn void (RequestDeviceStatus status,
+	Device device, ZString message, UserData data);
+
+enum AdapterType {
+    DISCRETE_GPU,
+    INTEGRATED_GPU,
+    CPU,
+    UNKNOWN
+}
+
+struct AdapterInfo {
+    ZString vendor;
+    ZString architecture;
+    ZString device;
+    ZString description;
+}
+
+struct AdapterProperties {
+    ChainedStructOut* next;
+    CUInt vendorID;
+    ZString vendorName;
+    ZString architecture;
+    CUInt deviceID;
+    ZString name;
+    ZString driverDescription;
+    AdapterType adapterType;
+    BackendType backendType;
+}
+
+struct RequestAdapterOptions {
+    ChainedStruct* next;
+    Surface compatibleSurface;
+    PowerPreference powerPreference;
+    BackendType backendType;
+    CBool forceFallbackAdapter;
+}
+
+
+enum PowerPreference {
+    UNDEFINED,
+    LOW_POWER,
+    HIGH_PERFORMANCE
+}
+
+enum BackendType {
+    UNDEFINED,
+    NULL,
+    WEBGPU,
+    D3_D11,
+    D3_D12,
+    METAL,
+    VULKAN,
+    OPENGL,
+    OPENGL_ES
+}

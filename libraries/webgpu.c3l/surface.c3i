@@ -1,0 +1,88 @@
+module webgpu;
+
+distinct Surface = void*;
+
+fn void Surface.configure(Surface surface,
+    SurfaceConfiguration* configuration) @extern("wgpuSurfaceConfigure");
+
+fn void Surface.getCapabilities(Surface surface,
+    Adapter adapter, SurfaceCapabilities* capabilities) @extern("wgpuSurfaceGetCapabilities");
+
+fn Texture Surface.getCurrentTexture(Surface surface, SurfaceTexture* texture) @extern("wgpuSurfaceGetCurrentTexture");
+
+fn TextureFormat Surface.getPreferredFormat(Surface surface,
+    Adapter adapter) @extern("wgpuSurfaceGetPreferredFormat");
+
+fn void Surface.present(Surface surface) @extern("wgpuSurfacePresent");
+
+fn void Surface.setLabel(Surface surface,
+    ZString label) @extern("wgpuSurfaceSetLabel");
+
+fn void Surface.unconfigure(Surface surface) @extern("wgpuSurfaceUnconfigure");
+
+fn void Surface.reference(Surface surface) @extern("wgpuSurfaceReference");
+
+fn void Surface.release(Surface surface) @extern("wgpuSurfaceRelease");
+
+fn void SurfaceCapabilities.freeMembers(SurfaceCapabilities* capabilities)
+    @extern("wgpuSurfaceCapabilitiesFreeMembers");
+
+
+struct SurfaceDescriptor {
+    ChainedStruct* next;
+    ZString label;
+}
+
+struct SurfaceCapabilities {
+    ChainedStructOut* next;
+    TextureUsage usages;
+    usz formatCount;
+    TextureFormat* formats;
+    usz presentModeCount;
+    PresentMode* presentModes;
+    usz alphaModeCount;
+    CompositeAlphaMode* alphaModes;
+}
+
+struct SurfaceConfiguration {
+    ChainedStruct* next;
+    Device device;
+    TextureFormat format;
+    TextureUsage usage;
+    usz viewFormatCount;
+    TextureFormat* viewFormats;
+    CompositeAlphaMode alphaMode;
+    CUInt width;
+    CUInt height;
+    PresentMode presentMode;
+}
+
+struct SurfaceTexture {
+    Texture texture;
+    CBool suboptimal;
+    CurrentTextureStatus status;
+}
+
+enum CurrentTextureStatus {
+    SUCCESS,
+    TIMEOUT,
+    OUTDATED,
+    LOST,
+    OUT_OF_MEMORY,
+    DEVICE_LOST
+}
+
+enum CompositeAlphaMode {
+    AUTO,
+    OPAQUE,
+    PREMULTIPLIED,
+    UNPREMULTIPLIED,
+    INHERIT
+}
+
+enum PresentMode {
+    FIFO,
+    FIFO_RELAXED,
+    IMMEDIATE,
+    MAILBOX
+}
