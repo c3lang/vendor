@@ -1,0 +1,127 @@
+module webgpu;
+
+distinct RenderPassEncoder = void*;
+
+
+fn void RenderPassEncoder.beginOcclusionQuery(RenderPassEncoder encoder,
+    CUInt queryIndex) @extern("wgpuRenderPassEncoderBeginOcclusionQuery");
+
+fn void RenderPassEncoder.draw(RenderPassEncoder encoder,
+    CUInt vertexCount, CUInt instanceCount, CUInt firstVertex = 0, CUInt firstInstance = 0)
+    @extern("wgpuRenderPassEncoderDraw");
+
+fn void RenderPassEncoder.drawIndexed(RenderPassEncoder encoder,
+    CUInt indexCount, CUInt instanceCount, CUInt firstIndex = 0, CInt baseVertex = 0, CUInt firstInstance = 0)
+    @extern("wgpuRenderPassEncoderDrawIndexed");
+
+fn void RenderPassEncoder.drawIndexedIndirect(RenderPassEncoder encoder,
+    Buffer buffer, CULong offset) @extern("wgpuRenderPassEncoderDrawIndexedIndirect");
+
+fn void RenderPassEncoder.drawIndirect(RenderPassEncoder encoder,
+    Buffer buffer, CULong offset) @extern("wgpuRenderPassEncoderDrawIndirect");
+
+fn RenderBundle RenderPassEncoder.end(RenderPassEncoder encoder) @extern("wgpuRenderPassEncoderEnd");
+
+fn void RenderPassEncoder.endOcclusionQuery(RenderPassEncoder encoder) @extern("wgpuRenderPassEncoderEndOcclusionQuery");
+
+fn void RenderPassEncoder.executeBundles(RenderPassEncoder encoder,
+    usz count, RenderBundle* bundles) @extern("wgpuRenderPassEncoderExecuteBundles");
+
+fn void RenderPassEncoder.insertDebugMarker(RenderPassEncoder encoder,
+    ZString label) @extern("wgpuRenderPassEncoderInsertDebugMarker");
+
+fn void RenderPassEncoder.popDebugGroup(RenderPassEncoder encoder)
+    @extern("wgpuRenderPassEncoderPopDebugGroup");
+
+fn void RenderPassEncoder.pushDebugGroup(RenderPassEncoder encoder, ZString label)
+    @extern("wgpuRenderPassEncoderPushDebugGroup");
+
+fn void RenderPassEncoder.setBlendConstant(RenderPassEncoder encoder, Color* color)
+    @extern("wgpuRenderPassEncoderSetBlendConstant");
+
+fn void RenderPassEncoder.setBindGroup(RenderPassEncoder encoder, CUInt groupIndex, BindGroup bindGroup,
+	usz dynamicOffsetCount = 0, CUInt* dynamicOffsets = null) @extern("wgpuRenderPassEncoderSetBindGroup");
+
+fn void RenderPassEncoder.setIndexBuffer(RenderPassEncoder encoder,
+    Buffer buffer, IndexFormat format, CULong offset, CULong size)
+    @extern("wgpuRenderPassEncoderSetIndexBuffer");
+
+fn void RenderPassEncoder.setLabel(RenderPassEncoder encoder, ZString label)
+    @extern("wgpuRenderPassEncoderSetLabel");
+
+fn void RenderPassEncoder.setPipeline(RenderPassEncoder encoder, RenderPipeline pipeline)
+    @extern("wgpuRenderPassEncoderSetPipeline");
+
+fn void RenderPassEncoder.setScissorRect(RenderPassEncoder encoder,
+    CUInt x, CUInt y, CUInt width, CUInt height) @extern("wgpuRenderPassEncoderSetScissorRect");
+
+fn void RenderPassEncoder.setStencilReference(RenderPassEncoder encoder,
+    CUInt reference) @extern("wgpuRenderPassEncoderSetStencilReference");
+
+fn void RenderPassEncoder.setVertexBuffer(RenderPassEncoder encoder,
+    CUInt slot, Buffer buffer, CULong offset, CULong size)
+    @extern("wgpuRenderPassEncoderSetVertexBuffer");
+
+fn void RenderPassEncoder.setViewport(RenderPassEncoder encoder,
+    float x, float y, float width, float height, float minDepth, float maxDepth)
+    @extern("wgpuRenderPassEncoderSetViewport");
+
+fn void RenderPassEncoder.reference(RenderPassEncoder encoder) @extern("wgpuRenderPassEncoderReference");
+
+fn void RenderPassEncoder.release(RenderPassEncoder encoder) @extern("wgpuRenderPassEncoderRelease");
+
+
+struct RenderPassDescriptor {
+    ChainedStruct* next;
+    ZString label;
+    usz colorAttachmentCount;
+    RenderPassColorAttachment* colorAttachments;
+    RenderPassDepthStencilAttachment* depthStencilAttachment;
+    QuerySet occlusionQuerySet;
+    RenderPassTimestampWrites* timestampWrites;
+}
+
+struct RenderPassDepthStencilAttachment {
+    TextureView view;
+    LoadOperation depthLoadOperation;
+    StoreOperation depthStoreOperation;
+    float depthClearValue;
+    CBool depthReadOnly;
+    LoadOperation stencilLoadOperation;
+    StoreOperation stencilStoreOperation;
+    CUInt stencilClearValue;
+    CBool stencilReadOnly;
+}
+
+struct RenderPassDescriptorMaxDrawCount {
+    ChainedStruct chain;
+    CULong maxDrawCount;
+}
+
+struct RenderPassTimestampWrites {
+    QuerySet querySet;
+    CUInt beginningOfPassWriteIndex;
+    CUInt endOfPassWriteIndex;
+}
+
+struct RenderPassColorAttachment {
+    ChainedStruct* next;
+    TextureView view;
+    CUInt depthSlice;
+    TextureView resolveTarget;
+    LoadOperation loadOperation;
+    StoreOperation storeOperation;
+    Color clearValue;
+}
+
+enum LoadOperation {
+    UNDEFINED,
+    CLEAR,
+    LOAD
+}
+
+enum StoreOperation {
+    UNDEFINED,
+    STORE,
+    DISCARD
+}

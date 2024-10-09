@@ -1,0 +1,83 @@
+module webgpu;
+
+distinct ShaderModule = void*;
+
+fn void ShaderModule.getCompilationInfo(ShaderModule shaderModule,
+    CompilationInfoCallback callback, UserData userData) @extern("wgpuShaderModuleGetCompilationInfo");
+
+fn void ShaderModule.setLabel(ShaderModule shaderModule,
+    ZString label) @extern("wgpuShaderModuleSetLabel");
+
+fn void ShaderModule.reference(ShaderModule shaderModule) @extern("wgpuShaderModuleReference");
+
+fn void ShaderModule.release(ShaderModule shaderModule) @extern("wgpuShaderModuleRelease");
+
+
+def CompilationInfoCallback = fn void(CompilationInfoRequestStatus status,
+    CompilationInfo* info, UserData data);
+
+def ShaderStageFlags = CUInt;
+
+struct CompilationMessage {
+    ChainedStruct* next;
+    ZString message;
+    CompilationMessageType type;
+    CULong lineNumber;
+    CULong linePosition;
+    CULong offset;
+    CULong length;
+    CULong utf16LinePosition;
+    CULong utf16Offset;
+    CULong utf16Length;
+}
+
+struct CompilationInfo {
+    ChainedStruct* next;
+    usz messageCount;
+    CompilationMessage* messages;
+}
+
+struct ConstantEntry {
+    ChainedStruct* next;
+    ZString key;
+    double value;
+}
+
+struct ShaderModuleCompilationHint {
+    ChainedStruct* next;
+    ZString entryPoint;
+    PipelineLayout layout;
+}
+
+struct ShaderModuleDescriptor {
+    ChainedStruct* next;
+    ZString label;
+    usz hintCount;
+    ShaderModuleCompilationHint* hints;
+}
+
+struct ShaderModuleSPIRVDescriptor {
+    ChainedStruct chain;
+    CUInt codeSize;
+    CUInt* code;
+}
+
+struct ShaderModuleWGSLDescriptor {
+    ChainedStruct chain;
+    ZString code;
+}
+
+
+enum CompilationInfoRequestStatus {
+    SUCCESS,
+    ERROR,
+    DEVICE_LOST,
+    UNKNOWN
+}
+
+enum CompilationMessageType {
+    ERROR,
+    WARNING,
+    INFO
+}
+

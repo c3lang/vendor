@@ -1,0 +1,220 @@
+module webgpu;
+
+distinct RenderPipeline = void*;
+
+
+fn BindGroupLayout RenderPipeline.getBindGroupLayout(RenderPipeline pipeline,
+    CUInt groupIndex) @extern("wgpuRenderPipelineGetBindGroupLayout");
+
+fn void RenderPipeline.setLabel(RenderPipeline pipeline,
+    ZString label) @extern("wgpuRenderPipelineSetLabel");
+
+fn void RenderPipeline.reference(RenderPipeline pipeline) @extern("wgpuRenderPipelineReference");
+
+fn void RenderPipeline.release(RenderPipeline pipeline) @extern("wgpuRenderPipelineRelease");
+
+
+
+struct RenderPipelineDescriptor {
+    ChainedStruct* next;
+    ZString label;
+    PipelineLayout layout;
+    VertexState vertex;
+    PrimitiveState primitive;
+    DepthStencilState* depthStencil;
+    MultisampleState multisample;
+    FragmentState* fragment;
+}
+
+struct VertexState {
+    ChainedStruct* next;
+    ShaderModule shaderModule;
+    ZString entryPoint;
+    usz constantCount;
+    ConstantEntry* constants;
+    usz bufferCount;
+    VertexBufferLayout* buffers;
+}
+
+struct VertexBufferLayout {
+    CULong arrayStride;
+    VertexStepMode stepMode;
+    usz attributeCount;
+    VertexAttribute* attributes;
+}
+
+struct VertexAttribute {
+    VertexFormat format;
+    CULong offset;
+    CUInt shaderLocation;
+}
+
+struct FragmentState {
+    ChainedStruct* next;
+    ShaderModule shaderModule;
+    ZString entryPoint;
+    usz constantCount;
+    ConstantEntry* constants;
+    usz targetCount;
+    ColorTargetState* targets;
+}
+
+struct MultisampleState {
+    ChainedStruct* next;
+    CUInt count;
+    CUInt mask;
+    CBool alphaToCoverageEnabled;
+}
+
+struct DepthStencilState {
+    ChainedStruct* next;
+    TextureFormat format;
+    CBool depthWriteEnabled;
+    CompareFunction depthCompare;
+    StencilFaceState stencilFront;
+    StencilFaceState stencilBack;
+    CUInt stencilReadMask;
+    CUInt stencilWriteMask;
+    CInt depthBias;
+    float depthBiasSlopeScale;
+    float depthBiasClamp;
+}
+
+struct StencilFaceState {
+    CompareFunction compare;
+    StencilOperation failOperation;
+    StencilOperation depthFailOperation;
+    StencilOperation passOperation;
+}
+
+struct ColorTargetState {
+    ChainedStruct* next;
+    TextureFormat format;
+    BlendState* blend;
+    ColorWriteMask writeMask;
+}
+
+bitstruct ColorWriteMask: CInt {
+    bool red;
+    bool green;
+    bool blue;
+    bool alpha;
+}
+
+struct BlendState {
+    BlendComponent color;
+    BlendComponent alpha;
+}
+
+struct BlendComponent {
+    BlendOperation operation;
+    BlendFactor sourceFactor;
+    BlendFactor destinationFactor;
+}
+
+struct PrimitiveDepthClipControl {
+    ChainedStruct chain;
+    CBool unclippedDepth;
+}
+
+struct PrimitiveState {
+    ChainedStruct* next;
+    PrimitiveTopology topology;
+    IndexFormat stripIndexFormat;
+    FrontFace frontFace;
+    CullMode cullMode;
+}
+
+enum VertexFormat {
+    UNDEFINED,
+    UINT_8X2,
+    UINT_8X4,
+    SINT_8X2,
+    SINT_8X4,
+    UNORM_8X2,
+    UNORM_8X4,
+    SNORM_8X2,
+    SNORM_8X4,
+    UINT_16X2,
+    UINT_16X4,
+    SINT_16X2,
+    SINT_16X4,
+    UNORM_16X2,
+    UNORM_16X4,
+    SNORM_16X2,
+    SNORM_16X4,
+    FLOAT_16X2,
+    FLOAT_16X4,
+    FLOAT_32,
+    FLOAT_32X2,
+    FLOAT_32X3,
+    FLOAT_32X4,
+    UINT_32,
+    UINT_32X2,
+    UINT_32X3,
+    UINT_32X4,
+    SINT_32,
+    SINT_32X2,
+    SINT_32X3,
+    SINT_32X4
+}
+
+enum VertexStepMode {
+    VERTEX,
+    INSTANCE,
+    VERTEX_BUFFER_NOT_USED
+}
+
+enum BlendFactor {
+    ZERO,
+    ONE,
+    SRC,
+    ONE_MINUS_SRC,
+    SRC_ALPHA,
+    ONE_MINUS_SRC_ALPHA,
+    DST,
+    ONE_MINUS_DST,
+    DST_ALPHA,
+    ONE_MINUS_DST_ALPHA,
+    SRC_ALPHA_SATURATED,
+    CONSTANT,
+    ONE_MINUS_CONSTANT
+}
+
+enum BlendOperation {
+    ADD,
+    SUBTRACT,
+    REVERSE_SUBTRACT,
+    MIN,
+    MAX
+}
+
+enum FrontFace {
+    COUNTER_CLOCKWISE,
+    CLOCKWISE
+}
+
+enum CullMode {
+    NONE,
+    FRONT,
+    BACK
+}
+
+enum PrimitiveTopology {
+    POINT_LIST,
+    LINE_LIST,
+    LINE_STRIP,
+    TRIANGLE_LIST,
+    TRIANGLE_STRIP
+}
+
+enum StencilOperation {
+    KEEP,
+    ZERO,
+    REPLACE,
+    INVERT,
+    INCREMENT_CLAMP,
+    DECREMENT_CLAMP,
+    INCREMENT_WRAP,
+    DECREMENT_WRAP
+}

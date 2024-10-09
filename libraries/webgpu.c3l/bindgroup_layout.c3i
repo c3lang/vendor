@@ -1,0 +1,76 @@
+module webgpu;
+
+distinct BindGroupLayout = inline void*;
+
+fn void BindGroupLayout.setLabel(BindGroupLayout layout, ZString label) @extern("wgpuBindGroupLayoutSetLabel");
+
+fn void BindGroupLayout.reference(BindGroupLayout layout) @extern("wgpuBindGroupLayoutReference");
+
+fn void BindGroupLayout.release(BindGroupLayout layout) @extern("wgpuBindGroupLayoutRelease");
+
+
+struct BindGroupLayoutDescriptor {
+    ChainedStruct* next;
+    ZString label;
+    usz entryCount;
+    BindGroupLayoutEntry* entries;
+}
+
+struct BindGroupLayoutEntry {
+    ChainedStruct* next;
+    CUInt binding;
+    ShaderStage visibility;
+    BufferBindingLayout buffer;
+    SamplerBindingLayout sampler;
+    TextureBindingLayout texture;
+    StorageTextureBindingLayout storageTexture;
+}
+
+struct BufferBindingLayout {
+    ChainedStruct* next;
+    BufferBindingType type;
+    CBool hasDynamicOffset;
+    CULong minBindingSize;
+}
+
+struct TextureBindingLayout {
+    ChainedStruct* next;
+    TextureSampleType sampleType;
+    TextureViewDimension viewDimension;
+    CBool multisampled;
+}
+
+struct SamplerBindingLayout {
+    ChainedStruct* next;
+    SamplerBindingType type;
+}
+
+bitstruct ShaderStage: CInt {
+    bool vertex;
+    bool fragment;
+    bool compute;
+}
+
+
+enum BufferBindingType {
+    UNDEFINED,
+    UNIFORM,
+    STORAGE,
+    READONLY_STORAGE
+}
+
+enum TextureSampleType {
+    UNDEFINED,
+    FLOAT,
+    UNFILTERABLE_FLOAT,
+    DEPTH,
+    SINT,
+    UINT
+}
+
+enum SamplerBindingType {
+    UNDEFINED,
+    FILTERING,
+    NON_FILTERING,
+    COMPARISON
+}

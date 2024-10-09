@@ -1,0 +1,17 @@
+module webgpu;
+
+distinct PipelineLayout = void*;
+
+fn void PipelineLayout.setLabel(PipelineLayout layout, ZString label) @extern("wgpuPipelineLayoutSetLabel");
+
+fn void PipelineLayout.reference(PipelineLayout layout) @extern("wgpuPipelineLayoutReference");
+
+fn void PipelineLayout.release(PipelineLayout layout) @extern("wgpuPipelineLayoutRelease");
+
+
+struct PipelineLayoutDescriptor {
+    ChainedStruct* next;
+    ZString label;
+    usz bindGroupLayoutCount;
+    BindGroupLayout* bindGroupLayouts;
+}

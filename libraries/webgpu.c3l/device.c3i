@@ -1,0 +1,189 @@
+module webgpu;
+
+distinct Device = void*;
+
+fault DeviceError {
+    REQUEST_FAILED
+}
+
+fn void* getProcAddress(Device device, ZString name) @extern("wgpuGetProcAddress");
+
+fn BindGroup Device.createBindGroup(Device device, BindGroupDescriptor* descriptor) @extern("wgpuDeviceCreateBindGroup");
+
+fn BindGroupLayout Device.createBindGroupLayout(Device device, BindGroupLayoutDescriptor* descriptor) @extern("wgpuDeviceCreateBindGroupLayout");
+
+fn Buffer Device.createBuffer(Device device, BufferDescriptor* descriptor) @extern("wgpuDeviceCreateBuffer");
+
+fn CommandEncoder Device.createCommandEncoder(Device device, CommandEncoderDescriptor* descriptor = null) @extern("wgpuDeviceCreateCommandEncoder");
+
+fn ComputePipeline Device.createComputePipeline(Device device, ComputePipelineDescriptor* descriptor) @extern("wgpuDeviceCreateComputePipeline");
+
+fn void Device.createComputePipelineAsync(Device device, ComputePipelineDescriptor* descriptor,
+	CreateComputePipelineAsyncCallback callback) @extern("wgpuDeviceCreateComputePipelineAsync");
+
+fn PipelineLayout Device.createPipelineLayout(Device device, PipelineLayoutDescriptor* descriptor) @extern("wgpuDeviceCreatePipelineLayout");
+
+fn QuerySet Device.createQuerySet(Device device, QuerySetDescriptor* descriptor) @extern("wgpuDeviceCreateQuerySet");
+
+fn RenderBundleEncoder Device.createRenderBundleEncoder(Device device, RenderBundleEncoderDescriptor* descriptor) @extern("wgpuDeviceCreateRenderBundleEncoder");
+
+fn RenderPipeline Device.createRenderPipeline(Device device, RenderPipelineDescriptor* descriptor) @extern("wgpuDeviceCreateRenderPipeline");
+
+fn void Device.createRenderPipelineAsync(Device device, RenderPipelineDescriptor* descriptor,
+	CreateRenderPipelineAsyncCallback callback) @extern("wgpuDeviceCreateRenderPipelineAsync");
+
+fn Sampler Device.createSampler(Device device, SamplerDescriptor* descriptor) @extern("wgpuDeviceCreateSampler");
+
+fn ShaderModule Device.createShaderModule(Device device, ShaderModuleDescriptor* descriptor) @extern("wgpuDeviceCreateShaderModule");
+
+fn Texture Device.createTexture(Device device, TextureDescriptor* descriptor) @extern("wgpuDeviceCreateTexture");
+
+fn void Device.destroy(Device device) @extern("wgpuDeviceDestroy");
+
+fn usz Device.enumerateFeatures(Device device, FeatureName* features) @extern("wgpuDeviceEnumerateFeatures");
+
+fn CBool Device.getLimits(Device device, SupportedLimits* limits) @extern("wgpuDeviceGetLimits");
+
+fn Queue Device.getQueue(Device device) @extern("wgpuDeviceGetQueue");
+
+fn CBool Device.hasFeature(Device device, FeatureName feature) @extern("wgpuDeviceHasFeature");
+
+fn void Device.popErrorScope(Device device, ErrorCallback callback) @extern("wgpuDevicePopErrorScope");
+
+fn void Device.pushErrorScope(Device device, ErrorFilter filter) @extern("wgpuDevicePushErrorScope");
+
+fn void Device.setLabel(Device device, ZString label) @extern("wgpuDeviceSetLabel");
+
+fn void Device.setUncapturedErrorCallback(Device device, ErrorCallback callback) @extern("wgpuDeviceSetUncapturedErrorCallback");
+
+fn void Device.reference(Device device) @extern("wgpuDeviceReference");
+
+fn void Device.release(Device device) @extern("wgpuDeviceRelease");
+
+
+def DeviceLostCallback = fn void (DeviceLostReason reason, ZString message, UserData data);
+
+def ErrorCallback = fn void(ErrorType type, ZString message, UserData data);
+
+def CreateDeviceAsyncCallback = fn void(CreatePipelineAsyncStatus status,
+	Device device, ZString message, UserData data);
+
+def CreateRenderPipelineAsyncCallback = fn void(CreatePipelineAsyncStatus status,
+	RenderPipeline pipeline, ZString message, UserData data);
+
+def CreateComputePipelineAsyncCallback = fn void(CreatePipelineAsyncStatus status,
+	ComputePipeline pipeline, ZString message, UserData data);
+
+struct DeviceDescriptor {
+	ChainedStruct* next;
+	ZString label;
+	usz requiredFeatureCount;
+	FeatureName* requiredFeatures;
+	RequiredLimits* requiredLimits;
+	QueueDescriptor defaultQueue;
+	DeviceLostCallback deviceLostCallback;
+	UserData deviceLostUserdata;
+	UncapturedErrorCallbackInfo uncapturedErrorCallbackInfo;
+}
+
+struct RequiredLimits {
+	ChainedStruct* next;
+	Limits limits;
+}
+
+struct SupportedLimits {
+	ChainedStruct* next;
+	Limits limits;
+}
+
+struct Limits {
+    CUInt maxTextureDimension1D;
+    CUInt maxTextureDimension2D;
+    CUInt maxTextureDimension3D;
+    CUInt maxTextureArrayLayers;
+    CUInt maxBindGroups;
+    CUInt maxBindGroupsPlusVertexBuffers;
+    CUInt maxBindingsPerBindGroup;
+    CUInt maxDynamicUniformBuffersPerPipelineLayout;
+    CUInt maxDynamicStorageBuffersPerPipelineLayout;
+    CUInt maxSampledTexturesPerShaderStage;
+    CUInt maxSamplersPerShaderStage;
+    CUInt maxStorageBuffersPerShaderStage;
+    CUInt maxStorageTexturesPerShaderStage;
+    CUInt maxUniformBuffersPerShaderStage;
+    CULong maxUniformBufferBindingSize;
+    CULong maxStorageBufferBindingSize;
+    CUInt minUniformBufferOffsetAlignment;
+    CUInt minStorageBufferOffsetAlignment;
+    CUInt maxVertexBuffers;
+    CULong maxBufferSize;
+    CUInt maxVertexAttributes;
+    CUInt maxVertexBufferArrayStride;
+    CUInt maxInterStageShaderComponents;
+    CUInt maxInterStageShaderVariables;
+    CUInt maxColorAttachments;
+    CUInt maxColorAttachmentBytesPerSample;
+    CUInt maxComputeWorkgroupStorageSize;
+    CUInt maxComputeInvocationsPerWorkgroup;
+    CUInt maxComputeWorkgroupSizeX;
+    CUInt maxComputeWorkgroupSizeY;
+    CUInt maxComputeWorkgroupSizeZ;
+    CUInt maxComputeWorkgroupsPerDimension;
+}
+
+struct UncapturedErrorCallbackInfo {
+	ChainedStruct* next;
+	ErrorCallback callback;
+	UserData userData;
+}
+
+
+enum FeatureName {
+	UNDEFINED,
+	DEPTH_CLIP_CONTROL,
+	DEPTH_32FLOAT_STENCIL_8,
+	TIMESTAMP_QUERY,
+	TEXTURE_COMPRESSION_BC,
+	TEXTURE_COMPRESSION_ETC2,
+	TEXTURE_COMPRESSION_ASTC,
+	INDIRECT_FIRST_INSTANCE,
+	SHADER_F16,
+	RG11_B10_UFLOAT_RENDERABLE,
+	BGRA_8UNORM_STORAGE,
+	FLOAT32_FILTERABLE
+}
+
+enum CreatePipelineAsyncStatus {
+    SUCCESS,
+    VALIDATION_ERROR,
+    INTERNAL_ERROR,
+    DEVICE_LOST,
+    DEVICE_DESTROYED,
+    UNKNOWN
+}
+
+enum RequestDeviceStatus {
+	SUCCESS,
+	ERROR,
+	UNKNOWN
+}
+
+enum DeviceLostReason {
+	UNDEFINED,
+	DESTROYED
+}
+
+enum ErrorFilter {
+    VALIDATION,
+    OUT_OF_MEMORY,
+    INTERNAL
+}
+
+enum ErrorType {
+	NO_ERROR,
+	VALIDATION,
+	OUT_OF_MEMORY,
+	INTERNAL,
+	UNKNOWN,
+	DEVICE_LOST
+}

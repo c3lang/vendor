@@ -1,0 +1,63 @@
+module webgpu;
+
+distinct RenderBundleEncoder = void*;
+
+
+fn void RenderBundleEncoder.draw(RenderBundleEncoder encoder,
+    CUInt vertexCount, CUInt instanceCount, CUInt firstVertex = 0, CUInt firstInstance = 0)
+    @extern("wgpuRenderBundleEncoderDraw");
+
+fn void RenderBundleEncoder.drawIndexed(RenderBundleEncoder encoder,
+    CUInt indexCount, CUInt instanceCount, CUInt firstIndex = 0, CInt baseVertex = 0, CUInt firstInstance = 0)
+    @extern("wgpuRenderBundleEncoderDrawIndexed");
+
+fn void RenderBundleEncoder.drawIndexedIndirect(RenderBundleEncoder encoder,
+    Buffer buffer, CULong offset) @extern("wgpuRenderBundleEncoderDrawIndexedIndirect");
+
+fn void RenderBundleEncoder.drawIndirect(RenderBundleEncoder encoder,
+    Buffer buffer, CULong offset) @extern("wgpuRenderBundleEncoderDrawIndirect");
+
+fn RenderBundle RenderBundleEncoder.finish(RenderBundleEncoder encoder,
+    RenderBundleDescriptor* descriptor) @extern("wgpuRenderBundleEncoderFinish");
+
+fn void RenderBundleEncoder.insertDebugMarker(RenderBundleEncoder encoder,
+    ZString label) @extern("wgpuRenderBundleEncoderInsertDebugMarker");
+
+fn void RenderBundleEncoder.popDebugGroup(RenderBundleEncoder encoder)
+    @extern("wgpuRenderBundleEncoderPopDebugGroup");
+
+fn void RenderBundleEncoder.pushDebugGroup(RenderBundleEncoder encoder, ZString label)
+    @extern("wgpuRenderBundleEncoderPushDebugGroup");
+    
+fn void RenderBundleEncoder.setBindGroup(RenderBundleEncoder encoder, CUInt index)
+    @extern("wgpuRenderBundleEncoderSetBindGroup");
+
+fn void RenderBundleEncoder.setIndexBuffer(RenderBundleEncoder encoder,
+    Buffer buffer, IndexFormat format, CULong offset, CULong size)
+    @extern("wgpuRenderBundleEncoderSetIndexBuffer");
+
+fn void RenderBundleEncoder.setLabel(RenderBundleEncoder encoder, ZString label)
+    @extern("wgpuRenderBundleEncoderSetLabel");
+
+fn void RenderBundleEncoder.setPipeline(RenderBundleEncoder encoder, ComputePipeline pipeline)
+    @extern("wgpuRenderBundleEncoderSetPipeline");
+
+fn void RenderBundleEncoder.setVertexBuffer(RenderBundleEncoder encoder,
+    CUInt slot, Buffer buffer, IndexFormat format, CULong offset, CULong size)
+    @extern("wgpuRenderBundleEncoderSetVertexBuffer");
+
+fn void RenderBundleEncoder.reference(RenderBundleEncoder encoder) @extern("wgpuRenderBundleEncoderReference");
+
+fn void RenderBundleEncoder.release(RenderBundleEncoder encoder) @extern("wgpuRenderBundleEncoderRelease");
+
+
+struct RenderBundleEncoderDescriptor {
+    ChainedStruct* next;
+    ZString label;
+    usz colorFormatCount;
+    TextureFormat* colorFormats;
+    TextureFormat depthStencilFormat;
+    CUInt sampleCount;
+    CBool depthReadOnly;
+    CBool stencilReadOnly;
+}

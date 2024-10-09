@@ -1,0 +1,15 @@
+module webgpu;
+
+distinct CommandBuffer = void*;
+
+fn void CommandBuffer.setLabel(CommandBuffer buffer, ZString label) @extern("wgpuCommandBufferSetLabel");
+
+fn void CommandBuffer.reference(CommandBuffer buffer) @extern("wgpuCommandBufferReference");
+
+fn void CommandBuffer.release(CommandBuffer buffer) @extern("wgpuCommandBufferRelease");
+
+
+struct CommandBufferDescriptor {
+    ChainedStruct* next;
+    ZString label;
+}

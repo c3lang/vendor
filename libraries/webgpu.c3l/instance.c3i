@@ -1,0 +1,44 @@
+module webgpu;
+
+distinct Instance = void*;
+
+fn Surface Instance.createSurface(Instance instance,
+    SurfaceDescriptor* descriptor) @extern("wgpuInstanceCreateSurface");
+
+fn Instance createInstance(InstanceDescriptor* descriptor = null) @extern("wgpuCreateInstance");
+
+fn void Instance.hasWGSLLanguageFeature(Instance instance, WgslFeatureName feature) @extern("wgpuInstanceHasWGSLLanguageFeature");
+
+fn void Instance.processEvents(Instance instance) @extern("wgpuInstanceProcessEvents");
+
+fn void Instance.requestAdapterAsync(Instance instance, RequestAdapterOptions* options,
+    RequestAdapterCallback callback, UserData data) @extern("wgpuInstanceRequestAdapter");
+
+fn void Instance.reference(Instance instance) @extern("wgpuInstanceReference");
+
+fn void Instance.release(Instance instance) @extern("wgpuInstanceRelease");
+
+
+def RequestAdapterCallback = fn void(RequestAdapterStatus status,
+    Adapter adapter, ZString message, UserData result);
+
+
+struct InstanceDescriptor {
+    ChainedStruct* next;
+}
+
+
+enum RequestAdapterStatus {
+    SUCCESS,
+    UNAVAILABLE,
+    ERROR,
+    UNKNOWN
+}
+
+enum WgslFeatureName {
+    UNDEFINED,
+    READONLY_AND_READWRITE_STORAGE_TEXTURES,
+    PACKED_4X8_INTEGER_DOT_PRODUCT,
+    UNRESTRICTED_POINTER_PARAMETERS,
+    POINTER_COMPOSITE_ACCESS
+}

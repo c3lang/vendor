@@ -1,0 +1,60 @@
+module webgpu;
+
+distinct CommandEncoder = void*;
+
+fn ComputePassEncoder CommandEncoder.beginComputePass(CommandEncoder encoder,
+    ComputePassDescriptor* descriptor) @extern("wgpuCommandEncoderBeginComputePass");
+
+fn RenderPassEncoder CommandEncoder.beginRenderPass(CommandEncoder encoder,
+    RenderPassDescriptor* descriptor) @extern("wgpuCommandEncoderBeginRenderPass");
+
+fn void CommandEncoder.clearBuffer(CommandEncoder encoder,
+    Buffer buffer, CULong offset, CULong size) @extern("wgpuCommandEncoderClearBuffer");
+
+fn void CommandEncoder.copyBufferToBuffer(CommandEncoder encoder,
+    Buffer source, CULong sourceOffset, Buffer destination, CULong destinationOffset, CULong size)
+    @extern("wgpuCommandEncoderCopyBufferToBuffer");
+
+fn void CommandEncoder.copyBufferToTexture(CommandEncoder encoder,
+    ImageCopyBuffer* source, ImageCopyTexture* destination, Extent3D size)
+    @extern("wgpuCommandEncoderCopyBufferToTexture");
+
+fn void CommandEncoder.copyTextureToBuffer(CommandEncoder encoder,
+    ImageCopyTexture* source, ImageCopyBuffer* destination, Extent3D size)
+    @extern("wgpuCommandEncoderCopyTextureToBuffer");
+
+fn void CommandEncoder.copyTextureToTexture(CommandEncoder encoder,
+    ImageCopyTexture* source, ImageCopyTexture* destination, Extent3D size)
+    @extern("wgpuCommandEncoderCopyTextureToTexture");
+
+fn CommandBuffer CommandEncoder.finish(CommandEncoder encoder,
+    CommandBufferDescriptor* descriptor = null) @extern("wgpuCommandEncoderFinish");
+
+fn void CommandEncoder.insertDebugMarker(CommandEncoder encoder,
+    ZString label) @extern("wgpuCommandEncoderInsertDebugMarker");
+
+fn void CommandEncoder.popDebugGroup(CommandEncoder encoder)
+    @extern("wgpuCommandEncoderPopDebugGroup");
+
+fn void CommandEncoder.pushDebugGroup(CommandEncoder encoder, ZString label)
+    @extern("wgpuCommandEncoderPushDebugGroup");
+
+fn void CommandEncoder.resolveQuerySet(CommandEncoder encoder,
+    QuerySet querySet, CUInt first, CUInt count, Buffer destination, usz offset)
+    @extern("wgpuCommandEncoderResolveQuerySet");
+
+fn void CommandEncoder.setLabel(CommandEncoder encoder, ZString label)
+    @extern("wgpuCommandEncoderSetLabel");
+
+fn void CommandEncoder.writeTimestamp(CommandEncoder encoder, QuerySet querySet, CUInt index)
+    @extern("wgpuCommandEncoderWriteTimestamp");
+
+fn void CommandEncoder.reference(CommandEncoder encoder) @extern("wgpuCommandEncoderReference");
+
+fn void CommandEncoder.release(CommandEncoder encoder) @extern("wgpuCommandEncoderRelease");
+
+
+struct CommandEncoderDescriptor {
+    ChainedStruct* next;
+    ZString label;
+}

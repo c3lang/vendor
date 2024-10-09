@@ -1,0 +1,38 @@
+module webgpu;
+
+def UserData = void*;
+
+const UNDEFINED = ~0u;
+
+struct Color {
+    double red;
+    double green;
+    double blue;
+    double alpha;
+}
+
+struct Extent3D {
+    CUInt width;
+    CUInt height;
+    CUInt depthOrArrayLayers;
+}
+
+
+enum CompareFunction {
+    UNDEFINED,
+    NEVER,
+    LESS,
+    LESS_EQUAL,
+    GREATER,
+    GREATER_EQUAL,
+    EQUAL,
+    NOT_EQUAL,
+    ALWAYS
+}
+
+enum IndexFormat {
+    UNDEFINED,
+    UINT16,
+    UINT32
+}
+
