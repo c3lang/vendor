@@ -51,19 +51,19 @@
     },
     "macos-aarch64" : {
       // Extra flags to the linker for this target:
-      "link-args" : ["-framework OpenGL"],
+      "link-args" : [],
       // C3 libraries this target depends on:
       "dependencies" : [],
       // The external libraries to link for this target:
-      "linked-libraries" : []
+      "linked-libraries" : ["OpenGL.framework"]
     },
     "macos-x64" : {
       // Extra flags to the linker for this target:
-      "link-args" : ["-framework OpenGL"],
+      "link-args" : [],
       // C3 libraries this target depends on:
       "dependencies" : [],
       // The external libraries to link for this target:
-      "linked-libraries" : []
+      "linked-libraries" : ["OpenGL.framework"]
     },
     "netbsd-x64" : {
       // Extra flags to the linker for this target:
