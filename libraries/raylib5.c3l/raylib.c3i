@@ -35,14 +35,14 @@ const Color MAGENTA     = { 255, 0, 255, 255 };     // Magenta
 const Color RAYWHITE    = { 245, 245, 245, 255 };   // My own White (raylib logo)
 
 // Vector2, 2 components
-struct Vector2
+struct Vector2 @compact
 {
     float x;                // Vector x component
     float y;                // Vector y component
 }
 
 // Vector3, 3 components
-struct Vector3
+struct Vector3 @compact
 {
     float x;                // Vector x component
     float y;                // Vector y component
@@ -50,7 +50,7 @@ struct Vector3
 }
 
 // Vector4, 4 components
-struct Vector4
+struct Vector4 @compact
 {
     float x;                // Vector x component
     float y;                // Vector y component
@@ -62,7 +62,7 @@ struct Vector4
 def Quaternion = Vector4;
 
 // Matrix, 4x4 components, column major, OpenGL style, right handed
-struct Matrix
+struct Matrix @compact
 {
     float m0, m4, m8, m12;  // Matrix first row (4 components)
     float m1, m5, m9, m13;  // Matrix second row (4 components)
@@ -71,7 +71,7 @@ struct Matrix
 }
 
 // Color, 4 components, R8G8B8A8 (32bit)
-struct Color
+struct Color @compact
 {
     char r;        // Color red value
     char g;        // Color green value
@@ -80,7 +80,7 @@ struct Color
 }
 
 // Rectangle, 4 components
-struct Rectangle
+struct Rectangle @compact
 {
     float x;                // Rectangle top-left corner position x
     float y;                // Rectangle top-left corner position y
@@ -285,7 +285,7 @@ struct RayCollision
 }
 
 // BoundingBox
-struct BoundingBox
+struct BoundingBox @compact
 {
     Vector3 min;            // Minimum vertex box-corner
     Vector3 max;            // Maximum vertex box-corner
