@@ -777,7 +777,7 @@ fn void unloadVrStereoConfig(VrStereoConfig config) @extern("UnloadVrStereoConfi
 // NOTE: Shader functionality is not available on OpenGL 1.1
 fn Shader loadShader(ZString vsFileName, ZString fsFileName) @extern("LoadShader");          // Load shader from files and bind default locations
 fn Shader loadShaderFromMemory(ZString vs, ZString fs) @extern("LoadShaderFromMemory");      // Load shader from code strings and bind default locations
-fn bool isShaderValid(Shader shader) @extern("IsShaderReady") @extern("IsShaderValid");       // Check if a shader is ready
+fn bool isShaderValid(Shader shader) @extern("IsShaderReady");                               // Check if a shader is ready
 fn int getShaderLocation(Shader shader, ZString uniformName) @extern("GetShaderLocation");   // Get shader uniform location
 fn int getShaderLocationAttrib(Shader shader, ZString attr) @extern("GetShaderLocationAttrib");  // Get shader attribute location
 fn void setShaderValue(Shader shader, int locIndex, void* value, int uniformType) @extern("SetShaderValue"); // Set shader uniform value
@@ -1565,7 +1565,7 @@ fn ZString textToCamel(ZString text) @extern("TextToCamel");
 // Get integer value from text (negative values not supported)
 fn int textToInteger(ZString text) @extern("TextToInteger");
 // Get float value from text (negative values not supported)
-fn float TextToFloat(ZString text);
+fn float textToFloat(ZString text);
 //------------------------------------------------------------------------------------
 // Basic 3d Shapes Drawing Functions (Module: models)
 //------------------------------------------------------------------------------------
