@@ -777,7 +777,7 @@ fn void unloadVrStereoConfig(VrStereoConfig config) @extern("UnloadVrStereoConfi
 // NOTE: Shader functionality is not available on OpenGL 1.1
 fn Shader loadShader(ZString vsFileName, ZString fsFileName) @extern("LoadShader");          // Load shader from files and bind default locations
 fn Shader loadShaderFromMemory(ZString vs, ZString fs) @extern("LoadShaderFromMemory");      // Load shader from code strings and bind default locations
-fn bool isShaderValid(Shader shader) @extern("IsShaderReady");                               // Check if a shader is ready
+fn bool isShaderValid(Shader shader) @extern("IsShaderValid");                               // Check if a shader is ready
 fn int getShaderLocation(Shader shader, ZString uniformName) @extern("GetShaderLocation");   // Get shader uniform location
 fn int getShaderLocationAttrib(Shader shader, ZString attr) @extern("GetShaderLocationAttrib");  // Get shader attribute location
 fn void setShaderValue(Shader shader, int locIndex, void* value, int uniformType) @extern("SetShaderValue"); // Set shader uniform value
@@ -790,7 +790,6 @@ fn void unloadShader(Shader shader) @extern("UnloadShader");                    
 //#define GetMouseRay GetScreenToWorldRay     // Compatibility hack for previous raylib versions
 fn Ray getScreenToWorldRay(Vector2 mousePosition, Camera camera) @extern("GetScreenToWorldRay"); // Get a ray trace from mouse position
 fn Ray getScreenToWorldRayEx(Vector2 position, Camera camera, int width, int height) @extern("GetScreenToWorldRayEx"); // Get a ray trace from screen position (i.e mouse) in a viewport
-fn Matrix getCameraMatrix(Camera camera) @extern("GetCameraMatrix");                       // Get camera transform matrix (view matrix)
 fn Vector2 getWorldToScreen(Vector3 position, Camera camera) @extern("GetWorldToScreen"); // Get the screen space position for a 3d world space position
 fn Vector2 getWorldToScreenEx(Vector3 position, Camera camera, int width, int height) @extern("GetWorldToScreenEx"); // Get size position for a 3d world space position
 fn Vector2 getWorldToScreen2D(Vector2 position, Camera2D camera) @extern("GetWorldToScreen2D"); // Get the screen space position for a 2d camera world space position
@@ -1056,9 +1055,9 @@ fn void updateCameraPro(Camera *camera, Vector3 movement, Vector3 rotation, floa
 // Set texture and rectangle to be used on shapes drawing
 fn void setShapesTexture(Texture2D texture, Rectangle source) @extern("SetShapesTexture");
 // Get texture that is used for shapes drawing
-fn Texture2D getShapesTexture(void) @extern("GetShapesTexture");
+fn Texture2D getShapesTexture() @extern("GetShapesTexture");
 // Get texture source rectangle that is used for shapes drawing
-fn Rectangle getShapesTextureRectangle(void) @extern("GetShapesTextureRectangle");
+fn Rectangle getShapesTextureRectangle() @extern("GetShapesTextureRectangle");
 // Basic shapes drawing functions
 // Draw a pixel
 fn void drawPixel(int posX, int posY, Color color) @extern("DrawPixel");
@@ -1190,8 +1189,6 @@ fn bool checkCollisionPointLine(Vector2 point, Vector2 p1, Vector2 p2, int thres
 fn bool checkCollisionPointPoly(Vector2 point, Vector2 *points, int pointCount) @extern("CheckCollisionPointPoly");
 // Check the collision between two lines defined by two points each, returns collision point by reference
 fn bool checkCollisionLines(Vector2 startPos1, Vector2 endPos1, Vector2 startPos2, Vector2 endPos2, Vector2 *collisionPoint) @extern("CheckCollisionLines");
-// Check if point belongs to line created between two points [p1] and [p2] with defined margin in pixels [threshold]
-fn bool checkCollisionPointLine(Vector2 point, Vector2 p1, Vector2 p2, int threshold) @extern("CheckCollisionPointLine");
 // Get collision rectangle for two rectangles collision
 fn Rectangle getCollisionRec(Rectangle rec1, Rectangle rec2) @extern("GetCollisionRec");
 
@@ -1565,7 +1562,7 @@ fn ZString textToCamel(ZString text) @extern("TextToCamel");
 // Get integer value from text (negative values not supported)
 fn int textToInteger(ZString text) @extern("TextToInteger");
 // Get float value from text (negative values not supported)
-fn float textToFloat(ZString text);
+fn float textToFloat(ZString text) @extern("TextToFloat");
 //------------------------------------------------------------------------------------
 // Basic 3d Shapes Drawing Functions (Module: models)
 //------------------------------------------------------------------------------------
@@ -1663,8 +1660,6 @@ fn void unloadMesh(Mesh mesh) @extern("UnloadMesh");
 fn void drawMesh(Mesh mesh, Material material, Matrix transform) @extern("DrawMesh");
 // Draw multiple mesh instances with material and different transforms
 fn void drawMeshInstanced(Mesh mesh, Material material, Matrix* transforms, int instances) @extern("DrawMeshInstanced");
-// Export mesh data to file, returns true on success
-fn bool exportMesh(Mesh mesh, ZString fileName) @extern("ExportMesh");
 // Compute mesh bounding box limits
 fn BoundingBox getMeshBoundingBox(Mesh mesh) @extern("GetMeshBoundingBox");
 // Compute mesh tangents
