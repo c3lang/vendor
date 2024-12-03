@@ -89,6 +89,16 @@ jobs:
           asset_name: raylib5.c3l
           asset_content_type: application/zip
 
+      - name: upload raylib5.5
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: packages/raylib55.c3l
+          asset_name: raylib55.c3l
+          asset_content_type: application/zip
+
       - name: upload sdl2
         uses: actions/upload-release-asset@v1
         env:
