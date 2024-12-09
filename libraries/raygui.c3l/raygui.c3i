@@ -12,8 +12,8 @@ const SCROLLBAR_RIGHT_SIDE @builtin = 1;
 // Style property
 // NOTE: Used when exporting style as code for convenience
 struct GuiStyleProp {
-  CUShort controlId;   // Control identifier
-  CUShort propertyId;  // Property identifier
+  GuiControl controlId;   // Control identifier
+  GuiControlProperty propertyId;  // Property identifier
   CInt propertyValue;          // Property value
 }
 
@@ -62,7 +62,7 @@ enum GuiTextWrapMode {
 }
 
 // Gui controls
-enum GuiControl {
+enum GuiControl : CUShort {
   // Default -> populates to all controls when set
   DEFAULT,
 
@@ -195,7 +195,7 @@ extern fn Color guiFade(Color color, float alpha) @extern("GuiFade");         //
 //----------------------------------------------------------------------------------
 // Icons enumeration
 //----------------------------------------------------------------------------------
-enum GuiIconName {
+enum GuiIconName : CUShort {
   ICON_NONE,
   FOLDER_FILE_OPEN,
   FILE_SAVE_CLASSIC,
