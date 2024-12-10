@@ -173,25 +173,6 @@ extern fn CInt guiColorPickerHSV(Rectangle bounds, char *text, Vector3 *colorHsv
 extern fn CInt guiColorPanelHSV(Rectangle bounds, char *text, Vector3 *colorHsv) @extern("GuiColorPanelHSV");                 // Color Panel control that returns HSV color value, used by GuiColorPickerHSV()
 //----------------------------------------------------------------------------------------------------------
 
-
-extern fn void guiLoadStyleFromMemory(char *fileData, int dataSize) @extern("GuiLoadStyleFromMemory");    // Load style from memory (binary only)
-
-extern fn int getTextWidth(char *text) @extern("GetTextWidth");                      // Gui get text width using gui font and style
-extern fn Rectangle getTextBounds(int control, Rectangle bounds) @extern("GetTextBounds");  // Get text bounds considering control bounds
-extern fn char *getTextIcon(char *text, int *iconId) @extern("GetTextIcon");  // Get text icon if provided and move text cursor
-
-extern fn void guiDrawText(char *text, Rectangle textBounds, GuiTextAlignment alignment, Color tint) @extern("GuiDrawText");     // Gui draw text using default font
-extern fn void guiDrawRectangle(Rectangle rec, int borderWidth, Color borderColor, Color color) @extern("GuiDrawRectangle");   // Gui draw rectangle using default raygui style
-
-extern fn char **guiTextSplit (char *text, char delimiter, int *count, int *textRow) @extern("GuiTextSplit");   // Split controls text into multiple strings
-extern fn Vector3 convertHSVtoRGB(Vector3 hsv) @extern("ConvertHSVtoRGB");                    // Convert color data from HSV to RGB
-extern fn Vector3 convertRGBtoHSV(Vector3 rgb) @extern("ConvertRGBtoHSV");                    // Convert color data from RGB to HSV
-
-extern fn int guiScrollBar(Rectangle bounds, int value, int minValue, int maxValue) @extern("GuiScrollBar");   // Scroll bar control, used by GuiScrollPanel()
-extern fn void guiTooltip(Rectangle controlRec) @extern("GuiTooltip");                   // Draw tooltip using control rec position
-
-extern fn Color guiFade(Color color, float alpha) @extern("GuiFade");         // Fade color by an alpha factor
-
 //----------------------------------------------------------------------------------
 // Icons enumeration
 //----------------------------------------------------------------------------------
