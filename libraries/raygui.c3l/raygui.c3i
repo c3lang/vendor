@@ -176,7 +176,7 @@ extern fn CInt guiColorPanelHSV(Rectangle bounds, char *text, Vector3 *colorHsv)
 //----------------------------------------------------------------------------------
 // Icons enumeration
 //----------------------------------------------------------------------------------
-enum GuiIconName : CUShort {
+enum GuiIconName {
   ICON_NONE,
   FOLDER_FILE_OPEN,
   FILE_SAVE_CLASSIC,
