@@ -4,7 +4,6 @@ import raygui::rg;
 
 import raylib5::rl;
 
-import libc;
 //////////////////////////////////////////////////////////////////////////////////
 //                                                                              //
 // StyleAsCode exporter v2.0 - Style data exported as a values array            //
@@ -21,7 +20,7 @@ import libc;
 const DARK_STYLE_PROPS_COUNT = 23;
 
 // Custom style name: Dark
-GuiStyleProp[DARK_STYLE_PROPS_COUNT] darkStyleProps = {
+const GuiStyleProp[DARK_STYLE_PROPS_COUNT] DARK_SIZE_PROPS = {
     { DEFAULT, 0, (CInt)0x878787ff },    // DEFAULT_BORDER_COLOR_NORMAL 
     { DEFAULT, 1, (CInt)0x2c2c2cff },    // DEFAULT_BASE_COLOR_NORMAL 
     { DEFAULT, 2, (CInt)0xc3c3c3ff },    // DEFAULT_TEXT_COLOR_NORMAL 
@@ -52,7 +51,7 @@ GuiStyleProp[DARK_STYLE_PROPS_COUNT] darkStyleProps = {
 const DARK_STYLE_FONT_ATLAS_COMP_SIZE = 2126;
 
 // Font atlas image pixels data: DEFLATE compressed
-char[DARK_STYLE_FONT_ATLAS_COMP_SIZE] darkFontData = { 0xed,
+const char[DARK_STYLE_FONT_ATLAS_COMP_SIZE] DARK_FONT_DATA = { 0xed,
     0xdd, 0xdb, 0x72, 0xa4, 0x3a, 0x12, 0x05, 0x50, 0xfd, 0xff, 0x4f, 0xe7, 0x3c, 0x4c, 0x4c, 0x4c, 0x74, 0x9c, 0xd3, 0x20,
     0xa5, 0x52, 0x17, 0xec, 0xd5, 0xeb, 0xcd, 0xe5, 0x76, 0x51, 0xa0, 0x94, 0x84, 0x28, 0x36, 0xd1, 0x00, 0x00, 0x00, 0x80,
     0x5f, 0x2f, 0xfe, 0xf5, 0x27, 0xf1, 0xd7, 0xdf, 0x8c, 0xee, 0xbf, 0xf3, 0xfc, 0xf3, 0xff, 0xbd, 0x1a, 0x0f, 0xef, 0xd5,
@@ -162,7 +161,7 @@ char[DARK_STYLE_FONT_ATLAS_COMP_SIZE] darkFontData = { 0xed,
     0xf0, 0xeb, 0xea, 0xff, 0x3f };
 
 // Font glyphs rectangles data (on atlas)
-Rectangle[*] darkFontRecs = {
+const Rectangle[*] DARK_FONT_RECS = {
     { 4, 4, 4 , 16 },
     { 16, 4, 1 , 9 },
     { 25, 4, 3 , 3 },
@@ -356,7 +355,7 @@ Rectangle[*] darkFontRecs = {
 
 // Font glyphs info data
 // NOTE: No glyphs.image data provided
-GlyphInfo[darkFontRecs.len] darkFontGlyphs = {
+const GlyphInfo[DARK_FONT_RECS.len] DARK_FONT_GLYPHS = {
     { 32, 0, 13, 4, {}},
     { 33, 2, 4, 5, {}},
     { 34, 2, 4, 7, {}},
@@ -555,18 +554,18 @@ fn void load()
     // NOTE: Default properties are propagated
     for (int i = 0; i < DARK_STYLE_PROPS_COUNT; i++)
     {
-        rg::guiSetStyle(darkStyleProps[i].controlId, darkStyleProps[i].propertyId, darkStyleProps[i].propertyValue);
+        rg::guiSetStyle(DARK_SIZE_PROPS[i].controlId, DARK_SIZE_PROPS[i].propertyId, DARK_SIZE_PROPS[i].propertyValue);
     }
 
     // Custom font loading
     // NOTE: Compressed font image data (DEFLATE), it requires DecompressData() function
     int darkFontDataSize = 0;
-    char *data = rl::decompressData(&darkFontData, DARK_STYLE_FONT_ATLAS_COMP_SIZE, &darkFontDataSize);
+    char *data = rl::decompressData(&DARK_FONT_DATA, DARK_STYLE_FONT_ATLAS_COMP_SIZE, &darkFontDataSize);
     Image imFont = { data, 512, 256, 1, UNCOMPRESSED_GRAY_ALPHA };
 
     Font font = {};
     font.baseSize = 16;
-    font.glyphCount = darkFontRecs.len;
+    font.glyphCount = DARK_FONT_RECS.len;
 
     // Load texture from image
     font.texture = rl::loadTextureFromImage(imFont);
@@ -574,13 +573,13 @@ fn void load()
 
     // Copy char recs data from global fontRecs
     // NOTE: Required to avoid issues if trying to free font
-    font.recs = calloc(font.glyphCount*Rectangle.sizeof);
-    libc::memcpy(font.recs, &darkFontRecs, font.glyphCount*Rectangle.sizeof);
+    font.recs = mem::new_array(Rectangle, font.glyphCount);
+    font.recs[0:font.glyphCount] = DARK_FONT_RECS;
 
     // Copy font char info data from global fontChars
     // NOTE: Required to avoid issues if trying to free font
-    font.glyphs = calloc(font.glyphCount*GlyphInfo.sizeof);
-    libc::memcpy(font.glyphs, &darkFontGlyphs, font.glyphCount*GlyphInfo.sizeof);
+    font.glyphs = mem::new_array(GlyphInfo, font.glyphCount);
+    font.glyphs[0:font.glyphCount] = DARK_FONT_GLYPHS;
 
     rg::guiSetFont(font);
 
