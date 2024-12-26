@@ -1,0 +1,529 @@
+module raygui::rg;
+import raylib5::rl;
+
+const RAYGUI_VERSION_MAJOR = 4;
+const RAYGUI_VERSION_MINOR = 0;
+const RAYGUI_VERSION_PATCH = 0;
+const RAYGUI_VERSION = "4.0";
+
+const SCROLLBAR_LEFT_SIDE @builtin = 0;
+const SCROLLBAR_RIGHT_SIDE @builtin = 1;
+
+// Style property
+// NOTE: Used when exporting style as code for convenience
+struct GuiStyleProp {
+  GuiControl controlId;   // Control identifier
+  GuiControlProperty propertyId;  // Property identifier
+  CInt propertyValue;          // Property value
+}
+
+
+// Controls text style -NOT USED-
+// NOTE: Text style is defined by control
+struct GuiTextStyle {
+  CUInt size;
+  CInt charSpacing;
+  CInt lineSpacing;
+  CInt alignmentH;
+  CInt alignmentV;
+  CInt padding;
+}
+
+
+// Gui control state
+enum GuiState {
+  STATE_NORMAL,
+  STATE_FOCUSED,
+  STATE_PRESSED,
+  STATE_DISABLED
+}
+
+// Gui control text alignment
+enum GuiTextAlignment {
+  TEXT_ALIGN_LEFT,
+  TEXT_ALIGN_CENTER,
+  TEXT_ALIGN_RIGHT
+}
+
+// Gui control text alignment vertical
+// NOTE: Text vertical position inside the text bounds
+enum GuiTextAlignmentVertical {
+  TEXT_ALIGN_TOP,
+  TEXT_ALIGN_MIDDLE,
+  TEXT_ALIGN_BOTTOM
+}
+
+// Gui control text wrap mode
+// NOTE: Useful for multiline text
+enum GuiTextWrapMode {
+  TEXT_WRAP_NONE,
+  TEXT_WRAP_CHAR,
+  TEXT_WRAP_WORD
+}
+
+// Gui controls
+enum GuiControl : CUShort {
+  // Default -> populates to all controls when set
+  DEFAULT,
+
+  // Basic controls
+  LABEL,          // Used also for: LABELBUTTON
+  BUTTON,
+  TOGGLE,         // Used also for: TOGGLEGROUP
+  SLIDER,         // Used also for: SLIDERBAR, TOGGLESLIDER
+  PROGRESSBAR,
+  CHECKBOX,
+  COMBOBOX,
+  DROPDOWNBOX,
+  TEXTBOX,        // Used also for: TEXTBOXMULTI
+  VALUEBOX,
+  SPINNER,        // Uses: BUTTON, VALUEBOX
+  LISTVIEW,
+  COLORPICKER,
+  SCROLLBAR,
+  STATUSBAR
+}
+
+//----------------------------------------------------------------------------------
+// Global Variables Definition
+//----------------------------------------------------------------------------------
+// ...
+
+//----------------------------------------------------------------------------------
+// Module Functions Declaration
+//----------------------------------------------------------------------------------
+
+// Global gui state control functions
+extern fn void guiEnable() @extern("GuiEnable");                                 // Enable gui controls (global state)
+extern fn void guiDisable() @extern("GuiDisable");                                // Disable gui controls (global state)
+extern fn void guiLock() @extern("GuiLock");                                   // Lock gui controls (global state)
+extern fn void guiUnlock() @extern("GuiUnlock");                                 // Unlock gui controls (global state)
+extern fn bool guiIsLocked() @extern("GuiIsLocked");                               // Check if gui is locked (global state)
+extern fn void guiSetAlpha(float alpha) @extern("GuiSetAlpha");                        // Set gui controls alpha (global state), alpha goes from 0.0f to 1.0f
+extern fn void guiSetState(GuiState state) @extern("GuiSetState");                          // Set gui state (global state)
+extern fn GuiState guiGetState() @extern("GuiGetState");                                // Get gui state (global state)
+
+// Font set/get functions
+extern fn void guiSetFont(Font font) @extern("GuiSetFont");                           // Set gui custom font (global state)
+extern fn Font guiGetFont() @extern("GuiGetFont");                                // Get gui custom font (global state)
+
+// Style set/get functions
+extern fn void guiSetStyle(GuiControl control, GuiControlProperty property, CInt value) @extern("GuiSetStyle"); // Set one style property
+extern fn CInt guiGetStyle(GuiControl control, GuiControlProperty property) @extern("GuiGetStyle");           // Get one style property
+
+// Styles loading functions
+extern fn void guiLoadStyle(char *fileName) @extern("GuiLoadStyle");              // Load style file over global style variable (.rgs)
+extern fn void guiLoadStyleDefault() @extern("GuiLoadStyleDefault");                       // Load style default over global style
+
+// Tooltips management functions
+extern fn void guiEnableTooltip() @extern("GuiEnableTooltip");                          // Enable gui tooltips (global state)
+extern fn void guiDisableTooltip() @extern("GuiDisableTooltip");                         // Disable gui tooltips (global state)
+extern fn void guiSetTooltip(char *tooltip) @extern("GuiSetTooltip");              // Set tooltip string
+
+// Icons functionality
+extern fn char *guiIconText (GuiIconName iconId, char *text) @extern("GuiIconText"); // Get text with icon id prepended (if supported)
+extern fn void guiSetIconScale(CInt scale) @extern("GuiSetIconScale");                      // Set default icon drawing size
+extern fn CUInt *guiGetIcons() @extern("GuiGetIcons");                      // Get raygui icons data pointer
+extern fn char **guiLoadIcons(char *fileName, bool loadIconsName) @extern("GuiLoadIcons"); // Load raygui icons file (.rgi) into internal icons data
+extern fn void guiDrawIcon(GuiIconName iconId, CInt posX, CInt posY, CInt pixelSize, Color color) @extern("GuiDrawIcon"); // Draw icon using pixel size at specified position
+
+
+// Controls
+//----------------------------------------------------------------------------------------------------------
+// Container/separator controls, useful for controls organization
+extern fn bool guiWindowBox(Rectangle bounds, char *title) @extern("GuiWindowBox");                                       // Window Box control, shows a window that can be closed
+extern fn bool guiGroupBox(Rectangle bounds, char *text) @extern("GuiGroupBox");                                         // Group Box control with text name
+extern fn bool guiLine(Rectangle bounds, char *text) @extern("GuiLine");                                             // Line separator control, could contain text
+extern fn bool guiPanel(Rectangle bounds, char *text) @extern("GuiPanel");                                            // Panel control, useful to group controls
+extern fn bool guiTabBar(Rectangle bounds, char **text, CInt count, CInt *active) @extern("GuiTabBar");                  // Tab Bar control, returns TAB to be closed or -1
+extern fn bool guiScrollPanel(Rectangle bounds, char *text, Rectangle content, Vector2 *scroll, Rectangle *view) @extern("GuiScrollPanel"); // Scroll Panel control
+
+// Basic controls set
+extern fn bool guiLabel(Rectangle bounds, char *text) @extern("GuiLabel");                                            // Label control, shows text
+extern fn bool guiButton(Rectangle bounds, char *text) @extern("GuiButton");                                           // Button control, returns true when clicked
+extern fn bool guiLabelButton(Rectangle bounds, char *text) @extern("GuiLabelButton");                                      // Label button control, show true when clicked
+extern fn bool guiToggle(Rectangle bounds, char *text, bool *active) @extern("GuiToggle");                             // Toggle Button control, returns true when active
+extern fn bool guiToggleGroup(Rectangle bounds, char *text, CInt *active) @extern("GuiToggleGroup");                         // Toggle Group control, returns active toggle index
+extern fn bool guiToggleSlider(Rectangle bounds, char *text, CInt *active) @extern("GuiToggleSlider");                        // Toggle Slider control, returns true when clicked
+extern fn bool guiCheckBox(Rectangle bounds, char *text, bool *checked) @extern("GuiCheckBox");                          // Check Box control, returns true when active
+extern fn bool guiComboBox(Rectangle bounds, char *text, CInt *active) @extern("GuiComboBox");                            // Combo Box control, returns selected item index
+
+extern fn bool guiDropdownBox(Rectangle bounds, char *text, CInt *active, bool editMode) @extern("GuiDropdownBox");          // Dropdown Box control, returns selected item
+extern fn bool guiSpinner(Rectangle bounds, char *text, CInt *value, CInt minValue, CInt maxValue, bool editMode) @extern("GuiSpinner"); // Spinner control, returns selected value
+extern fn bool guiValueBox(Rectangle bounds, char *text, CInt *value, CInt minValue, CInt maxValue, bool editMode) @extern("GuiValueBox"); // Value Box control, updates input text with numbers
+extern fn bool guiTextBox(Rectangle bounds, char *text, CInt textSize, bool editMode) @extern("GuiTextBox");                   // Text Box control, updates input text
+
+extern fn bool guiSlider(Rectangle bounds, char *textLeft, char *textRight, float *value, float minValue, float maxValue) @extern("GuiSlider"); // Slider control, returns selected value
+extern fn bool guiSliderBar(Rectangle bounds, char *textLeft, char *textRight, float *value, float minValue, float maxValue) @extern("GuiSliderBar"); // Slider Bar control, returns selected value
+extern fn bool guiProgressBar(Rectangle bounds, char *textLeft, char *textRight, float *value, float minValue, float maxValue) @extern("GuiProgressBar"); // Progress Bar control, shows current progress value
+extern fn bool guiStatusBar(Rectangle bounds, char *text) @extern("GuiStatusBar");                                        // Status Bar control, shows info text
+extern fn bool guiDummyRec(Rectangle bounds, char *text) @extern("GuiDummyRec");                                         // Dummy control for placeholders
+extern fn bool guiGrid(Rectangle bounds, char *text, float spacing, CInt subdivs, Vector2 *mouseCell) @extern("GuiGrid"); // Grid control, returns mouse cell position
+
+// Advance controls set
+extern fn CInt guiListView(Rectangle bounds, char *text, CInt *scrollIndex, CInt *active) @extern("GuiListView");          // List View control, returns selected list item index
+extern fn CInt guiListViewEx(Rectangle bounds, char **text, CInt count, CInt *scrollIndex, CInt *active, CInt *focus) @extern("GuiListViewEx"); // List View with extended parameters
+extern fn CInt guiMessageBox(Rectangle bounds, char *title, char *message, char *buttons) @extern("GuiMessageBox"); // Message Box control, displays a message
+extern fn CInt guiTextInputBox(Rectangle bounds, char *title, char *message, char *buttons, char *text, CInt textMaxSize, bool *secretViewActive) @extern("GuiTextInputBox"); // Text Input Box control, ask for text, supports secret
+extern fn CInt guiColorPicker(Rectangle bounds, char *text, Color *color) @extern("GuiColorPicker");                        // Color Picker control (multiple color controls)
+extern fn CInt guiColorPanel(Rectangle bounds, char *text, Color *color) @extern("GuiColorPanel");                         // Color Panel control
+extern fn CInt guiColorBarAlpha(Rectangle bounds, char *text, float *alpha) @extern("GuiColorBarAlpha");                      // Color Bar Alpha control
+extern fn CInt guiColorBarHue(Rectangle bounds, char *text, float *value) @extern("GuiColorBarHue");                        // Color Bar Hue control
+extern fn CInt guiColorPickerHSV(Rectangle bounds, char *text, Vector3 *colorHsv) @extern("GuiColorPickerHSV");                // Color Picker control that avoids conversion to RGB on each call (multiple color controls)
+extern fn CInt guiColorPanelHSV(Rectangle bounds, char *text, Vector3 *colorHsv) @extern("GuiColorPanelHSV");                 // Color Panel control that returns HSV color value, used by GuiColorPickerHSV()
+//----------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------------
+// Icons enumeration
+//----------------------------------------------------------------------------------
+enum GuiIconName {
+  ICON_NONE,
+  FOLDER_FILE_OPEN,
+  FILE_SAVE_CLASSIC,
+  FOLDER_OPEN,
+  FOLDER_SAVE,
+  FILE_OPEN,
+  FILE_SAVE,
+  FILE_EXPORT,
+  FILE_ADD,
+  FILE_DELETE,
+  FILETYPE_TEXT,
+  FILETYPE_AUDIO,
+  FILETYPE_IMAGE,
+  FILETYPE_PLAY,
+  FILETYPE_VIDEO,
+  FILETYPE_INFO,
+  FILE_COPY,
+  FILE_CUT,
+  FILE_PASTE,
+  CURSOR_HAND,
+  CURSOR_POINTER,
+  CURSOR_CLASSIC,
+  PENCIL,
+  PENCIL_BIG,
+  BRUSH_CLASSIC,
+  BRUSH_PAINTER,
+  WATER_DROP,
+  COLOR_PICKER,
+  RUBBER,
+  COLOR_BUCKET,
+  TEXT_T,
+  TEXT_A,
+  SCALE,
+  RESIZE,
+  FILTER_POINT,
+  FILTER_BILINEAR,
+  CROP,
+  CROP_ALPHA,
+  SQUARE_TOGGLE,
+  SYMMETRY,
+  SYMMETRY_HORIZONTAL,
+  SYMMETRY_VERTICAL,
+  LENS,
+  LENS_BIG,
+  EYE_ON,
+  EYE_OFF,
+  FILTER_TOP,
+  FILTER,
+  TARGET_POINT,
+  TARGET_SMALL,
+  TARGET_BIG,
+  TARGET_MOVE,
+  CURSOR_MOVE,
+  CURSOR_SCALE,
+  CURSOR_SCALE_RIGHT,
+  CURSOR_SCALE_LEFT,
+  UNDO,
+  REDO,
+  REREDO,
+  MUTATE,
+  ROTATE,
+  REPEAT,
+  SHUFFLE,
+  EMPTYBOX,
+  TARGET,
+  TARGET_SMALL_FILL,
+  TARGET_BIG_FILL,
+  TARGET_MOVE_FILL,
+  CURSOR_MOVE_FILL,
+  CURSOR_SCALE_FILL,
+  CURSOR_SCALE_RIGHT_FILL,
+  CURSOR_SCALE_LEFT_FILL,
+  UNDO_FILL,
+  REDO_FILL,
+  REREDO_FILL,
+  MUTATE_FILL,
+  ROTATE_FILL,
+  REPEAT_FILL,
+  SHUFFLE_FILL,
+  EMPTYBOX_SMALL,
+  BOX,
+  BOX_TOP,
+  BOX_TOP_RIGHT,
+  BOX_RIGHT,
+  BOX_BOTTOM_RIGHT,
+  BOX_BOTTOM,
+  BOX_BOTTOM_LEFT,
+  BOX_LEFT,
+  BOX_TOP_LEFT,
+  BOX_CENTER,
+  BOX_CIRCLE_MASK,
+  POT,
+  ALPHA_MULTIPLY,
+  ALPHA_CLEAR,
+  DITHERING,
+  MIPMAPS,
+  BOX_GRID,
+  GRID,
+  BOX_CORNERS_SMALL,
+  BOX_CORNERS_BIG,
+  FOUR_BOXES,
+  GRID_FILL,
+  BOX_MULTISIZE,
+  ZOOM_SMALL,
+  ZOOM_MEDIUM,
+  ZOOM_BIG,
+  ZOOM_ALL,
+  ZOOM_CENTER,
+  BOX_DOTS_SMALL,
+  BOX_DOTS_BIG,
+  BOX_CONCENTRIC,
+  BOX_GRID_BIG,
+  OK_TICK,
+  CROSS,
+  ARROW_LEFT,
+  ARROW_RIGHT,
+  ARROW_DOWN,
+  ARROW_UP,
+  ARROW_LEFT_FILL,
+  ARROW_RIGHT_FILL,
+  ARROW_DOWN_FILL,
+  ARROW_UP_FILL,
+  AUDIO,
+  FX,
+  WAVE,
+  WAVE_SINUS,
+  WAVE_SQUARE,
+  WAVE_TRIANGULAR,
+  CROSS_SMALL,
+  PLAYER_PREVIOUS,
+  PLAYER_PLAY_BACK,
+  PLAYER_PLAY,
+  PLAYER_PAUSE,
+  PLAYER_STOP,
+  PLAYER_NEXT,
+  PLAYER_RECORD,
+  MAGNET,
+  LOCK_CLOSE,
+  LOCK_OPEN,
+  CLOCK,
+  TOOLS,
+  GEAR,
+  GEAR_BIG,
+  BIN,
+  HAND_POINTER,
+  LASER,
+  COIN,
+  EXPLOSION,
+  // NOTE: 1UP
+  ONEUP,
+  PLAYER,
+  PLAYER_JUMP,
+  KEY,
+  DEMON,
+  TEXT_POPUP,
+  GEAR_EX,
+  CRACK,
+  CRACK_POINTS,
+  STAR,
+  DOOR,
+  EXIT,
+  MODE_2D,
+  MODE_3D,
+  CUBE,
+  CUBE_FACE_TOP,
+  CUBE_FACE_LEFT,
+  CUBE_FACE_FRONT,
+  CUBE_FACE_BOTTOM,
+  CUBE_FACE_RIGHT,
+  CUBE_FACE_BACK,
+  CAMERA,
+  SPECIAL,
+  LINK_NET,
+  LINK_BOXES,
+  LINK_MULTI,
+  LINK,
+  LINK_BROKE,
+  TEXT_NOTES,
+  NOTEBOOK,
+  SUITCASE,
+  SUITCASE_ZIP,
+  MAILBOX,
+  MONITOR,
+  PRINTER,
+  PHOTO_CAMERA,
+  PHOTO_CAMERA_FLASH,
+  HOUSE,
+  HEART,
+  CORNER,
+  VERTICAL_BARS,
+  VERTICAL_BARS_FILL,
+  LIFE_BARS,
+  INFO,
+  CROSSLINE,
+  HELP,
+  FILETYPE_ALPHA,
+  FILETYPE_HOME,
+  LAYERS_VISIBLE,
+  LAYERS,
+  WINDOW,
+  HIDPI,
+  FILETYPE_BINARY,
+  HEX,
+  SHIELD,
+  FILE_NEW,
+  FOLDER_ADD,
+  ALARM,
+  CPU,
+  ROM,
+  STEP_OVER,
+  STEP_INTO,
+  STEP_OUT,
+  RESTART,
+  BREAKPOINT_ON,
+  BREAKPOINT_OFF,
+  BURGER_MENU,
+  CASE_SENSITIVE,
+  REG_EXP,
+  FOLDER,
+  FILE,
+  SAND_TIMER,
+  ICON_220,
+  ICON_221,
+  ICON_222,
+  ICON_223,
+  ICON_224,
+  ICON_225,
+  ICON_226,
+  ICON_227,
+  ICON_228,
+  ICON_229,
+  ICON_230,
+  ICON_231,
+  ICON_232,
+  ICON_233,
+  ICON_234,
+  ICON_235,
+  ICON_236,
+  ICON_237,
+  ICON_238,
+  ICON_239,
+  ICON_240,
+  ICON_241,
+  ICON_242,
+  ICON_243,
+  ICON_244,
+  ICON_245,
+  ICON_246,
+  ICON_247,
+  ICON_248,
+  ICON_249,
+  ICON_250,
+  ICON_251,
+  ICON_252,
+  ICON_253,
+  ICON_254,
+  ICON_255,
+}
+
+const TEXT_SIZE = 16;             // Text size (glyphs max height)
+const TEXT_SPACING = 17;               // Text spacing between glyphs
+const LINE_COLOR = 18;                 // Line control color
+const BACKGROUND_COLOR = 19;           // Background color
+const TEXT_LINE_SPACING = 20;          // Text spacing between lines
+const TEXT_ALIGNMENT_VERTICAL = 21;    // Text vertical alignment inside text bounds (after border and padding)
+const  TEXT_WRAP_MODE = 22;              // Text wrap-mode inside text bounds
+//  //TEXT_DECORATION             // Text decoration: 0-None, 1-Underline, 2-Line-through, 3-Overline
+//  //TEXT_DECORATION_THICK       // Text decoration line thikness
+
+
+// Other possible text properties:
+// TEXT_WEIGHT                  // Normal, Italic, Bold -> Requires specific font change
+// TEXT_INDENT                  // Text indentation -> Now using TEXT_PADDING...
+
+
+distinct GuiControlProperty = CInt;
+module raygui::rg::property_element;
+
+const GuiControlProperty BORDER = 0;
+const GuiControlProperty BASE = 1;
+const GuiControlProperty TEXT = 2;
+const GuiControlProperty OTHER = 3;
+
+module raygui::rg::control_property;
+
+const GuiControlProperty BORDER_COLOR_NORMAL = 0;        // Control border color in STATE_NORMAL
+const GuiControlProperty BASE_COLOR_NORMAL = 1;          // Control base color in STATE_NORMAL
+const GuiControlProperty TEXT_COLOR_NORMAL = 2;          // Control text color in STATE_NORMAL
+const GuiControlProperty BORDER_COLOR_FOCUSED = 3;       // Control border color in STATE_FOCUSED
+const GuiControlProperty BASE_COLOR_FOCUSED = 4;         // Control base color in STATE_FOCUSED
+const GuiControlProperty TEXT_COLOR_FOCUSED = 5;         // Control text color in STATE_FOCUSED
+const GuiControlProperty BORDER_COLOR_PRESSED = 6;       // Control border color in STATE_PRESSED
+const GuiControlProperty BASE_COLOR_PRESSED = 7;         // Control base color in STATE_PRESSED
+const GuiControlProperty TEXT_COLOR_PRESSED = 8;         // Control text color in STATE_PRESSED
+const GuiControlProperty BORDER_COLOR_DISABLED = 9;      // Control border color in STATE_DISABLED
+const GuiControlProperty BASE_COLOR_DISABLED = 10;        // Control base color in STATE_DISABLED
+const GuiControlProperty TEXT_COLOR_DISABLED = 11;        // Control text color in STATE_DISABLED
+const GuiControlProperty BORDER_WIDTH = 12;               // Control border size, 0 for no border
+
+const GuiControlProperty TEXT_PADDING = 13;               // Control text padding, not considering border
+const GuiControlProperty TEXT_ALIGNMENT = 14;             // Control text horizontal alignment inside control text bound (after border and padding)
+
+const GuiControlProperty GROUP_PADDING = 16;         // ToggleGroup separation between toggles
+
+// Slider/SliderBar
+const GuiControlProperty SLIDER_WIDTH = 16;          // Slider size of internal bar
+const GuiControlProperty SLIDER_PADDING = 17;         // Slider/SliderBar internal bar padding
+
+// ProgressBar
+const GuiControlProperty PROGRESS_PADDING = 16;      // ProgressBar internal padding
+
+// ScrollBar
+const GuiControlProperty ARROWS_SIZE = 16;           // ScrollBar arrows size
+const GuiControlProperty ARROWS_VISIBLE = 17;             // ScrollBar arrows visible
+const GuiControlProperty SCROLL_SLIDER_PADDING = 18;      // ScrollBar slider internal padding
+const GuiControlProperty SCROLL_SLIDER_SIZE = 19;         // ScrollBar slider size
+const GuiControlProperty SCROLL_PADDING = 20;             // ScrollBar scroll padding from arrows
+const GuiControlProperty SCROLL_SPEED = 21;               // ScrollBar scrolling speed
+
+// CheckBox
+const GuiControlProperty CHECK_PADDING = 16;          // CheckBox internal check padding
+
+
+// ComboBox
+const GuiControlProperty COMBO_BUTTON_WIDTH = 16;    // ComboBox right button width
+const GuiControlProperty COMBO_BUTTON_SPACING = 17;       // ComboBox button separation
+
+// DropdownBox
+const GuiControlProperty ARROW_PADDING = 16;         // DropdownBox arrow separation from border and items
+const GuiControlProperty DROPDOWN_ITEMS_SPACING = 17;     // DropdownBox items separation
+
+// TextBox/TextBoxMulti/ValueBox/Spinner
+const GuiControlProperty TEXT_READONLY = 16;         // TextBox in read-only mode: 0-text editable, 1-text no-editable
+
+// Spinner
+const GuiControlProperty SPIN_BUTTON_WIDTH = 16;     // Spinner left/right buttons width
+const GuiControlProperty SPIN_BUTTON_SPACING = 17;        // Spinner buttons separation
+
+// ListView
+const GuiControlProperty LIST_ITEMS_HEIGHT = 16;     // ListView items height
+const GuiControlProperty LIST_ITEMS_SPACING = 17;         // ListView items separation
+const GuiControlProperty SCROLLBAR_WIDTH = 18;            // ListView scrollbar size (usually width)
+const GuiControlProperty SCROLLBAR_SIDE = 19;             // ListView scrollbar side (0-SCROLLBAR_LEFT_SIDE, 1-SCROLLBAR_RIGHT_SIDE)
+
+// ColorPicker
+const GuiControlProperty COLOR_SELECTOR_SIZE = 16;
+const GuiControlProperty HUEBAR_WIDTH = 17;               // ColorPicker right hue bar width
+const GuiControlProperty HUEBAR_PADDING = 18;             // ColorPicker right hue bar separation from panel
+const GuiControlProperty HUEBAR_SELECTOR_HEIGHT = 19;     // ColorPicker right hue bar selector height
+const GuiControlProperty HUEBAR_SELECTOR_OVERFLOW = 20;   // ColorPicker right hue bar selector overflow
