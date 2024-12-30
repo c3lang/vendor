@@ -1,0 +1,104 @@
+// sqlite3.c3i
+// Binding originally created by Louis @ https://github.com/louis77
+
+module sqlite3;
+
+distinct ResultStatus = int;
+
+const ResultStatus OK =           0;   /* Successful result */
+const ResultStatus ERROR =        1;   /* Generic error */
+const ResultStatus INTERNAL =     2;   /* Internal logic error in SQLite */
+const ResultStatus PERM =         3;   /* Access permission denied */
+const ResultStatus ABORT =        4;   /* Callback routine requested an abort */
+const ResultStatus BUSY =         5;   /* The database file is locked */
+const ResultStatus LOCKED =       6;   /* A table in the database is locked */
+const ResultStatus NOMEM =        7;   /* A malloc() failed */
+const ResultStatus READONLY =     8;   /* Attempt to write a readonly database */
+const ResultStatus INTERRUPT =    9;   /* Operation terminated by interrupt()*/
+const ResultStatus IOERR =       10;   /* Some kind of disk I/O error occurred */
+const ResultStatus CORRUPT =     11;   /* The database disk image is malformed */
+const ResultStatus NOTFOUND =    12;   /* Unknown opcode in file_control() */
+const ResultStatus FULL =        13;   /* Insertion failed because database is full */
+const ResultStatus CANTOPEN =    14;   /* Unable to open the database file */
+const ResultStatus PROTOCOL =    15;   /* Database lock protocol error */
+const ResultStatus EMPTY =       16;   /* Internal use only */
+const ResultStatus SCHEMA =      17;   /* The database schema changed */
+const ResultStatus TOOBIG =      18;   /* String or BLOB exceeds size limit */
+const ResultStatus CONSTRAINT =  19;   /* Abort due to constraint violation */
+const ResultStatus MISMATCH =    20;   /* Data type mismatch */
+const ResultStatus MISUSE =      21;   /* Library used incorrectly */
+const ResultStatus NOLFS =       22;   /* Uses OS features not supported on host */
+const ResultStatus AUTH =        23;   /* Authorization denied */
+const ResultStatus FORMAT =      24;   /* Not used */
+const ResultStatus RANGE =       25;   /* 2nd parameter to bind out of range */
+const ResultStatus NOTADB =      26;   /* File opened that is not a database file */
+const ResultStatus NOTICE =      27;   /* Notifications from log() */
+const ResultStatus WARNING =     28;   /* Warnings from log() */
+const ResultStatus ROW =         100;  /* step() has another row ready */
+const ResultStatus DONE =        101;  /* step() has finished executing */
+
+distinct ColumnType = int;
+
+const ColumnType INTEGER  = 1;
+const ColumnType FLOAT    = 2;
+const ColumnType BLOB     = 4;
+const ColumnType NULL     = 5;
+const ColumnType TEXT     = 3;
+
+def SqliteHandle = void*;
+def SqliteStmt = void*;
+def ExecCallback = fn ResultStatus (void* context, CInt num_columns, ZString* result, ZString* col_names);
+
+extern fn ResultStatus open(
+    ZString filename,
+    SqliteHandle* ppDb
+) @extern("sqlite3_open");
+
+extern fn ResultStatus close(SqliteHandle handle) @extern("sqlite3_close");
+
+extern fn ResultStatus exec(
+    SqliteHandle handle,
+    ZString sql,
+    ExecCallback callback,
+    void* arg,
+    ZString* errmsg
+) @extern("sqlite3_exec");
+
+extern fn ResultStatus prepare_v2(
+    SqliteHandle handle,
+    ZString zSql,
+    CInt nByte,
+    SqliteStmt* ppStmt,
+    ZString* pzTail
+) @extern("sqlite3_prepare_v2");
+
+extern fn ResultStatus step(SqliteStmt stmt) @extern("sqlite3_step");
+extern fn ResultStatus finalize(SqliteStmt pStmt) @extern("sqlite3_finalize");
+extern fn CLong changes64(SqliteHandle handle) @extern("sqlite3_changes64");
+extern fn CInt column_count(SqliteStmt pStmt) @extern("sqlite3_column_count");
+
+extern fn void* column_blob(SqliteStmt stmt, int iCol) @extern("sqlite3_column_blob");
+extern fn double column_double(SqliteStmt stmt, int iCol) @extern("sqlite3_column_double");
+extern fn CInt column_int(SqliteStmt stmt, int iCol) @extern("sqlite3_column_int");
+extern fn CLong column_int64(SqliteStmt stmt, int iCol) @extern("sqlite3_column_int64");
+extern fn ZString column_text(SqliteStmt stmt, int iCol) @extern("sqlite3_column_text");
+extern fn void* column_text16(SqliteStmt stmt, int iCol) @extern("sqlite3_column_text16");
+extern fn void* column_value(SqliteStmt stmt, int iCol) @extern("sqlite3_column_value");
+extern fn CInt column_bytes(SqliteStmt stmt, int iCol) @extern("sqlite3_column_bytes");
+extern fn CInt column_bytes16(SqliteStmt stmt, int iCol) @extern("sqlite3_column_bytes16");
+extern fn ColumnType column_type(SqliteStmt stmt, int iCol) @extern("sqlite3_column_type");
+
+extern fn ResultStatus bind_blob(SqliteStmt stmt, CInt, void*, CInt n, void*) @extern("sqlite3_bind_blob");
+extern fn ResultStatus bind_blob64(SqliteStmt stmt, CInt, void*, CULong, void*) @extern("sqlite3_bind_blob64");
+extern fn ResultStatus bind_double(SqliteStmt stmt, CInt, double) @extern("sqlite3_bind_double");
+extern fn ResultStatus bind_int(SqliteStmt stmt, CInt, CInt) @extern("sqlite3_bind_int");
+extern fn ResultStatus bind_int64(SqliteStmt stmt, CInt, CLong) @extern("sqlite3_bind_int64");
+extern fn ResultStatus bind_null(SqliteStmt stmt, CInt) @extern("sqlite3_bind_null");
+extern fn ResultStatus bind_text(SqliteStmt stmt, CInt, ZString, CInt, void*) @extern("sqlite3_bind_text");
+extern fn ResultStatus bind_text16(SqliteStmt stmt, CInt, void*, CInt, void*) @extern("sqlite3_bind_text16");
+extern fn ResultStatus bind_value(SqliteStmt stmt, CInt, void*) @extern("sqlite3_bind_value");
+extern fn ResultStatus bind_pointer(SqliteStmt stmt, CInt, void*, ZString, void*) @extern("sqlite3_bind_pointer");
+extern fn ResultStatus bind_zeroblob(SqliteStmt stmt, CInt, CInt n) @extern("sqlite3_bind_zeroblob");
+extern fn ResultStatus bind_zeroblob64(SqliteStmt stmt, CInt, CULong) @extern("sqlite3_bind_zeroblob64");
+
+extern fn ZString errmsg(SqliteHandle handle) @extern("sqlite3_errmsg");
