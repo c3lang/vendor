@@ -1,0 +1,45 @@
+{
+  "provides": "pq",
+  "targets": {
+    "macos-aarch64": {
+      "linked-libraries": [
+        "pq"
+      ]
+    },
+    "macos-x64": {
+      "linked-libraries": [
+        "pq"
+      ]
+    },
+    "linux-x64": {
+      "linked-libraries": [
+        "pq"
+      ]
+    },
+    "linux-x86": {
+      "linked-libraries": [
+        "pq"
+      ]
+    },
+    "openbsd-x86": {
+      "linked-libraries": [
+        "pq"
+      ]
+    },
+    "openbsd-x64": {
+      "linked-libraries": [
+        "pq"
+      ]
+    },
+    "freebsd-x64": {
+      "linked-libraries": [
+        "pq"
+      ]
+    },
+    "freebsd-x86": {
+      "linked-libraries": [
+        "pq"
+      ]
+    }
+  }
+}
