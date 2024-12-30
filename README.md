@@ -10,6 +10,7 @@ This repository contains external libraries for use with C3.
 - OpenGL
 - Vulkan (WIP)
 - GLFW https://www.glfw.org/ - WIP
+- PQ (PostgreSQL) https://www.postgresql.org/docs/current/libpq.html
 
 ## Guide for writing bindings
 
