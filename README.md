@@ -10,6 +10,7 @@ This repository contains external libraries for use with C3.
 - OpenGL
 - Vulkan (WIP)
 - GLFW https://www.glfw.org/ - WIP
+- SQLite 3 https://sqlite.com/c3ref/intro.html
 
 ## Guide for writing bindings
 
