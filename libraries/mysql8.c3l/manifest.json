@@ -1,0 +1,45 @@
+{
+  "provides": "mysql8",
+  "targets": {
+    "macos-aarch64": {
+      "linked-libraries": [
+        "mysqlclient"
+      ]
+    },
+    "macos-x64": {
+      "linked-libraries": [
+        "mysqlclient"
+      ]
+    },
+    "linux-x64": {
+      "linked-libraries": [
+        "mysqlclient"
+      ]
+    },
+    "linux-x86": {
+      "linked-libraries": [
+        "mysqlclient"
+      ]
+    },
+    "openbsd-x86": {
+      "linked-libraries": [
+        "mysqlclient"
+      ]
+    },
+    "openbsd-x64": {
+      "linked-libraries": [
+        "mysqlclient"
+      ]
+    },
+    "freebsd-x64": {
+      "linked-libraries": [
+        "mysqlclient"
+      ]
+    },
+    "freebsd-x86": {
+      "linked-libraries": [
+        "mysqlclient"
+      ]
+    }
+  }
+}

@@ -10,6 +10,7 @@ This repository contains external libraries for use with C3.
 - OpenGL
 - Vulkan (WIP)
 - GLFW https://www.glfw.org/ - WIP
+- MySQL 8 https://dev.mysql.com/doc/c-api/8.0/en/
 - SQLite 3 https://sqlite.com/c3ref/intro.html
 
 ## Guide for writing bindings

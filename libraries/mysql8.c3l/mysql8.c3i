@@ -1,0 +1,161 @@
+// mysql8.c3i
+// Binding originally created by Louis @ https://github.com/louis77
+
+module mysql8;
+
+def Mysql = void*;
+def MysqlRes = void*;
+def MysqlRow = void**;
+def MysqlStmt = void*;
+
+const int MYSQL_NO_DATA = 100;
+
+distinct FieldType = int;
+
+const FieldType TYPE_DECIMAL = 0;
+const FieldType TYPE_TINY = 1;
+const FieldType TYPE_SHORT = 2;
+const FieldType TYPE_LONG = 3;
+const FieldType TYPE_FLOAT = 4;
+const FieldType TYPE_DOUBLE = 5;
+const FieldType TYPE_NULL = 6;
+const FieldType TYPE_TIMESTAMP = 7;
+const FieldType TYPE_LONGLONG = 8;
+const FieldType TYPE_INT24 = 9;
+const FieldType TYPE_DATE = 10;
+const FieldType TYPE_TIME = 11;
+const FieldType TYPE_DATETIME = 12;
+const FieldType TYPE_YEAR = 13;
+const FieldType TYPE_NEWDATE = 14; // Unused
+const FieldType TYPE_VARCHAR = 15;
+const FieldType TYPE_BIT = 16;
+const FieldType TYPE_TIMESTAMP2 = 17;
+const FieldType TYPE_DATETIME2 = 18; /**< Internal to MySQL. Not used in protocol */
+const FieldType TYPE_TIME2 = 19;  /**< Internal to MySQL. Not used in protocol */
+const FieldType TYPE_TYPED_ARRAY = 20; /**< Used for replication only */
+const FieldType TYPE_INVALID = 243;
+const FieldType TYPE_JSON = 245;
+const FieldType TYPE_NEWDECIMAL = 246;
+const FieldType TYPE_ENUM = 247;
+const FieldType TYPE_SET = 248;
+const FieldType TYPE_TINY_BLOB = 249;
+const FieldType TYPE_MEDIUM_BLOB = 250;
+const FieldType TYPE_LONG_BLOB = 251;
+const FieldType TYPE_BLOB = 252;
+const FieldType TYPE_VAR_STRING = 253;
+const FieldType TYPE_STRING = 254;
+const FieldType TYPE_GEOMETRY = 255;
+
+enum MysqlOption : CInt {
+  OPT_CONNECT_TIMEOUT,
+  OPT_COMPRESS,
+  OPT_NAMED_PIPE,
+  INIT_COMMAND,
+  READ_DEFAULT_FILE,
+  READ_DEFAULT_GROUP,
+  SET_CHARSET_DIR,
+  SET_CHARSET_NAME,
+  OPT_LOCAL_INFILE,
+  OPT_PROTOCOL,
+  SHARED_MEMORY_BASE_NAME,
+  OPT_READ_TIMEOUT,
+  OPT_WRITE_TIMEOUT,
+  OPT_USE_RESULT,
+  REPORT_DATA_TRUNCATION,
+  OPT_RECONNECT,
+  PLUGIN_DIR,
+  DEFAULT_AUTH,
+  OPT_BIND,
+  OPT_SSL_KEY,
+  OPT_SSL_CERT,
+  OPT_SSL_CA,
+  OPT_SSL_CAPATH,
+  OPT_SSL_CIPHER,
+  OPT_SSL_CRL,
+  OPT_SSL_CRLPATH,
+  OPT_CONNECT_ATTR_RESET,
+  OPT_CONNECT_ATTR_ADD,
+  OPT_CONNECT_ATTR_DELETE,
+  SERVER_PUBLIC_KEY,
+  ENABLE_CLEARTEXT_PLUGIN,
+  OPT_CAN_HANDLE_EXPIRED_PASSWORDS,
+  OPT_MAX_ALLOWED_PACKET,
+  OPT_NET_BUFFER_LENGTH,
+  OPT_TLS_VERSION,
+  OPT_SSL_MODE,
+  OPT_GET_SERVER_PUBLIC_KEY,
+  OPT_RETRY_COUNT,
+  OPT_OPTIONAL_RESULTSET_METADATA,
+  OPT_SSL_FIPS_MODE,
+  OPT_TLS_CIPHERSUITES,
+  OPT_COMPRESSION_ALGORITHMS,
+  OPT_ZSTD_COMPRESSION_LEVEL,
+  OPT_LOAD_DATA_LOCAL_DIR,
+  OPT_USER_PASSWORD,
+  OPT_SSL_SESSION_DATA,
+  OPT_TLS_SNI_SERVERNAME
+}
+
+enum Autocommit : CInt {
+    AUTOCOMMIT_OFF,
+    AUTOCOMMIT_ON
+}
+
+extern fn CULong        affected_rows(Mysql mysql) @extern("mysql_affected_rows");
+extern fn bool          autocommit(Mysql mysql, Autocommit mode) @extern("mysql_autocommit");
+extern fn void          close(Mysql mysql) @extern("mysql_close");
+extern fn bool          commit(Mysql mysql) @extern("mysql_commit");
+extern fn Mysql         init(Mysql mysql) @extern("mysql_init");
+extern fn CUInt         errno(Mysql mysql) @extern("mysql_errno");
+extern fn ZString       error(Mysql mysql) @extern("mysql_error");
+extern fn MysqlRow      fetch_row(MysqlRes result) @extern("mysql_fetch_row");
+extern fn void          free_result(MysqlRes result) @extern("mysql_free_result");
+extern fn void          library_end() @extern("mysql_server_end");
+extern fn CInt          library_init(CInt argc, void* argv, void* groups) @extern("mysql_server_init");
+extern fn CUInt         num_fields(MysqlRes result) @extern("mysql_num_fields");
+extern fn CInt          options(Mysql *mysql, MysqlOption option, void *arg) @extern("mysql_options");
+extern fn CInt          ping(Mysql mysql) @extern("mysql_ping");
+extern fn Mysql         real_connect(Mysql mysql, ZString host, ZString user, ZString passwd, ZString db, CUInt port, ZString unix_socket, CULong client_flag) @extern("mysql_real_connect");
+extern fn CInt          real_query(Mysql mysql, ZString stmt_str, CULong length) @extern("mysql_real_query");
+extern fn bool          rollback(Mysql mysql) @extern("mysql_rollback");
+extern fn MysqlRes      use_result(Mysql mysql) @extern("mysql_use_result");
+
+// Prepared Statement Functions
+
+struct MysqlBind  {
+  CULong *length;   /* output length pointer */
+  bool   *is_null;  /* Pointer to null indicator */
+  void*   buffer;   /* buffer to get/put data */
+                    /* set this if you want to track data truncations happened during fetch */
+  bool *error;
+  CUChar *row_ptr;  /* for the current data position */
+  void* store_param_func;
+  void* fetch_result;
+  void* skip_result;
+
+  CULong buffer_length;                 /* output buffer length, must be set when fetching str/binary */
+  CULong offset;                        /* offset position for char/binary fetch */
+  CULong length_value;                  /* Used if length is 0 */
+  CUInt  param_number;                  /* For null count and error messages */
+  CUInt  pack_length;                   /* Internal length for packed data */
+  FieldType buffer_type;                   /* buffer type */ // ENUM enum_field_types
+  bool   error_value;                   /* used if error is 0 */
+  bool   is_unsigned;                   /* set if integer type is unsigned */
+  bool   long_data_used;                /* If used with mysql_send_long_data */
+  bool   is_null_value;                 /* Used if is_null is 0 */
+  void *extension;
+}
+
+extern fn CULong        stmt_affected_rows(MysqlStmt stmt) @extern("mysql_stmt_affected_rows");
+extern fn bool          stmt_bind_param(MysqlStmt stmt, MysqlBind* bind) @extern("mysql_stmt_bind_param");
+extern fn bool          stmt_close(MysqlStmt stmt) @extern("mysql_stmt_close");
+extern fn CInt          stmt_execute(MysqlStmt stmt) @extern("mysql_stmt_execute");
+extern fn CInt          stmt_fetch(MysqlStmt stmt) @extern("mysql_stmt_fetch");
+extern fn CInt          stmt_fetch_column(MysqlStmt stmt, MysqlBind* bind, CUInt column, CULong offset) @extern("mysql_stmt_fetch_column");
+extern fn CUInt         stmt_field_count(MysqlStmt stmt) @extern("mysql_stmt_field_count");
+extern fn bool          stmt_free_result(MysqlStmt stmt) @extern("mysql_stmt_free_result");
+extern fn MysqlStmt     stmt_init(Mysql mysql) @extern("mysql_stmt_init");
+extern fn CInt          stmt_next_result(MysqlStmt stmt) @extern("mysql_stmt_next_result");
+extern fn CInt          stmt_prepare(MysqlStmt stmt, ZString stmt_str, CULong length) @extern("mysql_stmt_prepare");
+extern fn CInt          stmt_store_result(MysqlStmt stmt) @extern("mysql_stmt_store_result");
+extern fn bool          stmt_bind_result(MysqlStmt stmt, MysqlBind *bind) @extern("mysql_stmt_bind_result");
