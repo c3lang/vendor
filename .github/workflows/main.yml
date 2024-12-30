@@ -158,7 +158,7 @@ jobs:
           asset_path: packages/curl.c3l
           asset_name: curl.c3l
           asset_content_type: application/zip
-      
+
       - name: upload glfw
         uses: actions/upload-release-asset@v1
         env:
@@ -167,4 +167,34 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: packages/glfw.c3l
           asset_name: glfw.c3l
+          asset_content_type: application/zip
+
+      - name: upload pq
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: packages/pq.c3l
+          asset_name: pq.c3l
+          asset_content_type: application/zip
+
+      - name: upload mysql8
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: packages/mysql8.c3l
+          asset_name: mysql8.c3l
+          asset_content_type: application/zip
+
+      - name: upload sqlite3
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: packages/sqlite3.c3l
+          asset_name: sqlite3.c3l
           asset_content_type: application/zip
