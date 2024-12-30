@@ -1,0 +1,45 @@
+{
+  "provides": "sqlite3",
+  "targets": {
+    "macos-aarch64": {
+      "linked-libraries": [
+        "sqlite3"
+      ]
+    },
+    "macos-x64": {
+      "linked-libraries": [
+        "sqlite3"
+      ]
+    },
+    "linux-x64": {
+      "linked-libraries": [
+        "sqlite3"
+      ]
+    },
+    "linux-x86": {
+      "linked-libraries": [
+        "sqlite3"
+      ]
+    },
+    "openbsd-x86": {
+      "linked-libraries": [
+        "sqlite3"
+      ]
+    },
+    "openbsd-x64": {
+      "linked-libraries": [
+        "sqlite3"
+      ]
+    },
+    "freebsd-x64": {
+      "linked-libraries": [
+        "sqlite3"
+      ]
+    },
+    "freebsd-x86": {
+      "linked-libraries": [
+        "sqlite3"
+      ]
+    }
+  }
+}
