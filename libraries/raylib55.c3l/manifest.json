@@ -1,5 +1,5 @@
 { 
-  "provides" : "raylib5",
+  "provides" : "raylib55",
   "targets" : {
     "macos-x64" : {
       "link-args" : [],
