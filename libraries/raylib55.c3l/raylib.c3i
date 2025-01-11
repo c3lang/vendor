@@ -883,11 +883,11 @@ fn bool isPathFile(ZString path) @extern("IsPathFile");
 // Check if fileName is valid for the platform/OS
 fn bool isFileNameValid(char *fileName)@extern("IsFileNameValid");
 // Load directory filepaths
-fn FilePathList loadDirectoryFiles(ZString dirPath, int* count) @extern("LoadDirectoryFiles");
+fn FilePathList loadDirectoryFiles(ZString dirPath) @extern("LoadDirectoryFiles");
 // Load directory filepaths with extension filtering and recursive directory scan
 fn FilePathList loadDirectoryFilesEx(ZString basePath, ZString filter, bool scanSubdirs) @extern("LoadDirectoryFilesEx");
 // Clear directory files paths buffers (free memory)
-fn void unloadDirectoryFiles() @extern("UnloadDirectoryFiles");
+fn void unloadDirectoryFiles(FilePathList files) @extern("UnloadDirectoryFiles");
 // Check if a file has been dropped into window
 fn bool isFileDropped() @extern("IsFileDropped");
 // Load dropped filepaths
