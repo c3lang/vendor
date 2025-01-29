@@ -715,7 +715,7 @@ fn void setWindowIcon(Image image) @extern("SetWindowIcon");                    
 fn void setWindowIcons(Image* images, int count) @extern("SetWindowIcons");                // Set icon for window (multiple images, RGBA 32bit, only PLATFORM_DESKTOP)
 fn void setWindowTitle(ZString title) @extern("SetWindowTitle");                             // Set title for window (only PLATFORM_DESKTOP)
 fn void setWindowPosition(int x, int y) @extern("SetWindowPosition");                      // Set window position on screen (only PLATFORM_DESKTOP)
-fn void setWindowMonitor(int monitor) @extern("SetWindowMonitor(int monitor");             // Set monitor for the current window (fullscreen mode)
+fn void setWindowMonitor(int monitor) @extern("SetWindowMonitor");             // Set monitor for the current window (fullscreen mode)
 fn void setWindowMinSize(int width, int height) @extern("SetWindowMinSize");               // Set window minimum dimensions (for FLAG_WINDOW_RESIZABLE)
 fn void setWindowMaxSize(int width, int height) @extern("SetWindowMaxSize");               // Set window maximum dimensions (for FLAG_WINDOW_RESIZABLE)
 fn void setWindowSize(int width, int height) @extern("SetWindowSize");                     // Set window dimensions
