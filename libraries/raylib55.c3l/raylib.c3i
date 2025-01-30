@@ -1377,11 +1377,11 @@ fn TextureCubemap loadTextureCubemap(Image image, int layout) @extern("LoadTextu
 // Load texture for rendering (framebuffer)
 fn RenderTexture2D loadRenderTexture(int width, int height) @extern("LoadRenderTexture");
 // Check if a texture is valid (loaded in GPU)
-fn bool isTextureValid(Texture2D texture) @extern("IsTextureValide");
+fn bool isTextureValid(Texture2D texture) @extern("IsTextureValid");
 // Unload texture from GPU memory (VRAM)
 fn void unloadTexture(Texture2D texture) @extern("UnloadTexture");
 // Check if a render texture is valid (loaded in GPU)
-fn bool isRenderTextureValid(RenderTexture2D target) @extern("IsRenderTextureValide");
+fn bool isRenderTextureValid(RenderTexture2D target) @extern("IsRenderTextureValid");
 // Unload render texture from GPU memory (VRAM)
 fn void unloadRenderTexture(RenderTexture2D target) @extern("UnloadRenderTexture");
 // Update GPU texture with new data
