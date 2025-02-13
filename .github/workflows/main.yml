@@ -24,7 +24,7 @@ jobs:
           ruby package.rb
 
       - name: upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: packages
           path: temp/*.c3l
