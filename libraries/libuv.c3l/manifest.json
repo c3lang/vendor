@@ -1,0 +1,23 @@
+{ 
+  "provides" : "libuv",
+  "targets" : {
+    "macos-x64" : {
+      "link-args" : [],
+      "dependencies" : [],
+      "linked-libraries" : ["uv"]
+    },
+    "macos-aarch64" : {
+      "link-args" : [],
+      "dependencies" : [],
+      "linked-libraries" : ["uv"]
+    },
+    "linux-x64" : {
+      "link-args" : [],
+      "dependencies" : [],
+      "linked-libraries" : ["uv"]
+    },
+	"windows-x64" : {
+		"linked-libraries" : ["libuv"]
+	}
+  }
+}

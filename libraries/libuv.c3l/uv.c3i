@@ -1,0 +1,1932 @@
+module libuv;
+import std::io;
+import std::os::win32;
+
+def UV__Work_work = fn void* (UV__Work *w);
+def UV__Work_done = fn void* (UV__Work *w, CInt status);
+
+def UVUdpSendCb = fn void* (UVUdpSend* req, CLong status);
+
+def UVUdpRecvCb = fn void* (UVUdp* handle,
+                             CLong nread,
+                             UVBuf* buf,
+                             Platform_sockaddr* addr,
+                             CLong flags);
+
+
+struct UV__Work {
+  UV__Work_work work;
+  UV__Work_done done;
+  UVLoop* loop;
+  UV__Queue wq;
+}
+
+enum UVClockId {
+  UV_CLOCK_MONOTONIC,
+  UV_CLOCK_REALTIME
+}
+
+/* XXX(bnoordhuis) not 2038-proof, https://github.com/libuv/libuv/issues/3864 */
+struct UVTimespec {
+  CLong tv_sec;
+  CLong tv_nsec;
+}
+
+struct UVTimespec64 {
+  CLongLong tv_sec;
+  CLong tv_nsec;
+} 
+
+/* XXX(bnoordhuis) not 2038-proof, https://github.com/libuv/libuv/issues/3864 */
+struct UVTimeval {
+  CLong tv_sec; 
+  CLong tv_usec;
+}
+
+struct UVTimeval64 {
+  CLongLong tv_sec;
+  CLong tv_usec;
+}
+
+struct UVStat {
+  CULongLong st_dev;
+  CULongLong st_mode;
+  CULongLong st_nlink;
+  CULongLong st_uid;
+  CULongLong st_gid;
+  CULongLong st_rdev;
+  CULongLong st_ino;
+  CULongLong st_size;
+  CULongLong st_blksize;
+  CULongLong st_blocks;
+  CULongLong st_flags;
+  CULongLong st_gen;
+  UVTimespec st_atim;
+  UVTimespec st_mtim;
+  UVTimespec st_ctim;
+  UVTimespec st_birthtim;
+}
+
+enum UVHandleType {
+  UV_UNKNOWN_HANDLE,
+  UV_ASYNC,
+  UV_CHECK,
+  UV_FS_EVENT,
+  UV_FS_POLL,
+  UV_HANDLE,
+  UV_IDLE,
+  UV_NAMED_PIPE,
+  UV_POLL,
+  UV_PREPARE,
+  UV_PROCESS,
+  UV_STREAM,
+  UV_TCP,
+  UV_TIMER,
+  UV_TTY,
+  UV_UDP,
+  UV_SIGNAL,
+  UV_FILE,
+  UV_HANDLE_TYPE_MAX
+}
+
+/* 
+	Internal type, do not use. 
+	https://github.com/libuv/libuv/blob/0f31978c303b76798ff2b72e9498e5520722ef8a/include/uv.h#L63
+*/
+struct UV__Queue {
+	UV__Queue* next;
+	UV__Queue* prev;
+}
+ 
+// typedef struct uv_loop_s uv_loop_t;
+
+struct UVLoop {
+	// inline UV_LOOP_PRIVATE_FIELDS_t uv_loop_private_fields;
+	/* User data - use this for whatever. */
+	void* data;
+	/* Loop reference counting. */
+	CUInt active_handles;
+	UV__Queue handle_queue;
+	union active_reqs {
+		void* unused;
+		CUInt count;
+	}
+	/* Internal storage for future extensions. */
+	void* internal_fields;
+	/* Internal flag to signal loop stop. */
+	CUInt stop_flag;	
+
+  // unix
+  CULong flags @if(!env::WIN32);
+  CInt backend_fd @if(!env::WIN32);
+  UV__Queue pending_queue @if(!env::WIN32);
+  UV__Queue watcher_queue @if(!env::WIN32);
+  UV__Io** watchers @if(!env::WIN32);
+  CUInt nwatchers @if(!env::WIN32);
+  CUInt nfds @if(!env::WIN32);
+  UV__Queue wq @if(!env::WIN32);
+  UVMutex wq_mutex @if(!env::WIN32);
+  UVAsync wq_async @if(!env::WIN32);
+  UVRWLock cloexec_lock @if(!env::WIN32);                                                
+  UVHandle* closing_handles @if(!env::WIN32);                                              
+  UV__Queue process_handles @if(!env::WIN32);                                           
+  UV__Queue prepare_handles @if(!env::WIN32);   
+  UV__Queue check_handles @if(!env::WIN32);
+  UV__Queue idle_handles @if(!env::WIN32);
+  UV__Queue async_handles @if(!env::WIN32);
+  Async_unused async_unused @if(!env::WIN32); /* TODO(bnoordhuis) Remove in libuv v2. */ 
+  UV__Io async_io_watcher @if(!env::WIN32);
+  CInt async_wfd @if(!env::WIN32);
+  struct timer_heap @if(!env::WIN32) {
+      void* min; 
+      CUInt nelts; 
+  }
+  CULongLong timer_counter @if(!env::WIN32);
+  CULongLong time @if(!env::WIN32);
+  CInt[2]* signal_pipefd @if(!env::WIN32);
+  UV__Io signal_io_watcher @if(!env::WIN32);
+  UVSignal child_watcher @if(!env::WIN32);
+  CInt emfile_fd @if(!env::WIN32);
+  // inline UV_PLATFORM_LOOP_FIELDS_t uv_platform_loop_fields;
+  CInt fs_fd @if(env::OS_TYPE == OsType.AIX);
+  UVThread cf_thread @if(env::DARWIN);
+  void* _cf_reserved @if(env::DARWIN);
+  void* cf_state @if(env::DARWIN);
+  UVMutex cf_mutex @if(env::DARWIN);
+  UVSem cf_sem @if(env::DARWIN);
+  UV__Queue cf_signals @if(env::DARWIN);
+  UV__Io inotify_read_watcher @if(env::OS_TYPE == OsType.LINUX);
+  void* inotify_watchers @if(env::OS_TYPE == OsType.LINUX);
+  CInt inotify_fd @if(env::OS_TYPE == OsType.LINUX);
+  /* For the sake of convenience and reduced #ifdef-ery in src/unix/sunos.c,
+  * add the fs_event fields even when this version of SunOS doesn't support
+  * file watching.
+  */
+  UV__Io fs_event_watcher @if(env::OS_TYPE == OsType.SOLARIS);
+  CInt fs_fd @if(env::OS_TYPE == OsType.SOLARIS);
+
+  // win
+  Win32_HANDLE iocp @if(env::WIN32);
+  /* The current time according to the event loop. in msecs. */ 
+  CULongLong time @if(env::WIN32);
+  /* Tail of a single-linked circular queue of pending reqs. If the queue */
+  /* is empty, tail_ is NULL. If there is only one item, */ 
+  /* tail_->next_req == tail_ */
+  UVReq* pending_reqs_tail @if(env::WIN32);
+  /* Head of a single-linked list of closed handles */
+  UVHandle* endgame_handles @if(env::WIN32);
+  /* TODO(bnoordhuis) Stop heap-allocating |timer_heap| in libuv v2.x. */
+  void* timer_heap @if(env::WIN32);
+  /* Lists of active loop (prepare / check / idle) watchers */
+  UVPrepare* prepare_handles @if(env::WIN32);
+  UVCheck* check_handles @if(env::WIN32);
+  UVIdle* idle_handles @if(env::WIN32);
+  /* This pointer will refer to the prepare/check/idle handle whose */
+  /* callback is scheduled to be called next. This is needed to allow */ 
+  /* safe removal from one of the lists above while that list being */
+  /* iterated over. */
+  UVPrepare* next_prepare_handle @if(env::WIN32);
+  UVCheck* next_check_handle @if(env::WIN32);
+  UVIdle* next_idle_handle @if(env::WIN32);
+  /* This handle holds the peer sockets for the fast variant of uv_poll_t */
+  Win32_SOCKET[UV_MSAFD_PROVIDER_COUNT] poll_peer_sockets @if(env::WIN32);
+  /* No longer used. */ 
+  CUInt active_tcp_streams @if(env::WIN32);
+  /* No longer used. */ 
+  CUInt active_udp_streams @if(env::WIN32);
+  /* Counter to started timer */
+  CULongLong timer_counter @if(env::WIN32); 
+  /* Threadpool */
+  UV__Queue wq @if(env::WIN32);
+  UVMutex wq_mutex @if(env::WIN32);
+  UVAsync wq_async @if(env::WIN32);
+}
+
+extern fn void* uv_loop_get_data(UVLoop*);
+extern fn void uv_loop_set_data(UVLoop*, void* data);
+
+/* Unicode utilities needed for dealing with Windows. */
+extern fn CLongLong uv_utf16_length_as_wtf8(CULong* utf16,
+									 CULongLong utf16_len);
+extern fn CInt uv_utf16_to_wtf8(CULong* utf16,
+						 CULongLong utf16_len,
+						 CChar** wtf8_ptr,
+						 CLongLong* wtf8_len_ptr);
+extern fn CULongLong uv_wtf8_length_as_utf16(CChar* wtf8);
+extern fn void uv_wtf8_to_utf16(CChar* wtf8,
+						 CULong* utf16,
+						 CLongLong utf16_len);
+
+// typedef struct uv_handle_s uv_handle_t;
+
+struct UVHandle {
+  /* public */
+	void* data;
+	/* read-only */
+	UVLoop* loop;
+	UVHandleType type;
+	/* private */
+	UVCloseCb close_cb;
+	UV__Queue handle_queue;
+	union u {
+		CInt fd;
+		void*[4] reserved;
+	}
+
+  UVHandle* next_closing @if(!env::WIN32);
+  UVHandle* endgame_next @if(env::WIN32);
+  CUInt flags;
+}
+
+extern fn CLongLong uv_handle_size(UVHandleType type);
+extern fn UVHandleType uv_handle_get_type(UVHandle* handle);
+extern fn CChar* uv_handle_type_name(UVHandleType type);
+extern fn void* uv_handle_get_data(UVHandle* handle);
+extern fn UVLoop* uv_handle_get_loop(UVHandle* handle);
+extern fn void uv_handle_set_data(UVHandle* handle, void* data);
+
+extern fn CLongLong uv_req_size(UVReqType type);
+extern fn void* uv_req_get_data(UVReq* req);
+extern fn void uv_req_set_data(UVReq* req, void* data);
+extern fn UVReqType uv_req_get_type(UVReq* req);
+extern fn CChar* uv_req_type_name(UVReqType type);
+
+extern fn CInt uv_is_active(UVHandle* handle);
+
+extern fn void uv_walk(UVLoop* loop, UVWalkCb walk_cb, void* arg);
+
+/* Helpers for ad hoc debugging, no API/ABI stability guaranteed. */
+extern fn void uv_print_all_handles(UVLoop* loop, void* stream); // FILE* ?
+extern fn void uv_print_active_handles(UVLoop* loop, void* stream); // FILE* ?
+
+extern fn void uv_close(UVHandle* handle, UVCloseCb close_cb);
+
+extern fn CInt uv_send_buffer_size(UVHandle* handle, CInt* value);
+extern fn CInt uv_recv_buffer_size(UVHandle* handle, CInt* value);
+
+extern fn CInt uv_fileno(UVHandle* handle, UVOsFd* fd);
+
+extern fn UVBuf uv_buf_init(CChar* base, CUInt len);
+
+extern fn CInt uv_pipe(UVFile[2]* fds, CInt read_flags, CInt write_flags);
+extern fn CInt uv_socketpair(CInt type,
+                            CInt protocol,
+                            UVOsSock[2]* socket_vector,
+                            CInt flags0,
+                            CInt flags1);
+
+// typedef struct uv_dir_s uv_dir_t;
+
+import std::os::posix;
+
+struct UVDir {
+  UVDirent* dirents;
+  CLongLong nentries;
+  void*[4]* reserved;
+  // UV_DIR_PRIVATE_FIELDS
+  DIRPtr dir @if(!env::WIN32);
+
+  Win32_HANDLE dir_handle @if(env::WIN32);
+  Win32_WIN32_FIND_DATAW find_data @if(env::WIN32);
+  bool need_find_call @if(env::WIN32);
+}
+
+extern fn UVFsType uv_fs_get_type(UVFs*);
+extern fn CULongLong uv_fs_get_result(UVFs*);
+extern fn CInt uv_fs_get_system_error(UVFs*);
+extern fn void* uv_fs_get_ptr(UVFs*);
+extern fn CChar* uv_fs_get_path(UVFs*);
+extern fn UVStat* uv_fs_get_statbuf(UVFs*);
+
+extern fn void uv_fs_req_cleanup(UVFs* req);
+extern fn CInt uv_fs_close(UVLoop* loop,
+                          UVFs* req,
+                          UVFile file,
+                          UVFsCb cb);
+extern fn CInt uv_fs_open(UVLoop* loop,
+                         UVFs* req,
+                         CChar* path,
+                         CInt flags,
+                         CInt mode,
+                         UVFsCb cb);
+extern fn CInt uv_fs_read(UVLoop* loop,
+                         UVFs* req,
+                         UVFile file,
+                         UVBuf* bufs,
+                         CUInt nbufs,
+                         CLongLong offset,
+                         UVFsCb cb);
+extern fn CInt uv_fs_unlink(UVLoop* loop,
+                           UVFs* req,
+                           CChar* path,
+                           UVFsCb cb);
+extern fn CInt uv_fs_write(UVLoop* loop,
+                          UVFs* req,
+                          UVFile file,
+                          UVBuf* bufs,
+                          CUInt nbufs,
+                          CLongLong offset,
+                          UVFsCb cb);
+
+// typedef struct uv_stream_s uv_stream_t;
+
+struct UVStream {
+  inline UVHandle h;
+  CLongLong write_queue_size;    
+  UVAllocCb alloc_cb; 
+  UVReadCb read_cb;
+
+  // UV_STREAM_PRIVATE_FIELDS
+  // win32
+  CUInt reqs_pending @if(env::WIN32);
+  CInt activecnt @if(env::WIN32);
+  UVRead read_req @if(env::WIN32);
+  union stream @if(env::WIN32) {
+    struct conn { 
+      CUInt write_reqs_pending;
+      UVShutdown* shutdown_req;
+    }
+    struct serv { 
+      UVConnectionCb connection_cb;     
+    }
+  }
+
+  // unix   
+  UVConnect *connect_req @if(!env::WIN32);
+  UVShutdown *shutdown_req @if(!env::WIN32);   
+  UV__Io io_watcher @if(!env::WIN32);
+  UV__Queue write_queue @if(!env::WIN32);  
+  UV__Queue write_completed_queue @if(!env::WIN32);    
+  UVConnectionCb connection_cb @if(!env::WIN32);
+  CInt delayed_error @if(!env::WIN32);  
+  CInt accepted_fd @if(!env::WIN32);    
+  void* queued_fds @if(!env::WIN32); 
+  // UV_STREAM_PRIVATE_FIELDS
+  void* select @if(env::DARWIN);
+}
+
+// typedef struct uv_tcp_s uv_tcp_t;
+
+struct UVTcp {
+  inline UVStream s;
+  // UV_TCP_PRIVATE_FIELDS
+  Win32_SOCKET socket @if(env::WIN32);
+  CInt delayed_error @if(env::WIN32);
+  union tcp @if(env::WIN32) {
+    struct serv {
+        UVTcpAccept* accept_reqs;
+        CUInt processed_accepts;
+        UVTcpAccept* pending_accepts;
+        Win32_LPFn_ACCEPTEX func_acceptex;
+    }
+    struct conn {
+        UVBuf read_buffer;
+        Win32_LPFn_CONNECTEX func_connectex;
+    }
+  }
+}
+
+extern fn CLongLong uv_stream_get_write_queue_size(UVStream* stream);
+
+extern fn CInt uv_listen(UVStream* stream, CInt backlog, UVConnectionCb cb);
+extern fn CInt uv_accept(UVStream* server, UVStream* client);
+
+extern fn CInt uv_read_start(UVStream*,
+                            UVAllocCb alloc_cb,
+                            UVReadCb read_cb);
+extern fn CInt uv_read_stop(UVStream*);
+
+extern fn CInt uv_write(UVWrite* req,
+                       UVStream* handle,
+                       UVBuf* bufs,
+                       CUInt nbufs,
+                       UVWriteCb cb);
+extern fn CInt uv_write2(UVWrite* req,
+                        UVStream* handle,
+                        UVBuf* bufs,
+                        CUInt nbufs,
+                        UVStream* send_handle,
+                        UVWriteCb cb);
+extern fn CInt uv_try_write(UVStream* handle,
+                           UVBuf* bufs,
+                           CUInt nbufs);
+extern fn CInt uv_try_write2(UVStream* handle,
+                            UVBuf* bufs,
+                            CUInt nbufs,
+                            UVStream* send_handle);
+
+extern fn CInt uv_tcp_init(UVLoop*, UVTcp* handle);
+extern fn CInt uv_tcp_init_ex(UVLoop*, UVTcp* handle, CUInt flags);
+extern fn CInt uv_tcp_open(UVTcp* handle, UVOsSock sock);
+extern fn CInt uv_tcp_nodelay(UVTcp* handle, CInt enable);
+extern fn CInt uv_tcp_keepalive(UVTcp* handle,
+                               CInt enable,
+                               CUInt delay);
+extern fn CInt uv_tcp_simultaneous_accepts(UVTcp* handle, CInt enable);
+
+enum UVTcpFlags : CInt (CInt code) {
+  /* Used with uv_tcp_bind, when an IPv6 address is used. */
+  UV_TCP_IPV6ONLY = 1,
+
+  /* Enable SO_REUSEPORT socket option when binding the handle.
+   * This allows completely duplicate bindings by multiple processes
+   * or threads if they all set SO_REUSEPORT before binding the port.
+   * Incoming connections are distributed across the participating
+   * listener sockets.
+   *
+   * This flag is available only on Linux 3.9+, DragonFlyBSD 3.6+,
+   * FreeBSD 12.0+, Solaris 11.4, and AIX 7.2.5+ for now.
+   */
+  UV_TCP_REUSEPORT = 2,
+}
+
+extern fn CInt uv_tcp_bind(UVTcp* handle,
+                          Platform_sockaddr* addr,
+                          CUInt flags);
+extern fn CInt uv_tcp_getsockname(UVTcp* handle,
+                                 Platform_sockaddr* name,
+                                 CInt* namelen);
+extern fn CInt uv_tcp_getpeername(UVTcp* handle,
+                                 Platform_sockaddr* name,
+                                 CInt* namelen);
+extern fn CInt uv_tcp_close_reset(UVTcp* handle, UVCloseCb close_cb);
+extern fn CInt uv_tcp_connect(UVConnect* req,
+                             UVTcp* handle,
+                             Platform_sockaddr* addr,
+                             UVConnectCb cb);
+
+
+// typedef struct uv_udp_s uv_udp_t;
+
+/* uv_udp_t is a subclass of uv_handle_t. */
+struct UVUdp {
+  inline UVHandle h;
+  /* read-only */
+  /*
+   * Number of bytes queued for sending. This field strictly shows how much
+   * information is currently queued.
+   */
+  CLongLong send_queue_size;
+  /*
+   * Number of send requests currently in the queue awaiting to be processed.
+   */
+  CLongLong send_queue_count;
+
+  // UV_UDP_PRIVATE_FIELDS
+  // win
+  Win32_SOCKET socket @if(env::WIN32);                                                              
+  CUInt reqs_pending @if(env::WIN32);                                                         
+  CInt activecnt @if(env::WIN32);                                                                     
+  UVReq recv_req @if(env::WIN32);                                                                 
+  UVBuf recv_buffer @if(env::WIN32);                                                              
+  Win32_Sockaddr_storage recv_from @if(env::WIN32);                                                 
+  CInt recv_from_len @if(env::WIN32);                                                                 
+  UVUdpRecvCb recv_cb @if(env::WIN32);                                                            
+  UVAllocCb alloc_cb @if(env::WIN32);                                                              
+  Win32_LPFN_WSARECV func_wsarecv @if(env::WIN32);                                                         
+  Win32_LPFN_WSARECVFROM func_wsarecvfrom @if(env::WIN32);
+
+  // unix
+  UVAllocCb alloc_cb @if(!env::WIN32);                                                       
+  UVUdpRecvCb recv_cb @if(!env::WIN32);                                                     
+  UV__Io io_watcher @if(!env::WIN32);                                                        
+  UV__Queue write_queue @if(!env::WIN32);                                               
+  UV__Queue write_completed_queue @if(!env::WIN32);
+}
+
+// typedef struct uv_pipe_s uv_pipe_t;
+
+/*
+ * uv_pipe_t is a subclass of uv_stream_t.
+ *
+ * Representing a pipe stream or pipe server. On Windows this is a Named
+ * Pipe. On Unix this is a Unix domain socket.
+ */
+struct UVPipe {
+  inline UVStream s;
+  CInt ipc; /* non-zero if this pipe is used for passing handles */
+  // UV_PIPE_PRIVATE_FIELDS
+  // win
+  Win32_HANDLE handle @if(env::WIN32);
+  Win32_WCHAR* name @if(env::WIN32);
+  union pipe @if(env::WIN32) {
+    struct serv {
+    // uv_pipe_server_fields
+      CInt pending_instances;
+      UVPipeAccept* accept_reqs;
+      UVPipeAccept* pending_accepts;
+    }
+    struct conn {
+    // uv_pipe_connection_fields
+      UVTimer* eof_timer;
+      UVWrite dummy; /* TODO: retained for ABI compat; remove this in v2.x. */
+      Win32_DWORD ipc_remote_pid;
+      union ipc_data_frame {
+        CULong payload_remaining;
+        CULongLong dummy; /* TODO: retained for ABI compat; remove this in v2.x. */
+      }
+      UV__Queue ipc_xfer_queue;
+      CInt ipc_xfer_queue_length;
+      UVWrite* non_overlapped_writes_tail;
+      Win32_CRITICAL_SECTION readfile_thread_lock;
+      Win32_HANDLE readfile_thread_handle;
+    }
+  }
+
+  // unix
+  CChar* pipe_fname @if(!env::WIN32);
+}
+
+extern fn CInt uv_pipe_init(UVLoop*, UVPipe* handle, CInt ipc);
+extern fn CInt uv_pipe_open(UVPipe*, UVFile file);
+extern fn CInt uv_pipe_bind(UVPipe* handle, CChar* name);
+extern fn CInt uv_pipe_bind2(UVPipe* handle,
+                            CChar* name,
+                            CLongLong namelen,
+                            CUInt flags);
+extern fn void uv_pipe_connect(UVConnect* req,
+                               UVPipe* handle,
+                               CChar* name,
+                               UVConnectCb cb);
+extern fn CInt uv_pipe_connect2(UVConnect* req,
+                               UVPipe* handle,
+                               CChar* name,
+                               CLongLong namelen,
+                               CUInt flags,
+                               UVConnectCb cb);
+extern fn CInt uv_pipe_getsockname(UVPipe* handle,
+                                  CChar* buffer,
+                                  CLongLong* size);
+extern fn CInt uv_pipe_getpeername(UVPipe* handle,
+                                  CChar* buffer,
+                                  CLongLong* size);
+extern fn void uv_pipe_pending_instances(UVPipe* handle, CInt count);
+extern fn CInt uv_pipe_pending_count(UVPipe* handle);
+extern fn UVHandleType uv_pipe_pending_type(UVPipe* handle);
+extern fn CInt uv_pipe_chmod(UVPipe* handle, CInt flags);
+
+// typedef struct uv_tty_s uv_tty_t;
+
+/*
+ * uv_tty_t is a subclass of uv_stream_t.
+ *
+ * Representing a stream for the console.
+ */
+
+def Termios = void*; // todo need termios bindings for c3
+
+enum UVTtyMode {
+  /* Initial/normal terminal mode */
+  UV_TTY_MODE_NORMAL,
+  /* Raw input mode (On Windows, ENABLE_WINDOW_INPUT is also enabled) */
+  UV_TTY_MODE_RAW,
+  /* Binary-safe I/O mode for IPC (Unix-only) */
+  UV_TTY_MODE_IO
+}
+
+struct UVTty {
+  inline UVStream s;
+  // UV_TTY_PRIVATE_FIELDS
+  // win32
+  Win32_HANDLE handle @if(env::WIN32);                                                              
+  union tty @if(env::WIN32) {                                                                     
+    struct rd {                                                                  
+      /* Used for readable TTY handles */                                     
+      /* TODO: remove me in v2.x. */                                          
+      Win32_HANDLE unused_;                                                         
+      UVBuf read_line_buffer;                                              
+      Win32_HANDLE read_raw_wait;                                                   
+      /* Fields used for translating win keystrokes CInto vt100 characters */  
+      CChar[8]* last_key;                                                       
+      CUChar last_key_offset;                                          
+      CUChar last_key_len;                                             
+      Win32_WCHAR last_utf16_high_surrogate;                                        
+      Win32_INPUT_RECORD last_input_record;                                         
+    }                                                                     
+    struct wr {                                                                  
+      /* Used for writable TTY handles */                                     
+      /* utf8-to-utf16 conversion state */                                    
+      CUInt utf8_codepoCInt;                                            
+      CUChar utf8_bytes_left;                                          
+      /* eol conversion state */                                              
+      CUChar previous_eol;                                             
+      /* ansi parser state */                                                 
+      CUShort ansi_parser_state;                                       
+      CUChar ansi_csi_argc;                                            
+      CUShort[4]* ansi_csi_argv;
+      Win32_COORD saved_position;                                                   
+      Win32_WORD saved_attributes;                                                  
+    }                                                                   
+  }
+
+  // unix
+  Termios orig_termios @if(!env::WIN32);                                                
+  CInt mode @if(!env::WIN32);
+}
+
+enum UVTtyVtermstate {
+  /*
+   * The console supports handling of virtual terminal sequences
+   * (Windows10 new console, ConEmu)
+   */
+  UV_TTY_SUPPORTED,
+  /* The console cannot process the virtual terminal sequence.  (Legacy
+   * console)
+   */
+  UV_TTY_UNSUPPORTED
+}
+
+extern fn CInt uv_tty_init(UVLoop*, UVTty*, UVFile fd, CInt readable);
+extern fn CInt uv_tty_set_mode(UVTty*, UVTtyMode mode);
+extern fn CInt uv_tty_reset_mode();
+extern fn CInt uv_tty_get_winsize(UVTty*, CInt* width, CInt* height);
+extern fn void uv_tty_set_vterm_state(UVTtyVtermstate state);
+extern fn CInt uv_tty_get_vterm_state(UVTtyVtermstate* state);
+
+// typedef struct uv_poll_s uv_poll_t;
+
+struct UVPoll {
+  inline UVHandle h;
+  UVPollCb poll_cb;
+  // UV_POLL_PRIVATE_FIELDS
+  // win
+  Win32_SOCKET socket @if(env::WIN32);       
+  /* Used in fast mode */                                                     
+  Win32_SOCKET peer_socket @if(env::WIN32);  
+  Win32_AFD_POLL_INFO afd_poll_info_1 @if(env::WIN32);                                              
+  Win32_AFD_POLL_INFO afd_poll_info_2 @if(env::WIN32);                                             
+  /* Used in fast and slow mode. */                                           
+  UVReq poll_req_1 @if(env::WIN32); 
+  UVReq poll_req_2 @if(env::WIN32); 
+  CUChar submitted_events_1 @if(env::WIN32);                                          
+  CUChar submitted_events_2 @if(env::WIN32);                                          
+  CUChar mask_events_1 @if(env::WIN32);                                               
+  CUChar mask_events_2 @if(env::WIN32);                                               
+  CUChar events @if(env::WIN32);
+
+  // unix
+  UV__Io io_watcher @if(!env::WIN32);
+}
+
+enum UVPollEvent : CInt (CInt code) {
+  UV_READABLE = 1,
+  UV_WRITABLE = 2,
+  UV_DISCONNECT = 4,
+  UV_PRIORITIZED = 8
+}
+
+extern fn CInt uv_poll_init(UVLoop* loop, UVPoll* handle, CInt fd);
+extern fn CInt uv_poll_init_socket(UVLoop* loop,
+                                  UVPoll* handle,
+                                  UVOsSock socket);
+extern fn CInt uv_poll_start(UVPoll* handle, CInt events, UVPollCb cb);
+extern fn CInt uv_poll_stop(UVPoll* handle);
+
+// typedef struct uv_timer_s uv_timer_t;
+/*
+ * uv_timer_t is a subclass of uv_handle_t.
+ *
+ * Used to get woken up at a specified time in the future.
+ */
+struct UVTimer {
+  inline UVHandle h;
+
+  // UV_TIMER_PRIVATE_FIELDS
+  // win
+  union node @if(env::WIN32) {
+    void*[3]* heap;
+    UV__Queue queue;
+  }
+  CInt unused @if(env::WIN32);
+  CULongLong timeout @if(env::WIN32);
+  CULongLong repeat @if(env::WIN32);
+  CULongLong start_id @if(env::WIN32);
+  UVTimerCb timer_cb @if(env::WIN32);
+
+  // unix
+  UVTimerCb timer_cb @if(!env::WIN32);
+  union node @if(!env::WIN32) {
+    void*[3]* heap;
+    UV__Queue queue;
+  }
+  CULongLong timeout @if(!env::WIN32);
+  CULongLong repeat @if(!env::WIN32);
+  CULongLong start_id @if(!env::WIN32);
+
+  /*
+    > @velikoss
+    its practically identical in win and unix
+    but for fields ordering purposes i wrote them separately
+   */
+}
+
+extern fn CInt uv_timer_init(UVLoop*, UVTimer* handle);
+extern fn CInt uv_timer_start(UVTimer* handle,
+                             UVTimerCb cb,
+                             CULongLong timeout,
+                             CULongLong repeat);
+extern fn CInt uv_timer_stop(UVTimer* handle);
+extern fn CInt uv_timer_again(UVTimer* handle);
+extern fn void uv_timer_set_repeat(UVTimer* handle, CULongLong repeat);
+extern fn CULongLong uv_timer_get_repeat(UVTimer* handle);
+extern fn CULongLong uv_timer_get_due_in(UVTimer* handle);
+
+// typedef struct uv_prepare_s uv_prepare_t;
+
+struct UVPrepare {
+  inline UVHandle h;
+  // UV_PREPARE_PRIVATE_FIELDS
+  // win
+  UVPrepare* prepare_prev @if(env::WIN32);
+  UVPrepare* prepare_next @if(env::WIN32);
+  UVPrepareCb prepare_cb @if(env::WIN32);
+  // unix
+  UVPrepareCb prepare_cb @if(!env::WIN32);
+  UV__Queue queue @if(!env::WIN32);
+}
+
+extern fn CInt uv_prepare_init(UVLoop*, UVPrepare* prepare);
+extern fn CInt uv_prepare_start(UVPrepare* prepare, UVPrepareCb cb);
+extern fn CInt uv_prepare_stop(UVPrepare* prepare);
+
+// typedef struct uv_check_s uv_check_t;
+
+struct UVCheck {
+  inline UVHandle h;
+  // UV_CHECK_PRIVATE_FIELDS
+  // win
+  UVCheck* check_prev @if(env::WIN32);
+  UVCheck* check_next @if(env::WIN32);
+  UVCheckCb check_cb @if(env::WIN32);
+
+  // unix
+  UVCheckCb check_cb @if(!env::WIN32);
+  UV__Queue queue @if(!env::WIN32);
+}
+
+extern fn CInt uv_check_init(UVLoop*, UVCheck* check);
+extern fn CInt uv_check_start(UVCheck* check, UVCheckCb cb);
+extern fn CInt uv_check_stop(UVCheck* check);
+
+// typedef struct uv_idle_s uv_idle_t;
+
+struct UVIdle {
+  inline UVHandle uv_handle_fields;
+  // UV_IDLE_PRIVATE_FIELDS
+  // win
+  UVIdle* idle_prev @if(env::WIN32);
+  UVIdle* idle_next @if(env::WIN32);
+  UVIdleCb idle_cb @if(env::WIN32);
+  // unix
+  UVIdleCb idle_cb @if(!env::WIN32);
+  UV__Queue queue @if(!env::WIN32);
+}
+
+extern fn CInt uv_idle_init(UVLoop*, UVIdle* idle);
+extern fn CInt uv_idle_start(UVIdle* idle, UVIdleCb cb);
+extern fn CInt uv_idle_stop(UVIdle* idle);
+
+// typedef struct uv_async_s uv_async_t;
+
+struct UVAsync {
+  inline UVHandle h;
+  // UV_ASYNC_PRIVATE_FIELDS
+  // win
+  UVReq async_req @if(env::WIN32);
+  UVAsyncCb async_cb @if(env::WIN32);
+  /* include/uv/win.h > char to avoid alignment issues */
+  CChar async_sent @if(env::WIN32);
+  // unix
+  UVAsyncCb async_cb @if(!env::WIN32);
+  UV__Queue queue @if(!env::WIN32);
+  CInt pending @if(!env::WIN32);
+}
+
+extern fn CInt uv_async_init(UVLoop*,
+                            UVAsync* async,
+                            UVAsyncCb async_cb);
+extern fn CInt uv_async_send(UVAsync* async);
+
+// typedef struct uv_process_s uv_process_t;
+
+struct UVProcessExit {                                                 
+  inline UVReq r;
+}
+
+enum UVStdioFlags : int (int code) {
+  UV_IGNORE         = 0x00,
+  UV_CREATE_PIPE    = 0x01,
+  UV_INHERIT_FD     = 0x02,
+  UV_INHERIT_STREAM = 0x04,
+
+  /*
+   * When UV_CREATE_PIPE is specified, UV_READABLE_PIPE and UV_WRITABLE_PIPE
+   * determine the direction of flow, from the child process' perspective. Both
+   * flags may be specified to create a duplex data stream.
+   */
+  UV_READABLE_PIPE  = 0x10,
+  UV_WRITABLE_PIPE  = 0x20,
+
+  /*
+   * When UV_CREATE_PIPE is specified, specifying UV_NONBLOCK_PIPE opens the
+   * handle in non-blocking mode in the child. This may cause loss of data,
+   * if the child is not designed to handle to encounter this mode,
+   * but can also be significantly more efficient.
+   */
+  UV_NONBLOCK_PIPE  = 0x40,
+  UV_OVERLAPPED_PIPE = 0x40 /* old name, for compatibility */
+}
+
+struct UVStdioContainer {
+  UVStdioFlags flags;
+
+  union data {
+    UVStream* stream;
+    CInt fd;
+  }
+}
+
+struct UVProcessOptions {
+  UVExitCb exit_cb; /* Called after the process exits. */
+  CChar* file;   /* Path to program to execute. */
+  /*
+   * Command line arguments. args[0] should be the path to the program. On
+   * Windows this uses CreateProcess which concatenates the arguments into a
+   * string this can cause some strange errors. See the note at
+   * windows_verbatim_arguments.
+   */
+  CChar** args;
+  /*
+   * This will be set as the environ variable in the subprocess. If this is
+   * NULL then the parents environ will be used.
+   */
+  CChar** env;
+  /*
+   * If non-null this represents a directory the subprocess should execute
+   * in. Stands for current working directory.
+   */
+  CChar* cwd;
+  /*
+   * Various flags that control how uv_spawn() behaves. See the definition of
+   * `enum uv_process_flags` below.
+   */
+  CUInt flags;
+  /*
+   * The `stdio` field points to an array of uv_stdio_container_t structs that
+   * describe the file descriptors that will be made available to the child
+   * process. The convention is that stdio[0] points to stdin, fd 1 is used for
+   * stdout, and fd 2 is stderr.
+   *
+   * Note that on windows file descriptors greater than 2 are available to the
+   * child process only if the child processes uses the MSVCRT runtime.
+   */
+  CInt stdio_count;
+  UVStdioContainer* stdio;
+  /*
+   * Libuv can change the child process' user/group id. This happens only when
+   * the appropriate bits are set in the flags fields. This is not supported on
+   * windows; uv_spawn() will fail and set the error to UV_ENOTSUP.
+   */
+  UVUid uid;
+  UVGid gid;
+}
+
+/*
+ * uv_process_t is a subclass of uv_handle_t.
+ */
+struct UVProcess {
+  inline UVHandle h;
+  UVExitCb exit_cb;
+  CInt pid;
+  // UV_PROCESS_PRIVATE_FIELDS
+  // win
+  UVProcessExit exit_req @if(env::WIN32);
+  void* unused @if(env::WIN32); /* TODO: retained for ABI compat; remove this in v2.x. */
+  CInt exit_signal @if(env::WIN32);
+  Win32_HANDLE wait_handle @if(env::WIN32);
+  Win32_HANDLE process_handle @if(env::WIN32);
+  CChar exit_cb_pending @if(env::WIN32);
+  // unix
+  UV__Queue queue @if(!env::WIN32);
+  CInt status @if(!env::WIN32);
+}
+
+extern fn CInt uv_spawn(UVLoop* loop,
+                       UVProcess* handle,
+                       UVProcessOptions* options);
+extern fn CInt uv_process_kill(UVProcess*, CInt signum);
+extern fn CInt uv_kill(CInt pid, CInt signum);
+extern fn UVPid uv_process_get_pid(UVProcess*);
+
+// typedef struct uv_fs_event_s uv_fs_event_t;
+
+enum UVFsEventE : CInt (CInt code) {
+  UV_RENAME = 1,
+  UV_CHANGE = 2
+}
+
+struct UVFsEvent {
+  inline UVHandle h;
+  /* private */
+  CChar* path;
+  // UV_FS_EVENT_PRIVATE_FIELDS
+  // win
+  UVProcessExit exit_req @if(env::WIN32);
+  void* unused; /* TODO: retained for ABI compat; remove this in v2.x. */
+  CInt exit_signal @if(env::WIN32);
+  Win32_HANDLE wait_handle @if(env::WIN32);
+  Win32_HANDLE process_handle @if(env::WIN32);
+  CChar exit_cb_pending @if(env::WIN32);
+
+  // unix
+  UVFsEventCb cb @if(!env::WIN32);
+  // UV_PLATFORM_FS_EVENT_FIELDS
+  // aix
+  UV__Io event_watcher @if(env::OS_TYPE == OsType.AIX);
+  CChar *dir_filename @if(env::OS_TYPE == OsType.AIX);
+  // linux
+  UV__Queue watchers @if(env::OS_TYPE == OsType.LINUX);
+  CInt wd @if(env::OS_TYPE == OsType.LINUX);
+  // bsd
+  UV__Io event_watcher @if(env::BSD_FAMILY);
+  // darwin
+  UV__Io event_watcher @if(env::DARWIN);
+  CChar* realpath @if(env::DARWIN);
+  CInt realpath_len @if(env::DARWIN);
+  CInt cf_flags @if(env::DARWIN);
+  UVAsync* cf_cb @if(env::DARWIN);
+  UV__Queue cf_events @if(env::DARWIN);
+  UV__Queue cf_member @if(env::DARWIN);
+  CInt cf_error @if(env::DARWIN);
+  UVMutex cf_mutex @if(env::DARWIN);
+  // sunos
+  void* fo @if(env::OS_TYPE == OsType.SOLARIS); // file_obj_t ?
+  CInt fd @if(env::OS_TYPE == OsType.SOLARIS);
+}
+
+// typedef struct uv_fs_poll_s uv_fs_poll_t;
+
+/*
+ * uv_fs_stat() based polling file watcher.
+ */
+struct UVFsPoll {
+  inline UVHandle h;
+  /* Private, don't touch. */
+  void* poll_ctx;
+}
+
+extern fn CInt uv_fs_poll_init(UVLoop* loop, UVFsPoll* handle);
+extern fn CInt uv_fs_poll_start(UVFsPoll* handle,
+                               UVFsPollCb poll_cb,
+                               CChar* path,
+                               CUInt interval);
+extern fn CInt uv_fs_poll_stop(UVFsPoll* handle);
+extern fn CInt uv_fs_poll_getpath(UVFsPoll* handle,
+                                 CChar* buffer,
+                                 CLongLong* size);
+
+
+/*
+ * Flags to be passed to uv_fs_event_start().
+ */
+enum UVFsEventFlags : CInt (CInt code) {
+  /*
+   * By default, if the fs event watcher is given a directory name, we will
+   * watch for all events in that directory. This flags overrides this behavior
+   * and makes fs_event report only changes to the directory entry itself. This
+   * flag does not affect individual files watched.
+   * This flag is currently not implemented yet on any backend.
+   */
+  UV_FS_EVENT_WATCH_ENTRY = 1,
+
+  /*
+   * By default uv_fs_event will try to use a kernel CInterface such as inotify
+   * or kqueue to detect events. This may not work on remote filesystems such
+   * as NFS mounts. This flag makes fs_event fall back to calling stat() on a
+   * regular CInterval.
+   * This flag is currently not implemented yet on any backend.
+   */
+  UV_FS_EVENT_STAT = 2,
+
+  /*
+   * By default, event watcher, when watching directory, is not registering
+   * (is ignoring) changes in it's subdirectories.
+   * This flag will override this behaviour on platforms that support it.
+   */
+  UV_FS_EVENT_RECURSIVE = 4
+}
+
+
+extern fn CInt uv_fs_event_init(UVLoop* loop, UVFsEvent* handle);
+extern fn CInt uv_fs_event_start(UVFsEvent* handle,
+                                UVFsEventCb cb,
+                                CChar* path,
+                                CUInt flags);
+extern fn CInt uv_fs_event_stop(UVFsEvent* handle);
+extern fn CInt uv_fs_event_getpath(UVFsEvent* handle,
+                                  CChar* buffer,
+                                  CLongLong* size);
+
+extern fn CInt uv_ip4_addr(CChar* ip, CInt port, Platform_sockaddr_in* addr);
+extern fn CInt uv_ip6_addr(CChar* ip, CInt port, Platform_sockaddr_in6* addr);
+
+extern fn CInt uv_ip4_name(Platform_sockaddr_in* src, CChar* dst, CLongLong size);
+extern fn CInt uv_ip6_name(Platform_sockaddr_in6* src, CChar* dst, CLongLong size);
+extern fn CInt uv_ip_name(Platform_sockaddr* src, CChar* dst, CLongLong size);
+
+extern fn CInt uv_inet_ntop(CInt af, void* src, CChar* dst, CLongLong size);
+extern fn CInt uv_inet_pton(CInt af, CChar* src, void* dst);
+
+// typedef struct uv_signal_s uv_signal_t;
+
+struct UVSignal {
+  inline UVHandle h;
+  UVSignalCb signal_cb;
+  CInt signum;
+  // UV_SIGNAL_PRIVATE_FIELDS
+  // win
+  Win32_RB_ENTRY(<UVSignal>) tree_entry @if(env::WIN32);
+  UVReq signal_req @if(env::WIN32);
+  CULong pending_signum @if(env::WIN32);
+  // unix
+  /* RB_ENTRY(uv_signal_s) tree_entry; */                                     
+  struct tree_entry @if(!env::WIN32) {
+    UVSignal* rbe_left;
+    UVSignal* rbe_right;
+    UVSignal* rbe_parent;
+    CInt rbe_color;
+  }
+  /* Use two counters here so we don have to fiddle with atomics. */
+  CUInt caught_signals @if(!env::WIN32);
+  CUInt dispatched_signals @if(!env::WIN32);
+}
+
+extern fn CInt uv_signal_init(UVLoop* loop, UVSignal* handle);
+extern fn CInt uv_signal_start(UVSignal* handle,
+                              UVSignalCb signal_cb,
+                              CInt signum);
+extern fn CInt uv_signal_start_oneshot(UVSignal* handle,
+                                      UVSignalCb signal_cb,
+                                      CInt signum);
+extern fn CInt uv_signal_stop(UVSignal* handle);
+
+extern fn void uv_loadavg(double[3]* avg);
+
+
+// /* Request types. */
+// typedef struct uv_req_s uv_req_t;
+
+enum UVReqType {
+  UV_UNKNOWN_REQ,
+  UV_REQ_TYPE_PRIVATE,
+  UV_REQ_TYPE_MAX
+}
+
+struct UVReq {
+  void* data;
+  /* read-only */
+  UVReqType type;
+  /* private */
+  void*[6]* reserved;
+  // UV_REQ_PRIVATE_FIELDS
+  // win
+  union u @if(env::WIN32) {                                                                     
+    /* Used by I/O operations */                                              
+    struct io {                                                                  
+      Win32_OVERLAPPED overlapped;                                                  
+      CLongLong queued_bytes;                                                    
+    }                                                                     
+    /* in v2, we can move these to the UV_CONNECT_PRIVATE_FIELDS */           
+    struct connect {                                                                  
+      Win32_ULONG_PTR result; /* overlapped.Internal is reused to hold the result */
+      Win32_HANDLE pipeHandle;                                                      
+      Win32_DWORD duplex_flags;                                                     
+      Win32_WCHAR* name;                                                             
+    }                                                              
+  }                                                                      
+  UVReq* next_req @if(env::WIN32);
+  // unix
+  // empty
+}
+
+// typedef struct uv_getaddrinfo_s uv_getaddrinfo_t;
+/*
+ * uv_getaddrinfo_t is a subclass of uv_req_t.
+ *
+ * Request object for uv_getaddrinfo.
+ */
+struct UVGetAddrInfo {
+  inline UVReq r;
+  /* read-only */
+  UVLoop* loop;
+  /* struct addrinfo* addrinfo is marked as private, but it really isn't. */
+  // UV_GETADDRINFO_PRIVATE_FIELDS
+  // win
+  UV__Work work_req @if(env::WIN32);                                                   
+  UVGetAddrInfoCb getaddrinfo_cb @if(env::WIN32);                                           
+  void* alloc @if(env::WIN32);                                                                
+  Win32_WCHAR* node @if(env::WIN32);                                                                
+  Win32_WCHAR* service @if(env::WIN32);                                                             
+  /* The addrinfoW field is used to store a poCInter to the hCInts, and    */   
+  /* later on to store the result of GetAddrInfoW. The final result will */   
+  /* be converted to struct addrinfo* and stored in the addrinfo field.  */   
+  Win32_addrinfoW* addrinfow @if(env::WIN32);                                                
+  Win32_addrinfo* addrinfo @if(env::WIN32);                                                  
+  CInt retcode @if(env::WIN32);
+
+  // unix
+  UV__Work work_req @if(!env::WIN32);
+  UVGetAddrInfoCb cb @if(!env::WIN32);
+  Unix_addrinfo* hints @if(!env::WIN32);
+  CChar* hostname @if(!env::WIN32);
+  CChar* service @if(!env::WIN32);
+  Unix_addrinfo* addrinfo @if(!env::WIN32);
+  CInt retcode @if(!env::WIN32);
+}
+
+extern fn CInt uv_getaddrinfo(UVLoop* loop,
+                             UVGetAddrInfo* req,
+                             UVGetAddrInfoCb getaddrinfo_cb,
+                             CChar* node,
+                             CChar* service,
+                             Platform_addrinfo* hCInts);
+extern fn void uv_freeaddrinfo(Platform_addrinfo* ai);
+
+// typedef struct uv_getnameinfo_s uv_getnameinfo_t;
+
+const NI_MAXSERV = 32;
+const NI_MAXHOST = 1025;
+
+/*
+* uv_getnameinfo_t is a subclass of uv_req_t.
+*
+* Request object for uv_getnameinfo.
+*/
+struct UVGetNameInfo {
+  inline UVReq r;
+  /* read-only */
+  UVLoop* loop;
+  /* host and service are marked as private, but they really aren't. */
+  // UV_GETNAMEINFO_PRIVATE_FIELDS
+  // win
+  UV__Work work_req @if(env::WIN32);                                                   
+  UVGetAddrInfoCb getaddrinfo_cb @if(env::WIN32);                                           
+  Win32_Sockaddr_storage storage @if(env::WIN32);
+  CInt flags @if(env::WIN32);
+  CChar[NI_MAXHOST] host @if(env::WIN32);                                              
+  CChar[NI_MAXSERV] service @if(env::WIN32);                                              
+  CInt retcode @if(env::WIN32);
+
+  // unix
+  UV__Work work_req @if(!env::WIN32);                                                   
+  UVGetAddrInfoCb getaddrinfo_cb @if(!env::WIN32);                                           
+  Unix_sockaddr_storage storage @if(!env::WIN32);
+  CInt flags @if(!env::WIN32);
+  CChar[NI_MAXHOST] host @if(!env::WIN32);                                              
+  CChar[NI_MAXSERV] service @if(!env::WIN32);                                              
+  CInt retcode @if(!env::WIN32);
+}
+
+extern fn CInt uv_getnameinfo(UVLoop* loop,
+                             UVGetNameInfo* req,
+                             UVGetNameInfoCb getnameinfo_cb,
+                             Platform_sockaddr* addr,
+                             CInt flags);
+
+// typedef struct uv_shutdown_s uv_shutdown_t;
+
+
+extern fn CInt uv_shutdown(UVShutdown* req,
+                          UVStream* handle,
+                          UVShutdownCb cb);
+
+struct UVShutdown {
+  inline UVReq r;
+  UVStream* handle;
+  UVShutdownCb cb;
+  // UV_SHUTDOWN_PRIVATE_FIELDS
+  // win
+  // empty
+  // unix
+  // empty
+}
+
+// typedef struct uv_write_s uv_write_t;
+/* uv_write_t is a subclass of uv_req_t. */
+struct UVWrite {
+  inline UVReq r;
+  UVWriteCb cb;
+  UVStream* send_handle; /* TODO: make private and unix-only in v2.x. */
+  UVStream* handle;
+  // UV_WRITE_PRIVATE_FIELDS
+  // win
+  CInt coalesced @if(env::WIN32);                
+  UVBuf write_buffer @if(env::WIN32);        
+  Win32_HANDLE event_handle @if(env::WIN32);
+  Win32_HANDLE wait_handle @if(env::WIN32);
+  // unix
+  UV__Queue queue @if(!env::WIN32);                                             
+  CUInt write_index @if(!env::WIN32);                                     
+  UVBuf* bufs @if(!env::WIN32);                                       
+  CUInt nbufs @if(!env::WIN32);                                         
+  CInt error @if(!env::WIN32);                                                 
+  UVBuf[4]* bufsml @if(!env::WIN32);
+}
+
+
+extern fn CInt uv_is_readable(UVStream* handle);
+extern fn CInt uv_is_writable(UVStream* handle);
+
+extern fn CInt uv_stream_set_blocking(UVStream* handle, CInt blocking);
+
+extern fn CInt uv_is_closing(UVHandle* handle);
+
+// typedef struct uv_connect_s uv_connect_t;
+
+enum UVMembership : int (int code) {
+  UV_LEAVE_GROUP = 0,
+  UV_JOIN_GROUP = 1
+}
+
+/* uv_connect_t is a subclass of uv_req_t. */
+struct UVConnect {
+  inline UVReq r;
+  UVConnectCb cb;
+  UVStream* handle;
+  // UV_CONNECT_PRIVATE_FIELDS
+  // win
+  // empty
+  // unix
+  UV__Queue queue @if(!env::WIN32);
+}
+
+// typedef struct uv_udp_send_s uv_udp_send_t;
+
+/* uv_udp_send_t is a subclass of uv_req_t. */
+struct UVUdpSend {
+  inline UVReq r;
+  UVUdp* handle;
+  UVUdpSendCb cb;
+  // UV_UDP_SEND_PRIVATE_FIELDS
+  // win
+  // empty
+  // unix
+  UV__Queue queue @if(!env::WIN32);
+  union u @if(!env::WIN32) {
+    Unix_sockaddr addr;
+    Unix_sockaddr_storage storage;
+  }
+  CUInt nbufs @if(!env::WIN32);
+  UVBuf* bufs @if(!env::WIN32);
+  CULongLong status @if(!env::WIN32);
+  UVUdpSendCb send_cb @if(!env::WIN32);
+  UVBuf[4]* bufsml @if(!env::WIN32); 
+}
+
+extern fn CInt uv_udp_init(UVLoop*, UVUdp* handle);
+extern fn CInt uv_udp_init_ex(UVLoop*, UVUdp* handle, CUInt flags);
+extern fn CInt uv_udp_open(UVUdp* handle, UVOsSock sock);
+extern fn CInt uv_udp_bind(UVUdp* handle,
+                          Platform_sockaddr* addr,
+                          CUInt flags);
+extern fn CInt uv_udp_connect(UVUdp* handle, Platform_sockaddr* addr);
+
+extern fn CInt uv_udp_getpeername(UVUdp* handle,
+                                 Platform_sockaddr* name,
+                                 CInt* namelen);
+extern fn CInt uv_udp_getsockname(UVUdp* handle,
+                                 Platform_sockaddr* name,
+                                 CInt* namelen);
+extern fn CInt uv_udp_set_membership(UVUdp* handle,
+                                    CChar* multicast_addr,
+                                    CChar* interface_addr,
+                                    UVMembership membership);
+extern fn CInt uv_udp_set_source_membership(UVUdp* handle,
+                                           CChar* multicast_addr,
+                                           CChar* interface_addr,
+                                           CChar* source_addr,
+                                           UVMembership membership);
+extern fn CInt uv_udp_set_multicast_loop(UVUdp* handle, CInt on);
+extern fn CInt uv_udp_set_multicast_ttl(UVUdp* handle, CInt ttl);
+extern fn CInt uv_udp_set_multicast_CInterface(UVUdp* handle,
+                                             CChar* interface_addr);
+extern fn CInt uv_udp_set_broadcast(UVUdp* handle, CInt on);
+extern fn CInt uv_udp_set_ttl(UVUdp* handle, CInt ttl);
+extern fn CInt uv_udp_send(UVUdpSend* req,
+                          UVUdp* handle,
+                          UVBuf* bufs,
+                          CUInt nbufs,
+                          Platform_sockaddr* addr,
+                          UVUdpSendCb send_cb);
+extern fn CInt uv_udp_try_send(UVUdp* handle,
+                              UVBuf* bufs,
+                              CUInt nbufs,
+                              Platform_sockaddr* addr);
+extern fn CInt uv_udp_try_send2(UVUdp* handle,
+                               CUInt count,
+                               UVBuf** bufs, // uv_buf_t* buf[] ?
+                               CUInt* nbufs,
+                               Platform_sockaddr** addrs, // same here
+                               CUInt flags);
+extern fn CInt uv_udp_recv_start(UVUdp* handle,
+                                UVAllocCb alloc_cb,
+                                UVUdpRecvCb recv_cb);
+extern fn CInt uv_udp_using_recvmmsg(UVUdp* handle);
+extern fn CInt uv_udp_recv_stop(UVUdp* handle);
+extern fn CLongLong uv_udp_get_send_queue_size(UVUdp* handle);
+extern fn CLongLong uv_udp_get_send_queue_count(UVUdp* handle);
+
+// typedef struct uv_fs_s uv_fs_t;
+
+enum UVFsType : int (int code) {
+    UV_FS_UNKNOWN = -1, // -1
+    UV_FS_CUSTOM = 0,   // 0
+    UV_FS_OPEN = 1,     // 1
+    UV_FS_CLOSE = 2,    // 2
+    UV_FS_READ = 3,     // 3
+    UV_FS_WRITE = 4,    // 4
+    UV_FS_SENDFILE = 5, // 5
+    UV_FS_STAT = 6,     // 6
+    UV_FS_LSTAT = 7,    // 7
+    UV_FS_FSTAT = 8,    // 8
+    UV_FS_FTRUNCATE = 9,// 9
+    UV_FS_UTIME = 10,   // 10
+    UV_FS_FUTIME = 11,  // 11
+    UV_FS_ACCESS = 12,  // 12
+    UV_FS_CHMOD = 13,   // 13
+    UV_FS_FCHMOD = 14,  // 14
+    UV_FS_FSYNC = 15,   // 15
+    UV_FS_FDATASYNC = 16,// 16
+    UV_FS_UNLINK = 17,  // 17
+    UV_FS_RMDIR = 18,   // 18
+    UV_FS_MKDIR = 19,   // 19
+    UV_FS_MKDTEMP = 20, // 20
+    UV_FS_RENAME = 21,  // 21
+    UV_FS_SCANDIR = 22, // 22
+    UV_FS_LINK = 23,    // 23
+    UV_FS_SYMLINK = 24, // 24
+    UV_FS_READLINK = 25, // 25
+    UV_FS_CHOWN = 26,   // 26
+    UV_FS_FCHOWN = 27,  // 27
+    UV_FS_REALPATH = 28,// 28
+    UV_FS_COPYFILE = 29,// 29
+    UV_FS_LCHOWN = 30,  // 30
+    UV_FS_OPENDIR = 31, // 31
+    UV_FS_READDIR = 32, // 32
+    UV_FS_CLOSEDIR = 33,// 33
+    UV_FS_STATFS = 34,  // 34
+    UV_FS_MKSTEMP = 35, // 35
+    UV_FS_LUTIME = 36   // 36
+}
+
+/* uv_fs_t is a subclass of uv_req_t. */
+struct UVFs {
+  inline UVReq r;
+  UVFsType fs_type;
+  UVLoop* loop;
+  UVFsCb cb;
+  CULongLong result;
+  void* ptr;
+  CChar* path;
+  UVStat statbuf;  /* Stores the result of uv_fs_stat() and uv_fs_fstat(). */
+  // UV_FS_PRIVATE_FIELDS
+  // win
+  UV__Work work_req @if(env::WIN32);
+  CInt flags @if(env::WIN32);
+  Win32_DWORD sys_errno_ @if(env::WIN32);
+  union file @if(env::WIN32) {
+    /* TODO: remove me in 0.9. */
+    Win32_WCHAR* pathw;
+    CInt fd;
+  }
+  union fs @if(env::WIN32) {
+    struct info {
+      CInt mode;
+      Win32_WCHAR* new_pathw;
+      CInt file_flags;
+      CInt fd_out;
+      CUInt nbufs;
+      UVBuf* bufs;
+      CLongLong offset;
+      UVBuf[4]* bufsml;
+    }
+    struct time {
+      double atime;
+      double mtime;
+    }
+  }
+  // unix
+  CChar *new_path @if(!env::WIN32);
+  UVFile file @if(!env::WIN32);
+  CInt flags @if(!env::WIN32);
+  Unix_mode_t mode @if(!env::WIN32);
+  CUInt nbufs @if(!env::WIN32);
+  UVBuf* bufs @if(!env::WIN32);
+  Unix_off_t off @if(!env::WIN32);
+  UVUid uid @if(!env::WIN32);
+  UVGid gid @if(!env::WIN32);
+  double atime @if(!env::WIN32);
+  double mtime @if(!env::WIN32);
+  UV__Work work_req @if(!env::WIN32);
+  UVBuf[4]* bufsml @if(!env::WIN32);
+}
+/*
+ * This flag can be used with uv_fs_copyfile() to return an error if the
+ * destination already exists.
+ */
+const UV_FS_COPYFILE_EXCL = 0x0001;
+
+/*
+ * This flag can be used with uv_fs_copyfile() to attempt to create a reflink.
+ * If copy-on-write is not supported, a fallback copy mechanism is used.
+ */
+const UV_FS_COPYFILE_FICLONE = 0x0002;
+
+/*
+ * This flag can be used with uv_fs_copyfile() to attempt to create a reflink.
+ * If copy-on-write is not supported, an error is returned.
+ */
+const UV_FS_COPYFILE_FICLONE_FORCE = 0x0004;
+
+extern fn CInt uv_fs_copyfile(UVLoop* loop,
+                             UVFs* req,
+                             CChar* path,
+                             CChar* new_path,
+                             CInt flags,
+                             UVFsCb cb);
+extern fn CInt uv_fs_mkdir(UVLoop* loop,
+                          UVFs* req,
+                          CChar* path,
+                          CInt mode,
+                          UVFsCb cb);
+extern fn CInt uv_fs_mkdtemp(UVLoop* loop,
+                            UVFs* req,
+                            CChar* tpl,
+                            UVFsCb cb);
+extern fn CInt uv_fs_mkstemp(UVLoop* loop,
+                            UVFs* req,
+                            CChar* tpl,
+                            UVFsCb cb);
+extern fn CInt uv_fs_rmdir(UVLoop* loop,
+                          UVFs* req,
+                          CChar* path,
+                          UVFsCb cb);
+extern fn CInt uv_fs_scandir(UVLoop* loop,
+                            UVFs* req,
+                            CChar* path,
+                            CInt flags,
+                            UVFsCb cb);
+extern fn CInt uv_fs_scandir_next(UVFs* req,
+                                 UVDirent* ent);
+extern fn CInt uv_fs_opendir(UVLoop* loop,
+                            UVFs* req,
+                            CChar* path,
+                            UVFsCb cb);
+extern fn CInt uv_fs_readdir(UVLoop* loop,
+                            UVFs* req,
+                            UVDir* dir,
+                            UVFsCb cb);
+extern fn CInt uv_fs_closedir(UVLoop* loop,
+                             UVFs* req,
+                             UVDir* dir,
+                             UVFsCb cb);
+extern fn CInt uv_fs_stat(UVLoop* loop,
+                         UVFs* req,
+                         CChar* path,
+                         UVFsCb cb);
+extern fn CInt uv_fs_fstat(UVLoop* loop,
+                          UVFs* req,
+                          UVFile file,
+                          UVFsCb cb);
+extern fn CInt uv_fs_rename(UVLoop* loop,
+                           UVFs* req,
+                           CChar* path,
+                           CChar* new_path,
+                           UVFsCb cb);
+extern fn CInt uv_fs_fsync(UVLoop* loop,
+                          UVFs* req,
+                          UVFile file,
+                          UVFsCb cb);
+extern fn CInt uv_fs_fdatasync(UVLoop* loop,
+                              UVFs* req,
+                              UVFile file,
+                              UVFsCb cb);
+extern fn CInt uv_fs_ftruncate(UVLoop* loop,
+                              UVFs* req,
+                              UVFile file,
+                              CLongLong offset,
+                              UVFsCb cb);
+extern fn CInt uv_fs_sendfile(UVLoop* loop,
+                             UVFs* req,
+                             UVFile out_fd,
+                             UVFile in_fd,
+                             CLongLong in_offset,
+                             CLongLong length,
+                             UVFsCb cb);
+extern fn CInt uv_fs_access(UVLoop* loop,
+                           UVFs* req,
+                           CChar* path,
+                           CInt mode,
+                           UVFsCb cb);
+extern fn CInt uv_fs_chmod(UVLoop* loop,
+                          UVFs* req,
+                          CChar* path,
+                          CInt mode,
+                          UVFsCb cb);
+extern fn CInt uv_fs_utime(UVLoop* loop,
+                          UVFs* req,
+                          CChar* path,
+                          double atime,
+                          double mtime,
+                          UVFsCb cb);
+extern fn CInt uv_fs_futime(UVLoop* loop,
+                           UVFs* req,
+                           UVFile file,
+                           double atime,
+                           double mtime,
+                           UVFsCb cb);
+extern fn CInt uv_fs_lutime(UVLoop* loop,
+                           UVFs* req,
+                           CChar* path,
+                           double atime,
+                           double mtime,
+                           UVFsCb cb);
+extern fn CInt uv_fs_lstat(UVLoop* loop,
+                          UVFs* req,
+                          CChar* path,
+                          UVFsCb cb);
+extern fn CInt uv_fs_link(UVLoop* loop,
+                         UVFs* req,
+                         CChar* path,
+                         CChar* new_path,
+                         UVFsCb cb);
+
+/*
+ * This flag can be used with uv_fs_symlink() on Windows to specify whether
+ * path argument poCInts to a directory.
+ */
+const UV_FS_SYMLINK_DIR = 0x0001;
+
+/*
+ * This flag can be used with uv_fs_symlink() on Windows to specify whether
+ * the symlink is to be created using junction points.
+ */
+const UV_FS_SYMLINK_JUNCTION = 0x0002;
+
+extern fn CInt uv_fs_symlink(UVLoop* loop,
+                            UVFs* req,
+                            CChar* path,
+                            CChar* new_path,
+                            CInt flags,
+                            UVFsCb cb);
+extern fn CInt uv_fs_readlink(UVLoop* loop,
+                             UVFs* req,
+                             CChar* path,
+                             UVFsCb cb);
+extern fn CInt uv_fs_realpath(UVLoop* loop,
+                             UVFs* req,
+                             CChar* path,
+                             UVFsCb cb);
+extern fn CInt uv_fs_fchmod(UVLoop* loop,
+                           UVFs* req,
+                           UVFile file,
+                           CInt mode,
+                           UVFsCb cb);
+extern fn CInt uv_fs_chown(UVLoop* loop,
+                          UVFs* req,
+                          CChar* path,
+                          UVUid uid,
+                          UVGid gid,
+                          UVFsCb cb);
+extern fn CInt uv_fs_fchown(UVLoop* loop,
+                           UVFs* req,
+                           UVFile file,
+                           UVUid uid,
+                           UVGid gid,
+                           UVFsCb cb);
+extern fn CInt uv_fs_lchown(UVLoop* loop,
+                           UVFs* req,
+                           CChar* path,
+                           UVUid uid,
+                           UVGid gid,
+                           UVFsCb cb);
+extern fn CInt uv_fs_statfs(UVLoop* loop,
+                           UVFs* req,
+                           CChar* path,
+                           UVFsCb cb);
+
+// typedef struct uv_work_s uv_work_t;
+
+/*
+ * uv_work_t is a subclass of uv_req_t.
+ */
+struct UVWork {
+  inline UVReq r;
+  UVLoop* loop;
+  UVWorkCb work_cb;
+  UVAfterWorkCb after_work_cb;
+  // UV_WORK_PRIVATE_FIELDS 
+  // win
+  UV__Work work_req @if(env::WIN32);
+  // unix
+  UV__Work work_req @if(!env::WIN32);
+
+  // yeah work_req could probably be merged 
+}
+
+extern fn CInt uv_queue_work(UVLoop* loop,
+                            UVWork* req,
+                            UVWorkCb work_cb,
+                            UVAfterWorkCb after_work_cb);
+
+extern fn CInt uv_cancel(UVReq* req);
+
+// typedef struct uv_random_s uv_random_t;
+
+struct UVRandom {
+  inline UVReq r;
+  /* read-only */
+  UVLoop* loop;
+  /* private */
+  CInt status;
+  void* buf;
+  CLongLong buflen;
+  UVRandomCb cb;
+  UV__Work work_req;
+}
+
+extern fn CInt uv_random(UVLoop* loop,
+                        UVRandom* req,
+                        void *buf,
+                        CLongLong buflen,
+                        CUInt flags,  /* For future extension; must be 0. */
+                        UVRandomCb cb);
+
+
+// /* None of the above. */
+// typedef struct uv_env_item_s uv_env_item_t;
+
+struct UVEnvItem {
+  CChar* name;
+  CChar* value;
+}
+
+
+extern fn CInt uv_os_environ(UVEnvItem** envitems, CInt* count);
+extern fn void uv_os_free_environ(UVEnvItem* envitems, CInt count);
+extern fn CInt uv_os_getenv(CChar* name, CChar* buffer, CLongLong* size);
+extern fn CInt uv_os_setenv(CChar* name, CChar* value);
+extern fn CInt uv_os_unsetenv(CChar* name);
+
+const UV_MAXHOSTNAMESIZE @if($defined(MAXHOSTNAMELEN)) = (MAXHOSTNAMELEN + 1);
+/*
+  Fallback for the maximum hostname size, including the null terminator. The
+  Windows gethostname() documentation states that 256 bytes will always be
+  large enough to hold the null-terminated hostname.
+*/
+const UV_MAXHOSTNAMESIZE @if(!$defined(MAXHOSTNAMELEN)) = 256;
+
+extern fn CInt uv_os_gethostname(CChar* buffer, CLongLong* size);
+extern fn CInt uv_os_uname(UVUtsname* buffer);
+
+// typedef struct uv_cpu_info_s uv_cpu_info_t;
+
+
+struct UVCpuTimes {
+  CULongLong user; /* milliseconds */
+  CULongLong nice; /* milliseconds */
+  CULongLong sys; /* milliseconds */
+  CULongLong idle; /* milliseconds */
+  CULongLong irq; /* milliseconds */
+}
+
+struct UVCpuInfo {
+  CChar* model;
+  CInt speed;
+  UVCpuTimes cpu_times;
+}
+
+// typedef struct uv_interface_address_s uv_interface_address_t;
+
+struct UVInterfaceAddress {
+  CChar* name;
+  CChar[6]* phys_addr;
+  CInt is_internal;
+  union address {
+    Platform_sockaddr_in address4;
+    Platform_sockaddr_in6 address6;
+  }
+  union netmask {
+    Platform_sockaddr_in netmask4;
+    Platform_sockaddr_in6 netmask6;
+  }
+}
+
+// typedef struct uv_dirent_s uv_dirent_t;
+enum UVDirentType {
+  UV_DIRENT_UNKNOWN,
+  UV_DIRENT_FILE,
+  UV_DIRENT_DIR,
+  UV_DIRENT_LINK,
+  UV_DIRENT_FIFO,
+  UV_DIRENT_SOCKET,
+  UV_DIRENT_CHAR,
+  UV_DIRENT_BLOCK
+}
+
+struct UVDirent {
+  CChar* name;
+  UVDirentType type;
+}
+
+extern fn CChar** uv_setup_args(CInt argc, CChar** argv);
+extern fn CInt uv_get_process_title(CChar* buffer, CLongLong size);
+extern fn CInt uv_set_process_title(CChar* title);
+extern fn CInt uv_resident_set_memory(CLongLong* rss);
+extern fn CInt uv_uptime(double* uptime);
+extern fn UVOsFd uv_get_osfhandle(CInt fd);
+extern fn CInt uv_open_osfhandle(UVOsFd os_fd);
+
+// typedef struct uv_passwd_s uv_passwd_t;
+struct UVPasswd {
+  CChar* username;
+  CULong uid;
+  CULong gid;
+  CChar* shell;
+  CChar* homedir;
+}
+
+// typedef struct uv_group_s uv_group_t;
+struct UVGroup {
+  CChar* groupname;
+  CULong gid;
+  CChar** members;
+}
+
+// typedef struct uv_utsname_s uv_utsname_t;
+struct UVUtsname {
+  CChar[256] sysname;
+  CChar[256] release;
+  CChar[256] version;
+  CChar[256] machine;
+  /* This struct does not contain the nodename and domainname fields present in
+     the utsname type. domainname is a GNU extension. Both fields are referred
+     to as meaningless in the docs. */
+}
+
+// typedef struct uv_statfs_s uv_statfs_t;
+
+struct UVStatFs {
+  CULongLong f_type;
+  CULongLong f_bsize;
+  CULongLong f_blocks;
+  CULongLong f_bfree;
+  CULongLong f_bavail;
+  CULongLong f_files;
+  CULongLong f_ffree;
+  CULongLong[4]* f_spare;
+}
+
+// typedef struct uv_metrics_s uv_metrics_t;
+
+struct UVMetrics {
+  CULongLong loop_count;
+  CULongLong events;
+  CULongLong events_waiting;
+  /* private */
+  CULongLong*[13]* reserved;
+}
+
+def UVAllocCb = fn void (UVHandle* handle,
+                           CLong suggestedSize,
+                           UVBuf* buf);
+def UVReadCb = fn void (UVStream* stream,
+                          CLong nread,
+                          UVBuf* buf);
+def UVWriteCb = fn void (UVWrite* req, CLong status);
+def UVConnectCb = fn void (UVConnect* req, CLong status);
+def UVShutdownCb = fn void (UVShutdown* req, CLong status);
+def UVConnectionCb = fn void (UVStream* server, CLong status);
+def UVCloseCb = fn void (UVHandle* handle);
+def UVPollCb = fn void (UVPoll* handle, CLong status, CLong events);
+def UVTimerCb = fn void (UVTimer* handle);
+def UVAsyncCb = fn void (UVAsync* handle);
+def UVPrepareCb = fn void (UVPrepare* handle);
+def UVCheckCb = fn void (UVCheck* handle);
+def UVIdleCb = fn void (UVIdle* handle);
+def UVExitCb = fn void (UVProcess* req, CLongLong exitStatus, CLong termSignal);
+def UVWalkCb = fn void (UVHandle* handle, void* arg);
+def UVFsCb = fn void (UVFs* req);
+def UVWorkCb = fn void (UVWork* req);
+def UVAfterWorkCb = fn void (UVWork* req, CLong status);
+def UVGetAddrInfoCb = fn void (UVGetAddrInfo* req,
+                                 CLong status,
+                                 Platform_addrinfo* res);
+def UVGetNameInfoCb = fn void (UVGetNameInfo* req,
+                                 CLong status,
+                                 CChar* hostname,
+                                 CChar* service);
+def UVRandomCb = fn void (UVRandom* req,
+                            CLong status,
+                            void* buf,
+                            CLong buflen);
+def UVFsEventCb = fn void (UVFsEvent* handle,
+                             CChar* filename,
+                             CLong events,
+                             CLong status);
+def UVFsPollCb = fn void (UVFsPoll* handle,
+                            CLong status,
+                            UVStat* prev,
+                            UVStat* curr);
+def UVSignalCb = fn void (UVSignal* handle, CLong signum);
+
+enum UVLoopOption : int (int code) {
+  UV_LOOP_BLOCK_SIGNAL = 0,
+  UV_METRICS_IDLE_TIME = 1,
+  UV_LOOP_USE_IO_URING_SQPOLL = 2
+
+}
+
+enum UVRunMode : int (int code) {
+  UV_RUN_DEFAULT = 0,
+  UV_RUN_ONCE = 1,
+  UV_RUN_NOWAIT = 2
+}
+
+def UVThreadCb = fn void (void* arg);
+
+enum UVThreadCreateFlags : int (int code) {
+  UV_THREAD_NO_FLAGS = 0x00,
+  UV_THREAD_HAS_STACK_SIZE = 0x01
+}
+
+struct UVThreadOptions {
+  CUInt flags;
+  CLongLong stack_size;
+  /* More fields may be added at any time. */
+}
+
+extern fn CInt uv_thread_create(UVThread* tid, UVThreadCb entry, void* arg);
+extern fn CInt uv_thread_detach(UVThread* tid);
+
+extern fn CInt uv_thread_create_ex(UVThread* tid,
+                                  UVThreadOptions* params,
+                                  UVThreadCb entry,
+                                  void* arg);
+extern fn CInt uv_thread_setaffinity(UVThread* tid,
+                                    CChar* cpumask,
+                                    CChar* oldmask,
+                                    CLongLong mask_size);
+extern fn CInt uv_thread_getaffinity(UVThread* tid,
+                                    CChar* cpumask,
+                                    CLongLong mask_size);
+extern fn CInt uv_thread_getcpu();
+extern fn UVThread uv_thread_self();
+extern fn CInt uv_thread_join(UVThread *tid);
+extern fn CInt uv_thread_equal(UVThread* t1, UVThread* t2);
+extern fn CInt uv_thread_setname(CChar* name);
+extern fn CInt uv_thread_getname(UVThread* tid, CChar* name, CLongLong size);
+
+extern fn CUInt uv_version();
+
+extern fn CChar* uv_version_string();
+
+
+extern fn CInt uv_translate_sys_error(CInt sys_errno);
+
+extern fn CChar* uv_strerror(CInt err);
+extern fn CChar* uv_strerror_r(CInt err, CChar* buf, CLongLong buflen);
+
+extern fn CChar* uv_err_name(CInt err);
+extern fn CChar* uv_err_name_r(CInt err, CChar* buf, CLongLong buflen);
+
+def UVMallocFunc = fn void* (CLongLong size);
+def UVReallocFunc = fn void* (void* ptr, CLongLong size);
+def UVCallocFunc = fn void* (CLongLong count, CLongLong size);
+def UVFreeFunc = fn void (void* ptr);
+
+extern fn void uv_sleep(CUInt msec);
+extern fn void uv_library_shutdown();
+
+extern fn CInt uv_replace_allocator(UVMallocFunc malloc_func,
+                                     UVReallocFunc realloc_func,
+                                     UVCallocFunc calloc_func,
+                                     UVFreeFunc free_func);
+
+extern fn UVLoop* uv_default_loop();
+extern fn CInt uv_loop_init(UVLoop* loop);
+extern fn CInt uv_loop_close(UVLoop* loop);
+extern fn CLongLong uv_loop_size();
+extern fn CInt uv_loop_alive(UVLoop* loop);
+extern fn CInt uv_loop_configure(UVLoop* loop, UVLoopOption option, ...);
+extern fn CInt uv_loop_fork(UVLoop* loop);
+extern fn CInt uv_run(UVLoop* loop, UVRunMode mode);
+extern fn void uv_stop(UVLoop* loop);
+extern fn void uv_ref(UVHandle* handle);
+extern fn void uv_unref(UVHandle* handle);
+extern fn CInt uv_has_ref(UVHandle* handle);
+extern fn void uv_update_time(UVLoop* loop);
+extern fn CLongLong uv_now(UVLoop* loop);
+extern fn CInt uv_backend_fd(UVLoop* loop);
+extern fn CInt uv_backend_timeout(UVLoop* loop);
+extern fn CUInt uv_available_parallelism(); 
