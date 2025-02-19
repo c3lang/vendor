@@ -1889,8 +1889,8 @@ macro void @shaderMode(Shader shader ;@body)
 *>
 macro void @blendMode(BlendMode mode ;@body)
 {
-  beginShaderMode(mode);
-  defer endShaderMode();
+  beginBlendMode((int)mode);
+  defer endBlendMode();
   @body();
 }
 
