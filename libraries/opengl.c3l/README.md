@@ -1,20 +1,21 @@
-# OpenGL Bindings FAQ
+# OpenGL Bindings
 
-- OpenGL functions are renamed as follows: `glFunctionName` -> `gl::functionName`
-- Constant definitions keep the same name but are converted to C3 constants: `#define GL_FALSE 0` -> `const GL_FALSE = 0;`
-- Fixed length types are converted to the corresponding C3 types: `uint32_t` -> `int`
-- Variable length types are converted to the corresponding standard library compatibility types: `int` -> `CInt`
-- If a C typedef corresponds to a unique type that expects a subset of values it keeps the same name and gets converted to C3: `GLenum` -> `GLenum`
-- all `const char *` sequences are converted to `ZString`
+These are OpenGL bindings for C3. They are generated from the opengl registry [here](https://github.com/KhronosGroup/OpenGL-Registry)
 
-# Older OpenGL Versions
+### Formating details
 
-- All older versions of OpenGL are supported.
-- By default the most recent version is used.
-- The specific version used can be set as follows:
-```C3
-module opengl;
-const GL_VERSION = 33;
-```
-- The `GL_VERSION` is just the desired opengl version without the decimal point (so version 1.0 becomes 10, and 4.5 becomes 45)
-- Once the version is set only the functions and definitions from that version can be used. The only exception is anything defined in opengl.c3i as global.
+constant definitions are converted to C3 consts keeping the same name
+
+so: ```#define GL_TRUE 1``` becomes ```const GL_TRUE = 1;```
+
+function names follow the pattern:
+```glClearColor -> gl::clearColor```
+
+Other names have been kept as similar as possible, only changing to satisfy the C3 naming rules.
+
+For example the matrix constants (e.g. GL_FLOAT_MAT4x2) change NxN to NXN to comply with C3.
+
+
+The `loadGL` function *must* be called before using any opengl functions. It also must be called after a valid OpenGL context is created (from something like GLFW). The argument it takes in glfw would be `loadGL((GLLoadFn)glfw::getProcAddress)` (the glfw bindings currently do not work with these bindings due to a bug). 
+
+The `loadGL` function returns either 0 if it fails or the current OpenGL version in the format of (major * 10) + minor
