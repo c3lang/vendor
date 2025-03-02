@@ -334,7 +334,7 @@ def Monitor = void;
 def Window = void;
 def Cursor = void;
 
-def ErrorFun = fn void(int error_code, ZString description);
+def ErrorFun = fn void(int error_code, char* description);
 
 def WindowPosFun            = fn void(Window* window, int xpos, int ypos); 
 def WindowSizeFun           = fn void(Window* window, int width, int height);
@@ -352,7 +352,7 @@ def ScrollFun               = fn void(Window* window, double xoffset, double yof
 def KeyFun                  = fn void(Window* window, int key, int scancode, int action, int mods);
 def CharFun                 = fn void(Window* window, uint codepoint);
 def CharModsFun             = fn void(Window* window, uint codepoint, int mods);
-def DropFun                 = fn void(Window* window, int path_count, ZString[] paths);
+def DropFun                 = fn void(Window* window, int path_count, char*[] paths);
 def MonitorFun              = fn void(Monitor* monitor, int event);
 def JoystickFun             = fn void(int jid, int event);
  
@@ -378,7 +378,7 @@ struct Image
 {
   int width;
   int height;
-  ZString pixels;
+  char* pixels;
 }
  
 struct GamepadState
@@ -400,7 +400,7 @@ fn void initHint(int hint, int value) @extern("glfwInitHint");
 
 fn void getVersion(int* major, int* minor, int* rev) @extern("glfwGetVersion");
 
-fn ZString getVersionString() @extern("glfwGetVersionString");
+fn char* getVersionString() @extern("glfwGetVersionString");
 
 fn int getError(String* description) @extern("glfwGetError");
 
@@ -418,7 +418,7 @@ fn void getMonitorPhysicalSize(Monitor* monitor, int* widthMM, int* heightMM) @e
 
 fn void getMonitorContentScale(Monitor* monitor, float* xscale, float* yscale) @extern("glfwGetMonitorContentScale");
 
-fn ZString getMonitorName(Monitor* monitor) @extern("glfwGetMonitorName");
+fn char* getMonitorName(Monitor* monitor) @extern("glfwGetMonitorName");
 
 fn void setMonitorUserPointer(Monitor* monitor, void* pointer) @extern("glfwSetMonitorUserPointer");
 
@@ -440,9 +440,9 @@ fn void defaultWindowHints() @extern("glfwDefaultWindowHints");
  
 fn void windowHint(int hint, int value) @extern("glfwWindowHint");
  
-fn void windowHintString(int hint, ZString value) @extern("glfwWindowHintString");
+fn void windowHintString(int hint, char* value) @extern("glfwWindowHintString");
  
-fn Window* createWindow(int width, int height, ZString title, Monitor* monitor, Window* share) @extern("glfwCreateWindow");
+fn Window* createWindow(int width, int height, char* title, Monitor* monitor, Window* share) @extern("glfwCreateWindow");
  
 fn void destroyWindow(Window* window) @extern("glfwDestroyWindow");
  
@@ -450,7 +450,7 @@ fn int windowShouldClose(Window* window) @extern("glfwWindowShouldClose");
  
 fn void setWindowShouldClose(Window* window, int value) @extern("glfwSetWindowShouldClose");
  
-fn void setWindowTitle(Window* window, ZString title) @extern("glfwSetWindowTitle");
+fn void setWindowTitle(Window* window, char* title) @extern("glfwSetWindowTitle");
  
 fn void setWindowIcon(Window* window, int count, Image* images) @extern("glfwSetWindowIcon");
  
@@ -534,7 +534,7 @@ fn void setInputMode(Window* window, int mode, int value) @extern("glfwSetInputM
  
 fn int rawMouseMotionSupported() @extern("glfwRawMouseMotionSupported");
  
-fn ZString getKeyName(int key, int scancode) @extern("glfwGetKeyName");
+fn char* getKeyName(int key, int scancode) @extern("glfwGetKeyName");
  
 fn int getKeyScancode(int key) @extern("glfwGetKeyScancode");
  
@@ -574,13 +574,13 @@ fn int joystickPresent(int jid) @extern("glfwJoystickPresent");
  
 fn float* getJoystickAxes(int jid, int* count) @extern("glfwGetJoystickAxes");
  
-fn ZString getJoystickButtons(int jid, int* count) @extern("glfwGetJoystickButtons");
+fn char* getJoystickButtons(int jid, int* count) @extern("glfwGetJoystickButtons");
  
-fn ZString getJoystickHats(int jid, int* count) @extern("glfwGetJoystickHats");
+fn char* getJoystickHats(int jid, int* count) @extern("glfwGetJoystickHats");
  
-fn ZString getJoystickName(int jid) @extern("glfwGetJoystickName");
+fn char* getJoystickName(int jid) @extern("glfwGetJoystickName");
  
-fn ZString getJoystickGUID(int jid) @extern("glfwGetJoystickGUID");
+fn char* getJoystickGUID(int jid) @extern("glfwGetJoystickGUID");
  
 fn void setJoystickUserPointer(int jid, void* pointer) @extern("glfwSetJoystickUserPointer");
  
@@ -590,15 +590,15 @@ fn int joystickIsGamepad(int jid) @extern("glfwJoystickIsGamepad");
  
 fn JoystickFun setJoystickCallback(JoystickFun callback) @extern("glfwSetJoystickCallback");
  
-fn int updateGamepadMappings(ZString string) @extern("glfwUpdateGamepadMappings");
+fn int updateGamepadMappings(char* string) @extern("glfwUpdateGamepadMappings");
  
-fn ZString getGamepadName(int jid) @extern("glfwGetGamepadName");
+fn char* getGamepadName(int jid) @extern("glfwGetGamepadName");
  
 fn int getGamepadState(int jid, GamepadState* state) @extern("glfwGetGamepadState");
  
-fn void setClipboardString(Window* window, ZString string) @extern("glfwSetClipboardString");
+fn void setClipboardString(Window* window, char* string) @extern("glfwSetClipboardString");
  
-fn ZString getClipboardString(Window* window) @extern("glfwGetClipboardString");
+fn char* getClipboardString(Window* window) @extern("glfwGetClipboardString");
  
 fn double getTime() @extern("glfwGetTime");
  
@@ -616,31 +616,29 @@ fn void swapBuffers(Window* window) @extern("glfwSwapBuffers");
  
 fn void swapInterval(int interval) @extern("glfwSwapInterval");
  
-fn int extensionSupported(ZString extension) @extern("glfwExtensionSupported");
+fn int extensionSupported(char* extension) @extern("glfwExtensionSupported");
  
-fn GlProc getProcAddress(ZString procname) @extern("glfwGetProcAddress");
+fn GlProc getProcAddress(char* procname) @extern("glfwGetProcAddress");
  
 fn int vulkanSupported() @extern("glfwVulkanSupported");
  
-fn ZString* getRequiredInstanceExtensions(ulong* count) @extern("glfwGetRequiredInstanceExtensions");
+fn char** getRequiredInstanceExtensions(ulong* count) @extern("glfwGetRequiredInstanceExtensions");
 
 
 
+module vulkan @if(!$defined(env::GLFW_INCLUDE_VULKAN) ||| !env::GLFW_INCLUDE_VULKAN);
 module glfw @if($defined(env::GLFW_INCLUDE_VULKAN) &&& env::GLFW_INCLUDE_VULKAN);
 
 import vulkan;
 
-fn VkProc getInstanceProcAddress(vk::Instance instance, ZString procname) 
-  @extern("glfwGetInstanceProcAddress") 
-  @if($defined(INCLUDE_VULKAN));
+fn VkProc getInstanceProcAddress(vk::Instance instance, char* procname) 
+  @extern("glfwGetInstanceProcAddress"); 
 
 fn int getPhysicalDevicePresentationSupport(vk::Instance instance, vk::PhysicalDevice device, uint queuefamily) 
-  @extern("glfwGetPhysicalDevicePresentationSupport") 
-  @if($defined(INCLUDE_VULKAN));
+  @extern("glfwGetPhysicalDevicePresentationSupport");
 
 fn vk::Result createWindowSurface(vk::Instance instance, Window* window, vk::AllocationCallbacks* allocator, vk::SurfaceKHR* surface) 
-  @extern("glfwCreateWindowSurface") 
-  @if($defined(INCLUDE_VULKAN));
+  @extern("glfwCreateWindowSurface"); 
 
  
  
