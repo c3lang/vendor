@@ -1,0 +1,23 @@
+{ 
+  "provides" : "lz4",
+  "targets" : {
+    "macos-x64" : {
+      "link-args" : [],
+      "dependencies" : [],
+      "linked-libraries" : ["lz4"]
+    },
+    "macos-aarch64" : {
+      "link-args" : [],
+      "dependencies" : [],
+      "linked-libraries" : ["lz4"]
+    },
+    "linux-x64" : {
+      "link-args" : [],
+      "dependencies" : [],
+      "linked-libraries" : ["lz4"]
+    },
+	"windows-x64" : {
+		"linked-libraries" : ["liblz4"]
+	}
+  }
+}

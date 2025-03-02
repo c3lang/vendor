@@ -1,0 +1,17 @@
+module lz4;
+
+// version
+fn int version_number() @extern("LZ4_versionNumber");
+fn char* version_string() @extern("LZ4_versionString");
+
+// basic funcs
+fn int compress_default(char* src, char* dst, int srcSize, int dstCapacity) @extern("LZ4_compress_default");
+fn int decompress_safe(char* src, char* dst, int compressedSize, int dstCapacity) @extern("LZ4_decompress_safe");
+
+// advanced funcs
+fn int compress_bound(int inputSize) @extern("LZ4_compressBound");
+fn int compress_fast(char* src, char*, int srcSize, int dstCapacity, int acceleration) @extern("LZ4_compress_fast");
+fn int sizeof_state() @extern("LZ4_sizeofState");
+fn int compress_fast_ext_state(void* state, char* src, char*, int srcSize, int dstCapacity, int acceleration) @extern("LZ4_compress_fast_extState");
+fn int compress_dest_size(char* src, char*, int* srcSizePtr, int targetDstSize) @extern("LZ4_compress_destSize");
+fn int decompress_safe_partial(char* src, char*, int srcSize, int targetOutputSize, int dstCapacity) @extern("LZ4_decompress_safe_partial");
