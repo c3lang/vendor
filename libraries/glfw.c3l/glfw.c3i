@@ -625,22 +625,19 @@ fn int vulkanSupported() @extern("glfwVulkanSupported");
 fn ZString* getRequiredInstanceExtensions(ulong* count) @extern("glfwGetRequiredInstanceExtensions");
 
 
-
+module vulkan @if(!$defined(env::GLFW_INCLUDE_VULKAN) ||| !env::GLFW_INCLUDE_VULKAN);
 module glfw @if($defined(env::GLFW_INCLUDE_VULKAN) &&& env::GLFW_INCLUDE_VULKAN);
 
 import vulkan;
 
 fn VkProc getInstanceProcAddress(vk::Instance instance, ZString procname) 
-  @extern("glfwGetInstanceProcAddress") 
-  @if($defined(INCLUDE_VULKAN));
+  @extern("glfwGetInstanceProcAddress");
 
 fn int getPhysicalDevicePresentationSupport(vk::Instance instance, vk::PhysicalDevice device, uint queuefamily) 
-  @extern("glfwGetPhysicalDevicePresentationSupport") 
-  @if($defined(INCLUDE_VULKAN));
+  @extern("glfwGetPhysicalDevicePresentationSupport");
 
 fn vk::Result createWindowSurface(vk::Instance instance, Window* window, vk::AllocationCallbacks* allocator, vk::SurfaceKHR* surface) 
-  @extern("glfwCreateWindowSurface") 
-  @if($defined(INCLUDE_VULKAN));
+  @extern("glfwCreateWindowSurface");
 
  
  
