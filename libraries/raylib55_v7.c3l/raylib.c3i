@@ -1,0 +1,2619 @@
+module raylib5::rl;
+
+const float PI = 3.14159265358979323846f;
+const float DEG2RAD = PI / 180.0f;
+const float RAD2DEG = 180.0f / PI;
+
+// Some Basic Colors
+// NOTE: Custom raylib color palette for amazing visuals on WHITE background
+const Color LIGHTGRAY   = { 200, 200, 200, 255 };   // Light Gray
+const Color GRAY        = { 130, 130, 130, 255 };   // Gray
+const Color DARKGRAY    = { 80, 80, 80, 255 };      // Dark Gray
+const Color YELLOW      = { 253, 249, 0, 255 };     // Yellow
+const Color GOLD        = { 255, 203, 0, 255 };     // Gold
+const Color ORANGE      = { 255, 161, 0, 255 };     // Orange
+const Color PINK        = { 255, 109, 194, 255 };   // Pink
+const Color RED         = { 230, 41, 55, 255 };     // Red
+const Color MAROON      = { 190, 33, 55, 255 };     // Maroon
+const Color GREEN       = { 0, 228, 48, 255 };      // Green
+const Color LIME        = { 0, 158, 47, 255 };      // Lime
+const Color DARKGREEN   = { 0, 117, 44, 255 };      // Dark Green
+const Color SKYBLUE     = { 102, 191, 255, 255 };   // Sky Blue
+const Color BLUE        = { 0, 121, 241, 255 };     // Blue
+const Color DARKBLUE    = { 0, 82, 172, 255 };      // Dark Blue
+const Color PURPLE      = { 200, 122, 255, 255 };   // Purple
+const Color VIOLET      = { 135, 60, 190, 255 };    // Violet
+const Color DARKPURPLE  = { 112, 31, 126, 255 };    // Dark Purple
+const Color BEIGE       = { 211, 176, 131, 255 };   // Beige
+const Color BROWN       = { 127, 106, 79, 255 };    // Brown
+const Color DARKBROWN   = { 76, 63, 47, 255 };      // Dark Brown
+
+const Color WHITE       = { 255, 255, 255, 255 };   // White
+const Color BLACK       = { 0, 0, 0, 255 };         // Black
+const Color BLANK       = { 0, 0, 0, 0 };           // Blank (Transparent)
+const Color MAGENTA     = { 255, 0, 255, 255 };     // Magenta
+const Color RAYWHITE    = { 245, 245, 245, 255 };   // My own White (raylib logo)
+
+// Vector2, 2 components
+struct Vector2 @compact
+{
+    float x;                // Vector x component
+    float y;                // Vector y component
+}
+
+// Vector3, 3 components
+struct Vector3 @compact
+{
+    float x;                // Vector x component
+    float y;                // Vector y component
+    float z;                // Vector z component
+}
+
+// Vector4, 4 components
+struct Vector4 @compact
+{
+    float x;                // Vector x component
+    float y;                // Vector y component
+    float z;                // Vector z component
+    float w;                // Vector w component
+}
+
+// Quaternion, 4 components (Vector4 alias)
+alias Quaternion = Vector4;
+
+// Matrix, 4x4 components, column major, OpenGL style, right handed
+struct Matrix @compact
+{
+    float m0, m4, m8, m12;  // Matrix first row (4 components)
+    float m1, m5, m9, m13;  // Matrix second row (4 components)
+    float m2, m6, m10, m14; // Matrix third row (4 components)
+    float m3, m7, m11, m15; // Matrix fourth row (4 components)
+}
+
+// Color, 4 components, R8G8B8A8 (32bit)
+struct Color @compact
+{
+    char r;        // Color red value
+    char g;        // Color green value
+    char b;        // Color blue value
+    char a;        // Color alpha value
+}
+
+// Rectangle, 4 components
+struct Rectangle @compact
+{
+    float x;                // Rectangle top-left corner position x
+    float y;                // Rectangle top-left corner position y
+    float width;            // Rectangle width
+    float height;           // Rectangle height
+}
+
+// Image, pixel data stored in CPU memory (RAM)
+struct Image
+{
+    void* data;             // Image raw data
+    int width;              // Image base width
+    int height;             // Image base height
+    int mipmaps;            // Mipmap levels, 1 by default
+    PixelFormat format;     // Data format (PixelFormat type)
+}
+
+// Texture, tex data stored in GPU memory (VRAM)
+struct Texture
+{
+    uint id;                // OpenGL texture id
+    int width;              // Texture base width
+    int height;             // Texture base height
+    int mipmaps;            // Mipmap levels, 1 by default
+    PixelFormat format;     // Data format (PixelFormat type)
+}
+
+// Texture2D, same as Texture
+alias Texture2D = Texture;
+
+// TextureCubemap, same as Texture
+alias TextureCubemap = Texture;
+
+// RenderTexture, fbo for texture rendering
+struct RenderTexture
+{
+    uint id;                // OpenGL framebuffer object id
+    Texture texture;        // Color buffer attachment texture
+    Texture depth;          // Depth buffer attachment texture
+}
+
+// RenderTexture2D, same as RenderTexture
+alias RenderTexture2D = RenderTexture;
+
+// NPatchInfo, n-patch layout info
+struct NPatchInfo
+{
+    Rectangle source;       // Texture source rectangle
+    int left;               // Left border offset
+    int top;                // Top border offset
+    int right;              // Right border offset
+    int bottom;             // Bottom border offset
+    NPatchLayout layout;    // Layout of the n-patch: 3x3, 1x3 or 3x1
+}
+
+// GlyphInfo, font characters glyphs info
+struct GlyphInfo
+{
+    int value;              // Character value (Unicode)
+    int offsetX;            // Character offset X when drawing
+    int offsetY;            // Character offset Y when drawing
+    int advanceX;           // Character advance position X
+    Image image;            // Character image data
+}
+
+// Font, font texture and GlyphInfo array data
+struct Font
+{
+    int baseSize;           // Base size (default chars height)
+    int glyphCount;         // Number of glyph characters
+    int glyphPadding;       // Padding around the glyph characters
+    Texture2D texture;      // Texture atlas containing the glyphs
+    Rectangle* recs;        // Rectangles in texture for the glyphs
+    GlyphInfo* glyphs;      // Glyphs info data
+}
+
+// Camera, defines position/orientation in 3d space
+struct Camera3D
+{
+    Vector3 position;               // Camera position
+    Vector3 target;                 // Camera target it looks-at
+    Vector3 up;                     // Camera up vector (rotation over its axis)
+    float fovy;                     // Camera field-of-view apperture in Y (degrees) in perspective, used as near plane width in orthographic
+    CameraProjection projection;    // Camera projection: CAMERA_PERSPECTIVE or CAMERA_ORTHOGRAPHIC
+}
+
+alias Camera = Camera3D;    // Camera type fallback, defaults to Camera3D
+
+// Camera2D, defines position/orientation in 2d space
+struct Camera2D
+{
+    Vector2 offset;         // Camera offset (displacement from target)
+    Vector2 target;         // Camera target (rotation and zoom origin)
+    float rotation;         // Camera rotation in degrees
+    float zoom;             // Camera zoom (scaling), should be 1.0f by default
+}
+
+// Mesh, vertex data and vao/vbo
+struct Mesh
+{
+    int vertexCount;        // Number of vertices stored in arrays
+    int triangleCount;      // Number of triangles stored (indexed or not)
+
+    // Vertex attributes data
+    float* vertices;        // Vertex position (XYZ - 3 components per vertex) (shader-location = 0)
+    float* texcoords;       // Vertex texture coordinates (UV - 2 components per vertex) (shader-location = 1)
+    float* texcoords2;      // Vertex second texture coordinates (useful for lightmaps) (shader-location = 5)
+    float* normals;         // Vertex normals (XYZ - 3 components per vertex) (shader-location = 2)
+    float* tangents;        // Vertex tangents (XYZW - 4 components per vertex) (shader-location = 4)
+    char* colors;           // Vertex colors (RGBA - 4 components per vertex) (shader-location = 3)
+    ushort *indices;        // Vertex indices (in case vertex data comes indexed)
+
+    // Animation vertex data
+    float* animVertices;    // Animated vertex positions (after bones transformations)
+    float* animNormals;     // Animated normals (after bones transformations)
+    char* boneIds;          // Vertex bone ids, max 255 bone ids, up to 4 bones influence by vertex (skinning)
+    float* boneWeights;     // Vertex bone weight, up to 4 bones influence by vertex (skinning)
+    Matrix *boneMatrices;   // Bones animated transformation matrices
+    int boneCount;          // Number of bones
+
+    // OpenGL identifiers
+    uint vaoId;             // OpenGL Vertex Array Object id
+    uint* vboId;            // OpenGL Vertex Buffer Objects id (default vertex data)
+}
+
+// Shader
+struct Shader
+{
+    uint id;                // Shader program id
+    int* locs;              // Shader locations array (RL_MAX_SHADER_LOCATIONS)
+}
+
+// MaterialMap
+struct MaterialMap
+{
+    Texture2D texture;      // Material map texture
+    Color color;            // Material map color
+    float value;            // Material map value
+}
+
+// Material, includes shader and maps
+struct Material
+{
+    Shader shader;          // Material shader
+    MaterialMap* maps;      // Material maps array (MAX_MATERIAL_MAPS)
+    float[4] params;        // Material generic parameters (if required)
+}
+
+// Transform, vectex transformation data
+struct Transform
+{
+    Vector3 translation;    // Translation
+    Quaternion rotation;    // Rotation
+    Vector3 scale;          // Scale
+}
+
+// Bone, skeletal animation bone
+struct BoneInfo
+{
+    char[32] name;          // Bone name
+    int parent;             // Bone parent
+}
+
+// Model, meshes, materials and animation data
+struct Model
+{
+    Matrix transform;       // Local transform matrix
+
+    int meshCount;          // Number of meshes
+    int materialCount;      // Number of materials
+    Mesh* meshes;           // Meshes array
+    Material* materials;    // Materials array
+    int* meshMaterial;      // Mesh material number
+
+    // Animation data
+    int boneCount;          // Number of bones
+    BoneInfo* bones;        // Bones information (skeleton)
+    Transform* bindPose;    // Bones base transformation (pose)
+}
+
+// ModelAnimation
+struct ModelAnimation
+{
+    int boneCount;          // Number of bones
+    int frameCount;         // Number of animation frames
+    BoneInfo* bones;        // Bones information (skeleton)
+    Transform** framePoses; // Poses array by frame
+    char[32] name;          // Animation name
+}
+
+// Ray, ray for raycasting
+struct Ray
+{
+    Vector3 position;       // Ray position (origin)
+    Vector3 direction;      // Ray direction (normalized)
+}
+
+// RayCollision, ray hit information
+struct RayCollision
+{
+    bool hit;               // Did the ray hit something?
+    float distance;         // Distance to nearest hit
+    Vector3 point;          // Point of nearest hit
+    Vector3 normal;         // Surface normal of hit
+}
+
+// BoundingBox
+struct BoundingBox @compact
+{
+    Vector3 min;            // Minimum vertex box-corner
+    Vector3 max;            // Maximum vertex box-corner
+}
+
+// Wave, audio wave data
+struct Wave
+{
+    uint frameCount;            // Total number of frames (considering channels)
+    uint sampleRate;            // Frequency (samples per second)
+    uint sampleSize;            // Bit depth (bits per sample): 8, 16, 32 (24 not supported)
+    uint channels;              // Number of channels (1-mono, 2-stereo, ...)
+    void* data;                 // Buffer data pointer
+}
+
+alias AudioBufferRef = void*;
+alias AudioProcessorRef = void*;
+
+// AudioStream, custom audio stream
+struct AudioStream
+{
+    AudioBufferRef buffer;       // Pointer to internal data used by the audio system
+	AudioProcessorRef processor; // Pointer to internal data processor, useful for audio effects
+
+    uint sampleRate;             // Frequency (samples per second)
+    uint sampleSize;             // Bit depth (bits per sample): 8, 16, 32 (24 not supported)
+    uint channels;               // Number of channels (1-mono, 2-stereo, ...)
+}
+
+
+// Sound
+struct Sound
+{
+    AudioStream stream;         // Audio stream
+    uint frameCount;            // Total number of frames (considering channels)
+}
+
+// Music, audio stream, anything longer than ~10 seconds should be streamed
+struct Music
+{
+    AudioStream stream;         // Audio stream
+    uint frameCount;            // Total number of frames (considering channels)
+    bool looping;               // Music looping enable
+
+    int ctxType;                // Type of music context (audio filetype)
+    void* ctxData;              // Audio context data, depends on type
+}
+
+// VrDeviceInfo, Head-Mounted-Display device parameters
+struct VrDeviceInfo
+{
+    int hResolution;                // Horizontal resolution in pixels
+    int vResolution;                // Vertical resolution in pixels
+    float hScreenSize;              // Horizontal size in meters
+    float vScreenSize;              // Vertical size in meters
+    float vScreenCenter;            // Screen center in meters
+    float eyeToScreenDistance;      // Distance between eye and display in meters
+    float lensSeparationDistance;   // Lens separation distance in meters
+    float interpupillaryDistance;   // IPD (distance between pupils) in meters
+    float[4] lensDistortionValues;  // Lens distortion constant parameters
+    float[4] chromaAbCorrection;    // Chromatic aberration correction parameters
+}
+
+// VrStereoConfig, VR stereo rendering configuration for simulator
+struct VrStereoConfig
+{
+    Matrix[2] projection;           // VR projection matrices (per eye)
+    Matrix[2] viewOffset;           // VR view offset matrices (per eye)
+    float[2] leftLensCenter;        // VR left lens center
+    float[2] rightLensCenter;       // VR right lens center
+    float[2] leftScreenCenter;      // VR left screen center
+    float[2] rightScreenCenter;     // VR right screen center
+    float[2] scale;                 // VR distortion scale
+    float[2] scaleIn;               // VR distortion scale in
+}
+
+struct FilePathList
+{
+    uint capacity;                  // Filepaths max entries
+    uint count;                     // Filepaths entries count
+    char** paths;                   // Filepaths entries
+}
+
+// Automation event
+struct AutomationEvent
+{
+    uint frame;                     // Event frame
+    uint type;                      // Event type (AutomationEventType)
+    int[4] params;                  // Event parameters (if required)
+}
+
+// Automation event list
+struct AutomationEventList
+{
+    uint capacity;                  // Events max entries (MAX_AUTOMATION_EVENTS)
+    uint count;                     // Events entries count
+    AutomationEvent* events;        // Events entries
+}
+
+// Trace log level
+// NOTE: Organized by priority level
+enum TraceLogLevel : int
+{
+    ALL,            // Display all logs (0)
+    TRACE,          // Trace logging, intended for internal use only
+    DEBUG,          // Debug logging, used for internal debugging, it should be disabled on release builds
+    INFO,           // Info logging, used for program execution info
+    WARNING,        // Warning logging, used on recoverable failures
+    ERROR,          // Error logging, used on unrecoverable failures
+    FATAL,          // Fatal logging, used to abort program: exit(EXIT_FAILURE)
+    NONE            // Disable logging
+}
+
+// Mouse buttons
+enum MouseButton
+{
+    LEFT,       // Mouse button left
+    RIGHT,      // Mouse button right
+    MIDDLE,     // Mouse button middle (pressed wheel)
+    SIDE,       // Mouse button side (advanced mouse device)
+    EXTRA,      // Mouse button extra (advanced mouse device)
+    FORWARD,    // Mouse button fordward (advanced mouse device)
+    BACK,       // Mouse button back (advanced mouse device)
+}
+
+// Mouse cursor
+enum MouseCursor : int
+{
+    DEFAULT,       // Default pointer shape
+    ARROW,         // Arrow shape
+    IBEAM,         // Text writing cursor shape
+    CROSSHAIR,     // Cross shape
+    POINTING_HAND, // Pointing hand cursor
+    RESIZE_EW,     // Horizontal resize/move arrow shape
+    RESIZE_NS,     // Vertical resize/move arrow shape
+    RESIZE_NWSE,   // Top-left to bottom-right diagonal resize/move arrow shape
+    RESIZE_NESW,   // The top-right to bottom-left diagonal resize/move arrow shape
+    RESIZE_ALL,    // The omni-directional resize/move cursor shape
+    NOT_ALLOWED    // The operation-not-allowed shape
+}
+
+$assert(MouseCursor.DEFAULT.ordinal == 0);
+
+// Gamepad buttons
+enum GamepadButton : int
+{
+    UNKNOWN,             // Unknown button, just for error checking
+    LEFT_FACE_UP,        // Gamepad left DPAD up button
+    LEFT_FACE_RIGHT,     // Gamepad left DPAD right button
+    LEFT_FACE_DOWN,      // Gamepad left DPAD down button
+    LEFT_FACE_LEFT,      // Gamepad left DPAD left button
+    RIGHT_FACE_UP,       // Gamepad right button up (i.e. PS3: Triangle, Xbox: Y)
+    RIGHT_FACE_RIGHT,    // Gamepad right button right (i.e. PS3: Square, Xbox: X)
+    RIGHT_FACE_DOWN,     // Gamepad right button down (i.e. PS3: Cross, Xbox: A)
+    RIGHT_FACE_LEFT,     // Gamepad right button left (i.e. PS3: Circle, Xbox: B)
+    LEFT_TRIGGER_1,      // Gamepad top/back trigger left (first), it could be a trailing button
+    LEFT_TRIGGER_2,      // Gamepad top/back trigger left (second), it could be a trailing button
+    RIGHT_TRIGGER_1,     // Gamepad top/back trigger right (one), it could be a trailing button
+    RIGHT_TRIGGER_2,     // Gamepad top/back trigger right (second), it could be a trailing button
+    MIDDLE_LEFT,         // Gamepad center buttons, left one (i.e. PS3: Select)
+    MIDDLE,              // Gamepad center buttons, middle one (i.e. PS3: PS, Xbox: XBOX)
+    MIDDLE_RIGHT,        // Gamepad center buttons, right one (i.e. PS3: Start)
+    LEFT_THUMB,          // Gamepad joystick pressed button left
+    RIGHT_THUMB          // Gamepad joystick pressed button right
+}
+
+$assert(GamepadButton.UNKNOWN.ordinal == 0);
+
+enum GamepadAxis : int
+{
+    LEFT_X,           // Gamepad left stick X axis
+    LEFT_Y,           // Gamepad left stick Y axis
+    RIGHT_X,          // Gamepad right stick X axis
+    RIGHT_Y,          // Gamepad right stick Y axis
+    LEFT_TRIGGER,     // Gamepad back trigger left, pressure level: [1..-1]
+    RIGHT_TRIGGER     // Gamepad back trigger right, pressure level: [1..-1]
+}
+
+$assert(GamepadAxis.LEFT_X.ordinal == 0);
+
+// Material map index
+enum MaterialMapIndex : int
+{
+    ALBEDO,            // Albedo material (same as: MATERIAL_MAP_DIFFUSE)
+    METALNESS,         // Metalness material (same as: MATERIAL_MAP_SPECULAR)
+    NORMAL,            // Normal material
+    ROUGHNESS,         // Roughness material
+    OCCLUSION,         // Ambient occlusion material
+    EMISSION,          // Emission material
+    HEIGHT,            // Heightmap material
+    CUBEMAP,           // Cubemap material (NOTE: Uses GL_TEXTURE_CUBE_MAP)
+    IRRADIANCE,        // Irradiance material (NOTE: Uses GL_TEXTURE_CUBE_MAP)
+    PREFILTER,         // Prefilter material (NOTE: Uses GL_TEXTURE_CUBE_MAP)
+    BRDF,              // Brdf material
+    DEPTH0,            // New depth map index shadow for light1
+    DEPTH1,            // New depth map index shadow for light2
+    DEPTH2,            // New depth map index shadow for light3
+    DEPTH3             // New depth map index shadow for light4
+}
+
+$assert(MaterialMapIndex.ALBEDO.ordinal == 0);
+
+// #define MATERIAL_MAP_DIFFUSE      MATERIAL_MAP_ALBEDO
+// #define MATERIAL_MAP_SPECULAR     MATERIAL_MAP_METALNESS
+const MATERIAL_MAP_DIFFUSE = MaterialMapIndex.ALBEDO.ordinal;
+const MATERIAL_MAP_SPECULAR = MaterialMapIndex.METALNESS.ordinal;
+
+// Shader location index
+enum ShaderLocationIndex : int
+{
+    VERTEX_POSITION,     // Shader location: vertex attribute: position
+    VERTEX_TEXCOORD01,   // Shader location: vertex attribute: texcoord01
+    VERTEX_TEXCOORD02,   // Shader location: vertex attribute: texcoord02
+    VERTEX_NORMAL,       // Shader location: vertex attribute: normal
+    VERTEX_TANGENT,      // Shader location: vertex attribute: tangent
+    VERTEX_COLOR,        // Shader location: vertex attribute: color
+    MATRIX_MVP,          // Shader location: matrix uniform: model-view-projection
+    MATRIX_VIEW,         // Shader location: matrix uniform: view (camera transform)
+    MATRIX_PROJECTION,   // Shader location: matrix uniform: projection
+    MATRIX_MODEL,        // Shader location: matrix uniform: model (transform)
+    MATRIX_NORMAL,       // Shader location: matrix uniform: normal
+    VECTOR_VIEW,         // Shader location: vector uniform: view
+    COLOR_DIFFUSE,       // Shader location: vector uniform: diffuse color
+    COLOR_SPECULAR,      // Shader location: vector uniform: specular color
+    COLOR_AMBIENT,       // Shader location: vector uniform: ambient color
+    MAP_ALBEDO,          // Shader location: sampler2d texture: albedo (same as: SHADER_LOC_MAP_DIFFUSE)
+    MAP_METALNESS,       // Shader location: sampler2d texture: metalness (same as: SHADER_LOC_MAP_SPECULAR)
+    MAP_NORMAL,          // Shader location: sampler2d texture: normal
+    MAP_ROUGHNESS,       // Shader location: sampler2d texture: roughness
+    MAP_OCCLUSION,       // Shader location: sampler2d texture: occlusion
+    MAP_EMISSION,        // Shader location: sampler2d texture: emission
+    MAP_HEIGHT,          // Shader location: sampler2d texture: height
+    MAP_CUBEMAP,         // Shader location: samplerCube texture: cubemap
+    MAP_IRRADIANCE,      // Shader location: samplerCube texture: irradiance
+    MAP_PREFILTER,       // Shader location: samplerCube texture: prefilter
+    MAP_BRDF,             // Shader location: sampler2d texture: brdf
+    DEPTH0,              // Shader location: sampler2d texture: depth map 0
+    DEPTH1,              // Shader location: sampler2d texture: depth map 1
+    DEPTH2,              // Shader location: sampler2d texture: depth map 2
+    DEPTH3               // Shader location: sampler2d texture: depth map 3
+}
+
+$assert(ShaderLocationIndex.VERTEX_POSITION.ordinal == 0);
+
+//#define SHADER_LOC_MAP_DIFFUSE      SHADER_LOC_MAP_ALBEDO
+//#define SHADER_LOC_MAP_SPECULAR     SHADER_LOC_MAP_METALNESS
+
+// Shader uniform data type
+enum ShaderUniformDataType
+{
+    FLOAT,           // Shader uniform type: float
+    VEC2,            // Shader uniform type: vec2 (2 float)
+    VEC3,            // Shader uniform type: vec3 (3 float)
+    VEC4,            // Shader uniform type: vec4 (4 float)
+    INT,             // Shader uniform type: int
+    IVEC2,           // Shader uniform type: ivec2 (2 int)
+    IVEC3,           // Shader uniform type: ivec3 (3 int)
+    IVEC4,           // Shader uniform type: ivec4 (4 int)
+    SAMPLER2D        // Shader uniform type: sampler2d
+}
+
+$assert(ShaderUniformDataType.FLOAT.ordinal == 0);
+
+// Shader attribute data types
+enum ShaderAttributeDataType
+{
+    FLOAT,            // Shader attribute type: float
+    VEC2,             // Shader attribute type: vec2 (2 float)
+    VEC3,             // Shader attribute type: vec3 (3 float)
+    VEC4              // Shader attribute type: vec4 (4 float)
+}
+
+$assert(ShaderAttributeDataType.FLOAT.ordinal == 0);
+
+// Pixel formats
+// NOTE: Support depends on OpenGL version and platform
+enum PixelFormat : int
+{
+	NONE,
+    UNCOMPRESSED_GRAYSCALE,     // 8 bit per pixel (no alpha)
+    UNCOMPRESSED_GRAY_ALPHA,    // 8*2 bpp (2 channels)
+    UNCOMPRESSED_R5G6B5,        // 16 bpp
+    UNCOMPRESSED_R8G8B8,        // 24 bpp
+    UNCOMPRESSED_R5G5B5A1,      // 16 bpp (1 bit alpha)
+    UNCOMPRESSED_R4G4B4A4,      // 16 bpp (4 bit alpha)
+    UNCOMPRESSED_R8G8B8A8,      // 32 bpp
+    UNCOMPRESSED_R32,           // 32 bpp (1 channel - float)
+    UNCOMPRESSED_R32G32B32,     // 32*3 bpp (3 channels - float)
+    UNCOMPRESSED_R32G32B32A32,  // 32*4 bpp (4 channels - float)
+    COMPRESSED_DXT1_RGB,        // 4 bpp (no alpha)
+    COMPRESSED_DXT1_RGBA,       // 4 bpp (1 bit alpha)
+    COMPRESSED_DXT3_RGBA,       // 8 bpp
+    COMPRESSED_DXT5_RGBA,       // 8 bpp
+    COMPRESSED_ETC1_RGB,        // 4 bpp
+    COMPRESSED_ETC2_RGB,        // 4 bpp
+    COMPRESSED_ETC2_EAC_RGBA,   // 8 bpp
+    COMPRESSED_PVRT_RGB,        // 4 bpp
+    COMPRESSED_PVRT_RGBA,       // 4 bpp
+    COMPRESSED_ASTC_4X4_RGBA,   // 8 bpp
+    COMPRESSED_ASTC_8X8_RGBA    // 2 bpp
+}
+
+$assert(PixelFormat.UNCOMPRESSED_GRAYSCALE.ordinal == 1);
+
+// Texture parameters: filter mode
+// NOTE 1: Filtering considers mipmaps if available in the texture
+// NOTE 2: Filter is accordingly set for minification and magnification
+enum TextureFilter : int
+{
+    POINT,                   // No filter, just pixel approximation
+    BILINEAR,                // Linear filtering
+    TRILINEAR,               // Trilinear filtering (linear with mipmaps)
+    ANISOTROPIC_4X,          // Anisotropic filtering 4x
+    ANISOTROPIC_8X,          // Anisotropic filtering 8x
+    ANISOTROPIC_16X,         // Anisotropic filtering 16x
+}
+
+$assert(TextureFilter.POINT.ordinal == 0);
+
+// Texture parameters: wrap mode
+enum TextureWrap
+{
+    REPEAT,                    // Repeats texture in tiled mode
+    CLAMP,                     // Clamps texture to edge pixel in tiled mode
+    MIRROR_REPEAT,             // Mirrors and repeats the texture in tiled mode
+    MIRROR_CLAMP               // Mirrors and clamps to border the texture in tiled mode
+}
+
+$assert(TextureWrap.REPEAT.ordinal == 0);
+
+// Cubemap layouts
+enum CubemapLayout
+{
+    AUTO_DETECT,             // Automatically detect layout type
+    LINE_VERTICAL,           // Layout is defined by a vertical line with faces
+    LINE_HORIZONTAL,         // Layout is defined by an horizontal line with faces
+    CROSS_THREE_BY_FOUR,     // Layout is defined by a 3x4 cross with cubemap faces
+    CROSS_FOUR_BY_THREE,     // Layout is defined by a 4x3 cross with cubemap faces
+    PANORAMA                 // Layout is defined by a panorama image (equirectangular map)
+}
+
+$assert(CubemapLayout.AUTO_DETECT.ordinal == 0);
+
+// Font type, defines generation method
+enum FontType
+{
+    DEFAULT,                   // Default font generation, anti-aliased
+    BITMAP,                    // Bitmap font generation, no anti-aliasing
+    SDF                        // SDF font generation, requires external shader
+}
+
+$assert(FontType.DEFAULT.ordinal == 0);
+
+// Color blending modes (pre-defined)
+enum BlendMode : int
+{
+    ALPHA,                    // Blend textures considering alpha (default)
+    ADDITIVE,                 // Blend textures adding colors
+    MULTIPLIED,               // Blend textures multiplying colors
+    ADD_COLORS,               // Blend textures adding colors (alternative)
+    SUBTRACT_COLORS,          // Blend textures subtracting colors (alternative)
+    ALPHA_PREMUL,             // Blend premultiplied textures considering alpha
+    CUSTOM                    // Blend textures using custom src/dst factors (use rlSetBlendMode())
+}
+
+$assert(BlendMode.ALPHA.ordinal == 0);
+
+
+// Camera system modes
+enum CameraMode
+{
+    CUSTOM,                  // Camera custom, controlled by user (UpdateCamera() does nothing)
+    FREE,                    // Camera free mode
+    ORBITAL,                 // Camera orbital, around target, zoom supported
+    FIRST_PERSON,            // Camera first person
+    THIRD_PERSON             // Camera third person
+}
+
+$assert(CameraMode.CUSTOM.ordinal == 0);
+
+// Camera projection
+enum CameraProjection
+{
+    PERSPECTIVE,             // Perspective projection
+    ORTHOGRAPHIC             // Orthographic projection
+}
+
+$assert(CameraProjection.PERSPECTIVE.ordinal == 0);
+
+// N-patch layout
+enum NPatchLayout
+{
+    NINE_PATCH,              // Npatch layout: 3x3 tiles
+    THREE_PATCH_VERTICAL,    // Npatch layout: 1x3 tiles
+    THREE_PATCH_HORIZONTAL   // Npatch layout: 3x1 tiles
+}
+
+$assert(NPatchLayout.NINE_PATCH.ordinal == 0);
+
+// Callbacks to hook some internal functions
+// WARNING: This callbacks are intended for advance users
+alias LoadFileDataCallback = fn char* (char* fileName, uint* bytesRead);                     // FileIO: Load binary data
+alias SaveFileDataCallback = fn bool(char* fileName, void* data, uint bytesToWrite);         // FileIO: Save binary data
+alias LoadFileTextCallback = fn char*(char* fileName);                                       // FileIO: Load text data
+alias SaveFileTextCallback = fn bool(char* fileName, char* text);                            // FileIO: Save text data
+
+// Window-related functions
+fn void initWindow(int width, int height, char* title) @extern("InitWindow");              // Initialize window and OpenGL context
+fn void closeWindow() @extern("CloseWindow");                                              // Close window and unload OpenGL context
+fn bool windowShouldClose() @extern("WindowShouldClose");                                  // Check if KEY_ESCAPE pressed or Close icon pressed
+fn bool isWindowReady() @extern("IsWindowReady");                                          // Check if window has been initialized successfully
+fn bool isWindowFullscreen() @extern("IsWindowFullscreen");                                // Check if window is currently fullscreen
+fn bool isWindowHidden() @extern("IsWindowHidden");                                        // Check if window is currently hidden (only PLATFORM_DESKTOP)
+fn bool isWindowMinimized() @extern("IsWindowMinimized");                                  // Check if window is currently minimized (only PLATFORM_DESKTOP)
+fn bool isWindowMaximized() @extern("IsWindowMaximized");                                  // Check if window is currently maximized (only PLATFORM_DESKTOP)
+fn bool isWindowFocused() @extern("IsWindowFocused");                                      // Check if window is currently focused (only PLATFORM_DESKTOP)
+fn bool isWindowResized() @extern("IsWindowResized");                                      // Check if window has been resized last frame
+fn bool isWindowState(ConfigFlag flag) @extern("IsWindowState");                           // Check if one specific window flag is enabled
+fn void setWindowState(ConfigFlag flag) @extern("SetWindowState");                         // Set window configuration state using flags (only PLATFORM_DESKTOP)
+fn void clearWindowState(ConfigFlag flags) @extern("ClearWindowState");                    // Clear window configuration state flags
+fn void toggleFullscreen() @extern("ToggleFullscreen");                                    // Toggle window state: fullscreen/windowed (only PLATFORM_DESKTOP)
+fn void toggleBorderlessWindowed() @extern("ToggleBorderlessWindowed");			   // Toggle window state: borderless windowed (only PLATFORM_DESKTOP)
+fn void maximizeWindow() @extern("MaximizeWindow");                                        // Set window state: maximized, if resizable (only PLATFORM_DESKTOP)
+fn void minimizeWindow() @extern("MinimizeWindow");                                        // Set window state: minimized, if resizable (only PLATFORM_DESKTOP)
+fn void restoreWindow() @extern("RestoreWindow");                                          // Set window state: not minimized/maximized (only PLATFORM_DESKTOP)
+fn void setWindowIcon(Image image) @extern("SetWindowIcon");                               // Set icon for window (only PLATFORM_DESKTOP)
+fn void setWindowIcons(Image* images, int count) @extern("SetWindowIcons");                // Set icon for window (multiple images, RGBA 32bit, only PLATFORM_DESKTOP)
+fn void setWindowTitle(ZString title) @extern("SetWindowTitle");                             // Set title for window (only PLATFORM_DESKTOP)
+fn void setWindowPosition(int x, int y) @extern("SetWindowPosition");                      // Set window position on screen (only PLATFORM_DESKTOP)
+fn void setWindowMonitor(int monitor) @extern("SetWindowMonitor");             // Set monitor for the current window (fullscreen mode)
+fn void setWindowMinSize(int width, int height) @extern("SetWindowMinSize");               // Set window minimum dimensions (for FLAG_WINDOW_RESIZABLE)
+fn void setWindowMaxSize(int width, int height) @extern("SetWindowMaxSize");               // Set window maximum dimensions (for FLAG_WINDOW_RESIZABLE)
+fn void setWindowSize(int width, int height) @extern("SetWindowSize");                     // Set window dimensions
+fn void setWindowOpacity(float opacity) @extern("SetWindowOpacity");                       // Set window opacity [0.0f..1.0f] (only PLATFORM_DESKTOP)
+fn void* getWindowHandle() @extern("GetWindowHandle");                                     // Get native window handle
+fn int getScreenWidth() @extern("GetScreenWidth");                                         // Get current screen width
+fn int getScreenHeight() @extern("GetScreenHeight");                                       // Get current screen height
+fn int getRenderWidth() @extern("GetRenderWidth");                                         // Get current render width (it considers HiDPI)
+fn int getRenderHeight() @extern("GetRenderHeight");                                       // Get current render height (it considers HiDPI)
+fn int getMonitorCount() @extern("GetMonitorCount");                                       // Get number of connected monitors
+fn int getCurrentMonitor() @extern("GetCurrentMonitor");                                   // Get current connected monitor
+fn Vector2 getMonitorPosition(int monitor) @extern("GetMonitorPosition");                  // Get specified monitor position
+fn int getMonitorWidth(int monitor) @extern("GetMonitorWidth");                            // Get specified monitor width (max available by monitor)
+fn int getMonitorHeight(int monitor) @extern("GetMonitorHeight");                          // Get specified monitor height (max available by monitor)
+fn int getMonitorPhysicalWidth(int monitor) @extern("GetMonitorPhysicalWidth");            // Get specified monitor physical width in millimetres
+fn int getMonitorPhysicalHeight(int monitor) @extern("GetMonitorPhysicalHeight");          // Get specified monitor physical height in millimetres
+fn int getMonitorRefreshRate(int monitor) @extern("GetMonitorRefreshRate");                // Get specified monitor refresh rate
+fn Vector2 getWindowPosition() @extern("GetWindowPosition");                               // Get window position XY on monitor
+fn Vector2 getWindowScaleDPI() @extern("GetWindowScaleDPI");                               // Get window scale DPI factor
+fn ZString getMonitorName(int monitor) @extern("GetMonitorName");                          // Get the human-readable, UTF-8 encoded name of the primary monitor
+fn void setClipboardText(ZString text) @extern("SetClipboardText");                        // Set clipboard text content
+fn ZString getClipboardText() @extern("GetClipboardText");                                 // Get clipboard text content
+fn Image getClipboardImage() @extern("GetClipboardImage");                                 // Get clipboard image content
+fn void enableEventWaiting() @extern("EnableEventWaiting");                                // Enable waiting for events on EndDrawing(), no automatic event polling
+fn void disableEventWaiting() @extern("DisableEventWaiting");                              // Disable waiting for events on EndDrawing(), automatic events polling
+
+// Cursor-related functions
+fn void showCursor() @extern("ShowCursor");                                                 // Shows cursor
+fn void hideCursor() @extern("HideCursor");                                                 // Hides cursor
+fn bool isCursorHidden() @extern("IsCursorHidden");                                        // Check if cursor is not visible
+fn void enableCursor() @extern("EnableCursor");                                             // Enables cursor (unlock cursor)
+fn void disableCursor() @extern("DisableCursor");                                           // Disables cursor (lock cursor)
+fn bool isCursorOnScreen() @extern("IsCursorOnScreen");                                   // Check if cursor is on the screen
+
+// Drawing-related functions
+fn void clearBackground(Color color) @extern("ClearBackground");                            // Set background color (framebuffer clear color)
+fn void beginDrawing() @extern("BeginDrawing");                                             // Setup canvas (framebuffer) to start drawing
+fn void endDrawing() @extern("EndDrawing");                                                 // End canvas drawing and swap buffers (double buffering)
+fn void beginMode2D(Camera2D camera) @extern("BeginMode2D");                                // Begin 2D mode with custom camera (2D)
+fn void endMode2D() @extern("EndMode2D");                                                   // Ends 2D mode with custom camera
+fn void beginMode3D(Camera3D camera) @extern("BeginMode3D");                                // Begin 3D mode with custom camera (3D)
+fn void endMode3D() @extern("EndMode3D");                                                   // Ends 3D mode and returns to default 2D orthographic mode
+fn void beginTextureMode(RenderTexture2D target) @extern("BeginTextureMode");              // Begin drawing to render texture
+fn void endTextureMode() @extern("EndTextureMode");                                        // Ends drawing to render texture
+fn void beginShaderMode(Shader shader) @extern("BeginShaderMode");                         // Begin custom shader drawing
+fn void endShaderMode() @extern("EndShaderMode");                                          // End custom shader drawing (use default shader)
+fn void beginBlendMode(int mode) @extern("BeginBlendMode");                                // Begin blending mode (alpha, additive, multiplied, subtract, custom)
+fn void endBlendMode() @extern("EndBlendMode");                                            // End blending mode (reset to default: alpha blending)
+fn void beginScissorMode(int x, int y, int w, int h) @extern("BeginScissorMode");          // Begin scissor mode (define screen area for following drawing)
+fn void endScissorMode() @extern("EndScissorMode");                                        // End scissor mode
+fn void beginVrStereoMode(VrStereoConfig config) @extern("BeginVrStereoMode");            // Begin stereo rendering (requires VR simulator)
+fn void endVrStereoMode() @extern("EndVrStereoMode");                                     // End stereo rendering (requires VR simulator)
+
+// VR stereo config functions for VR simulator
+fn VrStereoConfig loadVrStereoConfig(VrDeviceInfo device) @extern("LoadVrStereoConfig");  // Load VR stereo config for VR simulator device parameters
+fn void unloadVrStereoConfig(VrStereoConfig config) @extern("UnloadVrStereoConfig");      // Unload VR stereo config
+
+// Shader management functions
+// NOTE: Shader functionality is not available on OpenGL 1.1
+fn Shader loadShader(ZString vsFileName, ZString fsFileName) @extern("LoadShader");          // Load shader from files and bind default locations
+fn Shader loadShaderFromMemory(ZString vs, ZString fs) @extern("LoadShaderFromMemory");      // Load shader from code strings and bind default locations
+fn bool isShaderValid(Shader shader) @extern("IsShaderValid");                               // Check if a shader is ready
+fn int getShaderLocation(Shader shader, ZString uniformName) @extern("GetShaderLocation");   // Get shader uniform location
+fn int getShaderLocationAttrib(Shader shader, ZString attr) @extern("GetShaderLocationAttrib");  // Get shader attribute location
+fn void setShaderValue(Shader shader, int locIndex, void* value, ShaderUniformDataType uniformType) @extern("SetShaderValue"); // Set shader uniform value
+fn void setShaderValueV(Shader shader, int locIndex, void* value, ShaderUniformDataType uniformType, int count) @extern("SetShaderValueV");   // Set shader uniform value vector
+fn void setShaderValueMatrix(Shader shader, int locIndex, Matrix mat) @extern("SetShaderValueMatrix"); // Set shader uniform value (matrix 4x4)
+fn void setShaderValueTexture(Shader shader, int locIndex, Texture2D texture) @extern("SetShaderValueTexture"); // Set shader uniform value for texture (sampler2d)
+fn void unloadShader(Shader shader) @extern("UnloadShader");                                // Unload shader from GPU memory (VRAM)
+
+// Screen-space-related functions
+//#define GetMouseRay GetScreenToWorldRay     // Compatibility hack for previous raylib versions
+fn Ray getScreenToWorldRay(Vector2 mousePosition, Camera camera) @extern("GetScreenToWorldRay"); // Get a ray trace from mouse position
+fn Ray getScreenToWorldRayEx(Vector2 position, Camera camera, int width, int height) @extern("GetScreenToWorldRayEx"); // Get a ray trace from screen position (i.e mouse) in a viewport
+fn Vector2 getWorldToScreen(Vector3 position, Camera camera) @extern("GetWorldToScreen"); // Get the screen space position for a 3d world space position
+fn Vector2 getWorldToScreenEx(Vector3 position, Camera camera, int width, int height) @extern("GetWorldToScreenEx"); // Get size position for a 3d world space position
+fn Vector2 getWorldToScreen2D(Vector2 position, Camera2D camera) @extern("GetWorldToScreen2D"); // Get the screen space position for a 2d camera world space position
+fn Vector2 getScreenToWorld2D(Vector2 position, Camera2D camera) @extern("GetScreenToWorld2D"); // Get the world space position for a 2d camera screen space position
+fn Matrix getCameraMatrix(Camera camera) @extern("GetCameraMatrix");                            // Get camera transform matrix (view matrix)
+fn Matrix getCameraMatrix2D(Camera2D camera) @extern("GetCameraMatrix2D");                 // Get camera 2d transform matrix
+
+// Timing-related functions
+fn void setTargetFPS(int fps) @extern("SetTargetFPS");                                     // Set target FPS (maximum)
+fn int getFPS() @extern("GetFPS");                                                          // Get current FPS
+fn float getFrameTime() @extern("GetFrameTime");                                           // Get time in seconds for last frame drawn (delta time)
+fn double getTime() @extern("GetTime");                                                     // Get elapsed time in seconds since InitWindow()
+
+// Custom frame control functions
+// NOTE: Those functions are intended for advance users that want full control over the frame processing
+// By default EndDrawing() does this job: draws everything + SwapScreenBuffer() + manage frame timming + PollInputEvents()
+// To avoid that behaviour and control frame processes manually, enable in config.h: SUPPORT_CUSTOM_FRAME_CONTROL
+fn void swapScreenBuffer() @extern("SwapScreenBuffer");                                    // Swap back buffer with front buffer (screen drawing)
+fn void pollInputEvents() @extern("PollInputEvents");                                      // Register all input events
+fn void waitTime(float ms) @extern("WaitTime");                                             // Wait for some milliseconds (halt program execution)
+
+// Random values generation functions
+fn int getRandomValue(int min, int max) @extern("GetRandomValue");                          // Get a random value between min and max (both included)
+fn void setRandomSeed(uint seed) @extern("SetRandomSeed");                                  // Set the seed for the random number generator
+fn int* loadRandomSequence(uint count, int min, int max) @extern("LoadRandomSequence");     // Load random values sequence, no values repeated
+fn void unloadRandomSequence(int *sequence) @extern("UnloadRandomSequence");                // Unload random values sequence
+
+// Misc. functions
+fn void takeScreenshot(ZString fileName) @extern("TakeScreenshot");                         // Takes a screenshot of current screen (filename extension defines format)
+fn void setConfigFlags(ConfigFlag flags) @extern("SetConfigFlags");                         // Setup init configuration flags (view FLAGS)
+fn void openURL(ZString url) @extern("OpenURL");                                            // Open URL with default system browser (if available)
+
+fn void traceLog(TraceLogLevel logLevel, char* text, ...) @extern("TraceLog");              // Show trace log messages (LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR...)
+fn void setTraceLogLevel(TraceLogLevel logLevel) @extern("SetTraceLogLevel");               // Set the current threshold (minimum) log level
+fn void* memAlloc(int size) @extern("MemAlloc");                                            // Internal memory allocator
+fn void* memRealloc(void* ptr, int size) @extern("MemRealloc");                             // Internal memory reallocator
+fn void memFree(void* ptr) @extern("MemFree");                								// Internal memory free
+
+// Set custom callbacks
+// WARNING: Callbacks setup is intended for advance users
+fn void setLoadFileDataCallback(LoadFileDataCallback callback) @extern("SetLoadFileDataCallback"); // Set custom file binary data loader
+fn void setSaveFileDataCallback(SaveFileDataCallback callback) @extern("SetSaveFileDataCallback"); // Set custom file binary data saver
+fn void setLoadFileTextCallback(LoadFileTextCallback callback) @extern("SetLoadFileTextCallback"); // Set custom file text data loader
+fn void setSaveFileTextCallback(SaveFileTextCallback callback) @extern("SetSaveFileTextCallback"); // Set custom file text data saver
+
+// Files management functions
+// Load file data as byte array (read)
+fn char* loadFileData(ZString fileName, int* bytesRead) @extern("LoadFileData");
+// Unload file data allocated by load_file_data()
+fn void unloadFileData(char* data) @extern("UnloadFileData");
+// Save data to file from byte array (write), returns true on success
+fn bool saveFileData(ZString fileName, void* data,  int dataSize) @extern("SaveFileData");
+// Export data to code (.h), returns true on success
+fn bool exportDataAsCode(char *data, int dataSize, ZString fileName) @extern("ExportDataAsCode");
+// Load text data from file (read), returns a '\0' terminated string
+fn ZString loadFileText(ZString fileName) @extern("LoadFileText");
+// Unload file text data allocated by LoadFileText()
+fn void unloadFileText(ZString text) @extern("UnloadFileText");
+// Save text data to file (write), string must be '\0' terminated, returns true on success
+fn bool saveFileText(ZString fileName, ZString text) @extern("SaveFileText");
+
+// File system functions
+// Check if file exists
+fn bool fileExists(ZString fileName) @extern("FileExists");
+// Check if a directory path exists
+fn bool directoryExists(ZString dirPath) @extern("DirectoryExists");
+// Check file extension (including point: .png, .wav)
+fn bool isFileExtension(ZString fileName, ZString ext) @extern("IsFileExtension");
+// Get file length in bytes (NOTE: GetFileSize() conflicts with windows.h)
+fn int getFileLength(ZString fileName) @extern("GetFileLength");
+// Get pointer to extension for a filename string (includes dot: '.png')
+fn ZString getFileExtension(ZString fileName) @extern("GetFileExtension");
+// Get pointer to filename for a path string
+fn ZString getFileName(ZString filePath) @extern("GetFileName");
+// Get filename string without extension (uses static string)
+fn ZString getFileNameWithoutExt(ZString filePath) @extern("GetFileNameWithoutExt");
+// Get full path for a given fileName with path (uses static string)
+fn ZString getDirectoryPath(ZString filePath) @extern("GetDirectoryPath");
+// Get previous directory path for a given path (uses static string)
+fn ZString getPrevDirectoryPath(ZString dirPath) @extern("GetPrevDirectoryPath");
+// Get current working directory (uses static string)
+fn ZString getWorkingDirectory() @extern("GetWorkingDirectory");
+// Get the directory if the running application (uses static string)
+fn ZString getApplicationDirectory() @extern("GetApplicationDirectory");
+// Create directories (including full path requested), returns 0 on success
+fn int makeDirectory(char *dirPath) @extern("MakeDirectory");
+// Change working directory, return true on success
+fn bool changeDirectory(ZString dir) @extern("ChangeDirectory");
+// Check if a given path is a file or a directory
+fn bool isPathFile(ZString path) @extern("IsPathFile");
+// Check if fileName is valid for the platform/OS
+fn bool isFileNameValid(char *fileName)@extern("IsFileNameValid");
+// Load directory filepaths
+fn FilePathList loadDirectoryFiles(ZString dirPath) @extern("LoadDirectoryFiles");
+// Load directory filepaths with extension filtering and recursive directory scan
+fn FilePathList loadDirectoryFilesEx(ZString basePath, ZString filter, bool scanSubdirs) @extern("LoadDirectoryFilesEx");
+// Clear directory files paths buffers (free memory)
+fn void unloadDirectoryFiles(FilePathList files) @extern("UnloadDirectoryFiles");
+// Check if a file has been dropped into window
+fn bool isFileDropped() @extern("IsFileDropped");
+// Load dropped filepaths
+fn FilePathList loadDroppedFiles() @extern("LoadDroppedFiles");
+// Unload dropped filepaths
+fn void unloadDroppedFiles(FilePathList files) @extern("UnloadDroppedFiles");
+// Get file modification time (last write time)
+fn CLong getFileModTime(ZString fileName) @extern("GetFileModTime");
+
+// Compression/Encoding functionality
+// Compress data (DEFLATE algorithm)
+fn char* compressData(char* data, int dataLength, int* compDataLength) @extern("CompressData");
+// Decompress data (DEFLATE algorithm)
+fn char* decompressData(char* compData, int compDataLength, int* dataLength) @extern("DecompressData");
+// Encode data to Base64 string
+fn char* encodeDataBase64(char* data, int dataLength, int* outputLength) @extern("EncodeDataBase64");
+// Decode Base64 string data
+fn char* decodeDataBase64(char* data, int* outputLength) @extern("DecodeDataBase64");
+// Compute CRC32 hash code
+fn uint computeCRC32(char *data, int dataSize) @extern("ComputeCRC32");
+// Compute MD5 hash code, returns static int[4] (16 bytes)
+fn uint* computeMD5(char *data, int dataSize) @extern("ComputeMD5");
+// Compute SHA1 hash code, returns static int[5] (20 bytes)
+fn uint* computeSHA1(char *data, int dataSize) @extern("ComputeSHA1");
+// Automation events functionality
+// Load automation events list from file, NULL for empty list, capacity = MAX_AUTOMATION_EVENTS
+fn AutomationEventList loadAutomationEventList(ZString fileName) @extern("LoadAutomationEventList");
+// Unload automation events list from file
+fn void unloadAutomationEventList(AutomationEventList list) @extern("UnloadAutomationEventList");
+// Export automation events list as text file
+fn bool exportAutomationEventList(AutomationEventList list, ZString fileName) @extern("ExportAutomationEventList");
+// Set automation event list to record to
+fn void setAutomationEventList(AutomationEventList *list) @extern("SetAutomationEventList");
+// Set automation event internal base frame to start recording
+fn void setAutomationEventBaseFrame(int frame) @extern("SetAutomationEventBaseFrame");
+// Start recording automation events (AutomationEventList must be set)
+fn void startAutomationEventRecording() @extern("StartAutomationEventRecording");
+// Stop recording automation events
+fn void stopAutomationEventRecording() @extern("StopAutomationEventRecording");
+// Play a recorded automation event
+fn void playAutomationEvent(AutomationEvent event) @extern("PlayAutomationEvent");
+
+//------------------------------------------------------------------------------------
+// Input Handling Functions (Module: core)
+//------------------------------------------------------------------------------------
+
+// Input-related functions: keyboard
+// Check if a key has been pressed once
+fn bool isKeyPressed(KeyboardKey key) @extern("IsKeyPressed");
+// Check if a key has been pressed again (Only PLATFORM_DESKTOP)
+fn bool isKeyPressedRepeat(KeyboardKey key) @extern("IsKeyPressedRepeat");
+// Check if a key is being pressed
+fn bool isKeyDown(KeyboardKey key) @extern("IsKeyDown");
+// Check if a key has been released once
+fn bool isKeyReleased(KeyboardKey key) @extern("IsKeyReleased");
+// Check if a key is NOT being pressed
+fn bool isKeyUp(KeyboardKey key) @extern("IsKeyUp");
+// Get key pressed (keycode), call it multiple times for keys queued, returns 0 when the queue is empty
+fn int getKeyPressed() @extern("GetKeyPressed");
+// Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty
+fn int getCharPressed() @extern("GetCharPressed");
+// Set a custom key to exit program (default is ESC)
+fn void setExitKey(KeyboardKey key) @extern("SetExitKey");
+
+// Input-related functions: gamepads
+// Check if a gamepad is available
+fn bool isGamepadAvailable(int gamepad) @extern("IsGamepadAvailable");
+// Get gamepad internal name id
+fn ZString getGamepadName(int gamepad) @extern("GetGamepadName");
+// Check if a gamepad button has been pressed once
+fn bool isGamepadButtonPressed(int gamepad, int button) @extern("IsGamepadButtonPressed");
+// Check if a gamepad button is being pressed
+fn bool isGamepadButtonDown(int gamepad, int button) @extern("IsGamepadButtonDown");
+// Check if a gamepad button has been released once
+fn bool isGamepadButtonReleased(int gamepad, int button) @extern("IsGamepadButtonReleased");
+// Check if a gamepad button is NOT being pressed
+fn bool isGamepadButtonUp(int gamepad, int button) @extern("IsGamepadButtonUp");
+// Get the last gamepad button pressed
+fn int getGamepadButtonPressed() @extern("GetGamepadButtonPressed");
+// Get gamepad axis count for a gamepad
+fn int getGamepadAxisCount(int gamepad) @extern("GetGamepadAxisCount");
+// Get axis movement value for a gamepad axis
+fn float getGamepadAxisMovement(int gamepad, int axis) @extern("GetGamepadAxisMovement");
+// Set internal gamepad mappings (SDL_GameControllerDB)
+fn int setGamepadMappings(ZString mappings) @extern("SetGamepadMappings");
+// Set gamepad vibration for both motors (duration in seconds)
+fn void setGamepadVibration(int gamepad, float leftMotor, float rightMotor, float duration) @extern("SetGamepadVibration");
+// Input-related functions: mouse
+// Check if a mouse button has been pressed once
+fn bool isMouseButtonPressed(MouseButton button) @extern("IsMouseButtonPressed");
+// Check if a mouse button is being pressed
+fn bool isMouseButtonDown(MouseButton button) @extern("IsMouseButtonDown");
+// Check if a mouse button has been released once
+fn bool isMouseButtonReleased(MouseButton button) @extern("IsMouseButtonReleased");
+// Check if a mouse button is NOT being pressed
+fn bool isMouseButtonUp(MouseButton button) @extern("IsMouseButtonUp");
+// Get mouse position X
+fn int getMouseX() @extern("GetMouseX");
+// Get mouse position Y
+fn int getMouseY() @extern("GetMouseY");
+// Get mouse position XY
+fn Vector2 getMousePosition() @extern("GetMousePosition");
+// Get mouse delta between frames
+fn Vector2 getMouseDelta() @extern("GetMouseDelta");
+// Set mouse position XY
+fn void setMousePosition(int x, int y) @extern("SetMousePosition");
+// Set mouse offset
+fn void setMouseOffset(int offsetX, int offsetY) @extern("SetMouseOffset");
+// Set mouse scaling
+fn void setMouseScale(float scaleX, float scaleY) @extern("SetMouseScale");
+// Get mouse wheel movement Y
+fn float getMouseWheelMove() @extern("GetMouseWheelMove");
+// Get mouse wheel movement for both X and Y
+fn Vector2 getMouseWheelMoveV() @extern("GetMouseWheelMoveV");
+// Set mouse cursor
+fn void setMouseCursor(int cursor) @extern("SetMouseCursor");
+
+// Input-related functions: touch
+// Get touch position X for touch point 0 (relative to screen size)
+fn int getTouchX() @extern("GetTouchX");
+// Get touch position Y for touch point 0 (relative to screen size)
+fn int getTouchY() @extern("GetTouchY");
+// Get touch position XY for a touch point index (relative to screen size)
+fn Vector2 getTouchPosition(int index) @extern("GetTouchPosition");
+// Get touch point identifier for given index
+fn int getTouchPointId(int index) @extern("GetTouchPointId");
+// Get number of touch points
+fn int getTouchPointCount() @extern("GetTouchPointCount");
+
+//------------------------------------------------------------------------------------
+// Gestures and Touch Handling Functions (Module: rgestures)
+//------------------------------------------------------------------------------------
+// Enable a set of gestures using flags
+fn void setGesturesEnabled(Gesture flags) @extern("SetGesturesEnabled");
+// Check if a gesture have been detected
+fn bool isGestureDetected(Gesture gesture) @extern("IsGestureDetected");
+// Get latest detected gesture
+fn Gesture getGestureDetected() @extern("GetGestureDetected");
+// Get gesture hold time in seconds
+fn float getGestureHoldDuration() @extern("GetGestureHoldDuration");
+// Get gesture drag vector
+fn Vector2 getGestureDragVector() @extern("GetGestureDragVector");
+// Get gesture drag angle
+fn float getGestureDragAngle() @extern("GetGestureDragAngle");
+// Get gesture pinch delta
+fn Vector2 getGesturePinchVector() @extern("GetGesturePinchVector");
+// Get gesture pinch angle
+fn float getGesturePinchAngle() @extern("GetGesturePinchAngle");
+
+//------------------------------------------------------------------------------------
+// Camera System Functions (Module: rcamera)
+//------------------------------------------------------------------------------------
+
+// Update camera position for selected mode
+fn void updateCamera(Camera *camera, CameraMode mode) @extern("UpdateCamera");
+// Update camera position for selected mode
+fn void updateCameraPro(Camera *camera, Vector3 movement, Vector3 rotation, float zoom) @extern("UpdateCameraPro");
+
+//------------------------------------------------------------------------------------
+// Basic Shapes Drawing Functions (Module: shapes)
+//------------------------------------------------------------------------------------
+// Set texture and rectangle to be used on shapes drawing
+// NOTE: It can be useful when using basic shapes and one single font,
+// defining a font char white rectangle would allow drawing everything in a single draw call
+// Set texture and rectangle to be used on shapes drawing
+fn void setShapesTexture(Texture2D texture, Rectangle source) @extern("SetShapesTexture");
+// Get texture that is used for shapes drawing
+fn Texture2D getShapesTexture() @extern("GetShapesTexture");
+// Get texture source rectangle that is used for shapes drawing
+fn Rectangle getShapesTextureRectangle() @extern("GetShapesTextureRectangle");
+// Basic shapes drawing functions
+// Draw a pixel
+fn void drawPixel(int posX, int posY, Color color) @extern("DrawPixel");
+// Draw a pixel (Vector version)
+fn void drawPixelV(Vector2 position, Color color) @extern("DrawPixelV");
+// Draw a line
+fn void drawLine(int startPosX, int startPosY, int endPosX, int endPosY, Color color) @extern("DrawLine");
+// Draw a line (Vector version)
+fn void drawLineV(Vector2 startPos, Vector2 endPos, Color color) @extern("DrawLineV");
+// Draw a line defining thickness
+fn void drawLineEx(Vector2 startPos, Vector2 endPos, float thick, Color color) @extern("DrawLineEx");
+// Draw lines sequence (using gl lines)
+fn void drawLineStrip(Vector2* points, int pointCount, Color color) @extern("DrawLineStrip");
+// Draw a line using cubic-bezier curves in-out
+fn void drawLineBezier(Vector2 startPos, Vector2 endPos, float thick, Color color) @extern("DrawLineBezier");
+// Draw lines sequence
+fn void drawCircle(int centerX, int centerY, float radius, Color color) @extern("DrawCircle");
+// Draw a piece of a circle
+fn void drawCircleSector(Vector2 center, float radius, float startAngle, float endAngle, int segments, Color color) @extern("DrawCircleSector");
+// Draw circle sector outline
+fn void drawCircleSectorLines(Vector2 center, float radius, float startAngle, float endAngle, int segments, Color color) @extern("DrawCircleSectorLines");
+// Draw a gradient-filled circle
+fn void drawCircleGradient(int centerX, int centerY, float radius, Color inner, Color outer) @extern("DrawCircleGradient");
+// Draw a color-filled circle (Vector version)
+fn void drawCircleV(Vector2 center, float radius, Color color) @extern("DrawCircleV");
+// Draw circle outline
+fn void drawCircleLines(int centerX, int centerY, float radius, Color color) @extern("DrawCircleLines");
+// Draw circle outline (Vector version)
+fn void drawCircleLinesV(Vector2 center, float radius, Color color) @extern("DrawCircleLinesV");
+// Draw ellipse
+fn void drawEllipse(int centerX, int centerY, float radiusH, float radiusV, Color color) @extern("DrawEllipse");
+// Draw ellipse outline
+fn void drawEllipseLines(int centerX, int centerY, float radiusH, float radiusV, Color color) @extern("DrawEllipseLines");
+// Draw ring
+fn void drawRing(Vector2 center, float innerRadius, float outerRadius, float startAngle, float endAngle, int segments, Color color) @extern("DrawRing");
+// Draw ring outline
+fn void drawRingLines(Vector2 center, float innerRadius, float outerRadius, float startAngle, float endAngle, int segments, Color color) @extern("DrawRingLines");
+// Draw a color-filled rectangle
+fn void drawRectangle(int posX, int posY, int width, int height, Color color) @extern("DrawRectangle");
+// Draw a color-filled rectangle (Vector version)
+fn void drawRectangleV(Vector2 position, Vector2 size, Color color) @extern("DrawRectangleV");
+// Draw a color-filled rectangle
+fn void drawRectangleRec(Rectangle rec, Color color) @extern("DrawRectangleRec");
+// Draw a color-filled rectangle with pro parameters
+fn void drawRectanglePro(Rectangle rec, Vector2 origin, float rotation, Color color) @extern("DrawRectanglePro");
+// Draw a vertical-gradient-filled rectangle
+fn void drawRectangleGradientV(int posX, int posY, int width, int height, Color top, Color bottom) @extern("DrawRectangleGradientV");
+// Draw a horizontal-gradient-filled rectangle
+fn void drawRectangleGradientH(int posX, int posY, int width, int height, Color left, Color right) @extern("DrawRectangleGradientH");
+// Draw a gradient-filled rectangle with custom vertex colors
+fn void drawRectangleGradientEx(Rectangle rec, Color topLeft, Color bottomLeft, Color topRight, Color bottomRight) @extern("DrawRectangleGradientEx");
+// Draw rectangle outline
+fn void drawRectangleLines(int posX, int posY, int width, int height, Color color) @extern("DrawRectangleLines");
+// Draw rectangle outline with extended parameters
+fn void drawRectangleLinesEx(Rectangle rec, float lineThick, Color color) @extern("DrawRectangleLinesEx");
+// Draw rectangle with rounded edges
+fn void drawRectangleRounded(Rectangle rec, float roundness, int segments, Color color) @extern("DrawRectangleRounded");
+// Draw rectangle lines with rounded edges
+fn void drawRectangleRoundedLines(Rectangle rec, float roundness, int segments, float lineThick, Color color) @extern("DrawRectangleRoundedLines");
+// Draw rectangle with rounded edges outline
+fn void drawRectangleRoundedLinesEx(Rectangle rec, float roundness, int segments, float lineThick, Color color) @extern("DrawRectangleRoundedLinesEx");
+// Draw a color-filled triangle (vertex in counter-clockwise order!)
+fn void drawTriangle(Vector2 v1, Vector2 v2, Vector2 v3, Color color) @extern("DrawTriangle");
+// Draw triangle outline (vertex in counter-clockwise order!)
+fn void drawTriangleLines(Vector2 v1, Vector2 v2, Vector2 v3, Color color) @extern("DrawTriangleLines");
+// Draw a triangle fan defined by points (first vertex is the center)
+fn void drawTriangleFan(Vector2 *points, int pointCount, Color color) @extern("DrawTriangleFan");
+// Draw a triangle strip defined by points
+fn void drawTriangleStrip(Vector2 *points, int pointCount, Color color) @extern("DrawTriangleStrip");
+// Draw a regular polygon (Vector version)
+fn void drawPoly(Vector2 center, int sides, float radius, float rotation, Color color) @extern("DrawPoly");
+// Draw a polygon outline of n sides
+fn void drawPolyLines(Vector2 center, int sides, float radius, float rotation, Color color) @extern("DrawPolyLines");
+// Draw a polygon outline of n sides with extended parameters
+fn void drawPolyLinesEx(Vector2 center, int sides, float radius, float rotation, float lineThick, Color color) @extern("DrawPolyLinesEx");
+
+// Splines drawing functions
+// Draw spline: Linear, minimum 2 points
+fn void drawSplineLinear(Vector2 *points, int pointCount, float thick, Color color) @extern("DrawSplineLinear");
+// Draw spline: B-Spline, minimum 4 points
+fn void drawSplineBasis(Vector2 *points, int pointCount, float thick, Color color) @extern("DrawSplineBasis");
+// Draw spline: Catmull-Rom, minimum 4 points
+fn void drawSplineCatmullRom(Vector2 *points, int pointCount, float thick, Color color) @extern("DrawSplineCatmullRom");
+// Draw spline: Quadratic Bezier, minimum 3 points (1 control point): [p1, c2, p3, c4...]
+fn void drawSplineBezierQuadratic(Vector2 *points, int pointCount, float thick, Color color) @extern("DrawSplineBezierQuadratic");
+// Draw spline: Cubic Bezier, minimum 4 points (2 control points): [p1, c2, c3, p4, c5, c6...]
+fn void drawSplineBezierCubic(Vector2 *points, int pointCount, float thick, Color color) @extern("DrawSplineBezierCubic");
+// Draw spline segment: Linear, 2 points
+fn void drawSplineSegmentLinear(Vector2 p1, Vector2 p2, float thick, Color color) @extern("DrawSplineSegmentLinear");
+// Draw spline segment: B-Spline, 4 points
+fn void drawSplineSegmentBasis(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, float thick, Color color) @extern("DrawSplineSegmentBasis");
+// Draw spline segment: Catmull-Rom, 4 points
+fn void drawSplineSegmentCatmullRom(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, float thick, Color color) @extern("DrawSplineSegmentCatmullRom");
+// Draw spline segment: Quadratic Bezier, 2 points, 1 control point
+fn void drawSplineSegmentBezierQuadratic(Vector2 p1, Vector2 c2, Vector2 p3, float thick, Color color) @extern("DrawSplineSegmentBezierQuadratic");
+// Draw spline segment: Cubic Bezier, 2 points, 2 control points
+fn void drawSplineSegmentBezierCubic(Vector2 p1, Vector2 c2, Vector2 c3, Vector2 p4, float thick, Color color) @extern("DrawSplineSegmentBezierCubic");
+
+// Spline segment point evaluation functions, for a given t [0.0f .. 1.0f]
+// Get (evaluate) spline point: Linear
+fn Vector2 getSplinePointLinear(Vector2 startPos, Vector2 endPos, float t) @extern("GetSplinePointLinear");
+// Get (evaluate) spline point: B-Spline
+fn Vector2 getSplinePointBasis(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, float t) @extern("GetSplinePointBasis");
+// Get (evaluate) spline point: Catmull-Rom
+fn Vector2 getSplinePointCatmullRom(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, float t) @extern("GetSplinePointCatmullRom");
+// Get (evaluate) spline point: Quadratic Bezier
+fn Vector2 getSplinePointBezierQuad(Vector2 p1, Vector2 c2, Vector2 p3, float t) @extern("GetSplinePointBezierQuad");
+// Get (evaluate) spline point: Cubic Bezier
+fn Vector2 getSplinePointBezierCubic(Vector2 p1, Vector2 c2, Vector2 c3, Vector2 p4, float t) @extern("GetSplinePointBezierCubic");
+
+// Basic shapes collision detection functions
+// Check collision between two rectangles
+fn bool checkCollisionRecs(Rectangle rec1, Rectangle rec2) @extern("CheckCollisionRecs");
+// Check collision between two circles
+fn bool checkCollisionCircles(Vector2 center1, float radius1, Vector2 center2, float radius2) @extern("CheckCollisionCircles");
+// Check collision between circle and rectangle
+fn bool checkCollisionCircleRec(Vector2 center, float radius, Rectangle rec) @extern("CheckCollisionCircleRec");
+// Check if circle collides with a line created betweeen two points [p1] and [p2]
+fn bool checkCollisionCircleLine(Vector2 center, float radius, Vector2 p1, Vector2 p2) @extern("CheckCollisionCircleLine");
+// Check if point is inside rectangle
+fn bool checkCollisionPointRec(Vector2 point, Rectangle rec) @extern("CheckCollisionPointRec");
+// Check if point is inside circle
+fn bool checkCollisionPointCircle(Vector2 point, Vector2 center, float radius) @extern("CheckCollisionPointCircle");
+// Check if point is inside a triangle
+fn bool checkCollisionPointTriangle(Vector2 point, Vector2 p1, Vector2 p2, Vector2 p3) @extern("CheckCollisionPointTriangle");
+// Check if point belongs to line created between two points [p1] and [p2] with defined margin in pixels [threshold]
+fn bool checkCollisionPointLine(Vector2 point, Vector2 p1, Vector2 p2, int threshold) @extern("CheckCollisionPointLine");
+// Check if point is within a polygon described by array of vertices
+fn bool checkCollisionPointPoly(Vector2 point, Vector2 *points, int pointCount) @extern("CheckCollisionPointPoly");
+// Check the collision between two lines defined by two points each, returns collision point by reference
+fn bool checkCollisionLines(Vector2 startPos1, Vector2 endPos1, Vector2 startPos2, Vector2 endPos2, Vector2 *collisionPoint) @extern("CheckCollisionLines");
+// Get collision rectangle for two rectangles collision
+fn Rectangle getCollisionRec(Rectangle rec1, Rectangle rec2) @extern("GetCollisionRec");
+
+//------------------------------------------------------------------------------------
+// Texture Loading and Drawing Functions (Module: textures)
+//------------------------------------------------------------------------------------
+
+// Image loading functions
+// NOTE: This functions do not require GPU access
+// Load image from file into CPU memory (RAM)
+fn Image loadImage(ZString fileName) @extern("LoadImage");
+// Load image from RAW file data
+fn Image loadImageRaw(ZString fileName, int width, int height, int format, int headerSize) @extern("LoadImageRaw");
+// Load image from SVG file data or string with specified size
+fn Image loadImageSvg(ZString fileNameOrString, int width, int height) @extern("LoadImageSvg");
+// Load image sequence from file (frames appended to image.data)
+fn Image loadImageAnim(ZString fileName, int* frames) @extern("LoadImageAnim");
+// Load image sequence from memory buffer
+fn Image loadImageAnimFromMemory(ZString fileType, ZString fileData, int dataSize, int* frames) @extern("LoadImageAnimFromMemory");
+// Load image from memory buffer, fileType refers to extension: i.e. '.png'
+fn Image loadImageFromMemory(ZString fileType, char* fileData, int dataSize) @extern("LoadImageFromMemory");
+// Load image from GPU texture data
+fn Image loadImageFromTexture(Texture2D texture) @extern("LoadImageFromTexture");
+// Load image from screen buffer and (screenshot)
+fn Image loadImageFromScreen() @extern("LoadImageFromScreen");
+// Check if an image is valid (data and parameters)
+fn bool isImageValid(Image image) @extern("IsImageValid");
+// Unload image from CPU memory (RAM)
+fn void unloadImage(Image image) @extern("UnloadImage");
+// Export image data to file, returns true on success
+fn bool exportImage(Image image, ZString fileName) @extern("ExportImage");
+// Export image to memory buffer
+fn char* exportImageToMemory(Image image, ZString fileType, int* fileSize) @extern("ExportImageToMemory");
+// Export image as code file defining an array of bytes, returns true on success
+fn bool exportImageAsCode(Image image, ZString fileName) @extern("ExportImageAsCode");
+
+// Image generation functions
+// Generate image: plain color
+fn Image genImageColor(int width, int height, Color color) @extern("GenImageColor");
+// Generate image: vertical gradient
+fn Image genImageGradientLinear(int width, int height, int direction, Color start, Color end) @extern("GenImageGradientLinear");
+// Generate image: horizontal gradient
+fn Image genImageGradientSquare(int width, int height, float density, Color inner, Color outer) @extern("GenImageGradientSquare");
+// Generate image: radial gradient
+fn Image genImageGradientRadial(int width, int height, float density, Color inner, Color outer) @extern("GenImageGradientRadial");
+// Generate image: checked
+fn Image genImageChecked(int width, int height, int checksX, int checksY, Color col1, Color col2) @extern("GenImageChecked");
+// Generate image: white noise
+fn Image genImageWhiteNoise(int width, int height, float factor) @extern("GenImageWhiteNoise");
+// Generate image: perlin noise
+fn Image genImagePerlinNoise(int width, int height, int offsetX, int offsetY, float scale) @extern("GenImagePerlinNoise");
+// Generate image: cellular algorithm, bigger tileSize means bigger cells
+fn Image genImageCellular(int width, int height, int tileSize) @extern("GenImageCellular");
+// Generate image: grayscale image from text data
+fn Image genImageText(int width, int height, ZString text) @extern("GenImageText");
+
+// Image manipulation functions
+// Create an image duplicate (useful for transformations)
+fn Image imageCopy(Image image) @extern("ImageCopy");
+// Create an image from another image piece
+fn Image imageFromImage(Image image, Rectangle rec) @extern("ImageFromImage");
+// Create an image from a selected channel of another image (GRAYSCALE)
+fn Image imageFromChannel(Image image, int selectedChannel) @extern("ImageFromChannel");
+// Create an image from text (default font)
+fn Image imageText(ZString text, int fontSize, Color color) @extern("ImageText");
+// Create an image from text (custom sprite font)
+fn Image imageTextEx(Font font, ZString text, float fontSize, float spacing, Color tint) @extern("ImageTextEx");
+// Convert image data to desired format
+fn void imageFormat(Image* image, PixelFormat newFormat) @extern("ImageFormat");
+// Convert image to POT (power-of-two)
+fn void imageToPOT(Image* image, Color fill) @extern("ImageToPOT");
+// Crop an image to a defined rectangle
+fn void imageCrop(Image* image, Rectangle crop) @extern("ImageCrop");
+// Crop image depending on alpha value
+fn void imageAlphaCrop(Image* image, float threshold) @extern("ImageAlphaCrop");
+// Clear alpha channel to desired color
+fn void imageAlphaClear(Image* image, Color color, float threshold) @extern("ImageAlphaClear");
+// Apply alpha mask to image
+fn void imageAlphaMask(Image* image, Image alphaMask) @extern("ImageAlphaMask");
+// Premultiply alpha channel
+fn void imageAlphaPremultiply(Image* image) @extern("ImageAlphaPremultiply");
+// Apply Gaussian blur using a box blur approximation
+fn void imageBlurGaussian(Image* image, int blurSize) @extern("ImageBlurGaussian");
+// Apply custom square convolution kernel to image
+fn void imageKernelConvolution(Image *image, float *kernel, int kernelSize) @extern("ImageKernelConvolution");
+// Resize image (Bicubic scaling algorithm)
+fn void imageResize(Image* image, int newWidth, int newHeight) @extern("ImageResize");
+// Resize image (Nearest-Neighbor scaling algorithm)
+fn void imageResizeNN(Image* image, int newWidth,int newHeight) @extern("ImageResizeNN");
+// Resize canvas and fill with color
+fn void imageResizeCanvas(Image* image, int newWidth, int newHeight, int offsetX, int offsetY, Color fill) @extern("ImageResizeCanvas");
+// Compute all mipmap levels for a provided image
+fn void imageMipmaps(Image* image) @extern("ImageMipmaps");
+// Dither image data to 16bpp or lower (Floyd-Steinberg dithering)
+fn void imageDither(Image* image, int rBpp, int gBpp, int bBpp, int aBpp) @extern("ImageDither");
+// Flip image vertically
+fn void imageFlipVertical(Image* image) @extern("ImageFlipVertical");
+// Flip image horizontally
+fn void imageFlipHorizontal(Image* image) @extern("ImageFlipHorizontal");
+// Rotate image by input angle in degrees (-359 to 359)
+fn void imageRotate(Image* image, int degrees) @extern("ImageRotate");
+// Rotate image clockwise 90deg
+fn void imageRotateCW(Image* image) @extern("ImageRotateCW");
+// Rotate image counter-clockwise 90deg
+fn void imageRotateCCW(Image* image) @extern("ImageRotateCCW");
+// Modify image color: tint
+fn void imageColorTint(Image* image, Color color) @extern("ImageColorTint");
+// Modify image color: invert
+fn void imageColorInvert(Image* image) @extern("ImageColorInvert");
+// Modify image color: grayscale
+fn void imageColorGrayscale(Image* image) @extern("ImageColorGrayscale");
+// Modify image color: contrast (-100 to 100)
+fn void imageColorContrast(Image* image, float contrast) @extern("ImageColorContrast");
+// Modify image color: brightness (-255 to 255)
+fn void imageColorBrightness(Image* image, int brightness) @extern("ImageColorBrightness");
+// Modify image color: replace color
+fn void imageColorReplace(Image* image, Color color, Color replace) @extern("ImageColorReplace");
+// Load color data from image as a Color array (RGBA - 32bit)
+fn Color *loadImageColors(Image image) @extern("LoadImageColors");
+// Load colors palette from image as a Color array (RGBA - 32bit)
+fn Color *loadImagePalette(Image image, int maxPaletteSize, int *colorCount) @extern("LoadImagePalette");
+// Unload color data loaded with LoadImageColors()
+fn void unloadImageColors(Color* colors) @extern("UnloadImageColors");
+// Unload colors palette loaded with LoadImagePalette()
+fn void unloadImagePalette(Color* colors) @extern("UnloadImagePalette");
+// Get image alpha border rectangle
+fn Rectangle getImageAlphaBorder(Image image, float threshold) @extern("GetImageAlphaBorder");
+// Get image pixel color at (x, y) position
+fn Color getImageColor(Image image, int x, int y) @extern("GetImageColor");
+
+// Image drawing functions
+// NOTE: Image software-rendering functions (CPU)
+// Clear image background with given color
+fn void imageClearBackground(Image* dst, Color color) @extern("ImageClearBackground");
+// Draw pixel within an image
+fn void imageDrawPixel(Image* dst, int posX, int posY, Color color) @extern("ImageDrawPixel");
+// Draw pixel within an image (Vector version)
+fn void imageDrawPixelV(Image* dst, Vector2 position, Color color) @extern("ImageDrawPixelV");
+// Draw line within an image
+fn void imageDrawLine(Image* dst, int startPosX, int startPosY, int endPosX, int endPosY, Color color) @extern("ImageDrawLine");
+// Draw line within an image (Vector version)
+fn void imageDrawLineV(Image* dst, Vector2 start, Vector2 end, Color color) @extern("ImageDrawLineV");
+// Draw a line defining thickness within an image
+fn void imageDrawLineEx(Image *dst, Vector2 start, Vector2 end, int thick, Color color) @extern("ImageDrawLineEx");
+// Draw circle within an image
+fn void imageDrawCircle(Image* dst, int centerX, int centerY, int radius, Color color) @extern("ImageDrawCircle");
+// Draw circle within an image (Vector version)
+fn void imageDrawCircleV(Image* dst, Vector2 center, int radius, Color color) @extern("ImageDrawCircleV");
+// Draw circle outline within an image
+fn void imageDrawCircleLines(Image* dst, int centerX, int centerY, int radius, Color color) @extern("ImageDrawCircleLines");
+// Draw circle outline within an image (Vector version)
+fn void imageDrawCircleLinesV(Image* dst, Vector2 center, int radius, Color color) @extern("ImageDrawCircleLinesV");
+// Draw rectangle within an image
+fn void imageDrawRectangle(Image* dst, int posX, int posY, int width, int height, Color color) @extern("ImageDrawRectangle");
+// Draw rectangle within an image (Vector version)
+fn void imageDrawRectangleV(Image* dst, Vector2 position, Vector2 size, Color color) @extern("ImageDrawRectangleV");
+// Draw rectangle within an image
+fn void imageDrawRectangleRec(Image* dst, Rectangle rec, Color color) @extern("ImageDrawRectangleRec");
+// Draw rectangle lines within an image
+fn void imageDrawRectangleLines(Image* dst, Rectangle rec, int thick, Color color) @extern("ImageDrawRectangleLines");
+// Draw triangle within an image
+fn void imageDrawTriangle(Image *dst, Vector2 v1, Vector2 v2, Vector2 v3, Color color) @extern("ImageDrawTriangle");
+// Draw triangle with interpolated colors within an image
+fn void imageDrawTriangleEx(Image *dst, Vector2 v1, Vector2 v2, Vector2 v3, Color c1, Color c2, Color c3) @extern("ImageDrawTriangleEx");
+// Draw triangle outline within an image
+fn void imageDrawTriangleLines(Image *dst, Vector2 v1, Vector2 v2, Vector2 v3, Color color) @extern("ImageDrawTriangleLines");
+// Draw a triangle fan defined by points within an image (first vertex is the center)
+fn void imageDrawTriangleFan(Image *dst, Vector2 *points, int pointCount, Color color) @extern("ImageDrawTriangleFan");
+// Draw a triangle strip defined by points within an image
+fn void imageDrawTriangleStrip(Image *dst, Vector2 *points, int pointCount, Color color);
+// Draw a source image within a destination image (tint applied to source)
+fn void imageDraw(Image* dst, Image src, Rectangle srcRec, Rectangle dstRec, Color tint) @extern("ImageDraw");
+// Draw text (using default font) within an image (destination)
+fn void imageDrawText(Image* dst, ZString text, int posX, int posY, int fontSize, Color color) @extern("ImageDrawText");
+// Draw text (custom sprite font) within an image (destination)
+fn void imageDrawTextEx(Image* dst, Font font, ZString text, Vector2 position, float fontSize, float spacing, Color tint) @extern("ImageDrawTextEx");
+
+// Texture loading functions
+// NOTE: These functions require GPU access
+// Load texture from file into GPU memory (VRAM)
+fn Texture2D loadTexture(ZString fileName) @extern("LoadTexture");
+// Load texture from image data
+fn Texture2D loadTextureFromImage(Image image) @extern("LoadTextureFromImage");
+// Load cubemap from image, multiple image cubemap layouts supported
+fn TextureCubemap loadTextureCubemap(Image image, CubemapLayout layout) @extern("LoadTextureCubemap");
+// Load texture for rendering (framebuffer)
+fn RenderTexture2D loadRenderTexture(int width, int height) @extern("LoadRenderTexture");
+// Check if a texture is valid (loaded in GPU)
+fn bool isTextureValid(Texture2D texture) @extern("IsTextureValid");
+// Unload texture from GPU memory (VRAM)
+fn void unloadTexture(Texture2D texture) @extern("UnloadTexture");
+// Check if a render texture is valid (loaded in GPU)
+fn bool isRenderTextureValid(RenderTexture2D target) @extern("IsRenderTextureValid");
+// Unload render texture from GPU memory (VRAM)
+fn void unloadRenderTexture(RenderTexture2D target) @extern("UnloadRenderTexture");
+// Update GPU texture with new data
+fn void updateTexture(Texture2D texture, void* pixels) @extern("UpdateTexture");
+// Update GPU texture rectangle with new data
+fn void updateTextureRec(Texture2D texture, Rectangle rec, void* pixels) @extern("UpdateTextureRec");
+
+// Texture configuration functions
+// Generate GPU mipmaps for a texture
+fn void genTextureMipmaps(Texture2D* texture) @extern("GenTextureMipmaps");
+// Set texture scaling filter mode
+fn void setTextureFilter(Texture2D texture, TextureFilter filter) @extern("SetTextureFilter");
+// Set texture wrapping mode
+fn void setTextureWrap(Texture2D texture, int wrap) @extern("SetTextureWrap");
+
+// Texture drawing functions
+// Draw a Texture2D
+fn void drawTexture(Texture2D texture, int posX, int posY, Color tint) @extern("DrawTexture");
+// Draw a Texture2D with position defined as Vector2
+fn void drawTextureV(Texture2D texture, Vector2 position, Color tint) @extern("DrawTextureV");
+// Draw a Texture2D with extended parameters
+fn void drawTextureEx(Texture2D texture, Vector2 position, float rotation, float scale, Color tint) @extern("DrawTextureEx");
+// Draw a part of a texture defined by a rectangle
+fn void drawTextureRec(Texture2D texture, Rectangle source, Vector2 position, Color tint) @extern("DrawTextureRec");
+// Draw a part of a texture defined by a rectangle with 'pro' parameters
+fn void drawTexturePro(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, float rotation, Color tint) @extern("DrawTexturePro");
+// Draws a texture (or part of it) that stretches or shrinks nicely
+fn void drawTextureNPatch(Texture2D texture, NPatchInfo nPatchInfo, Rectangle dest, Vector2 origin, float rotation, Color tint) @extern("DrawTextureNPatch");
+
+// Color/pixel related functions
+// Check if two colors are equal
+fn bool colorIsEqual(Color col1, Color col2) @extern("ColorIsEqual");
+// Get color with alpha applied, alpha goes from 0.0f to 1.0f
+fn Color fade(Color color, float alpha) @extern("Fade");
+//  Get hexadecimal value for a Color (0xRRGGBBAA)
+fn int colorToInt(Color color) @extern("ColorToInt");
+// Get Color normalized as float [0..1]
+fn Vector4 colorNormalize(Color color) @extern("ColorNormalize");
+// Get Color from normalized values [0..1]
+fn Color colorFromNormalized(Vector4 normalized) @extern("ColorFromNormalized");
+// Get HSV values for a Color, hue [0..360], saturation/value [0..1]
+fn Vector3 colorToHSV(Color color) @extern("ColorToHSV");
+// Get a Color from HSV values, hue [0..360], saturation/value [0..1]
+fn Color colorFromHSV(float hue, float saturation, float value) @extern("ColorFromHSV");
+// Get color multiplied with another color
+fn Color colorTint(Color color, Color tint) @extern("ColorTint");
+// Get color with brightness correction, brightness factor goes from -1.0f to 1.0f
+fn Color colorBrightness(Color color, float factor) @extern("ColorBrightness");
+// Get color with contrast correction, contrast values between -1.0f and 1.0f
+fn Color colorContrast(Color color, float contrast) @extern("ColorContrast");
+// Get color with alpha applied, alpha goes from 0.0f to 1.0f
+fn Color colorAlpha(Color color, float alpha) @extern("ColorAlpha");
+// Get src alpha-blended into dst color with tint
+fn Color colorAlphaBlend(Color dst, Color src, Color tint) @extern("ColorAlphaBlend");
+// Get color lerp interpolation between two colors, factor [0.0f..1.0f]
+fn  Color colorLerp(Color color1, Color color2, float factor) @extern("ColorLerp");
+// Get Color structure from hexadecimal value
+fn Color getColor(uint hexValue) @extern("GetColor");
+// Get Color from a source pixel pointer of certain format
+fn Color getPixelColor(void* srcPtr, int format) @extern("GetPixelColor");
+// Set color formatted into destination pixel pointer
+fn void setPixelColor(void* dstPtr, Color color, PixelFormat format) @extern("SetPixelColor");
+// Get pixel data size in bytes for certain format
+fn int getPixelDataSize(int width, int height, PixelFormat format) @extern("GetPixelDataSize");
+
+//------------------------------------------------------------------------------------
+// Font Loading and Text Drawing Functions (Module: text)
+//------------------------------------------------------------------------------------
+
+// Font loading/unloading functions
+// Get the default Font
+fn Font getFontDefault() @extern("GetFontDefault");
+// Load font from file into GPU memory (VRAM)
+fn Font loadFont(ZString fileName) @extern("LoadFont");
+// Load font from file with extended parameters, use NULL for fontChars and 0 for glyphCount to load the default character set
+fn Font loadFontEx(ZString fileName, int fontSize, int* fontChars, int glyphCount) @extern("LoadFontEx");
+// Load font from Image (XNA style)
+fn Font loadFontFromImage(Image image, Color key, int firstChar) @extern("LoadFontFromImage");
+// Load font from memory buffer, fileType refers to extension: i.e. '.ttf'
+fn Font loadFontFromMemory(ZString fileType, char* fileData, int dataSize, int fontSize, int* fontChars, int glyphCount) @extern("LoadFontFromMemory");
+// Check if a font is valid (font data loaded, WARNING: GPU texture not checked)
+fn bool isFontValid(Font font) @extern("IsFontValid");
+// Load font data for further use
+fn GlyphInfo* loadFontData(char* fileData, int dataSize, int fontSize, int *fontChars, int glyphCount, int type) @extern("LoadFontData");
+// Generate image font atlas using chars info
+fn Image genImageFontAtlas(GlyphInfo* chars, Rectangle **recs, int glyphCount, int fontSize, int padding, int packMethod) @extern("GenImageFontAtlas");
+// Unload font chars info data (RAM)
+fn void unloadFontData(GlyphInfo* chars, int glyphCount) @extern("UnloadFontData");
+// Unload font from GPU memory (VRAM)
+fn void unloadFont(Font font) @extern("UnloadFont");
+// Export font as code file, returns true on success
+fn bool exportFontAsCode(Font font, ZString fileName) @extern("ExportFontAsCode");
+
+
+// Text drawing functions
+// Draw current FPS
+fn void drawFPS(int posX, int posY) @extern("DrawFPS");
+// Draw text (using default font)
+fn void drawText(ZString text, int posX, int posY, int fontSize, Color color) @extern("DrawText");
+// Draw text using font and additional parameters
+fn void drawTextEx(Font font, ZString text, Vector2 position, float fontSize, float spacing, Color tint) @extern("DrawTextEx");
+// Draw text using Font and pro parameters (rotation)
+fn void drawTextPro(Font font, ZString text, Vector2 position, Vector2 origin, float rotation, float fontSize, float spacing, Color tint) @extern("DrawTextPro");
+// Draw one character (codepoint)
+fn void drawTextCodepoint(Font font, int codepoint, Vector2 position, float fontSize, Color tint) @extern("DrawTextCodepoint");
+// Draw multiple character (codepoint)
+fn void drawTextCodepoints(Font font, int* codepoints, int count, Vector2 position, float fontSize, float spacing, Color tint) @extern("DrawTextCodepoints");
+
+// Text font info functions
+// Set vertical line spacing when drawing with line-breaks
+fn void setTextLineSpacing(int spacing) @extern("SetTextLineSpacing");
+// Measure string width for default font
+fn int measureText(ZString text, int fontSize) @extern("MeasureText");
+// Measure string size for Font
+fn Vector2 measureTextEx(Font font, ZString text, float fontSize, float spacing) @extern("MeasureTextEx");
+// Get glyph index position in font for a codepoint (unicode character), fallback to '?' if not found
+fn int getGlyphIndex(Font font, int codepoint) @extern("GetGlyphIndex");
+// Get glyph font info data for a codepoint (unicode character), fallback to '?' if not found
+fn GlyphInfo getGlyphInfo(Font font, int codepoint) @extern("GetGlyphInfo");
+// Get glyph rectangle in font atlas for a codepoint (unicode character), fallback to '?' if not found
+fn Rectangle getGlyphAtlasRec(Font font, int codepoint) @extern("GetGlyphAtlasRec");
+
+// Text codepoints management functions (unicode characters)
+// Load UTF-8 text encoded from codepoints array
+fn ZString loadUTF8(int *codepoints, int length) @extern("LoadUTF8");
+// Unload UTF-8 text encoded from codepoints array
+fn void unloadUTF8(ZString text) @extern("UnloadUTF8");
+// Load all codepoints from a UTF-8 text string, codepoints count returned by parameter
+fn int* loadCodepoints(ZString text, int* count) @extern("LoadCodepoints");
+// Unload codepoints data from memory
+fn void unloadCodepoints(int* codepoints) @extern("UnloadCodepoints");
+// Get total number of codepoints in a UTF-8 encoded string
+fn int getCodepointCount(ZString text) @extern("GetCodepointCount");
+// Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
+fn int getCodepoint(ZString text, int *bytesProcessed) @extern("GetCodepoint");
+// Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
+fn int getCodepointNext(ZString text, int *codepointSize) @extern("GetCodepointNext");
+// Get previous codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
+fn int getCodepointPrevious(ZString text, int *codepointSize) @extern("GetCodepointPrevious");
+// Encode one codepoint into UTF-8 byte array (array length returned as parameter)
+fn ZString codepointToUTF8(int codepoint, int* byteSize) @extern("CodepointToUTF8");
+
+
+// Text strings management functions (no UTF-8 strings, only byte chars)
+// NOTE: Some strings allocate memory internally for returned strings, just be careful!
+// Copy one string to another, returns bytes copied
+fn int textCopy(char* dst, char* src) @extern("TextCopy");
+// Check if two text string are equal
+fn bool textIsEqual(ZString text1, ZString text2) @extern("TextIsEqual");
+// Get text length, checks for '\0' ending
+fn uint textLength(ZString text) @extern("TextLength");
+// Text formatting with variables (sprintf() style)
+fn ZString textFormat(ZString text, ...) @extern("TextFormat");
+// Get a piece of a text string
+fn ZString textSubtext(ZString text, int position, int length) @extern("TextSubtext");
+// Replace text string (WARNING: memory must be freed!)
+fn ZString textReplace(ZString text, ZString replace, ZString by) @extern("TextReplace");
+// Insert text in a position (WARNING: memory must be freed!)
+fn ZString textInsert(ZString text, ZString insert, int position) @extern("TextInsert");
+// Join text strings with delimiter
+fn ZString textJoin(ZString* textList, int count, ZString delimiter) @extern("TextJoin");
+// Split text into multiple strings
+fn ZString* textSplit(ZString text, char delimiter, int *count) @extern("TextSplit");
+// Append text at specific position and move cursor!
+fn void textAppend(ZString text, ZString append, int* position) @extern("TextAppend");
+// Find first text occurrence within a string
+fn int textFindIndex(ZString text, ZString find) @extern("TextFindIndex");
+// Get upper case version of provided string
+fn ZString textToUpper(ZString text) @extern("TextToUpper");
+// Get lower case version of provided string
+fn ZString textToLower(ZString text) @extern("TextToLower");
+// Get Pascal case notation version of provided string
+fn ZString textToPascal(ZString text) @extern("TextToPascal");
+// Get Snake case notation version of provided string
+fn ZString textToSnake(ZString text) @extern("TextToSnake");
+// Get Camel case notation version of provided string
+fn ZString textToCamel(ZString text) @extern("TextToCamel");
+// Get integer value from text (negative values not supported)
+fn int textToInteger(ZString text) @extern("TextToInteger");
+// Get float value from text (negative values not supported)
+fn float textToFloat(ZString text) @extern("TextToFloat");
+//------------------------------------------------------------------------------------
+// Basic 3d Shapes Drawing Functions (Module: models)
+//------------------------------------------------------------------------------------
+
+// Basic geometric 3D shapes drawing functions
+// Draw a line in 3D world space
+fn void drawLine3D(Vector3 startPos, Vector3 endPos, Color color) @extern("DrawLine3D");
+// Draw a point in 3D space, actually a small line
+fn void drawPoint3D(Vector3 position, Color color) @extern("DrawPoint3D");
+// Draw a circle in 3D world space
+fn void drawCircle3D(Vector3 center, float radius, Vector3 rotationAxis, float rotationAngle, Color color) @extern("DrawCircle3D");
+// Draw a color-filled triangle (vertex in counter-clockwise order!)
+fn void drawTriangle3D(Vector3 v1, Vector3 v2, Vector3 v3, Color color) @extern("DrawTriangle3D");
+// Draw a triangle strip defined by points
+fn void drawTriangleStrip3D(Vector3 *points, int pointCount, Color color) @extern("DrawTriangleStrip3D");
+// Draw cube
+fn void drawCube(Vector3 position, float width, float height, float length, Color color) @extern("DrawCube");
+// Draw cube (Vector version)
+fn void drawCubeV(Vector3 position, Vector3 size, Color color) @extern("DrawCubeV");
+// Draw cube wires
+fn void drawCubeWires(Vector3 position, float width, float height, float length, Color color) @extern("DrawCubeWires");
+// Draw cube wires (Vector version)
+fn void drawCubeWiresV(Vector3 position, Vector3 size, Color color) @extern("DrawCubeWiresV");
+// Draw sphere
+fn void drawSphere(Vector3 centerPos, float radius, Color color) @extern("DrawSphere");
+// Draw sphere with extended parameters
+fn void drawSphereEx(Vector3 centerPos, float radius, int rings, int slices, Color color) @extern("DrawSphereEx");
+// Draw sphere wires
+fn void drawSphereWires(Vector3 centerPos, float radius, int rings, int slices, Color color) @extern("DrawSphereWires");
+// Draw a cylinder/cone
+fn void drawCylinder(Vector3 position, float radiusTop, float radiusBottom, float height, int slices, Color color) @extern("DrawCylinder");
+// Draw a cylinder with base at startPos and top at endPos
+fn void drawCylinderEx(Vector3 startPos, Vector3 endPos, float startRadius, float endRadius, int sides, Color color) @extern("DrawCylinderEx");
+// Draw a cylinder/cone wires
+fn void drawCylinderWires(Vector3 position, float radiusTop, float radiusBottom, float height, int slices, Color color) @extern("DrawCylinderWires");
+// Draw a cylinder wires with base at startPos and top at endPos
+fn void drawCylinderWiresEx(Vector3 startPos, Vector3 endPos, float startRadius, float endRadius, int sides, Color color) @extern("DrawCylinderWiresEx");
+// Draw a capsule with the center of its sphere caps at startPos and endPos
+fn void drawCapsule(Vector3 startPos, Vector3 endPos, float radius, int slices, int rings, Color color) @extern("DrawCapsule");
+//Draw capsule wireframe with the center of its sphere caps at startPos and endPos
+fn void drawCapsuleWires(Vector3 startPos, Vector3 endPos, float radius, int slices, int rings, Color color) @extern("DrawCapsuleWires");
+// Draw a plane XZ
+fn void drawPlane(Vector3 centerPos, Vector2 size, Color color) @extern("DrawPlane");
+// Draw a ray line
+fn void drawRay(Ray ray, Color color) @extern("DrawRay");
+// Draw a grid (centered at (0, 0, 0))
+fn void drawGrid(int slices, float spacing) @extern("DrawGrid");
+
+//------------------------------------------------------------------------------------
+// Model 3d Loading and Drawing Functions (Module: models)
+//------------------------------------------------------------------------------------
+
+// Model management functions
+// Load model from files (meshes and materials)
+fn Model loadModel(ZString fileName) @extern("LoadModel");
+// Load model from generated mesh (default material)
+fn Model loadModelFromMesh(Mesh mesh) @extern("LoadModelFromMesh");
+// Check if a model is ready
+fn bool isModelValid(Model model) @extern("IsModelValid");
+// Unload model (including meshes) from memory (RAM and/or VRAM)
+fn void unloadModel(Model model) @extern("UnloadModel");
+// Compute model bounding box limits (considers all meshes)
+fn BoundingBox getModelBoundingBox(Model model) @extern("GetModelBoundingBox");
+
+// Model drawing functions
+// Draw a model (with texture if set)
+fn void drawModel(Model model, Vector3 position, float scale, Color tint) @extern("DrawModel");
+// Draw a model with extended parameters
+fn void drawModelEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint) @extern("DrawModelEx");
+// Draw a model wires (with texture if set)
+fn void drawModelWires(Model model, Vector3 position, float scale, Color tint) @extern("DrawModelWires");
+// Draw a model wires (with texture if set) with extended parameters
+fn void drawModelWiresEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint) @extern("DrawModelWiresEx");
+// Draw a model as points
+fn void drawModelPoints(Model model, Vector3 position, float scale, Color tint) @extern("DrawModelPoints");
+// Draw a model as points with extended parameters
+fn void drawModelPointsEx(Model model, Vector3 position, Vector3 rotationAxis, float rotationAngle, Vector3 scale, Color tint) @extern("DrawModelPointsEx");
+// Draw bounding box (wires)
+fn void drawBoundingBox(BoundingBox box, Color color) @extern("DrawBoundingBox");
+// Draw a billboard texture
+fn void drawBillboard(Camera camera, Texture2D texture, Vector3 position, float scale, Color tint) @extern("DrawBillboard");
+// Draw a billboard texture defined by source
+fn void drawBillboardRec(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector2 size, Color tint) @extern("DrawBillboardRec");
+// Draw a billboard texture defined by source and rotation
+fn void drawBillboardPro(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector3 up, Vector2 size, Vector2 origin, float rotation, Color tint) @extern("DrawBillboardPro");
+
+// Mesh management functions
+// Upload mesh vertex data in GPU and provide VAO/VBO ids
+fn void uploadMesh(Mesh* mesh, bool dynamic) @extern("UploadMesh");
+// Update mesh vertex data in GPU for a specific buffer index
+fn void updateMeshBuffer(Mesh mesh, int index, void* data, int dataSize, int offset) @extern("UpdateMeshBuffer");
+// Unload mesh data from CPU and GPU
+fn void unloadMesh(Mesh mesh) @extern("UnloadMesh");
+// Draw a 3d mesh with material and transform
+fn void drawMesh(Mesh mesh, Material material, Matrix transform) @extern("DrawMesh");
+// Draw multiple mesh instances with material and different transforms
+fn void drawMeshInstanced(Mesh mesh, Material material, Matrix* transforms, int instances) @extern("DrawMeshInstanced");
+// Compute mesh bounding box limits
+fn BoundingBox getMeshBoundingBox(Mesh mesh) @extern("GetMeshBoundingBox");
+// Compute mesh tangents
+fn void genMeshTangents(Mesh* mesh) @extern("GenMeshTangents");
+// Export mesh data to file, returns true on success
+fn bool exportMesh(Mesh mesh, ZString fileName) @extern("ExportMesh");
+// Export mesh as code file (.h) defining multiple arrays of vertex attributes
+fn bool exportMeshAsCode(Mesh mesh, ZString fileName) @extern("ExportMeshAsCode");
+
+// Mesh generation functions
+// Generate polygonal mesh
+fn Mesh genMeshPoly(int sides, float radius) @extern("GenMeshPoly");
+// Generate plane mesh (with subdivisions)
+fn Mesh genMeshPlane(float width, float length, int resX, int resZ) @extern("GenMeshPlane");
+// Generate cuboid mesh
+fn Mesh genMeshCube(float width, float height, float length) @extern("GenMeshCube");
+// Generate sphere mesh (standard sphere)
+fn Mesh genMeshSphere(float radius, int rings, int slices) @extern("GenMeshSphere");
+// Generate half-sphere mesh (no bottom cap)
+fn Mesh genMeshHemiSphere(float radius, int rings, int slices) @extern("GenMeshHemiSphere");
+// Generate cylinder mesh
+fn Mesh genMeshCylinder(float radius, float height, int slices) @extern("GenMeshCylinder");
+// Generate cone/pyramid mesh
+fn Mesh genMeshCone(float radius, float height, int slices) @extern("GenMeshCone");
+// Generate torus mesh
+fn Mesh genMeshTorus(float radius, float size, int radSeg, int sides) @extern("GenMeshTorus");
+// Generate trefoil knot mesh
+fn Mesh genMeshKnot(float radius, float size, int radSeg, int sides) @extern("GenMeshKnot");
+// Generate heightmap mesh from image data
+fn Mesh genMeshHeightmap(Image heightmap, Vector3 size) @extern("GenMeshHeightmap");
+// Generate cubes-based map mesh from image data
+fn Mesh genMeshCubicmap(Image cubicmap, Vector3 cubeSize) @extern("GenMeshCubicmap");
+
+// Material loading/unloading functions
+// Load materials from model file
+fn Material* loadMaterials(ZString fileName, int* materialCount) @extern("LoadMaterials");
+// Load default material (Supports: DIFFUSE, SPECULAR, NORMAL maps)
+fn Material loadMaterialDefault() @extern("LoadMaterialDefault");
+// Check if a material is ready
+fn bool isMaterialValid(Material material) @extern("IsMaterialValid");
+// Unload material from GPU memory (VRAM)
+fn void unloadMaterial(Material material) @extern("UnloadMaterial");
+// Set texture for a material map type (MATERIAL_MAP_DIFFUSE, MATERIAL_MAP_SPECULAR...)
+fn void setMaterialTexture(Material* material, MaterialMapIndex mapType, Texture2D texture) @extern("SetMaterialTexture");
+// Set material for a mesh
+fn void setModelMeshMaterial(Model* model, int meshId, int materialId) @extern("SetModelMeshMaterial");
+
+// Model animations loading/unloading functions
+// Load model animations from file
+fn ModelAnimation* loadModelAnimations(ZString fileName, int* animCount) @extern("LoadModelAnimations");
+// Update model animation pose
+fn void updateModelAnimation(Model model, ModelAnimation anim, int frame) @extern("UpdateModelAnimation");
+// Update model animation mesh bone matrices (GPU skinning)
+fn void updateModelAnimationBones(Model model, ModelAnimation anim, int frame) @extern("UpdateModelAnimationBones");
+// Unload animation data
+fn void unloadModelAnimation(ModelAnimation anim) @extern("UnloadModelAnimation");
+// Unload animation array data
+fn void unloadModelAnimations(ModelAnimation* animations, uint count) @extern("UnloadModelAnimations");
+// Check model animation skeleton match
+fn bool isModelAnimationValid(Model model, ModelAnimation anim) @extern("IsModelAnimationValid");
+
+// Collision detection functions
+// Check collision between two spheres
+fn bool checkCollisionSpheres(Vector3 center1, float radius1, Vector3 center2, float radius2) @extern("CheckCollisionSpheres");
+// Check collision between two bounding boxes
+fn bool checkCollisionBoxes(BoundingBox box1, BoundingBox box2) @extern("CheckCollisionBoxes");
+// Check collision between box and sphere
+fn bool checkCollisionBoxSphere(BoundingBox box, Vector3 center, float radius) @extern("CheckCollisionBoxSphere");
+// Get collision info between ray and sphere
+fn RayCollision getRayCollisionSphere(Ray ray, Vector3 center, float radius) @extern("GetRayCollisionSphere");
+// Get collision info between ray and box
+fn RayCollision getRayCollisionBox(Ray ray, BoundingBox box) @extern("GetRayCollisionBox");
+// Get collision info between ray and mesh
+fn RayCollision getRayCollisionMesh(Ray ray, Mesh mesh, Matrix transform) @extern("GetRayCollisionMesh");
+// Get collision info between ray and triangle
+fn RayCollision getRayCollisionTriangle(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3) @extern("GetRayCollisionTriangle");
+// Get collision info between ray and quad
+fn RayCollision getRayCollisionQuad(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4) @extern("GetRayCollisionQuad");
+
+//------------------------------------------------------------------------------------
+// Audio Loading and Playing Functions (Module: audio)
+//------------------------------------------------------------------------------------
+
+alias AudioCallback = fn void(void* bufferdata, uint frames);
+
+// Audio device management functions
+// Initialize audio device and context
+fn void initAudioDevice() @extern("InitAudioDevice");
+// Close the audio device and context
+fn void closeAudioDevice() @extern("CloseAudioDevice");
+// Check if audio device has been initialized successfully
+fn bool isAudioDeviceReady() @extern("IsAudioDeviceReady");
+// Set master volume (listener)
+fn void setMasterVolume(float volume) @extern("SetMasterVolume");
+// Get master volume (listener)
+fn float getMasterVolume() @extern("GetMasterVolume");
+
+// Wave/Sound loading/unloading functions
+// Load wave data from file
+fn Wave loadWave(ZString fileName) @extern("LoadWave");
+// Load wave from memory buffer, fileType refers to extension: i.e. '.wav'
+fn Wave loadWaveFromMemory(ZString fileType, char* fileData, int dataSize) @extern("LoadWaveFromMemory");
+// Checks if wave data is valid (data loaded and parameters)
+fn bool isWaveValid(Wave wave) @extern("IsWaveValid");
+// Load sound from file
+fn Sound loadSound(ZString fileName) @extern("LoadSound");
+// Load sound from wave data
+fn Sound loadSoundFromWave(Wave wave) @extern("LoadSoundFromWave");
+// Create a new sound that shares the same sample data as the source sound, does not own the sound data
+fn Sound loadSoundAlias(Sound source) @extern("LoadSoundAlias");
+//Checks if a sound is valid (data loaded and buffers initialized)
+fn bool isSoundValid(Sound sound) @extern("IsSoundValid");
+// Update sound buffer with new data
+fn void updateSound(Sound sound, void* data, int sampleCount) @extern("UpdateSound");
+// Unload wave data
+fn void unloadWave(Wave wave) @extern("UnloadWave");
+// Unload sound
+fn void unloadSound(Sound sound) @extern("UnloadSound");
+// Export wave data to file, returns true on success
+fn bool exportWave(Wave wave, ZString fileName) @extern("ExportWave");
+// Export wave sample data to code (.h), returns true on success
+fn bool exportWaveAsCode(Wave wave, ZString fileName) @extern("ExportWaveAsCode");
+
+// Wave/Sound management functions
+// Play a sound
+fn void playSound(Sound sound) @extern("PlaySound");
+// Stop playing a sound
+fn void stopSound(Sound sound) @extern("StopSound");
+// Pause a sound
+fn void pauseSound(Sound sound) @extern("PauseSound");
+// Resume a paused sound
+fn void resumeSound(Sound sound) @extern("ResumeSound");
+// Get number of sounds playing in the multichannel
+fn int getSoundsPlaying() @extern("GetSoundsPlaying");
+// Check if a sound is currently playing
+fn bool isSoundPlaying(Sound sound) @extern("IsSoundPlaying");
+// Set volume for a sound (1.0 is max level)
+fn void setSoundVolume(Sound sound, float volume) @extern("SetSoundVolume");
+// Set pitch for a sound (1.0 is base level)
+fn void setSoundPitch(Sound sound, float pitch) @extern("SetSoundPitch");
+// Set pan for a sound (0.5 is center)
+fn void setSoundPan(Sound sound, float pan) @extern("SetSoundPan");
+// Copy a wave to a new wave
+fn Wave waveCopy(Wave wave) @extern("WaveCopy");
+// Crop a wave to defined samples range
+fn void waveCrop(Wave* wave, int initFrame, int finalFrame) @extern("WaveCrop");
+// Convert wave data to desired format
+fn void waveFormat(Wave* wave, int sampleRate, int sampleSize, int channels) @extern("WaveFormat");
+// Load samples data from wave as a 32bit float data array
+fn float* loadWaveSamples(Wave wave) @extern("LoadWaveSamples");
+// Unload samples data loaded with LoadWaveSamples()
+fn void unloadWaveSamples(float* samples) @extern("UnloadWaveSamples");
+
+// Music management functions
+// Checks if a music stream is valid (context and buffers initialized)
+fn bool isMusicValid(Music music) @extern("IsMusicValid");
+// Load music stream from file
+fn Music loadMusicStream(ZString fileName) @extern("LoadMusicStream");
+// Load music stream from data
+fn Music loadMusicStreamFromMemory(ZString fileType, char* data, int dataSize) @extern("LoadMusicStreamFromMemory");
+// Unload music stream
+fn void unloadMusicStream(Music music) @extern("UnloadMusicStream");
+// Start music playing
+fn void playMusicStream(Music music) @extern("PlayMusicStream");
+// Check if music is playing
+fn bool isMusicStreamPlaying(Music music) @extern("IsMusicStreamPlaying");
+// Updates buffers for music streaming
+fn void updateMusicStream(Music music) @extern("UpdateMusicStream");
+// Stop music playing
+fn void stopMusicStream(Music music) @extern("StopMusicStream");
+// Pause music playing
+fn void pauseMusicStream(Music music) @extern("PauseMusicStream");
+// Resume playing paused music
+fn void resumeMusicStream(Music music) @extern("ResumeMusicStream");
+// Seek music to a position (in seconds)
+fn void seekMusicStream(Music music, float position) @extern("SeekMusicStream");
+// Set volume for music (1.0 is max level)
+fn void setMusicVolume(Music music, float volume) @extern("SetMusicVolume");
+// Set pitch for a music (1.0 is base level)
+fn void setMusicPitch(Music music, float pitch) @extern("SetMusicPitch");
+// Set pan for a music (0.5 is center)
+fn void setMusicPan(Music music, float pan) @extern("SetMusicPan");
+// Get music time length (in seconds)
+fn float getMusicTimeLength(Music music) @extern("GetMusicTimeLength");
+// Get current music time played (in seconds)
+fn float getMusicTimePlayed(Music music) @extern("GetMusicTimePlayed");
+
+// AudioStream management functions
+// Load audio stream (to stream raw audio pcm data)
+fn AudioStream loadAudioStream(uint sampleRate, uint sampleSize, uint channels) @extern("LoadAudioStream");
+// Checks if an audio stream is valid (buffers initialized)
+fn bool isAudioStreamValid(AudioStream stream) @extern("IsAudioStreamValid");
+// Unload audio stream and free memory
+fn void unloadAudioStream(AudioStream stream) @extern("UnloadAudioStream");
+// Update audio stream buffers with data
+fn void updateAudioStream(AudioStream stream, void* data, int frameCount) @extern("UpdateAudioStream");
+// Check if any audio stream buffers requires refill
+fn bool isAudioStreamProcessed(AudioStream stream) @extern("IsAudioStreamProcessed");
+// Play audio stream
+fn void playAudioStream(AudioStream stream) @extern("PlayAudioStream");
+// Pause audio stream
+fn void pauseAudioStream(AudioStream stream) @extern("PauseAudioStream");
+// Resume audio stream
+fn void resumeAudioStream(AudioStream stream) @extern("ResumeAudioStream");
+// Check if audio stream is playing
+fn bool isAudioStreamPlaying(AudioStream stream) @extern("IsAudioStreamPlaying");
+// Stop audio stream
+fn void stopAudioStream(AudioStream stream) @extern("StopAudioStream");
+// Set volume for audio stream (1.0 is max level)
+fn void setAudioStreamVolume(AudioStream stream, float volume) @extern("SetAudioStreamVolume");
+// Set pitch for audio stream (1.0 is base level)
+fn void setAudioStreamPitch(AudioStream stream, float pitch) @extern("SetAudioStreamPitch");
+// Set pan for audio stream (0.5 is centered)
+fn void setAudioStreamPan(AudioStream stream, float pan) @extern("SetAudioStreamPan");
+// Default size for new audio streams
+fn void setAudioStreamBufferSizeDefault(int size) @extern("SetAudioStreamBufferSizeDefault");
+// Audio thread callback to request new data
+fn void setAudioStreamCallback(AudioStream stream, AudioCallback processor) @extern("SetAudioStreamCallback");
+
+// Attach audio stream processor to stream, receives the samples as 'float'
+fn void attachAudioStreamProcessor(AudioStream stream, AudioCallback processor) @extern("AttachAudioStreamProcessor");
+// Detach audio stream processor from stream
+fn void detachAudioStreamProcessor(AudioStream stream, AudioCallback processor) @extern("DetachAudioStreamProcessor");
+
+//  Attach audio stream processor to the entire audio pipeline, receives the samples as 'float'
+fn void attachAudioMixedProcessor(AudioCallback processor) @extern("AttachAudioMixedProcessor");
+// Detach audio stream processor from the entire audio pipeline
+fn void detachAudioMixedProcessor(AudioCallback processor) @extern("DetachAudioMixedProcessor");
+
+
+//----------------------------------------------------------------------------------
+// Additional Raylib.c3 Mode helper macros
+//----------------------------------------------------------------------------------
+
+<*
+ Setup canvas (framebuffer) to start drawing, then calls [block].
+ Drawing will end after [block] has finished.
+*>
+macro void @drawing(;@body)
+{
+  beginDrawing();
+  defer endDrawing();
+  @body();
+}
+
+<*
+ Setup 2D mode with custom camera to start 2D Mode, then calls [block].
+ Mode2D will end after [block] has finished.
+*>
+macro void @mode2D(Camera2D camera ;@body)
+{
+  beginMode2D(camera);
+  defer endMode2D();
+  @body();
+}
+
+<*
+ Setup 3D mode with custom camera to start 2D Mode, then calls [block].
+ Mode2D will end after [block] has finished.
+*>
+macro void @mode3D(Camera3D camera ;@body)
+{
+  beginMode3D(camera);
+  defer endMode3D();
+  @body();
+}
+
+<*
+ Setup texture mode to draw to render texture, then calls [block].
+ texture mode will end after [block] has finished.
+*>
+macro void @textureMode(RenderTexture2D texture ;@body)
+{
+  beginTextureMode(texture);
+  defer endTextureMode();
+  @body();
+}
+
+
+<*
+ Setup custom shqder mode then calls [block].
+ shader mode will end after [block] has finished.
+*>
+macro void @shaderMode(Shader shader ;@body)
+{
+  beginShaderMode(shader);
+  defer endShaderMode();
+  @body();
+}
+
+<*
+ Setup blending mode, then calls [block].
+ blend mode will end after [block] has finished.
+*>
+macro void @blendMode(BlendMode mode ;@body)
+{
+  beginShaderMode(mode);
+  defer endShaderMode();
+  @body();
+}
+
+<*
+ Setup scissor mode then calls [block].
+ scissor mode will end after [block] has finished.
+*>
+macro void @scissorMode(int x, int y, int width, int height ;@body)
+{
+  beginScissorMode(x, y, width, height);
+  defer endScissorMode();
+  @body();
+}
+
+<*
+ Setup stereo rendering mode, then calls [block].
+ stereo rendering mode will end after [block] has finished.
+*>
+macro void @vrMode(VrStereoConfig config ;@body)
+{
+  beginVrStereoMode(config);
+  defer endVrStereoMode();
+  @body();
+}
+
+<*
+ Setup rl drawing mode, then calls [block].
+ rlBegin will end after [block] has finished.
+*>
+macro void @rlMode(int mode ;@body)
+{
+  rlBegin(mode);
+  defer rlEnd();
+  @body();
+}
+
+//----------------------------------------------------------------------------------
+// Enumerators Definition
+//----------------------------------------------------------------------------------
+// System/Window config flags
+// NOTE: Every bit registers one state (use it with bit masks)
+// By default all flags are set to 0
+
+typedef ConfigFlag = uint;
+
+const ConfigFlag FLAG_VSYNC_HINT         = 0x00000040;   // Set to try enabling V-Sync on GPU
+const ConfigFlag FLAG_FULLSCREEN_MODE    = 0x00000002;   // Set to run program in fullscreen
+const ConfigFlag FLAG_WINDOW_RESIZABLE   = 0x00000004;   // Set to allow resizable window
+const ConfigFlag FLAG_WINDOW_UNDECORATED = 0x00000008;   // Set to disable window decoration (frame and buttons)
+const ConfigFlag FLAG_WINDOW_HIDDEN      = 0x00000080;   // Set to hide window
+const ConfigFlag FLAG_WINDOW_MINIMIZED   = 0x00000200;   // Set to minimize window (iconify)
+const ConfigFlag FLAG_WINDOW_MAXIMIZED   = 0x00000400;   // Set to maximize window (expanded to monitor)
+const ConfigFlag FLAG_WINDOW_UNFOCUSED   = 0x00000800;   // Set to window non focused
+const ConfigFlag FLAG_WINDOW_TOPMOST     = 0x00001000;   // Set to window always on top
+const ConfigFlag FLAG_WINDOW_ALWAYS_RUN  = 0x00000100;   // Set to allow windows running while minimized
+const ConfigFlag FLAG_WINDOW_TRANSPARENT = 0x00000010;   // Set to allow transparent framebuffer
+const ConfigFlag FLAG_WINDOW_HIGHDPI     = 0x00002000;   // Set to support HighDPI
+const ConfigFlag FLAG_MSAA_4X_HINT       = 0x00000020;   // Set to try enabling MSAA 4X
+const ConfigFlag FLAG_INTERLACED_HINT    = 0x00010000;   // Set to try enabling interlaced video format (for V3D)
+
+// Keyboard keys (US keyboard layout)
+// NOTE: Use GetKeyPressed() to allow redefining
+// required keys for alternative layouts
+
+typedef KeyboardKey = int;
+
+const KeyboardKey KEY_NULL            = 0;        // Key: NULL; used for no key pressed
+// Alphanumeric keys
+const KeyboardKey KEY_APOSTROPHE      = 39;       // Key: '
+const KeyboardKey KEY_COMMA           = 44;       // Key: ;
+const KeyboardKey KEY_MINUS           = 45;       // Key: -
+const KeyboardKey KEY_PERIOD          = 46;       // Key: .
+const KeyboardKey KEY_SLASH           = 47;       // Key: /
+const KeyboardKey KEY_ZERO            = 48;       // Key: 0
+const KeyboardKey KEY_ONE             = 49;       // Key: 1
+const KeyboardKey KEY_TWO             = 50;       // Key: 2
+const KeyboardKey KEY_THREE           = 51;       // Key: 3
+const KeyboardKey KEY_FOUR            = 52;       // Key: 4
+const KeyboardKey KEY_FIVE            = 53;       // Key: 5
+const KeyboardKey KEY_SIX             = 54;       // Key: 6
+const KeyboardKey KEY_SEVEN           = 55;       // Key: 7
+const KeyboardKey KEY_EIGHT           = 56;       // Key: 8
+const KeyboardKey KEY_NINE            = 57;       // Key: 9
+const KeyboardKey KEY_SEMICOLON       = 59;       // Key: ;
+const KeyboardKey KEY_EQUAL           = 61;       // Key: =
+const KeyboardKey KEY_A               = 65;       // Key: A | a
+const KeyboardKey KEY_B               = 66;       // Key: B | b
+const KeyboardKey KEY_C               = 67;       // Key: C | c
+const KeyboardKey KEY_D               = 68;       // Key: D | d
+const KeyboardKey KEY_E               = 69;       // Key: E | e
+const KeyboardKey KEY_F               = 70;       // Key: F | f
+const KeyboardKey KEY_G               = 71;       // Key: G | g
+const KeyboardKey KEY_H               = 72;       // Key: H | h
+const KeyboardKey KEY_I               = 73;       // Key: I | i
+const KeyboardKey KEY_J               = 74;       // Key: J | j
+const KeyboardKey KEY_K               = 75;       // Key: K | k
+const KeyboardKey KEY_L               = 76;       // Key: L | l
+const KeyboardKey KEY_M               = 77;       // Key: M | m
+const KeyboardKey KEY_N               = 78;       // Key: N | n
+const KeyboardKey KEY_O               = 79;       // Key: O | o
+const KeyboardKey KEY_P               = 80;       // Key: P | p
+const KeyboardKey KEY_Q               = 81;       // Key: Q | q
+const KeyboardKey KEY_R               = 82;       // Key: R | r
+const KeyboardKey KEY_S               = 83;       // Key: S | s
+const KeyboardKey KEY_T               = 84;       // Key: T | t
+const KeyboardKey KEY_U               = 85;       // Key: U | u
+const KeyboardKey KEY_V               = 86;       // Key: V | v
+const KeyboardKey KEY_W               = 87;       // Key: W | w
+const KeyboardKey KEY_X               = 88;       // Key: X | x
+const KeyboardKey KEY_Y               = 89;       // Key: Y | y
+const KeyboardKey KEY_Z               = 90;       // Key: Z | z
+const KeyboardKey KEY_LEFT_BRACKET    = 91;       // Key: [
+const KeyboardKey KEY_BACKSLASH       = 92;       // Key: '\'
+const KeyboardKey KEY_RIGHT_BRACKET   = 93;       // Key: ]
+const KeyboardKey KEY_GRAVE           = 96;       // Key: `
+// Function keys
+const KeyboardKey KEY_SPACE           = 32;       // Key: Space
+const KeyboardKey KEY_ESCAPE          = 256;      // Key: Esc
+const KeyboardKey KEY_ENTER           = 257;      // Key: Enter
+const KeyboardKey KEY_TAB             = 258;      // Key: Tab
+const KeyboardKey KEY_BACKSPACE       = 259;      // Key: Backspace
+const KeyboardKey KEY_INSERT          = 260;      // Key: Ins
+const KeyboardKey KEY_DELETE          = 261;      // Key: Del
+const KeyboardKey KEY_RIGHT           = 262;      // Key: Cursor right
+const KeyboardKey KEY_LEFT            = 263;      // Key: Cursor left
+const KeyboardKey KEY_DOWN            = 264;      // Key: Cursor down
+const KeyboardKey KEY_UP              = 265;      // Key: Cursor up
+const KeyboardKey KEY_PAGE_UP         = 266;      // Key: Page up
+const KeyboardKey KEY_PAGE_DOWN       = 267;      // Key: Page down
+const KeyboardKey KEY_HOME            = 268;      // Key: Home
+const KeyboardKey KEY_END             = 269;      // Key: End
+const KeyboardKey KEY_CAPS_LOCK       = 280;      // Key: Caps lock
+const KeyboardKey KEY_SCROLL_LOCK     = 281;      // Key: Scroll down
+const KeyboardKey KEY_NUM_LOCK        = 282;      // Key: Num lock
+const KeyboardKey KEY_PRINT_SCREEN    = 283;      // Key: Print screen
+const KeyboardKey KEY_PAUSE           = 284;      // Key: Pause
+const KeyboardKey KEY_F1              = 290;      // Key: F1
+const KeyboardKey KEY_F2              = 291;      // Key: F2
+const KeyboardKey KEY_F3              = 292;      // Key: F3
+const KeyboardKey KEY_F4              = 293;      // Key: F4
+const KeyboardKey KEY_F5              = 294;      // Key: F5
+const KeyboardKey KEY_F6              = 295;      // Key: F6
+const KeyboardKey KEY_F7              = 296;      // Key: F7
+const KeyboardKey KEY_F8              = 297;      // Key: F8
+const KeyboardKey KEY_F9              = 298;      // Key: F9
+const KeyboardKey KEY_F10             = 299;      // Key: F10
+const KeyboardKey KEY_F11             = 300;      // Key: F11
+const KeyboardKey KEY_F12             = 301;      // Key: F12
+const KeyboardKey KEY_LEFT_SHIFT      = 340;      // Key: Shift left
+const KeyboardKey KEY_LEFT_CONTROL    = 341;      // Key: Control left
+const KeyboardKey KEY_LEFT_ALT        = 342;      // Key: Alt left
+const KeyboardKey KEY_LEFT_SUPER      = 343;      // Key: Super left
+const KeyboardKey KEY_RIGHT_SHIFT     = 344;      // Key: Shift right
+const KeyboardKey KEY_RIGHT_CONTROL   = 345;      // Key: Control right
+const KeyboardKey KEY_RIGHT_ALT       = 346;      // Key: Alt right
+const KeyboardKey KEY_RIGHT_SUPER     = 347;      // Key: Super right
+const KeyboardKey KEY_KB_MENU         = 348;      // Key: KB menu
+// Keypad keys
+const KeyboardKey KEY_KP_0            = 320;      // Key: Keypad 0
+const KeyboardKey KEY_KP_1            = 321;      // Key: Keypad 1
+const KeyboardKey KEY_KP_2            = 322;      // Key: Keypad 2
+const KeyboardKey KEY_KP_3            = 323;      // Key: Keypad 3
+const KeyboardKey KEY_KP_4            = 324;      // Key: Keypad 4
+const KeyboardKey KEY_KP_5            = 325;      // Key: Keypad 5
+const KeyboardKey KEY_KP_6            = 326;      // Key: Keypad 6
+const KeyboardKey KEY_KP_7            = 327;      // Key: Keypad 7
+const KeyboardKey KEY_KP_8            = 328;      // Key: Keypad 8
+const KeyboardKey KEY_KP_9            = 329;      // Key: Keypad 9
+const KeyboardKey KEY_KP_DECIMAL      = 330;      // Key: Keypad .
+const KeyboardKey KEY_KP_DIVIDE       = 331;      // Key: Keypad /
+const KeyboardKey KEY_KP_MULTIPLY     = 332;      // Key: Keypad *
+const KeyboardKey KEY_KP_SUBTRACT     = 333;      // Key: Keypad -
+const KeyboardKey KEY_KP_ADD          = 334;      // Key: Keypad +
+const KeyboardKey KEY_KP_ENTER        = 335;      // Key: Keypad Enter
+const KeyboardKey KEY_KP_EQUAL        = 336;      // Key: Keypad =
+// Android key buttons
+const KeyboardKey KEY_BACK            = 4;        // Key: Android back button
+const KeyboardKey KEY_MENU            = 82;       // Key: Android menu button
+const KeyboardKey KEY_VOLUME_UP       = 24;       // Key: Android volume up button
+const KeyboardKey KEY_VOLUME_DOWN     = 25;       // Key: Android volume down button
+
+typedef Gesture = int;
+// Gesture
+// NOTE: It could be used as flags to enable only some gestures
+const Gesture GESTURE_NONE        = 0;      // No gesture
+const Gesture GESTURE_TAP         = 1;        // Tap gesture
+const Gesture GESTURE_DOUBLETAP   = 2;        // Double tap gesture
+const Gesture GESTURE_HOLD        = 4;        // Hold gesture
+const Gesture GESTURE_DRAG        = 8;        // Drag gesture
+const Gesture GESTURE_SWIPE_RIGHT = 16;       // Swipe right gesture
+const Gesture GESTURE_SWIPE_LEFT  = 32;       // Swipe left gesture
+const Gesture GESTURE_SWIPE_UP    = 64;       // Swipe up gesture
+const Gesture GESTURE_SWIPE_DOWN  = 128;      // Swipe down gesture
+const Gesture GESTURE_PINCH_IN    = 256;      // Pinch in gesture
+const Gesture GESTURE_PINCH_OUT   = 512;      // Pinch out gesture
+
+// rlgl.h
+typedef FramebufferAttachType = int;
+
+const FramebufferAttachType RL_ATTACHMENT_COLOR_CHANNEL0 = 0;       // Framebuffer attachment type: color 0
+const FramebufferAttachType RL_ATTACHMENT_COLOR_CHANNEL1 = 1;       // Framebuffer attachment type: color 1
+const FramebufferAttachType RL_ATTACHMENT_COLOR_CHANNEL2 = 2;       // Framebuffer attachment type: color 2
+const FramebufferAttachType RL_ATTACHMENT_COLOR_CHANNEL3 = 3;       // Framebuffer attachment type: color 3
+const FramebufferAttachType RL_ATTACHMENT_COLOR_CHANNEL4 = 4;       // Framebuffer attachment type: color 4
+const FramebufferAttachType RL_ATTACHMENT_COLOR_CHANNEL5 = 5;       // Framebuffer attachment type: color 5
+const FramebufferAttachType RL_ATTACHMENT_COLOR_CHANNEL6 = 6;       // Framebuffer attachment type: color 6
+const FramebufferAttachType RL_ATTACHMENT_COLOR_CHANNEL7 = 7;       // Framebuffer attachment type: color 7
+const FramebufferAttachType RL_ATTACHMENT_DEPTH = 100;              // Framebuffer attachment type: depth
+const FramebufferAttachType RL_ATTACHMENT_STENCIL = 200;            // Framebuffer attachment type: stencil
+
+typedef FramebufferAttachTextureType = int;
+
+const FramebufferAttachTextureType RL_ATTACHMENT_CUBEMAP_POSITIVE_X = 0;   // Framebuffer texture attachment type: cubemap, +X side
+const FramebufferAttachTextureType RL_ATTACHMENT_CUBEMAP_NEGATIVE_X = 1;   // Framebuffer texture attachment type: cubemap, -X side
+const FramebufferAttachTextureType RL_ATTACHMENT_CUBEMAP_POSITIVE_Y = 2;   // Framebuffer texture attachment type: cubemap, +Y side
+const FramebufferAttachTextureType RL_ATTACHMENT_CUBEMAP_NEGATIVE_Y = 3;   // Framebuffer texture attachment type: cubemap, -Y side
+const FramebufferAttachTextureType RL_ATTACHMENT_CUBEMAP_POSITIVE_Z = 4;   // Framebuffer texture attachment type: cubemap, +Z side
+const FramebufferAttachTextureType RL_ATTACHMENT_CUBEMAP_NEGATIVE_Z = 5;   // Framebuffer texture attachment type: cubemap, -Z side
+const FramebufferAttachTextureType RL_ATTACHMENT_TEXTURE2D = 100;          // Framebuffer texture attachment type: texture2d
+const FramebufferAttachTextureType RL_ATTACHMENT_RENDERBUFFER = 200;       // Framebuffer texture attachment type: renderbuffer
+
+const RL_LINES = 0x0001;        // GL_LINES
+const RL_TRIANGLES = 0x0004;    // GL_TRIANGLES
+const RL_QUADS = 0x0007;        // GL_QUADS
+
+fn void rlSetTexture(uint id) @extern("rlSetTexture");
+fn void rlBegin(int mode) @extern("rlBegin");
+fn void rlEnd() @extern("rlEnd");
+// Enable depth write
+fn void rlEnableDepthMask() @extern("rlEnableDepthMask");
+// Disable depth write
+fn void rlDisableDepthMask() @extern("rlDisableDepthMask");
+// Load texture cubemap
+// NOTE: Cubemap data is expected to be 6 images in a single data array (one after the other),
+// expected the following convention: +X, -X, +Y, -Y, +Z, -Z
+fn uint rlLoadTextureCubemap(void *data, int size, PixelFormat format, int mipmapCount) @extern("rlLoadTextureCubemap");
+// Load depth texture/renderbuffer (to be attached to fbo)
+// WARNING: OpenGL ES 2.0 requires GL_OES_depth_texture and WebGL requires WEBGL_depth_texture extensions
+fn uint rlLoadTextureDepth(int width, int height, bool useRenderBuffer) @extern("rlLoadTextureDepth");
+// Framebuffer management (fbo)
+//-----------------------------------------------------------------------------------------
+// Load a framebuffer to be used for rendering
+// NOTE: No textures attached
+fn uint rlLoadFramebuffer() @extern("rlLoadFramebuffer");
+// Verify render texture is complete
+fn bool rlFramebufferComplete(uint id) @extern("rlFramebufferComplete");
+// Get cull plane distance far
+fn double rlGetCullDistanceFar() @extern("rlGetCullDistanceFar");
+// Get cull plane distance near
+fn double rlGetCullDistanceNear() @extern("rlGetCullDistanceNear");
+// Select and active a texture slot
+fn void rlActiveTextureSlot(int slot) @extern("rlActiveTextureSlot");
+// Set shader value uniform matrix
+fn void rlSetUniformMatrix(int locIndex, Matrix mat) @extern("rlSetUniformMatrix");
+// Enable rendering to texture (fbo)
+fn void rlEnableFramebuffer(uint id) @extern("rlEnableFramebuffer");
+// Clear used screen buffers (color and depth)
+fn void rlClearScreenBuffers() @extern("rlClearScreenBuffers");
+// Load and draw a cube in NDC
+fn void rlLoadDrawCube() @extern("rlLoadDrawCube");
+// Enable shader program
+fn void rlEnableShader(uint id) @extern("rlEnableShader");
+// Disable shader program
+fn void rlDisableShader() @extern("rlDisableShader");
+// Enable texture
+fn void rlEnableTexture(uint id) @extern("rlEnableTexture");
+// Disable texture
+fn void rlDisableTexture() @extern("rlDisableTexture");
+// Disable texture cubemap
+fn void rlDisableTextureCubemap() @extern("rlDisableTextureCubemap");
+// Disable rendering to texture
+fn void rlDisableFramebuffer() @extern("rlDisableFramebuffer");
+// Unload framebuffer from GPU memory
+// NOTE: All attached textures/cubemaps/renderbuffers are also deleted
+fn void rlUnloadFramebuffer(uint id) @extern("rlUnloadFramebuffer");
+// Get default framebuffer width
+fn int rlGetFramebufferWidth() @extern("rlGetFramebufferWidth");
+// Get default framebuffer height
+fn int rlGetFramebufferHeight() @extern("rlGetFramebufferHeight");
+// Set the viewport area (transformation from normalized device coordinates to window coordinates)
+// NOTE: We store current viewport dimensions
+fn void rlViewport(int x, int y, int width, int height) @extern("rlViewport");
+// Enable backface culling
+fn void rlEnableBackfaceCulling() @extern("rlEnableBackfaceCulling");
+// Disable backface culling
+fn void rlDisableBackfaceCulling() @extern("rlDisableBackfaceCulling");
+// Attach color buffer texture to an fbo (unloads previous attachment)
+// NOTE: Attach type: 0-Color, 1-Depth renderbuffer, 2-Depth texture
+fn void rlFramebufferAttach(uint fboId, uint texId, FramebufferAttachType attachType, FramebufferAttachTextureType texType, int mipLevel) @extern("rlFramebufferAttach");
+// Multiply the current matrix by a scaling matrix
+fn void rlScalef(float x, float y, float z) @extern("rlScalef");
+// Check internal buffer overflow for a given number of vertex
+// and force a rlRenderBatch draw call if required
+fn bool rlCheckRenderBatchLimit(int vCount) @extern("rlCheckRenderBatchLimit");
+// Define one vertex (color) - 4 byte
+fn void rlColor4ub(char r, char g, char b, char a) @extern("rlColor4ub");
+// Define one vertex (position)
+fn void rlVertex2f(float x, float y) @extern("rlVertex2f");
+// Define one vertex (position)
+// NOTE: Vertex position data is the basic information required for drawing
+fn void rlVertex3f(float x, float y, float z) @extern("rlVertex3f");
+// Define one vertex (texture coordinate)
+// NOTE: Texture coordinates are limited to QUADS only
+fn void rlTexCoord2f(float x, float y) @extern("rlTexCoord2f");
+// Define one vertex (normal)
+// NOTE: Normals limited to TRIANGLES only?
+fn void rlNormal3f(float x, float y, float z) @extern("rlNormal3f");
+// Multiply the current matrix by a rotation matrix
+// NOTE: The provided angle must be in degrees
+fn void rlRotatef(float angle, float x, float y, float z) @extern("rlRotatef");
+// Push the current matrix into RLGL.State.stack
+fn void rlPushMatrix() @extern("rlPushMatrix");
+// Pop lattest inserted matrix from RLGL.State.stack
+fn void rlPopMatrix() @extern("rlPopMatrix");
+// Multiply the current matrix by a translation matrix
+fn void rlTranslatef(float x, float y, float z) @extern("rlTranslatef");
+// Set blending mode factor and equation
+fn void rlSetBlendFactors(int glSrcFactor, int glDstFactor, int glEquation) @extern("rlSetBlendFactors");
+// Set blend mode
+fn void rlSetBlendMode(BlendMode mode) @extern("rlSetBlendMode");
+// Update and draw internal render batch
+fn void rlDrawRenderBatchActive() @extern("rlDrawRenderBatchActive");
+
+
+// raymath.h
+// Add two vectors (v1 + v2)
+fn Vector2 vector2Add(Vector2 v1, Vector2 v2)  @extern("Vector2Add");
+// Add vector and float value
+fn Vector2 vector2AddValue(Vector2 v, float add) @extern("Vector2AddValue");
+// Calculate the signed angle from v1 to v2, relative to the origin (0, 0)
+// NOTE: Coordinate system convention: positive X right, positive Y down,
+// positive angles appear clockwise, and negative angles appear counterclockwise
+fn float vector2Angle(Vector2 v1, Vector2 v2) @extern("Vector2Angle");
+// Clamp the components of the vector between
+// min and max values specified by the given vectors
+fn Vector2 vector2Clamp(Vector2 v, Vector2 min, Vector2 max)  @extern("Vector2Clamp");
+// Clamp the magnitude of the vector between two min and max values
+fn Vector2 vector2ClampValue(Vector2 v, float min, float max) @extern("Vector2ClampValue");
+// Calculate two vectors cross product
+fn float vector2CrossProduct(Vector2 v1, Vector2 v2) @extern("Vector2CrossProduct");
+// Calculate distance between two vectors
+fn float vector2Distance(Vector2 v1, Vector2 v2) @extern("Vector2Distance");
+// Calculate square distance between two vectors
+fn float vector2DistanceSqr(Vector2 v1, Vector2 v2) @extern("Vector2DistanceSqr");
+// Divide vector by vector
+fn Vector2 vector2Divide(Vector2 v1, Vector2 v2) @extern("Vector2Divide");
+// Calculate two vectors dot product
+fn float vector2DotProduct(Vector2 v1, Vector2 v2) @extern("Vector2DotProduct");
+// Check whether two given vectors are almost equal
+fn int vector2Equals(Vector2 p, Vector2 q) @extern("Vector2Equals");
+// Invert the given vector
+fn Vector2 vector2Invert(Vector2 v) @extern("Vector2Invert");
+// Calculate vector length
+fn float vector2Length(Vector2 v) @extern("Vector2Length");
+// Calculate vector square length
+fn float vector2LengthSqr(Vector2 v) @extern("Vector2LengthSqr");
+// Calculate linear interpolation between two vectors
+fn Vector2 vector2Lerp(Vector2 v1, Vector2 v2, float amount) @extern("Vector2Lerp");
+// Calculate angle defined by a two vectors line
+// NOTE: Parameters need to be normalized
+// Current implementation should be aligned with glm::angle
+fn float vector2LineAngle(Vector2 start, Vector2 end) @extern("Vector2LineAngle");
+// Get max value for each pair of components
+fn Vector2 vector2Max(Vector2 v1, Vector2 v2) @extern("Vector2Max");
+// Get min value for each pair of components
+fn Vector2 vector2Min(Vector2 v1, Vector2 v2) @extern("Vector2Min");
+// Move Vector towards target
+fn Vector2 vector2MoveTowards(Vector2 v, Vector2 target, float maxDistance) @extern("Vector2MoveTowards");
+// Multiply vector by vector
+fn Vector2 vector2Multiply(Vector2 v1, Vector2 v2) @extern("Vector2Multiply");
+// Negate vector
+fn Vector2 vector2Negate(Vector2 v) @extern("Vector2Negate");
+// Normalize provided vector
+fn Vector2 vector2Normalize(Vector2 v) @extern("Vector2Normalize");
+// Vector with components value 1.0f
+fn Vector2 vector2One() @extern("Vector2One");
+// Calculate reflected vector to normal
+fn Vector2 vector2Reflect(Vector2 v, Vector2 normal) @extern("Vector2Reflect");
+// Compute the direction of a refracted ray
+// v: normalized direction of the incoming ray
+// n: normalized normal vector of the interface of two optical media
+// r: ratio of the refractive index of the medium from where the ray comes
+//    to the refractive index of the medium on the other side of the surface
+fn Vector2 vector2Refract(Vector2 v, Vector2 n, float r) @extern("Vector2Refract");
+// Rotate vector by angle
+fn Vector2 vector2Rotate(Vector2 v, float angle) @extern("Vector2Rotate");
+// Scale vector (multiply by value)
+fn Vector2 vector2Scale(Vector2 v, float scale) @extern("Vector2Scale");
+// Subtract two vectors (v1 - v2)
+fn Vector2 vector2Subtract(Vector2 v1, Vector2 v2) @extern("Vector2Subtract");
+// Subtract vector by float value
+fn Vector2 vector2SubtractValue(Vector2 v, float sub) @extern("Vector2SubtractValue");
+// Transforms a Vector2 by a given Matrix
+fn Vector2 vector2Transform(Vector2 v, Matrix mat) @extern("Vector2Transform");
+// Vector with components value 0.0f
+fn Vector2 vector2Zero() @extern("Vector2Zero");
+
+// Add two vectors
+fn Vector3 vector3Add(Vector3 v1, Vector3 v2) @extern("Vector3Add");
+// Add vector and float value
+fn Vector3 vector3AddValue(Vector3 v, float add) @extern("Vector3AddValue");
+// Calculate angle between two vectors
+fn float vector3Angle(Vector3 v1, Vector3 v2) @extern("Vector3Angle");
+// Compute barycenter coordinates (u, v, w) for point p with respect to triangle (a, b, c)
+// NOTE: Assumes P is on the plane of the triangle
+fn Vector3 vector3Barycenter(Vector3 p, Vector3 a, Vector3 b, Vector3 c) @extern("Vector3Barycenter");
+// Clamp the components of the vector between
+// min and max values specified by the given vectors
+fn Vector3 vector3Clamp(Vector3 v, Vector3 min, Vector3 max) @extern("Vector3Clamp");
+// Clamp the magnitude of the vector between two values
+fn Vector3 vector3ClampValue(Vector3 v, float min, float max) @extern("Vector3ClampValue");
+// Calculate two vectors cross product
+fn Vector3 vector3CrossProduct(Vector3 v1, Vector3 v2) @extern("Vector3CrossProduct");
+// Calculate cubic hermite interpolation between two vectors and their tangents
+// as described in the GLTF 2.0 specification: https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#interpolation-cubic
+fn Vector3 vector3CubicHermite(Vector3 v1, Vector3 tangent1, Vector3 v2, Vector3 tangent2, float amount) @extern("Vector3CubicHermite");
+// Calculate square distance between two vectors
+fn float vector3Distance(Vector3 v1, Vector3 v2) @extern("Vector3Distance");
+// Calculate square distance between two vectors
+fn float vector3DistanceSqr(Vector3 v1, Vector3 v2) @extern("Vector3DistanceSqr");
+// Divide vector by vector
+fn Vector3 vector3Divide(Vector3 v1, Vector3 v2)  @extern("Vector3Divide");
+// Calculate two vectors dot product
+fn float vector3DotProduct(Vector3 v1, Vector3 v2)  @extern("Vector3DotProduct");
+// Check whether two given vectors are almost equal
+fn int vector3Equals(Vector3 p, Vector3 q) @extern("Vector3Equals");
+// Invert the given vector
+fn Vector3 vector3Invert(Vector3 v) @extern("Vector3Invert");
+// Calculate vector length
+fn float vector3Length(Vector3 v) @extern("Vector3Length");
+// Calculate vector square length
+fn float vector3LengthSqr(Vector3 v)  @extern("Vector3LengthSqr");
+// Calculate linear interpolation between two vectors
+fn Vector3 vector3Lerp(Vector3 v1, Vector3 v2, float amount)  @extern("Vector3Lerp");
+// Get max value for each pair of components
+fn Vector3 vector3Max(Vector3 v1, Vector3 v2)  @extern("Vector3Max");
+// Get min value for each pair of components
+fn Vector3 vector3Min(Vector3 v1, Vector3 v2)  @extern("Vector3Min");
+// Move Vector towards target
+fn Vector3 vector3MoveTowards(Vector3 v, Vector3 target, float maxDistance)  @extern("Vector3MoveTowards");
+// Multiply vector by vector
+fn Vector3 vector3Multiply(Vector3 v1, Vector3 v2)  @extern("Vector3Multiply");
+// Negate provided vector (invert direction)
+fn Vector3 vector3Negate(Vector3 v)  @extern("Vector3Negate");
+// Normalize provided vector
+fn Vector3 vector3Normalize(Vector3 v)  @extern("Vector3Normalize");
+// Vector with components value 1.0f
+fn Vector3 vector3One()  @extern("Vector3One");
+// Orthonormalize provided vectors
+// Makes vectors normalized and orthogonal to each other
+// Gram-Schmidt function implementation
+fn void vector3OrthoNormalize(Vector3 *v1, Vector3 *v2)  @extern("Vector3OrthoNormalize");
+// Calculate one vector perpendicular vector
+fn Vector3 vector3Perpendicular(Vector3 v)  @extern("Vector3Perpendicular");
+//Calculate the projection of the vector v1 on to v2
+fn Vector3 vector3Project(Vector3 v1, Vector3 v2)  @extern("Vector3Project");
+// Calculate reflected vector to normal
+fn Vector3 vector3Reflect(Vector3 v, Vector3 normal)  @extern("Vector3Reflect");
+// Compute the direction of a refracted ray
+// v: normalized direction of the incoming ray
+// n: normalized normal vector of the interface of two optical media
+// r: ratio of the refractive index of the medium from where the ray comes
+//    to the refractive index of the medium on the other side of the surface
+fn Vector3 vector3Refract(Vector3 v, Vector3 n, float r)  @extern("Vector3Refract");
+//Calculate the rejection of the vector v1 on to v2
+fn Vector3 vector3Reject(Vector3 v1, Vector3 v2)  @extern("Vector3Reject");
+// Rotates a vector around an axis
+fn Vector3 vector3RotateByAxisAngle(Vector3 v, Vector3 axis, float angle)  @extern("Vector3RotateByAxisAngle");
+// Transform a vector by quaternion rotation
+fn Vector3 vector3RotateByQuaternion(Vector3 v, Quaternion q)  @extern("Vector3RotateByQuaternion");
+// Multiply vector by scalar
+fn Vector3 vector3Scale(Vector3 v, float scalar)  @extern("Vector3Scale");
+// Subtract two vectors
+fn Vector3 vector3Subtract(Vector3 v1, Vector3 v2)  @extern("Vector3Subtract");
+// Subtract vector by float value
+fn Vector3 vector3SubtractValue(Vector3 v, float sub)  @extern("Vector3SubtractValue");
+
+// Get Vector3 as float array
+// fn float3 Vector3ToFloatV(Vector3 v)  @extern("Vector3ToFloatV"); // ? float3 == float[<3>]
+
+// Transforms a Vector3 by a given Matrix
+fn Vector3 vector3Transform(Vector3 v, Matrix mat)  @extern("Vector3Transform");
+// Projects a Vector3 from screen space into object space
+// NOTE: We are avoiding calling other raymath functions despite available
+fn Vector3 vector3Unproject(Vector3 source, Matrix projection, Matrix view)  @extern("Vector3Unproject");
+// Vector with components value 0.0f
+fn Vector3 vector3Zero()  @extern("Vector3Zero");
+
+fn Vector4 vector4Add(Vector4 v1, Vector4 v2)  @extern("Vector4Add");
+fn Vector4 vector4AddValue(Vector4 v, float add)  @extern("Vector4AddValue");
+// Calculate distance between two vectors
+fn float vector4Distance(Vector4 v1, Vector4 v2)  @extern("Vector4Distance");
+// Calculate square distance between two vectors
+fn float vector4DistanceSqr(Vector4 v1, Vector4 v2)  @extern("Vector4DistanceSqr");
+// Divide vector by vector
+fn Vector4 vector4Divide(Vector4 v1, Vector4 v2)  @extern("Vector4Divide");
+fn float vector4DotProduct(Vector4 v1, Vector4 v2)  @extern("Vector4DotProduct");
+// Check whether two given vectors are almost equal
+fn int vector4Equals(Vector4 p, Vector4 q)  @extern("Vector4Equals");
+// Invert the given vector
+fn Vector4 vector4Invert(Vector4 v) @extern("Vector4Invert");
+fn float vector4Length(Vector4 v)  @extern("Vector4Length");
+fn float vector4LengthSqr(Vector4 v)  @extern("Vector4LengthSqr");
+// Calculate linear interpolation between two vectors
+fn Vector4 vector4Lerp(Vector4 v1, Vector4 v2, float amount)  @extern("Vector4Lerp");
+// Get max value for each pair of components
+fn Vector4 vector4Max(Vector4 v1, Vector4 v2)  @extern("Vector4Max");
+// Get min value for each pair of components
+fn Vector4 vector4Min(Vector4 v1, Vector4 v2)  @extern("Vector4Min");
+// Move Vector towards target
+fn Vector4 vector4MoveTowards(Vector4 v, Vector4 target, float maxDistance)  @extern("Vector4MoveTowards");
+// Multiply vector by vector
+fn Vector4 vector4Multiply(Vector4 v1, Vector4 v2)  @extern("Vector4Multiply");
+// Negate vector
+fn Vector4 vector4Negate(Vector4 v)  @extern("Vector4Negate");
+// Normalize provided vector
+fn Vector4 vector4Normalize(Vector4 v)  @extern("Vector4Normalize");
+fn Vector4 vector4One()  @extern("Vector4One");
+fn Vector4 vector4Scale(Vector4 v, float scale)  @extern("Vector4Scale");
+fn Vector4 vector4Subtract(Vector4 v1, Vector4 v2)  @extern("Vector4Subtract");
+fn Vector4 vector4SubtractValue(Vector4 v, float add)  @extern("Vector4SubtractValue");
+fn Vector4 vector4Zero()  @extern("Vector4Zero");
+
+// Add two matrices
+fn Matrix matrixAdd(Matrix left, Matrix right)  @extern("MatrixAdd");
+// Decompose a transformation matrix into its rotational, translational and scaling components
+fn void matrixDecompose(Matrix mat, Vector3 *translation, Quaternion *rotation, Vector3 *scale)  @extern("MatrixDecompose");
+// Compute matrix determinant
+fn float matrixDeterminant(Matrix mat)  @extern("MatrixDeterminant");
+// Get perspective projection matrix
+fn Matrix matrixFrustum(double left, double right, double bottom, double top, double nearPlane, double farPlane)  @extern("MatrixFrustum");
+// Get identity matrix
+fn Matrix matrixIdentity()  @extern("MatrixIdentity");
+// Invert provided matrix
+fn  Matrix matrixInvert(Matrix mat)  @extern("MatrixInvert");
+// Get camera look-at matrix (view matrix)
+fn Matrix matrixLookAt(Vector3 eye, Vector3 target, Vector3 up)  @extern("MatrixLookAt");
+// Get two matrix multiplication
+// NOTE: When multiplying matrices... the order matters!
+fn Matrix matrixMultiply(Matrix left, Matrix right)  @extern("MatrixMultiply");
+// Get orthographic projection matrix
+fn Matrix matrixOrtho(double left, double right, double bottom, double top, double nearPlane, double farPlane)  @extern("MatrixOrtho");
+// Get perspective projection matrix
+// NOTE: Fovy angle must be provided in radians
+fn Matrix matrixPerspective(double fovY, double aspect, double nearPlane, double farPlane)  @extern("MatrixPerspective");
+// Create rotation matrix from axis and angle
+// NOTE: Angle should be provided in radians
+fn Matrix matrixRotate(Vector3 axis, float angle)  @extern("MatrixRotate");
+// Get x-rotation matrix
+// NOTE: Angle must be provided in radians
+fn Matrix matrixRotateX(float angle)  @extern("MatrixRotateX");
+// Get zyx-rotation matrix
+// NOTE: Angle must be provided in radians
+fn Matrix matrixRotateXYZ(Vector3 angle)  @extern("MatrixRotateXYZ");
+// Get y-rotation matrix
+// NOTE: Angle must be provided in radians
+fn Matrix matrixRotateY(float angle)  @extern("MatrixRotateY");
+// Get z-rotation matrix
+// NOTE: Angle must be provided in radians
+fn Matrix matrixRotateZ(float angle)  @extern("MatrixRotateZ");
+// Get zyx-rotation matrix
+// NOTE: Angle must be provided in radians
+fn Matrix matrixRotateZYX(Vector3 angle)  @extern("MatrixRotateZYX");
+// Get scaling matrix
+fn Matrix matrixScale(float x, float y, float z)  @extern("MatrixScale");
+// Subtract two matrices (left - right)
+fn Matrix matrixSubtract(Matrix left, Matrix right)  @extern("MatrixSubtract");
+
+// Get float array of matrix data
+// fn float16 MatrixToFloatV(Matrix mat)  @extern("MatrixToFloatV"); // float16 == float[<16>] ??
+
+// Get the trace of the matrix (sum of the values along the diagonal)
+fn float matrixTrace(Matrix mat)  @extern("MatrixTrace");
+// Get translation matrix
+fn  Matrix matrixTranslate(float x, float y, float z)  @extern("MatrixTranslate");
+// Transposes provided matrix
+fn Matrix matrixTranspose(Matrix mat)  @extern("MatrixTranspose");
+
+// Add two quaternions
+fn Quaternion quaternionAdd(Quaternion q1, Quaternion q2)  @extern("QuaternionAdd");
+// Add quaternion and float value
+fn Quaternion quaternionAddValue(Quaternion q, float add)  @extern("QuaternionAddValue");
+// Calculate quaternion cubic spline interpolation using Cubic Hermite Spline algorithm
+// as described in the GLTF 2.0 specification: https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#interpolation-cubic
+fn Quaternion quaternionCubicHermiteSpline(Quaternion q1, Quaternion outTangent1, Quaternion q2, Quaternion inTangent2, float t) @extern("QuaternionCubicHermiteSpline");
+// Divide two quaternions
+fn Quaternion quaternionDivide(Quaternion q1, Quaternion q2)  @extern("QuaternionDivide");
+// Check whether two given quaternions are almost equal
+fn int quaternionEquals(Quaternion p, Quaternion q)  @extern("QuaternionEquals");
+// Get rotation quaternion for an angle and axis
+// NOTE: Angle must be provided in radians
+fn Quaternion quaternionFromAxisAngle(Vector3 axis, float angle)  @extern("QuaternionFromAxisAngle");
+// Get the quaternion equivalent to Euler angles
+// NOTE: Rotation order is ZYX
+fn Quaternion quaternionFromEuler(float pitch, float yaw, float roll)  @extern("QuaternionFromEuler");
+// Get a quaternion for a given rotation matrix
+fn Quaternion quaternionFromMatrix(Matrix mat)  @extern("QuaternionFromMatrix");
+// Calculate quaternion based on the rotation from one vector to another
+fn Quaternion quaternionFromVector3ToVector3(Vector3 from, Vector3 to)  @extern("QuaternionFromVector3ToVector3");
+// Get identity quaternion
+fn Quaternion auaternionIdentity()  @extern("QuaternionIdentity");
+// Invert provided quaternion
+fn Quaternion quaternionInvert(Quaternion q)  @extern("QuaternionInvert");
+// Computes the length of a quaternion
+fn float quaternionLength(Quaternion q)  @extern("QuaternionLength");
+// Calculate linear interpolation between two quaternions
+fn Quaternion quaternionLerp(Quaternion q1, Quaternion q2, float amount)  @extern("QuaternionLerp");
+// Calculate two quaternion multiplication
+fn Quaternion quaternionMultiply(Quaternion q1, Quaternion q2)  @extern("QuaternionMultiply");
+// Calculate slerp-optimized interpolation between two quaternions
+fn Quaternion quaternionNlerp(Quaternion q1, Quaternion q2, float amount)  @extern("QuaternionNlerp");
+// Normalize provided quaternion
+fn Quaternion quaternionNormalize(Quaternion q)  @extern("QuaternionNormalize");
+// Scale quaternion by float value
+fn Quaternion quaternionScale(Quaternion q, float mul)  @extern("QuaternionScale");
+// Calculates spherical linear interpolation between two quaternions
+fn Quaternion quaternionSlerp(Quaternion q1, Quaternion q2, float amount)  @extern("QuaternionSlerp");
+// Subtract two quaternions
+fn Quaternion quaternionSubtract(Quaternion q1, Quaternion q2)  @extern("QuaternionSubtract");
+// Subtract quaternion and float value
+fn Quaternion quaternionSubtractValue(Quaternion q, float sub)  @extern("QuaternionSubtractValue");
+// Get the rotation angle and axis for a given quaternion
+fn void quaternionToAxisAngle(Quaternion q, Vector3 *outAxis, float *outAngle)  @extern("QuaternionToAxisAngle");
+// Get the Euler angles equivalent to quaternion (roll, pitch, yaw)
+// NOTE: Angles are returned in a Vector3 struct in radians
+fn Vector3 quaternionToEuler(Quaternion q)  @extern("QuaternionToEuler");
+// Get a matrix for a given quaternion
+fn Matrix quaternionToMatrix(Quaternion q)  @extern("QuaternionToMatrix");
+// Transform a quaternion given a transformation matrix
+fn Quaternion quaternionTransform(Quaternion q, Matrix mat)  @extern("QuaternionTransform");
+
+
+// rcamera.h
+// Moves the camera in its forward direction
+fn void cameraMoveForward(Camera *camera, float distance, bool moveInWorldPlane)  @extern("CameraMoveForward");
+// Moves the camera target in its current right direction
+fn void cameraMoveRight(Camera *camera, float distance, bool moveInWorldPlane)  @extern("CameraMoveRight");
+// Moves the camera position closer/farther to/from the camera target
+fn void cameraMoveToTarget(Camera *camera, float delta)  @extern("CameraMoveToTarget");
+// Moves the camera in its up direction
+fn void cameraMoveUp(Camera *camera, float distance)  @extern("CameraMoveUp");
+// Rotates the camera around its right vector, pitch is "looking up and down"
+//  - lockView prevents camera overrotation (aka "somersaults")
+//  - rotateAroundTarget defines if rotation is around target or around its position
+//  - rotateUp rotates the up direction as well (typically only usefull in CAMERA_FREE)
+// NOTE: angle must be provided in radians
+fn void cameraPitch(Camera *camera, float angle, bool lockView, bool rotateAroundTarget, bool rotateUp)  @extern("CameraPitch");
+// Rotates the camera around its forward vector
+// Roll is "turning your head sideways to the left or right"
+// Note: angle must be provided in radians
+fn void cameraRoll(Camera *camera, float angle)  @extern("CameraRoll");
+// Rotates the camera around its up vector
+// Yaw is "looking left and right"
+// If rotateAroundTarget is false, the camera rotates around its position
+// Note: angle must be provided in radians
+fn void cameraYaw(Camera *camera, float angle, bool rotateAroundTarget)  @extern("CameraYaw");
