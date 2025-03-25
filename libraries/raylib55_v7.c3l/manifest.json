@@ -16,6 +16,11 @@
       "dependencies" : [],
       "linked-libraries" : ["raylib"]
     },
+    "freebsd-x64" : {
+      "link-args" : [],
+      "dependencies" : [],
+      "linked-libraries" : ["raylib"]
+    },
 	  "windows-x64" : {
 		  "linked-libraries" : ["raylib", "gdi32", "winmm"],
       "wincrt": "none"
