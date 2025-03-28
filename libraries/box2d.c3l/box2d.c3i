@@ -3,30 +3,30 @@
 // Originally by Hilário Martins @ https://github.com/HMart81
 
 /*
-    BASIC DOC:
-    
+	BASIC DOC:
+	
 ==== Units ====
-    Box2D works with floating point numbers and tolerances have to be used to make Box2D perform well. 
-    These tolerances have been tuned to work well with meters-kilogram-second (MKS) units. 
-    In particular, Box2D has been tuned to work well with moving shapes between 0.1 and 10 meters. 
-    So this means objects between soup cans and buses in size should work well. 
-    Static shapes may be up to 50 meters long without trouble. If you have a large world, you should split it up into multiple static bodies.
+	Box2D works with floating point numbers and tolerances have to be used to make Box2D perform well. 
+	These tolerances have been tuned to work well with meters-kilogram-second (MKS) units. 
+	In particular, Box2D has been tuned to work well with moving shapes between 0.1 and 10 meters. 
+	So this means objects between soup cans and buses in size should work well. 
+	Static shapes may be up to 50 meters long without trouble. If you have a large world, you should split it up into multiple static bodies.
 
-    Being a 2D physics engine, it is tempting to use pixels as your units.
-    Unfortunately this will lead to a poor simulation and possibly weird behavior. 
-    An object of length 200 pixels would be seen by Box2D as the size of a 45 story building.
-    
-    ******************************************************************************************
-    * ‍Caution:                                                                               *
-    * - Box2D is tuned for MKS units. Keep the size of moving objects larger than 10cm.      *
-    *   You'll need to use some scaling system when you render your environment and actors.  *
-    *   The Box2D samples application does this by using an OpenGL viewport transform.       *
-    *   DO NOT USE PIXEL UNITS for box2D unless you understand the implications.             *
-    * - Box2D uses radians, not degrees.                                                     *
-    * - Box2D works best with world sizes less than 12 kilometers.                           *
-    ******************************************************************************************
-    
-    Hello World Example at @ https://box2d.org/documentation/hello.html#autotoc_md21
+	Being a 2D physics engine, it is tempting to use pixels as your units.
+	Unfortunately this will lead to a poor simulation and possibly weird behavior. 
+	An object of length 200 pixels would be seen by Box2D as the size of a 45 story building.
+	
+	******************************************************************************************
+	* ‍Caution:                                                                               *
+	* - Box2D is tuned for MKS units. Keep the size of moving objects larger than 10cm.      *
+	*   You'll need to use some scaling system when you render your environment and actors.  *
+	*   The Box2D samples application does this by using an OpenGL viewport transform.       *
+	*   DO NOT USE PIXEL UNITS for box2D unless you understand the implications.             *
+	* - Box2D uses radians, not degrees.                                                     *
+	* - Box2D works best with world sizes less than 12 kilometers.                           *
+	******************************************************************************************
+	
+	Hello World Example at @ https://box2d.org/documentation/hello.html#autotoc_md21
 */
 
 module vendor::box2d::b2;
@@ -48,9 +48,9 @@ fn void setAssertFcn( B2AssertCallback* assertFcn )                        @exte
  
 struct B2Version @compact
 {
-    int major;
-    int minor;
-    int revision;
+	int major;
+	int minor;
+	int revision;
 }
 
 fn B2Version getVersion() @extern("b2GetVersion");
@@ -58,10 +58,10 @@ fn B2Version getVersion() @extern("b2GetVersion");
 // Timer for profiling. This has platform specific code and may not work on every platform.
 struct B2Timer
 {
-    long start       @if(env::WIN32);
-    ulong start_sec  @if(env::LINUX || env::POSIX);
-    ulong start_usec @if(env::LINUX || env::POSIX);
-    int dummy        @if(!env::WIN32 && !env::LINUX && !env::POSIX);
+	long start       @if(env::WIN32);
+	ulong start_sec  @if(env::LINUX || env::POSIX);
+	ulong start_usec @if(env::LINUX || env::POSIX);
+	int dummy        @if(!env::WIN32 && !env::LINUX && !env::POSIX);
 }
  
 fn B2Timer createTimer()                             @extern("b2CreateTimer");
@@ -83,40 +83,39 @@ fn uint hash( uint hash, UInt8* data, int count ) @extern("b2Hash");
 
 struct B2WorldId @compact
 {
-    ushort	index1;	
-    ushort revision;
+	ushort index1;
+	ushort revision;
 }
 
 // Body id references a body instance. This should be treated as an opaque handle.
 struct B2BodyId
 {
-    int	index1;	
-    ushort revision;	
-    ushort	world0;
+	int index1;
+	ushort revision;
+	ushort world0;
 }
 
 struct B2ShapeId
 {
-    int index1;
-    ushort world0;
-    ushort revision;
+	int index1;
+	ushort world0;
+	ushort revision;
 }
 
 struct B2JointId
 {
-    int index1;
-    ushort world0;
-    ushort revision;
+	int index1;
+	ushort world0;
+	ushort revision;
 }
 
 struct B2ChainId
 {
-    int index1;
-    ushort world0;
-    ushort revision;
+	int index1;
+	ushort world0;
+	ushort revision;
 }
 
-//def ZERO_INIT = {};
 const B2WorldId NULL_WORLD_ID @local = {};
 const B2BodyId  NULL_BODY_ID  @local = {};
 const B2ShapeId NULL_SHAPE_ID @local = {};
@@ -142,11 +141,11 @@ def B2FinishTaskCallback  = fn void(void*, void*);
  
 struct B2RayResult
 {
-    B2ShapeId shapeId;
-    B2Vec2 point;
-    B2Vec2 normal;
-    float fraction;
-    bool hit;
+	B2ShapeId shapeId;
+	B2Vec2 point;
+	B2Vec2 normal;
+	float fraction;
+	bool hit;
 }
  
 /// World definition used to create a simulation world.
@@ -207,7 +206,7 @@ struct B2WorldDef
  
 fn B2WorldDef defaultWorldDef() @extern("b2DefaultWorldDef");
  
-enum B2BodyType : int
+enum B2BodyType
 {
 	/// zero mass, zero velocity, may be manually moved
 	STATIC,
@@ -302,42 +301,42 @@ fn B2BodyDef defaultBodyDef() @extern("b2DefaultBodyDef");
 struct B2Filter @compact
 {
 	/// The collision category bits. Normally you would just set one bit. The category bits should
-	///	represent your application object types. For example:
-	///	@code{.cpp}
-	///	enum MyCategories
-	///	{
-	///	   Static  = 0x00000001,
-	///	   Dynamic = 0x00000002,
-	///	   Debris  = 0x00000004,
-	///	   Player  = 0x00000008,
-	///	   // etc
+	/// represent your application object types. For example:
+	/// @code{.cpp}
+	/// enum MyCategories
+	/// {
+	///    Static  = 0x00000001,
+	///    Dynamic = 0x00000002,
+	///    Debris  = 0x00000004,
+	///    Player  = 0x00000008,
+	///    // etc
 	/// };
-	///	@endcode
+	/// @endcode
 	uint categoryBits;
 
 	/// The collision mask bits. This states the categories that this
 	/// shape would accept for collision.
-	///	For example, you may want your player to only collide with static objects
-	///	and other players.
-	///	@code{.c}
-	///	maskBits = Static | Player;
-	///	@endcode
+	/// For example, you may want your player to only collide with static objects
+	/// and other players.
+	/// @code{.c}
+	/// maskBits = Static | Player;
+	/// @endcode
 	uint maskBits;
 
 	/// Collision groups allow a certain group of objects to never collide (negative)
 	/// or always collide (positive). A group index of zero has no effect. Non-zero group filtering
 	/// always wins against the mask bits.
-	///	For example, you may want ragdolls to collide with other ragdolls but you don't want
-	///	ragdoll self-collision. In this case you would give each ragdoll a unique negative group index
-	///	and apply that group index to all shapes on the ragdoll.
+	/// For example, you may want ragdolls to collide with other ragdolls but you don't want
+	/// ragdoll self-collision. In this case you would give each ragdoll a unique negative group index
+	/// and apply that group index to all shapes on the ragdoll.
 	int groupIndex;
 }
  
 fn B2Filter defaultFilter() @extern("b2DefaultFilter");
  
 /// The query filter is used to filter collisions between queries and shapes. For example,
-///	you may want a ray-cast representing a projectile to hit players and the static environment
-///	but not debris.
+/// you may want a ray-cast representing a projectile to hit players and the static environment
+/// but not debris.
 /// @ingroup shape
 struct B2QueryFilter @compact
 {
@@ -372,7 +371,7 @@ enum B2ShapeType : int
  
 /// Used to create a shape.
 /// This is a temporary object used to bundle shape creation parameters. You may use
-///	the same shape definition to create multiple shapes.
+/// the same shape definition to create multiple shapes.
 /// Must be initialized using defaultShapeDef().
 struct B2ShapeDef
 {
@@ -424,284 +423,284 @@ fn B2ShapeDef defaultShapeDef() @extern("b2DefaultShapeDef");
  
 struct B2ChainDef
 {
-    void* userData;
-    B2Vec2* points;
-    int count;
-    float friction;
-    float restitution;
-    B2Filter filter;
-    bool isLoop;
-    int internalValue;
+	void* userData;
+	B2Vec2* points;
+	int count;
+	float friction;
+	float restitution;
+	B2Filter filter;
+	bool isLoop;
+	int internalValue;
 }
  
 fn B2ChainDef defaultChainDef() @extern("b2DefaultChainDef");
  
 struct B2Profile @compact
 {
-    float step;
-    float pairs;
-    float collide;
-    float solve;
-    float buildIslands;
-    float solveConstraints;
-    float prepareTasks;
-    float solverTasks;
-    float prepareConstraints;
-    float integrateVelocities;
-    float warmStart;
-    float solveVelocities;
-    float integratePositions;
-    float relaxVelocities;
-    float applyRestitution;
-    float storeImpulses;
-    float finalizeBodies;
-    float splitIslands;
-    float sleepIslands;
-    float hitEvents;
-    float broadphase;
-    float continuous;
+	float step;
+	float pairs;
+	float collide;
+	float solve;
+	float buildIslands;
+	float solveConstraints;
+	float prepareTasks;
+	float solverTasks;
+	float prepareConstraints;
+	float integrateVelocities;
+	float warmStart;
+	float solveVelocities;
+	float integratePositions;
+	float relaxVelocities;
+	float applyRestitution;
+	float storeImpulses;
+	float finalizeBodies;
+	float splitIslands;
+	float sleepIslands;
+	float hitEvents;
+	float broadphase;
+	float continuous;
 }
  
 struct B2Counters @compact
 {
-    int staticBodyCount;
-    int bodyCount;
-    int shapeCount;
-    int contactCount;
-    int jointCount;
-    int islandCount;
-    int stackUsed;
-    int staticTreeHeight;
-    int treeHeight;
-    int byteCount;
-    int taskCount;
-    int[12] colorCounts;
+	int staticBodyCount;
+	int bodyCount;
+	int shapeCount;
+	int contactCount;
+	int jointCount;
+	int islandCount;
+	int stackUsed;
+	int staticTreeHeight;
+	int treeHeight;
+	int byteCount;
+	int taskCount;
+	int[12] colorCounts;
 }
  
-enum B2JointType : int
+enum B2JointType
 {
-    DISTANCE,
-    MOTOR,
-    MOUSE,
-    PRISMATIC,
-    REVOLUTE,
-    WELD,
-    WHEEL,
+	DISTANCE,
+	MOTOR,
+	MOUSE,
+	PRISMATIC,
+	REVOLUTE,
+	WELD,
+	WHEEL,
 }
  
 struct B2DistanceJointDef
 {
-    B2BodyId bodyIdA;
-    B2BodyId bodyIdB;
-    B2Vec2 localAnchorA;
-    B2Vec2 localAnchorB;
-    float length;
-    bool enableSpring;
-    float hertz;
-    float dampingRatio;
-    bool enableLimit;
-    float minLength;
-    float maxLength;
-    bool enableMotor;
-    float maxMotorForce;
-    float motorSpeed;
-    bool collideConnected;
-    void* userData;
-    int internalValue;
+	B2BodyId bodyIdA;
+	B2BodyId bodyIdB;
+	B2Vec2 localAnchorA;
+	B2Vec2 localAnchorB;
+	float length;
+	bool enableSpring;
+	float hertz;
+	float dampingRatio;
+	bool enableLimit;
+	float minLength;
+	float maxLength;
+	bool enableMotor;
+	float maxMotorForce;
+	float motorSpeed;
+	bool collideConnected;
+	void* userData;
+	int internalValue;
 }
  
 fn B2DistanceJointDef defaultDistanceJointDef() @extern("b2DefaultDistanceJointDef");
  
 struct B2MotorJointDef
 {
-    B2BodyId bodyIdA;
-    B2BodyId bodyIdB;
-    B2Vec2 linearOffset;
-    float angularOffset;
-    float maxForce;
-    float maxTorque;
-    float correctionFactor;
-    bool collideConnected;
-    void* userData;
-    int internalValue;
+	B2BodyId bodyIdA;
+	B2BodyId bodyIdB;
+	B2Vec2 linearOffset;
+	float angularOffset;
+	float maxForce;
+	float maxTorque;
+	float correctionFactor;
+	bool collideConnected;
+	void* userData;
+	int internalValue;
 }
  
 fn B2MotorJointDef defaultMotorJointDef() @extern("b2DefaultMotorJointDef");
  
 struct B2MouseJointDef
 {
-    B2BodyId bodyIdA;
-    B2BodyId bodyIdB;
-    B2Vec2 target;
-    float hertz;
-    float dampingRatio;
-    float maxForce;
-    bool collideConnected;
-    void* userData;
-    int internalValue;
+	B2BodyId bodyIdA;
+	B2BodyId bodyIdB;
+	B2Vec2 target;
+	float hertz;
+	float dampingRatio;
+	float maxForce;
+	bool collideConnected;
+	void* userData;
+	int internalValue;
 }
  
 fn B2MouseJointDef defaultMouseJointDef() @extern("b2DefaultMotorJointDef");
  
 struct B2PrismaticJointDef
 {
-    B2BodyId bodyIdA;
-    B2BodyId bodyIdB;
-    B2Vec2 localAnchorA;
-    B2Vec2 localAnchorB;
-    B2Vec2 localAxisA;
-    float referenceAngle;
-    bool enableSpring;
-    float hertz;
-    float dampingRatio;
-    bool enableLimit;
-    float lowerTranslation;
-    float upperTranslation;
-    bool enableMotor;
-    float maxMotorForce;
-    float motorSpeed;
-    bool collideConnected;
-    void* userData;
-    int internalValue;
+	B2BodyId bodyIdA;
+	B2BodyId bodyIdB;
+	B2Vec2 localAnchorA;
+	B2Vec2 localAnchorB;
+	B2Vec2 localAxisA;
+	float referenceAngle;
+	bool enableSpring;
+	float hertz;
+	float dampingRatio;
+	bool enableLimit;
+	float lowerTranslation;
+	float upperTranslation;
+	bool enableMotor;
+	float maxMotorForce;
+	float motorSpeed;
+	bool collideConnected;
+	void* userData;
+	int internalValue;
 }
  
 fn B2PrismaticJointDef defaultPrismaticJointDef() @extern("b2DefaultPrismaticJointDef");
  
 struct B2RevoluteJointDef
 {
-    B2BodyId bodyIdA;
-    B2BodyId bodyIdB;
-    B2Vec2 localAnchorA;
-    B2Vec2 localAnchorB;
-    float referenceAngle;
-    bool enableSpring;
-    float hertz;
-    float dampingRatio;
-    bool enableLimit;
-    float lowerAngle;
-    float upperAngle;
-    bool enableMotor;
-    float maxMotorTorque;
-    float motorSpeed;
-    float drawSize;
-    bool collideConnected;
-    void* userData;
-    int internalValue;
+	B2BodyId bodyIdA;
+	B2BodyId bodyIdB;
+	B2Vec2 localAnchorA;
+	B2Vec2 localAnchorB;
+	float referenceAngle;
+	bool enableSpring;
+	float hertz;
+	float dampingRatio;
+	bool enableLimit;
+	float lowerAngle;
+	float upperAngle;
+	bool enableMotor;
+	float maxMotorTorque;
+	float motorSpeed;
+	float drawSize;
+	bool collideConnected;
+	void* userData;
+	int internalValue;
 }
  
 fn B2RevoluteJointDef defaultRevoluteJointDef() @extern("b2DefaultRevoluteJointDef");
  
 struct B2WeldJointDef
 {
-    B2BodyId bodyIdA;
-    B2BodyId bodyIdB;
-    B2Vec2 localAnchorA;
-    B2Vec2 localAnchorB;
-    float referenceAngle;
-    float linearHertz;
-    float angularHertz;
-    float linearDampingRatio;
-    float angularDampingRatio;
-    bool collideConnected;
-    void* userData;
-    int internalValue;
+	B2BodyId bodyIdA;
+	B2BodyId bodyIdB;
+	B2Vec2 localAnchorA;
+	B2Vec2 localAnchorB;
+	float referenceAngle;
+	float linearHertz;
+	float angularHertz;
+	float linearDampingRatio;
+	float angularDampingRatio;
+	bool collideConnected;
+	void* userData;
+	int internalValue;
 }
  
 fn B2WeldJointDef defaultWeldJointDef() @extern("b2DefaultWeldJointDef");
  
 struct B2WheelJointDef
 {
-    B2BodyId bodyIdA;
-    B2BodyId bodyIdB;
-    B2Vec2 localAnchorA;
-    B2Vec2 localAnchorB;
-    B2Vec2 localAxisA;
-    bool enableSpring;
-    float hertz;
-    float dampingRatio;
-    bool enableLimit;
-    float lowerTranslation;
-    float upperTranslation;
-    bool enableMotor;
-    float maxMotorTorque;
-    float motorSpeed;
-    bool collideConnected;
-    void* userData;
-    int internalValue;
+	B2BodyId bodyIdA;
+	B2BodyId bodyIdB;
+	B2Vec2 localAnchorA;
+	B2Vec2 localAnchorB;
+	B2Vec2 localAxisA;
+	bool enableSpring;
+	float hertz;
+	float dampingRatio;
+	bool enableLimit;
+	float lowerTranslation;
+	float upperTranslation;
+	bool enableMotor;
+	float maxMotorTorque;
+	float motorSpeed;
+	bool collideConnected;
+	void* userData;
+	int internalValue;
 }
  
 fn B2WheelJointDef defaultWheelJointDef() @extern("b2DefaultWheelJointDef");
  
 struct B2SensorBeginTouchEvent
 {
-    B2ShapeId sensorShapeId;
-    B2ShapeId visitorShapeId;
+	B2ShapeId sensorShapeId;
+	B2ShapeId visitorShapeId;
 }
  
 struct B2SensorEndTouchEvent
 {
-    B2ShapeId sensorShapeId;
-    B2ShapeId visitorShapeId;
+	B2ShapeId sensorShapeId;
+	B2ShapeId visitorShapeId;
 }
  
 struct B2SensorEvents
 {
-    B2SensorBeginTouchEvent* beginEvents;
-    B2SensorEndTouchEvent* endEvents;
-    int beginCount;
-    int endCount;
+	B2SensorBeginTouchEvent* beginEvents;
+	B2SensorEndTouchEvent* endEvents;
+	int beginCount;
+	int endCount;
 }
  
 struct B2ContactBeginTouchEvent
 {
-    B2ShapeId shapeIdA;
-    B2ShapeId shapeIdB;
+	B2ShapeId shapeIdA;
+	B2ShapeId shapeIdB;
 }
  
 struct B2ContactEndTouchEvent
 {
-    B2ShapeId shapeIdA;
-    B2ShapeId shapeIdB;
+	B2ShapeId shapeIdA;
+	B2ShapeId shapeIdB;
 }
  
 struct B2ContactHitEvent
 {
-    B2ShapeId shapeIdA;
-    B2ShapeId shapeIdB;
-    B2Vec2 point;
-    B2Vec2 normal;
-    float approachSpeed;
+	B2ShapeId shapeIdA;
+	B2ShapeId shapeIdB;
+	B2Vec2 point;
+	B2Vec2 normal;
+	float approachSpeed;
 }
  
 struct B2ContactEvents
 {
-    B2ContactBeginTouchEvent* beginEvents;
-    B2ContactEndTouchEvent* endEvents;
-    B2ContactHitEvent* hitEvents;
-    int beginCount;
-    int endCount;
-    int hitCount;
+	B2ContactBeginTouchEvent* beginEvents;
+	B2ContactEndTouchEvent* endEvents;
+	B2ContactHitEvent* hitEvents;
+	int beginCount;
+	int endCount;
+	int hitCount;
 }
  
 struct B2BodyMoveEvent
 {
-    B2Transform transform;
-    B2BodyId bodyId;
-    void* userData;
-    bool fellAsleep;
+	B2Transform transform;
+	B2BodyId bodyId;
+	void* userData;
+	bool fellAsleep;
 }
  
 struct B2BodyEvents
 {
-    B2BodyMoveEvent* moveEvents;
-    int moveCount;
+	B2BodyMoveEvent* moveEvents;
+	int moveCount;
 }
  
 struct B2ContactData
 {
-    B2ShapeId shapeIdA;
-    B2ShapeId shapeIdB;
-    B2Manifold manifold;
+	B2ShapeId shapeIdA;
+	B2ShapeId shapeIdB;
+	B2Manifold manifold;
 }
  
 //typedef bool b2CustomFilterFcn( B2ShapeId shapeIdA, B2ShapeId shapeIdB, void* context );
@@ -715,11 +714,11 @@ def B2CastResultCallback    = fn float(B2ShapeId,B2Vec2,B2Vec2,float,void*);
 
 <*
 Create a world for rigid body simulation.
-
-A world contains bodies, shapes, and constraints. You make create up to 128 worlds. Each world is completely independent and may be simulated in parallel.
+A world contains bodies, shapes, and constraints. You make create up to 128 worlds. 
+Each world is completely independent and may be simulated in parallel.
 
 Returns
-    the world id
+	the world id
 *>
 fn B2WorldId createWorld( B2WorldDef* wdef ) @extern("b2CreateWorld");
 fn void      destroyWorld( B2WorldId worldId ) @extern("b2DestroyWorld");
@@ -759,7 +758,6 @@ fn void worldDebugDraw(B2WorldId worldId, B2DebugDraw* draw ) @extern("b2World_D
 
 <*
 Create a rigid body given a definition.
-
 No reference to the definition is retained. So you can create the definition on the stack and pass it as a pointer.
 
 ex: 
@@ -839,11 +837,10 @@ fn B2ShapeId createCapsuleShape( B2BodyId bodyId, B2ShapeDef* sdef, B2Capsule* c
 
 <*
 Create a polygon shape and attach it to a body.
-
 The shape definition and geometry are fully cloned. Contacts are not created until the next time step.
 
 Returns
-    the shape id for accessing the shape
+	the shape id for accessing the shape
 *>
 fn B2ShapeId createPolygonShape( B2BodyId bodyId, B2ShapeDef* sdef, B2Polygon* polygon ) @extern("b2CreatePolygonShape");
 fn void destroyShape( B2ShapeId shapeId ) @extern("b2DestroyShape");
@@ -1029,54 +1026,54 @@ fn float     wheelJoint_GetMotorTorque( B2JointId jointId ) @extern("b2WheelJoin
 // region COLLISION
 
 /// The maximum number of vertices on a convex polygon. Changing this affects performance even if you
-///	don't use more vertices.
+/// don't use more vertices.
 const MAX_POLYGON_VERTICES = 8;
 
 struct B2RayCastInput
 {
-    B2Vec2 origin;
-    B2Vec2 translation;
-    float maxFraction;
+	B2Vec2 origin;
+	B2Vec2 translation;
+	float maxFraction;
 }
 
 struct B2ShapeCastInput
 {
-    B2Vec2[MAX_POLYGON_VERTICES] points;
-    int count;
-    float radius;
-    B2Vec2 translation;
-    float maxFraction;
+	B2Vec2[MAX_POLYGON_VERTICES] points;
+	int count;
+	float radius;
+	B2Vec2 translation;
+	float maxFraction;
 }
 
 struct B2CastOutput
 {
-    B2Vec2 normal;
-    B2Vec2 point;
-    float fraction;
-    int iterations;
-    bool hit;
+	B2Vec2 normal;
+	B2Vec2 point;
+	float fraction;
+	int iterations;
+	bool hit;
 }
 
 struct B2MassData
 {
-    float mass;
-    B2Vec2 center;
-    float rotationalInertia;
+	float mass;
+	B2Vec2 center;
+	float rotationalInertia;
 }
 
 struct B2Circle
 {
-    B2Vec2 center;
-    float radius;
+	B2Vec2 center;
+	float radius;
 }
 
 struct B2Capsule
 {
-    B2Vec2 center1;
+	B2Vec2 center1;
 
-    B2Vec2 center2;
+	B2Vec2 center2;
 
-    float radius;
+	float radius;
 }
 
 /// A solid convex polygon. It is assumed that the interior of the polygon is to
@@ -1101,16 +1098,16 @@ struct B2Polygon
 
 struct B2Segment
 {
-    B2Vec2 point1;
-    B2Vec2 point2;
+	B2Vec2 point1;
+	B2Vec2 point2;
 }
 
 struct B2ChainSegment
 {
-    B2Vec2 ghost1;
-    B2Segment segment;
-    B2Vec2 ghost2;
-    int chainId;
+	B2Vec2 ghost1;
+	B2Segment segment;
+	B2Vec2 ghost2;
+	int chainId;
 }
 
 /// Helper functions
@@ -1152,8 +1149,8 @@ fn B2CastOutput shapeCastPolygon( B2ShapeCastInput* input, B2Polygon* shape ) @e
 
 struct B2Hull
 {
-    B2Vec2[MAX_POLYGON_VERTICES] points;
-    int count;
+	B2Vec2[MAX_POLYGON_VERTICES] points;
+	int count;
 }
 
 fn B2Hull computeHull( B2Vec2* points, int count ) @extern("b2ComputeHull");
@@ -1161,27 +1158,27 @@ fn bool validateHull( B2Hull* hull ) @extern("b2ValidateHull");
 
 struct B2SegmentDistanceResult @compact
 {
-    B2Vec2 closest1;
-    B2Vec2 closest2;
-    float fraction1;
-    float fraction2;
-    float distanceSquared;
+	B2Vec2 closest1;
+	B2Vec2 closest2;
+	float fraction1;
+	float fraction2;
+	float distanceSquared;
 }
 
 fn B2SegmentDistanceResult segmentDistance( B2Vec2 p1, B2Vec2 q1, B2Vec2 p2, B2Vec2 q2 ) @extern("b2SegmentDistance");
 
 struct B2DistanceProxy
 {
-    B2Vec2[MAX_POLYGON_VERTICES] points;
-    int count;
-    float radius;
+	B2Vec2[MAX_POLYGON_VERTICES] points;
+	int count;
+	float radius;
 }
 
 struct B2DistanceCache
 {
-    short count;
-    char[3] indexA;
-    char[3] indexB;
+	short count;
+	char[3] indexA;
+	char[3] indexB;
 }
 
 // NOTE(HM) c3 is a zero initialized language by default.
@@ -1190,48 +1187,48 @@ const B2DistanceCache EMPTY_DISTANCE_CACHE = {};
 
 struct B2DistanceInput
 {
-    B2DistanceProxy proxyA;
-    B2DistanceProxy proxyB;
-    B2Transform transformA;
-    B2Transform transformB;
-    bool useRadii;
+	B2DistanceProxy proxyA;
+	B2DistanceProxy proxyB;
+	B2Transform transformA;
+	B2Transform transformB;
+	bool useRadii;
 }
 
 struct B2DistanceOutput
 {
-    B2Vec2 pointA;        
-    B2Vec2 pointB;        
-    float distance;       
-    int iterations;   
-    int simplexCount; 
+	B2Vec2 pointA;
+	B2Vec2 pointB;
+	float distance;
+	int iterations;
+	int simplexCount;
 }
 
 struct B2SimplexVertex
 {
-    B2Vec2 wA;      
-    B2Vec2 wB;      
-    B2Vec2 w;       
-    float a;        
-    int indexA; 
-    int indexB; 
+	B2Vec2 wA;
+	B2Vec2 wB;
+	B2Vec2 w;
+	float a;
+	int indexA;
+	int indexB;
 }
 
 struct B2Simplex
 {
-    B2SimplexVertex v1, v2, v3; 
-    int count;              
+	B2SimplexVertex v1, v2, v3; 
+	int count;
 }
 
 fn B2DistanceOutput shapeDistance( B2DistanceCache* cache, B2DistanceInput* input, B2Simplex* simplexes, int simplexCapacity ) @extern("b2ShapeDistance");
 
 struct B2ShapeCastPairInput
 {
-    B2DistanceProxy proxyA; 
-    B2DistanceProxy proxyB; 
-    B2Transform transformA; 
-    B2Transform transformB; 
-    B2Vec2 translationB;    
-    float maxFraction;      
+	B2DistanceProxy proxyA;
+	B2DistanceProxy proxyB;
+	B2Transform transformA;
+	B2Transform transformB;
+	B2Vec2 translationB;
+	float maxFraction;
 }
 
 fn B2CastOutput    shapeCast( B2ShapeCastPairInput* input ) @extern("b2ShapeCast");
@@ -1239,60 +1236,60 @@ fn B2DistanceProxy makeProxy( B2Vec2* vertices, int count, float radius ) @exter
 
 struct B2Sweep @compact
 {
-    B2Vec2 localCenter; 
-    B2Vec2 c1;          
-    B2Vec2 c2;          
-    B2Rot q1;           
-    B2Rot q2;           
+	B2Vec2 localCenter;
+	B2Vec2 c1;
+	B2Vec2 c2;
+	B2Rot q1;
+	B2Rot q2;
 }
 
 fn B2Transform getSweepTransform( B2Sweep* sweep, float time ) @extern("b2GetSweepTransform");
 
 struct B2TOIInput
 {
-    B2DistanceProxy proxyA; 
-    B2DistanceProxy proxyB; 
-    B2Sweep sweepA;         
-    B2Sweep sweepB;         
-    float tMax;             
+	B2DistanceProxy proxyA;
+	B2DistanceProxy proxyB;
+	B2Sweep sweepA;
+	B2Sweep sweepB;
+	float tMax;
 }
 
-enum B2TOIState : int
+enum B2TOIState
 {
-    UNKNOWN,
-    FAILED,
-    OVERLAPPED,
-    HIT,
-    SEPARATED
+	UNKNOWN,
+	FAILED,
+	OVERLAPPED,
+	HIT,
+	SEPARATED
 }
 
 struct B2TOIOutput
 {
-    B2TOIState state;
-    float t;   
+	B2TOIState state;
+	float t;
 }
 
 fn B2TOIOutput timeOfImpact( B2TOIInput* input ) @extern("b2TimeOfImpact");
 
 struct B2ManifoldPoint
 {
-    B2Vec2 point;
-    B2Vec2 anchorA;
-    B2Vec2 anchorB;
-    float separation;
-    float normalImpulse;
-    float tangentImpulse;
-    float maxNormalImpulse;
-    float normalVelocity;
-    ushort id;
-    bool persisted;
+	B2Vec2 point;
+	B2Vec2 anchorA;
+	B2Vec2 anchorB;
+	float separation;
+	float normalImpulse;
+	float tangentImpulse;
+	float maxNormalImpulse;
+	float normalVelocity;
+	ushort id;
+	bool persisted;
 }
 
 struct B2Manifold
 {
-    B2ManifoldPoint[2] points;
-    B2Vec2 normal;
-    int pointCount;
+	B2ManifoldPoint[2] points;
+	B2Vec2 normal;
+	int pointCount;
 }
 
 fn B2Manifold collideCircles( B2Circle* circleA, B2Transform xfA, B2Circle* circleB, B2Transform xfB ) @extern("b2CollideCircles");
@@ -1313,34 +1310,34 @@ const DEFAULT_MASK_BITS     = ulong.max; //( UINT64_MAX )
 
 struct B2TreeNode
 {
-    B2AABBox aabb;
-    ulong categoryBits;
-    union
-    {
-        int parent;
-        int next;
-    }
-    int child1;
-    int child2;
-    int userData;
-    short height;
-    bool enlarged;
-    CChar[5] pad; // NOTE(HM) ignore just here to keep struct alignment...
+	B2AABBox aabb;
+	ulong categoryBits;
+	union
+	{
+		int parent;
+		int next;
+	}
+	int child1;
+	int child2;
+	int userData;
+	short height;
+	bool enlarged;
+	CChar[5] pad; // NOTE(HM) ignore just here to keep struct alignment...
 }
 
 struct B2DynamicTree
 {
-    B2TreeNode* nodes;
-    int root;
-    int nodeCount;
-    int nodeCapacity;
-    int freeList;
-    int proxyCount;
-    int* leafIndices;
-    B2AABBox* leafBoxes;
-    B2Vec2* leafCenters;
-    int* binIndices;
-    int rebuildCapacity;
+	B2TreeNode* nodes;
+	int root;
+	int nodeCount;
+	int nodeCapacity;
+	int freeList;
+	int proxyCount;
+	int* leafIndices;
+	B2AABBox* leafBoxes;
+	B2Vec2* leafCenters;
+	int* binIndices;
+	int rebuildCapacity;
 }
 
 fn B2DynamicTree dynamicTree_Create() @extern("b2DynamicTree_Create");
@@ -1381,14 +1378,14 @@ fn int          dynamicTree_GetByteCount( B2DynamicTree* tree ) @extern("b2Dynam
 
 struct B2Vec2 @compact
 {
-    float x;
-    float y;
+	float x;
+	float y;
 }
 
 struct B2Rot @compact
 {
-    float c; // cosine and sine
-    float s;
+	float c; // cosine and sine
+	float s;
 }
 
 /// A 2D rigid transform
@@ -1400,13 +1397,13 @@ struct B2Transform
 
 struct B2Mat22 @compact
 {
-    B2Vec2 cx, cy;
+	B2Vec2 cx, cy;
 }
 
 struct B2AABBox @compact
 {
-    B2Vec2 lowerBound;
-    B2Vec2 upperBound;
+	B2Vec2 lowerBound;
+	B2Vec2 upperBound;
 }
 
 const B2Vec2 VEC2_ZERO    = { 0.0f, 0.0f };
@@ -1415,119 +1412,23 @@ const B2Transform TRANSFORM_IDENTITY = { { 0.0f, 0.0f }, { 1.0f, 0.0f } };
 const B2Mat22 MAT22_ZERO  = { { 0.0f, 0.0f }, { 0.0f, 0.0f } };
 
 // WARNING(HM) Most of math functions didn't worked for me, at lest on box2d 3.0 static library, 
-// function symbols (func names) were exported in the library, this may or may not change 
+// function symbols (func names) were not exported in the library, this may or may not change 
 // in future box2d versions, for now I recomend using C3 math functions (or others)
 
 // Compute an approximate arctangent in the range [-pi, pi] This is hand coded for cross platform determinism.
 fn float atan2(float y, float x) @extern("b2Atan2");
-
-/*
-fn float minFloat(float a, float b) @extern("b2MinFloat");
-fn float maxFloat(float a, float b) @extern("b2MaxFloat");
-fn float absFloat(float a)          @extern("b2AbsFloat");
-fn float clampFloat(float a, float lower, float upper) @extern("b2ClampFloat");
-fn int 	 minInt(int a, int b) @extern("b2MinInt");
-fn int 	 maxInt(int a, int b) @extern("b2MaxInt");
-fn int 	 absInt(int a)        @extern("b2AbsInt");
-fn int 	 clampInt(int a, int lower, int upper) @extern("b2ClampInt");
-// Vector dot product.
-fn float dot(B2Vec2 a, B2Vec2 b) @extern("b2Dot");
-// Vector cross product. In 2D this yields a scalar.
-fn float cross(B2Vec2 a, B2Vec2 b) @extern("b2Cross");
-// Perform the cross product on a vector and a scalar. In 2D this produces a vector.
-fn B2Vec2 crossVS(B2Vec2 v, float s) @extern("b2CrossVS");
-// Perform the cross product on a scalar and a vector. In 2D this produces a vector.
-fn B2Vec2 crossSV(float s, B2Vec2 v) @extern("b2CrossSV");
-// Get a left pointing perpendicular vector. Equivalent to b2CrossSV(1.0f, v)
-fn B2Vec2 leftPerp(B2Vec2 v) @extern("b2LeftPerp");
-// Get a right pointing perpendicular vector. Equivalent to b2CrossVS(v, 1.0f)
-fn B2Vec2 rightPerp (B2Vec2 v) @extern("b2RightPerp");
-// Vector addition.
-fn B2Vec2 add(B2Vec2 a, B2Vec2 b) @extern("b2Add");
-// Vector subtraction.
-fn B2Vec2 sub(B2Vec2 a, B2Vec2 b) @extern("b2Sub");
-// Vector negation.
-fn B2Vec2 neg(B2Vec2 a) @extern("b2Neg");
-// Vector linear interpolation https://fgiesen.wordpress.com/2012/08/15/linear-interpolation-past-present-and-future/.
-fn B2Vec2 lerp(B2Vec2 a, B2Vec2 b, float t) @extern("b2Lerp");
-// Component-wise multiplication.
-fn B2Vec2 mul(B2Vec2 a, B2Vec2 b) @extern("b2Mul");
-// Multiply a scalar and vector.
-fn B2Vec2 mulSV(float s, B2Vec2 v) @extern("b2MulSV");
-// a + s * b
-fn B2Vec2 mulAdd(B2Vec2 a, float s, B2Vec2 b) @extern("b2MulAdd");
-// a - s * b
-fn B2Vec2 mulSub(B2Vec2 a, float s, B2Vec2 b) @extern("b2MulSub");
-// Component-wise absolute vector.
-B2Vec2 	abs (B2Vec2 a) @extern("b2Abs");
-// Component-wise minimum vector.
-B2Vec2 	min (B2Vec2 a, B2Vec2 b) @extern("b2Min");
-// Component-wise maximum vector.
-B2Vec2 	max (B2Vec2 a, B2Vec2 b) @extern("b2Max");
-// Component-wise clamp vector v into the range [a, b].
-fn B2Vec2 clamp (B2Vec2 v, B2Vec2 a, B2Vec2 b) @extern("b2Clamp");
-// Get the length of this vector (the norm)
-fn float length(B2Vec2 v) @extern("b2Length");
-// Get the distance between two points.
-fn float distance(B2Vec2 a, B2Vec2 b) @extern("b2Distance");
-// Convert a vector into a unit vector if possible, otherwise returns the zero vector.
-fn B2Vec2 normalize(B2Vec2 v) @extern("b2Normalize");
-// Convert a vector into a unit vector if possible, otherwise returns the zero vector.
-fn B2Vec2 getLengthAndNormalize (float* length, B2Vec2 v) @extern("b2GetLengthAndNormalize");
-// Normalize rotation.
-B2Rot 	normalizeRot (B2Rot q) @extern("b2NormalizeRot");
-// Integration rotation from angular velocity.
-B2Rot 	integrateRotation (B2Rot q1, float deltaAngle) @extern("b2IntegrateRotation");
-// Get the length squared of this vector.
-fn float lengthSquared(B2Vec2 v) @extern("b2LengthSquared");
-// Get the distance squared between points.
-fn float distanceSquared(B2Vec2 a, B2Vec2 b) @extern("b2DistanceSquared");
-// Make a rotation using an angle in radians.
-B2Rot 	makeRot (float angle) @extern("b2MakeRot");
-// Is this rotation normalized?
-fn bool isNormalized(B2Rot q) @extern("b2IsNormalized");
-*/
-
-// non ported to C3 functions
-/*
-fn B2Rot b2NLerp( B2Rot q1, B2Rot q2, float t );
-fn float b2ComputeAngularVelocity( B2Rot q1, B2Rot q2, float inv_h );
-fn float b2Rot_GetAngle( B2Rot q );
-fn B2Vec2 b2Rot_GetXAxis( B2Rot q );
-fn B2Vec2 b2Rot_GetYAxis( B2Rot q );
-fn B2Rot b2MulRot( B2Rot q, B2Rot r );
-fn B2Rot b2InvMulRot( B2Rot q, B2Rot r );
-fn float b2RelativeAngle( B2Rot b, B2Rot a );
-fn float b2UnwindAngle( float angle );
-fn float b2UnwindLargeAngle( float angle );
-fn B2Vec2 b2RotateVector( B2Rot q, B2Vec2 v );
-fn B2Vec2 b2InvRotateVector( B2Rot q, B2Vec2 v );
-fn B2Vec2 b2TransformPoint( B2Transform t, B2Vec2 p );
-fn B2Vec2 b2InvTransformPoint( B2Transform t, B2Vec2 p );
-fn B2Transform b2MulTransforms( B2Transform a, B2Transform b );
-fn B2Transform b2InvMulTransforms( B2Transform a, B2Transform b );
-fn B2Vec2 b2MulMV( Mat22 a, B2Vec2 v );
-fn Mat22 b2GetInverse22( Mat22 a );
-fn B2Vec2 b2Solve22( Mat22 A, B2Vec2 b );
-fn bool b2AABB_Contains( b2AABB a, b2AABB b );
-fn B2Vec2 b2AABB_Center( b2AABB a );
-fn B2Vec2 b2AABB_Extents( b2AABB a );
-fn b2AABB b2AABB_Union( b2AABB a, b2AABB b );
-*/
-
-fn bool isValid( float a ) @extern("b2IsValid");
-fn bool vec2_IsValid( B2Vec2 v ) @extern("b2Vec2_IsValid");
-fn bool rot_IsValid( B2Rot q ) @extern("b2Rot_IsValid");
-fn bool aabb_IsValid( B2AABBox aabb ) @extern("b2AABB_IsValid");
+fn bool  isValid( float a ) @extern("b2IsValid");
+fn bool  vec2_IsValid( B2Vec2 v ) @extern("b2Vec2_IsValid");
+fn bool  rot_IsValid( B2Rot q ) @extern("b2Rot_IsValid");
+fn bool  aabb_IsValid( B2AABBox aabb ) @extern("b2AABB_IsValid");
 <*
 Box2D bases all length units on meters, but you may need different units for your game.
-
 You can set this value to use different units. This should be done at application startup and only modified once. Default value is 1.
 
 Warning
-    This must be modified before any calls to Box2D
+	This must be modified before any calls to Box2D
 *>
-fn void setLengthUnitsPerMeter( float lengthUnits ) @extern("b2SetLengthUnitsPerMeter");
+fn void  setLengthUnitsPerMeter( float lengthUnits ) @extern("b2SetLengthUnitsPerMeter");
 fn float getLengthUnitsPerMeter() @extern("b2GetLengthUnitsPerMeter");
 
 // end_region MATH
@@ -1536,8 +1437,8 @@ fn float getLengthUnitsPerMeter() @extern("b2GetLengthUnitsPerMeter");
 // region DEBUG
 
 /// These colors are used for debug draw.
-///	See https://www.rapidtables.com/web/color/index.html
-enum B2HexColor : int (inline int value)
+/// See https://www.rapidtables.com/web/color/index.html
+enum B2HexColor : (inline int value)
 {
 	ALICE_BLUE           = 0xf0f8ff,
 	ANTIQUE_WHITE        = 0xfaebd7,
@@ -1699,9 +1600,7 @@ enum B2HexColor : int (inline int value)
 	BOX2DYELLOW          = 0xffee8c
 }
 
-<*
-This struct holds callbacks you can implement to draw a Box2D world.
-*>
+
 def B2DrawPolygonCallback      = fn void(B2Vec2*,int,B2HexColor,void*);
 def B2DrawSolidPolygonCallback = fn void(B2Transform,B2Vec2*,int,float,B2HexColor,void*);
 def B2DrawCircleCallback       = fn void(B2Vec2,float,B2HexColor,void*);
@@ -1713,33 +1612,34 @@ def B2DrawTransformCallback    = fn void(B2Transform,void*);
 def B2DrawPointCallback        = fn void(B2Vec2,float,B2HexColor,void*);
 def B2DrawStringCallback       = fn void(B2Vec2,ZString,void*);
 
+//This struct holds callbacks you can implement to draw a Box2D world.
 struct B2DebugDraw
 {
 	/// Draw a closed polygon provided in CCW order.
 	//void ( *DrawPolygon )( const B2Vec2* vertices, int vertexCount, b2HexColor color, void* context );
-    B2DrawPolygonCallback drawPolygon;
+	B2DrawPolygonCallback drawPolygon;
 	/// Draw a solid closed polygon provided in CCW order.
 	//void ( *DrawSolidPolygon )( B2Transform transform, const B2Vec2* vertices, int vertexCount, float radius, b2HexColor color, void* context );
-    B2DrawSolidPolygonCallback drawSolidPolygon; 
+	B2DrawSolidPolygonCallback drawSolidPolygon; 
 	//void ( *DrawCircle )( B2Vec2 center, float radius, b2HexColor color, void* context );
-    B2DrawCircleCallback drawCircle;
+	B2DrawCircleCallback drawCircle;
 	//void ( *DrawSolidCircle )( B2Transform transform, float radius, b2HexColor color, void* context );
-    B2DrawSolidCircleCallback drawSolidCircle;
+	B2DrawSolidCircleCallback drawSolidCircle;
 	//void ( *DrawCapsule )( B2Vec2 p1, B2Vec2 p2, float radius, b2HexColor color, void* context );
-    B2DrawCapsuleCallback drawCapsule;
+	B2DrawCapsuleCallback drawCapsule;
 	//void ( *DrawSolidCapsule )( B2Vec2 p1, B2Vec2 p2, float radius, b2HexColor color, void* context );
-    B2DrawSolidCapsuleCallback drawSolidCapsule;
+	B2DrawSolidCapsuleCallback drawSolidCapsule;
 	/// Draw a line segment.
 	//void ( *DrawSegment )( B2Vec2 p1, B2Vec2 p2, b2HexColor color, void* context );
-    B2DrawSegmentCallback drawSegment;
+	B2DrawSegmentCallback drawSegment;
 	/// Draw a transform. Choose your own length scale.
 	//void ( *DrawTransform )( B2Transform transform, void* context );
-    B2DrawTransformCallback drawTransform;
+	B2DrawTransformCallback drawTransform;
 	//void ( *DrawPoint )( B2Vec2 p, float size, b2HexColor color, void* context );
-    B2DrawPointCallback drawPoint;
+	B2DrawPointCallback drawPoint;
 	//void ( *DrawString )( B2Vec2 p, const char* s, void* context );
-    B2DrawStringCallback drawString;
-    
+	B2DrawStringCallback drawString;
+	
 	/// Bounds to use if restricting drawing to a rectangular region
 	B2AABBox drawingBounds;
 
