@@ -1,5 +1,5 @@
 {
-  "provides": "glfw",
+  "provides": "glfw_v7",
   "targets" : {
     "macos-x64" : {
       "link-args" : [],

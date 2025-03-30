@@ -139,6 +139,16 @@ jobs:
           asset_name: opengl.c3l
           asset_content_type: application/zip
 
+      - name: upload opengl v7
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: packages/opengl_v7.c3l
+          asset_name: opengl_v7.c3l
+          asset_content_type: application/zip
+
       - name: upload vulkan
         uses: actions/upload-release-asset@v1
         env:
@@ -187,6 +197,16 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: packages/glfw.c3l
           asset_name: glfw.c3l
+          asset_content_type: application/zip
+
+      - name: upload glfw v7
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: packages/glfw_v7.c3l
+          asset_name: glfw_v7.c3l
           asset_content_type: application/zip
 
       - name: upload pq
