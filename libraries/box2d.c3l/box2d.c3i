@@ -35,12 +35,12 @@ module vendor::box2d::b2;
 // region BASE
 
 // if there's any desire to override the internal box2d memory allocator and assert function
-//typedef void* b2AllocFcn( unsigned int size, int alignment );
-def B2AllocCallback = fn void*(uint,int);
-//typedef void b2FreeFcn( void* mem );
-def B2FreeCallback = fn void(void*);
-//typedef int b2AssertFcn( const char* condition, const char* fileName, int lineNumber );
-def B2AssertCallback = fn int(ZString,ZString,int);
+//void* b2AllocFcn( unsigned int size, int alignment );
+alias B2AllocCallback  = fn void*(uint,int);
+//void b2FreeFcn( void* mem );
+alias B2FreeCallback   = fn void(void*);
+//int b2AssertFcn( const char* condition, const char* fileName, int lineNumber );
+alias B2AssertCallback = fn int(ZString,ZString,int);
  
 fn void setAllocator( B2AllocCallback* allocFcn, B2FreeCallback* freeFcn ) @extern("b2SetAllocator");
 fn int  getByteCount()                                                     @extern("b2GetByteCount");
@@ -74,7 +74,7 @@ fn void    yield()                                   @extern("b2Yield");
 // Simple djb2 hash function for determinism testing
 const B2_HASH_INIT = 5381;
 
-def UInt8 = char @local;
+alias UInt8 @local = char;
 fn uint hash( uint hash, UInt8* data, int count ) @extern("b2Hash");
 
 // end_region BASE
@@ -132,12 +132,12 @@ macro bool @id_equals(#id1, #id2 ) => (#id1.index1 == #id2.index1 && #id1.world0
 
 // region TYPES
  
-//typedef void b2TaskCallback( int startIndex, int endIndex, uint workerIndex, void* taskContext );
-def B2TaskCallback        = fn void(int,int,uint,void*);
-//typedef void* b2EnqueueTaskCallback( b2TaskCallback* task, int itemCount, int minRange, void* taskContext, void* userContext );
-def B2EnqueueTaskCallback = fn void*(B2TaskCallback*,int,int,void*,void*);
-//typedef void b2FinishTaskCallback( void* userTask, void* userContext );
-def B2FinishTaskCallback  = fn void(void*, void*);
+//void b2TaskCallback( int startIndex, int endIndex, uint workerIndex, void* taskContext );
+alias B2TaskCallback        = fn void(int,int,uint,void*);
+//void* b2EnqueueTaskCallback( b2TaskCallback* task, int itemCount, int minRange, void* taskContext, void* userContext );
+alias B2EnqueueTaskCallback = fn void*(B2TaskCallback*,int,int,void*,void*);
+//void b2FinishTaskCallback( void* userTask, void* userContext );
+alias B2FinishTaskCallback  = fn void(void*, void*);
  
 struct B2RayResult
 {
@@ -703,14 +703,14 @@ struct B2ContactData
 	B2Manifold manifold;
 }
  
-//typedef bool b2CustomFilterFcn( B2ShapeId shapeIdA, B2ShapeId shapeIdB, void* context );
-def B2CustomFilterCallback  = fn bool(B2ShapeId,B2ShapeId,void*);
-//typedef bool b2PreSolveFcn( B2ShapeId shapeIdA, B2ShapeId shapeIdB, B2Manifold* manifold, void* context );
-def B2PreSolveCallback      = fn bool(B2ShapeId,B2ShapeId,B2Manifold*,void*);
-//typedef bool b2OverlapResultFcn( B2ShapeId shapeId, void* context );
-def B2OverlapResultCallback = fn bool(B2ShapeId,void*);
-//typedef float b2CastResultFcn( B2ShapeId shapeId, B2Vec2 point, B2Vec2 normal, float fraction, void* context );
-def B2CastResultCallback    = fn float(B2ShapeId,B2Vec2,B2Vec2,float,void*);
+//bool b2CustomFilterFcn( B2ShapeId shapeIdA, B2ShapeId shapeIdB, void* context );
+alias B2CustomFilterCallback  = fn bool(B2ShapeId,B2ShapeId,void*);
+//bool b2PreSolveFcn( B2ShapeId shapeIdA, B2ShapeId shapeIdB, B2Manifold* manifold, void* context );
+alias B2PreSolveCallback      = fn bool(B2ShapeId,B2ShapeId,B2Manifold*,void*);
+//bool b2OverlapResultFcn( B2ShapeId shapeId, void* context );
+alias B2OverlapResultCallback = fn bool(B2ShapeId,void*);
+//float b2CastResultFcn( B2ShapeId shapeId, B2Vec2 point, B2Vec2 normal, float fraction, void* context );
+alias B2CastResultCallback    = fn float(B2ShapeId,B2Vec2,B2Vec2,float,void*);
 
 <*
 Create a world for rigid body simulation.
@@ -1347,18 +1347,18 @@ fn void          dynamicTree_DestroyProxy( B2DynamicTree* tree, int proxyId ) @e
 fn void          dynamicTree_MoveProxy( B2DynamicTree* tree, int proxyId, B2AABBox aabb ) @extern("b2DynamicTree_MoveProxy");
 fn void          dynamicTree_EnlargeProxy( B2DynamicTree* tree, int proxyId, B2AABBox aabb ) @extern("b2DynamicTree_EnlargeProxy");
 
-//typedef bool b2TreeQueryCallbackFcn( int proxyId, int userData, void* context );
-def B2TreeQueryCallback = fn bool(int,int,void*);
+//bool b2TreeQueryCallbackFcn( int proxyId, int userData, void* context );
+alias B2TreeQueryCallback = fn bool(int,int,void*);
 
 fn void         dynamicTree_Query( B2DynamicTree* tree, B2AABBox aabb, ulong maskBits, B2TreeQueryCallback* callback, void* context ) @extern("b2DynamicTree_Query");
 
-//typedef float b2TreeRayCastCallbackFcn( B2RayCastInput* input, int proxyId, int userData, void* context );
-def B2TreeRayCastCallback = fn float(B2RayCastInput*,int,int,void*);
+//float b2TreeRayCastCallbackFcn( B2RayCastInput* input, int proxyId, int userData, void* context );
+alias B2TreeRayCastCallback = fn float(B2RayCastInput*,int,int,void*);
 
 fn void         dynamicTree_RayCast( B2DynamicTree* tree, B2RayCastInput* input, ulong maskBits, B2TreeRayCastCallback* callback, void* context ) @extern("b2DynamicTree_RayCast");
 
-//typedef float b2TreeShapeCastCallbackFcn( B2ShapeCastInput* input, int proxyId, int userData, void* context );
-def B2TreeShapeCastCallback = fn float(B2ShapeCastInput*,int,int,void*);
+//float b2TreeShapeCastCallbackFcn( B2ShapeCastInput* input, int proxyId, int userData, void* context );
+alias B2TreeShapeCastCallback = fn float(B2ShapeCastInput*,int,int,void*);
 
 fn void         dynamicTree_ShapeCast( B2DynamicTree* tree, B2ShapeCastInput* input, ulong maskBits, B2TreeShapeCastCallback* callback, void* context ) @extern("b2DynamicTree_ShapeCast");
 fn void         dynamicTree_Validate( B2DynamicTree* tree ) @extern("b2DynamicTree_Validate");
@@ -1601,16 +1601,16 @@ enum B2HexColor : (inline int value)
 }
 
 
-def B2DrawPolygonCallback      = fn void(B2Vec2*,int,B2HexColor,void*);
-def B2DrawSolidPolygonCallback = fn void(B2Transform,B2Vec2*,int,float,B2HexColor,void*);
-def B2DrawCircleCallback       = fn void(B2Vec2,float,B2HexColor,void*);
-def B2DrawSolidCircleCallback  = fn void(B2Transform,float,B2HexColor,void*);
-def B2DrawCapsuleCallback      = fn void(B2Vec2,B2Vec2,float,B2HexColor,void*);
-def B2DrawSolidCapsuleCallback = fn void(B2Vec2,B2Vec2,float,B2HexColor,void*);
-def B2DrawSegmentCallback      = fn void(B2Vec2,B2Vec2,B2HexColor,void*);
-def B2DrawTransformCallback    = fn void(B2Transform,void*);
-def B2DrawPointCallback        = fn void(B2Vec2,float,B2HexColor,void*);
-def B2DrawStringCallback       = fn void(B2Vec2,ZString,void*);
+alias B2DrawPolygonCallback      = fn void(B2Vec2*,int,B2HexColor,void*);
+alias B2DrawSolidPolygonCallback = fn void(B2Transform,B2Vec2*,int,float,B2HexColor,void*);
+alias B2DrawCircleCallback       = fn void(B2Vec2,float,B2HexColor,void*);
+alias B2DrawSolidCircleCallback  = fn void(B2Transform,float,B2HexColor,void*);
+alias B2DrawCapsuleCallback      = fn void(B2Vec2,B2Vec2,float,B2HexColor,void*);
+alias B2DrawSolidCapsuleCallback = fn void(B2Vec2,B2Vec2,float,B2HexColor,void*);
+alias B2DrawSegmentCallback      = fn void(B2Vec2,B2Vec2,B2HexColor,void*);
+alias B2DrawTransformCallback    = fn void(B2Transform,void*);
+alias B2DrawPointCallback        = fn void(B2Vec2,float,B2HexColor,void*);
+alias B2DrawStringCallback       = fn void(B2Vec2,ZString,void*);
 
 //This struct holds callbacks you can implement to draw a Box2D world.
 struct B2DebugDraw
