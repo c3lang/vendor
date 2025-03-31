@@ -1,6 +1,6 @@
 module webgpu;
 
-distinct Sampler = void*;
+typedef Sampler = void*;
 
 fn void Sampler.setLabel(Sampler sampler, ZString label) @extern("wgpuSamplerSetLabel");
 

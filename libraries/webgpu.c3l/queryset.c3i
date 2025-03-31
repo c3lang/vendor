@@ -1,6 +1,6 @@
 module webgpu;
 
-distinct QuerySet = void*;
+typedef QuerySet = void*;
 
 
 fn void QuerySet.destroy(QuerySet querySet) @extern("wgpuQuerySetDestroy");

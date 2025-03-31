@@ -1,6 +1,6 @@
 module webgpu;
 
-distinct Texture = void*;
+typedef Texture = void*;
 
 fn TextureView Texture.createView(Texture texture, TextureViewDescriptor* descriptor = null) @extern("wgpuTextureCreateView");
 

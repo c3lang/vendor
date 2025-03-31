@@ -7,8 +7,8 @@ module curl;
 import libc;
 import std::io;
 
-def Curl = void;
-def CurlSH = void;
+alias Curl = void;
+alias CurlSH = void;
 
 struct Fd_set
 {
@@ -21,9 +21,9 @@ struct _Sockaddr
 	char[14] sa_data;
 }
 
-def Socklen = uint;
-def Off_t = long;
-def Socket_t = int;
+alias Socklen = uint;
+alias Off_t = long;
+alias Socket_t = int;
 
 enum Sslbackend : int
 {
@@ -78,10 +78,10 @@ const int CURL_HTTPPOST_PTRBUFFER   = 32;
 const int CURL_HTTPPOST_CALLBACK    = 64;
 const int CURL_HTTPPOST_LARGE       = 128;
 
-def Curl_progress_callback = fn int(void* clientp, double dltotal, double dlnow, double ultotal, double ulnow);
-def Curl_xferinfo_callback = fn int(void* clientp, Off_t dltotal, Off_t dlnow, Off_t ultotal, Off_t ulnow);
-def Curl_write_callback = fn usz(char* buffer, usz size, usz nitems,void *outstream);
-def Curl_resolver_start_callback = fn int(void* resolver_state, void* reserved, void* userdata);
+alias Curl_progress_callback = fn int(void* clientp, double dltotal, double dlnow, double ultotal, double ulnow);
+alias Curl_xferinfo_callback = fn int(void* clientp, Off_t dltotal, Off_t dlnow, Off_t ultotal, Off_t ulnow);
+alias Curl_write_callback = fn usz(char* buffer, usz size, usz nitems,void *outstream);
+alias Curl_resolver_start_callback = fn int(void* resolver_state, void* reserved, void* userdata);
 
 enum Filetype : int
 {
@@ -116,19 +116,19 @@ struct Fileinfo
 		char *target;
 	}
 
-    uint flags;
+	uint flags;
 
-    char* b_data;
-    usz b_size;
-    usz b_used;
+	char* b_data;
+	usz b_size;
+	usz b_used;
 }
 
-def Curl_chunk_bgn_callback = fn long(void* transfer_info,void* ptr, int remains);
-def Curl_chunk_end_callback = fn long(void* ptr);
-def Curl_fnmatch_callback = fn int(void* ptr, char* pattern, char* string);
-def Curl_seek_callback = fn int(void* instream, Off_t offset, int origin);
-def Curl_read_callback = fn usz(char* buffer, usz size, usz nitems, void* instream);
-def Curl_trailer_callback = fn int(Slist** list, void* userdata);
+alias Curl_chunk_bgn_callback = fn long(void* transfer_info,void* ptr, int remains);
+alias Curl_chunk_end_callback = fn long(void* ptr);
+alias Curl_fnmatch_callback = fn int(void* ptr, char* pattern, char* string);
+alias Curl_seek_callback = fn int(void* instream, Off_t offset, int origin);
+alias Curl_read_callback = fn usz(char* buffer, usz size, usz nitems, void* instream);
+alias Curl_trailer_callback = fn int(Slist** list, void* userdata);
 
 enum Socktype : int
 {
@@ -137,20 +137,20 @@ enum Socktype : int
 	CURLSOCKTYPE_LAST
 }
 
-def Curl_sockopt_callback = fn int(void* clientp, Socket_t curlfd, Socktype purpose);
+alias Curl_sockopt_callback = fn int(void* clientp, Socket_t curlfd, Socktype purpose);
 
 struct Sockaddr
 {
-    int family;
-    int socktype;
-    int protocol;
-    uint addrlen;
+	int family;
+	int socktype;
+	int protocol;
+	uint addrlen;
 
-    _Sockaddr addr;
+	_Sockaddr addr;
 }
 
-def Curl_opensocket_callback = fn Socket_t(void* clientp, Socktype purpose, Sockaddr* address);
-def Curl_closesocket_callback = fn int(void* clientp, Socket_t item);
+alias Curl_opensocket_callback = fn Socket_t(void* clientp, Socktype purpose, Sockaddr* address);
+alias Curl_closesocket_callback = fn int(void* clientp, Socket_t item);
 
 enum Curlioerr : int
 {
@@ -160,254 +160,254 @@ enum Curlioerr : int
 	CURLIOE_LAST
 }
 
-def Curl_malloc_callback = fn void*(usz size);
-def Curl_free_callback = fn void(void* ptr);
-def Curl_realloc_callback = fn void*(void* ptr, usz size);
-def Curl_strdup_callback = fn char*(char* str);
-def Curl_calloc_callback = fn void*(usz nmemb, usz size);
-def Curl_ioctl_callback = fn Curlioerr(Curl* handle, int cmd, void* clientp);
+alias Curl_malloc_callback = fn void*(usz size);
+alias Curl_free_callback = fn void(void* ptr);
+alias Curl_realloc_callback = fn void*(void* ptr, usz size);
+alias Curl_strdup_callback = fn char*(char* str);
+alias Curl_calloc_callback = fn void*(usz nmemb, usz size);
+alias Curl_ioctl_callback = fn Curlioerr(Curl* handle, int cmd, void* clientp);
 
 enum Infotype : int
 {
-    CURLINFO_TEXT,
-    CURLINFO_HEADER_IN,
-    CURLINFO_HEADER_OUT,
-    CURLINFO_DATA_IN,
-    CURLINFO_DATA_OUT,
-    CURLINFO_SSL_DATA_IN,
-    CURLINFO_SSL_DATA_OUT,
-    CURLINFO_END
+	CURLINFO_TEXT,
+	CURLINFO_HEADER_IN,
+	CURLINFO_HEADER_OUT,
+	CURLINFO_DATA_IN,
+	CURLINFO_DATA_OUT,
+	CURLINFO_SSL_DATA_IN,
+	CURLINFO_SSL_DATA_OUT,
+	CURLINFO_END
 }
 
-def Curl_debug_callback = fn int(Curl* handle, Infotype type, char* data, usz size, void* userptr);
-def Curl_prereq_callback = fn int(void* clientp, char* conn_primary_ip, char* conn_local_ip, int conn_primary_port, int conn_local_port);
+alias Curl_debug_callback = fn int(Curl* handle, Infotype type, char* data, usz size, void* userptr);
+alias Curl_prereq_callback = fn int(void* clientp, char* conn_primary_ip, char* conn_local_ip, int conn_primary_port, int conn_local_port);
 
 enum CURLcode : int
 {
-    CURLE_OK,
-    CURLE_UNSUPPORTED_PROTOCOL,
-    CURLE_FAILED_INIT,
-    CURLE_URL_MALFORMAT,
-    CURLE_NOT_BUILT_IN,
-    CURLE_COULDNT_RESOLVE_PROXY,
-    CURLE_COULDNT_RESOLVE_HOST,
-    CURLE_COULDNT_CONNECT,
-    CURLE_WEIRD_SERVER_REPLY,
-    CURLE_REMOTE_ACCESS_DENIED,
-    CURLE_FTP_ACCEPT_FAILED,
-    CURLE_FTP_WEIRD_PASS_REPLY,
-    CURLE_FTP_ACCEPT_TIMEOUT,
-    CURLE_FTP_WEIRD_PASV_REPLY,
-    CURLE_FTP_WEIRD_227_FORMAT,
-    CURLE_FTP_CANT_GET_HOST,
-    CURLE_HTTP2,
-    CURLE_FTP_COULDNT_SET_TYPE,
-    CURLE_PARTIAL_FILE,
-    CURLE_FTP_COULDNT_RETR_FILE,
-    CURLE_OBSOLETE20,
-    CURLE_QUOTE_ERROR,
-    CURLE_HTTP_RETURNED_ERROR,
-    CURLE_WRITE_ERROR,
-    CURLE_OBSOLETE24,
-    CURLE_UPLOAD_FAILED,
-    CURLE_READ_ERROR,
-    CURLE_OUT_OF_MEMORY,
-    CURLE_OPERATION_TIMEDOUT,
-    CURLE_OBSOLETE29,
-    CURLE_FTP_PORT_FAILED,
-    CURLE_FTP_COULDNT_USE_REST,
-    CURLE_OBSOLETE32,
-    CURLE_RANGE_ERROR,
-    CURLE_HTTP_POST_ERROR,
-    CURLE_SSL_CONNECT_ERROR,
-    CURLE_BAD_DOWNLOAD_RESUME,
-    CURLE_FILE_COULDNT_READ_FILE,
-    CURLE_LDAP_CANNOT_BIND,
-    CURLE_LDAP_SEARCH_FAILED,
-    CURLE_OBSOLETE40,
-    CURLE_NOT_FOUND,
-    CURLE_ABORTED_BY_CALLBACK,
-    CURLE_ARGUMENT,
-    CURLE_OBSOLETE44,
-    CURLE_INTERFACE_FAILED,
-    CURLE_OBSOLETE46,
-    CURLE_TOO_MANY_REDIRECTS,
-    CURLE_UNKNOWN_OPTION,
-    CURLE_SETOPT_OPTION_SYNTAX,
-    CURLE_OBSOLETE50,
-    CURLE_OBSOLETE51,
-    CURLE_GOT_NOTHING,
-    CURLE_SSL_ENGINE_NOTFOUND,
-    CURLE_SSL_ENGINE_SETFAILED,
-    CURLE_SEND_ERROR,
-    CURLE_RECV_ERROR,
-    CURLE_OBSOLETE57,
-    CURLE_SSL_CERTPROBLEM,
-    CURLE_SSL_CIPHER,
-    CURLE_PEER_FAILED_VERIFICATION,
-    CURLE_BAD_CONTENT_ENCODING,
-    CURLE_OBSOLETE62,
-    CURLE_FILESIZE_EXCEEDED,
-    CURLE_USE_SSL_FAILED,
-    CURLE_SEND_FAIL_REWIND,
-    CURLE_SSL_ENGINE_INITFAILED,
-    CURLE_LOGIN_DENIED,
-    CURLE_TFTP_NOTFOUND,
-    CURLE_TFTP_PERM,
-    CURLE_REMOTE_DISK_FULL,
-    CURLE_TFTP_ILLEGAL,
-    CURLE_TFTP_UNKNOWNID,
-    CURLE_REMOTE_FILE_EXISTS,
-    CURLE_TFTP_NOSUCHUSER,
-    CURLE_OBSOLETE75,
-    CURLE_OBSOLETE76,
-    CURLE_SSL_CACERT_BADFILE,
-    CURLE_REMOTE_FILE_NOT_FOUND,
-    CURLE_SSH,
-    CURLE_SSL_SHUTDOWN_FAILED,
-    CURLE_AGAIN,
-    CURLE_SSL_CRL_BADFILE,
-    CURLE_SSL_ISSUER_ERROR,
-    CURLE_FTP_PRET_FAILED,
-    CURLE_RTSP_CSEQ_ERROR,
-    CURLE_RTSP_SESSION_ERROR,
-    CURLE_FTP_BAD_FILE_LIST,
-    CURLE_CHUNK_FAILED,
-    CURLE_NO_CONNECTION_AVAILABLE,
-    CURLE_SSL_PINNEDPUBKEYNOTMATCH,
-    CURLE_SSL_INVALIDCERTSTATUS,
-    CURLE_HTTP2_STREAM,
-    CURLE_RECURSIVE_API_CALL,
-    CURLE_AUTH_ERROR,
-    CURLE_HTTP3,
-    CURLE_QUIC_CONNECT_ERROR,
-    CURLE_PROXY,
-    CURLE_SSL_CLIENTCERT,
-    CURLE_UNRECOVERABLE_POLL,
-    CURL_LAST
+	CURLE_OK,
+	CURLE_UNSUPPORTED_PROTOCOL,
+	CURLE_FAILED_INIT,
+	CURLE_URL_MALFORMAT,
+	CURLE_NOT_BUILT_IN,
+	CURLE_COULDNT_RESOLVE_PROXY,
+	CURLE_COULDNT_RESOLVE_HOST,
+	CURLE_COULDNT_CONNECT,
+	CURLE_WEIRD_SERVER_REPLY,
+	CURLE_REMOTE_ACCESS_DENIED,
+	CURLE_FTP_ACCEPT_FAILED,
+	CURLE_FTP_WEIRD_PASS_REPLY,
+	CURLE_FTP_ACCEPT_TIMEOUT,
+	CURLE_FTP_WEIRD_PASV_REPLY,
+	CURLE_FTP_WEIRD_227_FORMAT,
+	CURLE_FTP_CANT_GET_HOST,
+	CURLE_HTTP2,
+	CURLE_FTP_COULDNT_SET_TYPE,
+	CURLE_PARTIAL_FILE,
+	CURLE_FTP_COULDNT_RETR_FILE,
+	CURLE_OBSOLETE20,
+	CURLE_QUOTE_ERROR,
+	CURLE_HTTP_RETURNED_ERROR,
+	CURLE_WRITE_ERROR,
+	CURLE_OBSOLETE24,
+	CURLE_UPLOAD_FAILED,
+	CURLE_READ_ERROR,
+	CURLE_OUT_OF_MEMORY,
+	CURLE_OPERATION_TIMEDOUT,
+	CURLE_OBSOLETE29,
+	CURLE_FTP_PORT_FAILED,
+	CURLE_FTP_COULDNT_USE_REST,
+	CURLE_OBSOLETE32,
+	CURLE_RANGE_ERROR,
+	CURLE_HTTP_POST_ERROR,
+	CURLE_SSL_CONNECT_ERROR,
+	CURLE_BAD_DOWNLOAD_RESUME,
+	CURLE_FILE_COULDNT_READ_FILE,
+	CURLE_LDAP_CANNOT_BIND,
+	CURLE_LDAP_SEARCH_FAILED,
+	CURLE_OBSOLETE40,
+	CURLE_NOT_FOUND,
+	CURLE_ABORTED_BY_CALLBACK,
+	CURLE_ARGUMENT,
+	CURLE_OBSOLETE44,
+	CURLE_INTERFACE_FAILED,
+	CURLE_OBSOLETE46,
+	CURLE_TOO_MANY_REDIRECTS,
+	CURLE_UNKNOWN_OPTION,
+	CURLE_SETOPT_OPTION_SYNTAX,
+	CURLE_OBSOLETE50,
+	CURLE_OBSOLETE51,
+	CURLE_GOT_NOTHING,
+	CURLE_SSL_ENGINE_NOTFOUND,
+	CURLE_SSL_ENGINE_SETFAILED,
+	CURLE_SEND_ERROR,
+	CURLE_RECV_ERROR,
+	CURLE_OBSOLETE57,
+	CURLE_SSL_CERTPROBLEM,
+	CURLE_SSL_CIPHER,
+	CURLE_PEER_FAILED_VERIFICATION,
+	CURLE_BAD_CONTENT_ENCODING,
+	CURLE_OBSOLETE62,
+	CURLE_FILESIZE_EXCEEDED,
+	CURLE_USE_SSL_FAILED,
+	CURLE_SEND_FAIL_REWIND,
+	CURLE_SSL_ENGINE_INITFAILED,
+	CURLE_LOGIN_DENIED,
+	CURLE_TFTP_NOTFOUND,
+	CURLE_TFTP_PERM,
+	CURLE_REMOTE_DISK_FULL,
+	CURLE_TFTP_ILLEGAL,
+	CURLE_TFTP_UNKNOWNID,
+	CURLE_REMOTE_FILE_EXISTS,
+	CURLE_TFTP_NOSUCHUSER,
+	CURLE_OBSOLETE75,
+	CURLE_OBSOLETE76,
+	CURLE_SSL_CACERT_BADFILE,
+	CURLE_REMOTE_FILE_NOT_FOUND,
+	CURLE_SSH,
+	CURLE_SSL_SHUTDOWN_FAILED,
+	CURLE_AGAIN,
+	CURLE_SSL_CRL_BADFILE,
+	CURLE_SSL_ISSUER_ERROR,
+	CURLE_FTP_PRET_FAILED,
+	CURLE_RTSP_CSEQ_ERROR,
+	CURLE_RTSP_SESSION_ERROR,
+	CURLE_FTP_BAD_FILE_LIST,
+	CURLE_CHUNK_FAILED,
+	CURLE_NO_CONNECTION_AVAILABLE,
+	CURLE_SSL_PINNEDPUBKEYNOTMATCH,
+	CURLE_SSL_INVALIDCERTSTATUS,
+	CURLE_HTTP2_STREAM,
+	CURLE_RECURSIVE_API_CALL,
+	CURLE_AUTH_ERROR,
+	CURLE_HTTP3,
+	CURLE_QUIC_CONNECT_ERROR,
+	CURLE_PROXY,
+	CURLE_SSL_CLIENTCERT,
+	CURLE_UNRECOVERABLE_POLL,
+	CURL_LAST
 }
 
-def Curl_conv_callback = fn CURLcode(char* buffer, usz length);
-def Curl_ssl_ctx_callback = fn CURLcode(Curl* curl, void* ssl_ctx, void* userptr);
+alias Curl_conv_callback = fn CURLcode(char* buffer, usz length);
+alias Curl_ssl_ctx_callback = fn CURLcode(Curl* curl, void* ssl_ctx, void* userptr);
 
 enum Proxytype : int
 {
-    CURLPROXY_HTTP,
-    CURLPROXY_HTTP_1_0,
-    CURLPROXY_HTTPS,
-    CURLPROXY_HTTPS2,
-    CURLPROXY_SOCKS4,
-    CURLPROXY_SOCKS5,
-    CURLPROXY_SOCKS4A,
-    CURLPROXY_SOCKS5_HOSTNAME
+	CURLPROXY_HTTP,
+	CURLPROXY_HTTP_1_0,
+	CURLPROXY_HTTPS,
+	CURLPROXY_HTTPS2,
+	CURLPROXY_SOCKS4,
+	CURLPROXY_SOCKS5,
+	CURLPROXY_SOCKS4A,
+	CURLPROXY_SOCKS5_HOSTNAME
 }
 
 enum Khtype : int
 {
-    CURLKHTYPE_UNKNOWN,
-    CURLKHTYPE_RSA1,
-    CURLKHTYPE_RSA,
-    CURLKHTYPE_DSS,
-    CURLKHTYPE_ECDSA,
-    CURLKHTYPE_ED25519
+	CURLKHTYPE_UNKNOWN,
+	CURLKHTYPE_RSA1,
+	CURLKHTYPE_RSA,
+	CURLKHTYPE_DSS,
+	CURLKHTYPE_ECDSA,
+	CURLKHTYPE_ED25519
 }
 
 struct Khkey
 {
-    char* key;
+	char* key;
 
-    usz len;
-    Khtype keytype;
+	usz len;
+	Khtype keytype;
 }
 
 enum Khstat : int
 {
-    CURLKHSTAT_FINE_ADD_TO_FILE,
-    CURLKHSTAT_FINE,
-    CURLKHSTAT_REJECT,
-    CURLKHSTAT_DEFER,
-    CURLKHSTAT_FINE_REPLACE,
-    CURLKHSTAT_LAST
+	CURLKHSTAT_FINE_ADD_TO_FILE,
+	CURLKHSTAT_FINE,
+	CURLKHSTAT_REJECT,
+	CURLKHSTAT_DEFER,
+	CURLKHSTAT_FINE_REPLACE,
+	CURLKHSTAT_LAST
 }
 
 enum Khmatch : int
 {
-    CURLKHMATCH_OK,
-    CURLKHMATCH_MISMATCH,
-    CURLKHMATCH_MISSING,
-    CURLKHMATCH_LAST
+	CURLKHMATCH_OK,
+	CURLKHMATCH_MISMATCH,
+	CURLKHMATCH_MISSING,
+	CURLKHMATCH_LAST
 }
 
-def Curl_sshkeycallback = fn int(Curl* easy, Khkey* knownkey, Khkey* foundkey, Khmatch, void* clientp);
-def Curl_sshhostkeycallback = fn int(void* clientp, int keytype, char* key, usz keylen);
+alias Curl_sshkeycallback = fn int(Curl* easy, Khkey* knownkey, Khkey* foundkey, Khmatch, void* clientp);
+alias Curl_sshhostkeycallback = fn int(void* clientp, int keytype, char* key, usz keylen);
 
 enum Usessl : int
 {
-    CURLUSESSL_NONE,
-    CURLUSESSL_TRY,
-    CURLUSESSL_CONTROL,
-    CURLUSESSL_ALL,
-    CURLUSESSL_LAST
+	CURLUSESSL_NONE,
+	CURLUSESSL_TRY,
+	CURLUSESSL_CONTROL,
+	CURLUSESSL_ALL,
+	CURLUSESSL_LAST
 }
 
 enum Ftpccc : int
 {
-    CURLFTPSSL_CCC_NONE,
-    CURLFTPSSL_CCC_PASSIVE,
-    CURLFTPSSL_CCC_ACTIVE,
-    CURLFTPSSL_CCC_LAST
+	CURLFTPSSL_CCC_NONE,
+	CURLFTPSSL_CCC_PASSIVE,
+	CURLFTPSSL_CCC_ACTIVE,
+	CURLFTPSSL_CCC_LAST
 }
 
 enum Ftpauth : int
 {
-    CURLFTPAUTH_DEFAULT,
-    CURLFTPAUTH_SSL,
-    CURLFTPAUTH_TLS,
-    CURLFTPAUTH_LAST
+	CURLFTPAUTH_DEFAULT,
+	CURLFTPAUTH_SSL,
+	CURLFTPAUTH_TLS,
+	CURLFTPAUTH_LAST
 }
 
 enum Ftpcreatedir : int
 {
-    CURLFTP_CREATE_DIR_NONE,
-    CURLFTP_CREATE_DIR,
-    CURLFTP_CREATE_DIR_RETRY,
-    CURLFTP_CREATE_DIR_LAST
+	CURLFTP_CREATE_DIR_NONE,
+	CURLFTP_CREATE_DIR,
+	CURLFTP_CREATE_DIR_RETRY,
+	CURLFTP_CREATE_DIR_LAST
 }
 
 enum Ftpmethod : int
 {
-    CURLFTPMETHOD_DEFAULT,
-    CURLFTPMETHOD_MULTICWD,
-    CURLFTPMETHOD_NOCWD,
-    CURLFTPMETHOD_SINGLECWD,
-    CURLFTPMETHOD_LAST
+	CURLFTPMETHOD_DEFAULT,
+	CURLFTPMETHOD_MULTICWD,
+	CURLFTPMETHOD_NOCWD,
+	CURLFTPMETHOD_SINGLECWD,
+	CURLFTPMETHOD_LAST
 }
 
 struct Hstsentry
 {
-    char* name;
-    usz namelen;
-    uint includeSubDomains;
-    char[18] expire;
+	char* name;
+	usz namelen;
+	uint includeSubDomains;
+	char[18] expire;
 }
 
 struct Index
 {
-    usz index;
-    usz total;
+	usz index;
+	usz total;
 }
 
 enum CurlStScode : int
 {
-    CURLSTS_OK,
-    CURLSTS_DONE,
-    CURLSTS_FAIL
+	CURLSTS_OK,
+	CURLSTS_DONE,
+	CURLSTS_FAIL
 }
 
-def Curl_hstsread_callback = fn CurlStScode(Curl* easy, Hstsentry* e, void* userp);
-def Curl_hstswrite_callback = fn CurlStScode(Curl* easy, Hstsentry* e, Index* i, void* userp);
+alias Curl_hstsread_callback = fn CurlStScode(Curl* easy, Hstsentry* e, void* userp);
+alias Curl_hstswrite_callback = fn CurlStScode(Curl* easy, Hstsentry* e, Index* i, void* userp);
 
-distinct CURLoption = int;
+typedef CURLoption = int;
 
 const CURLoption CURLOPT_WRITEDATA = 10001;
 const CURLoption CURLOPT_URL = 10002;
@@ -740,10 +740,10 @@ const int CURL_RTSPREQ_LAST = 12;
 
 enum Curl_Netrc_Option : int
 {
-    CURL_NETRC_IGNORED,
-    CURL_NETRC_OPTIONAL,
-    CURL_NETRC_REQUIRED,
-    CURL_NETRC_LAST
+	CURL_NETRC_IGNORED,
+	CURL_NETRC_OPTIONAL,
+	CURL_NETRC_REQUIRED,
+	CURL_NETRC_LAST
 }
 
 const int CURL_SSLVERSION_DEFAULT = 0;
@@ -765,97 +765,97 @@ const int CURL_SSLVERSION_MAX_LAST = 524288;
 
 enum TLSAuth : int
 {
-    CURL_TLSAUTH_NONE,
-    CURL_TLSAUTH_SRP,
-    CURL_TLSAUTH_LAST
+	CURL_TLSAUTH_NONE,
+	CURL_TLSAUTH_SRP,
+	CURL_TLSAUTH_LAST
 }
 
 enum TimeCond : int
 {
-    CURL_TIMECOND_NONE,
-    CURL_TIMECOND_IFMODSINCE,
-    CURL_TIMECOND_IFUNMODSINCE,
-    CURL_TIMECOND_LASTMOD,
-    CURL_TIMECOND_LAST
+	CURL_TIMECOND_NONE,
+	CURL_TIMECOND_IFMODSINCE,
+	CURL_TIMECOND_IFUNMODSINCE,
+	CURL_TIMECOND_LASTMOD,
+	CURL_TIMECOND_LAST
 }
 
-// def Mime = struct Mime;
-// def Mimepart = struct Mimepart;
+// alias Mime = struct Mime;
+// alias Mimepart = struct Mimepart;
 
 enum Formoption : int
 {
-    CURLFORM_NOTHING,
-    CURLFORM_COPYNAME,
-    CURLFORM_PTRNAME,
-    CURLFORM_NAMELENGTH,
-    CURLFORM_COPYCONTENTS,
-    CURLFORM_PTRCONTENTS,
-    CURLFORM_CONTENTSLENGTH,
-    CURLFORM_FILECONTENT,
-    CURLFORM_ARRAY,
-    CURLFORM_OBSOLETE,
-    CURLFORM_FILE,
-    CURLFORM_BUFFER,
-    CURLFORM_BUFFERPTR,
-    CURLFORM_BUFFERLENGTH,
-    CURLFORM_CONTENTTYPE,
-    CURLFORM_CONTENTHEADER,
-    CURLFORM_FILENAME,
-    CURLFORM_END,
-    CURLFORM_OBSOLETE2,
-    CURLFORM_STREAM,
-    CURLFORM_CONTENTLEN,
-    CURLFORM_LASTENTRY
+	CURLFORM_NOTHING,
+	CURLFORM_COPYNAME,
+	CURLFORM_PTRNAME,
+	CURLFORM_NAMELENGTH,
+	CURLFORM_COPYCONTENTS,
+	CURLFORM_PTRCONTENTS,
+	CURLFORM_CONTENTSLENGTH,
+	CURLFORM_FILECONTENT,
+	CURLFORM_ARRAY,
+	CURLFORM_OBSOLETE,
+	CURLFORM_FILE,
+	CURLFORM_BUFFER,
+	CURLFORM_BUFFERPTR,
+	CURLFORM_BUFFERLENGTH,
+	CURLFORM_CONTENTTYPE,
+	CURLFORM_CONTENTHEADER,
+	CURLFORM_FILENAME,
+	CURLFORM_END,
+	CURLFORM_OBSOLETE2,
+	CURLFORM_STREAM,
+	CURLFORM_CONTENTLEN,
+	CURLFORM_LASTENTRY
 }
 
 struct Forms
 {
-    Formoption option;
-    char* value;
+	Formoption option;
+	char* value;
 }
 
 enum CurlFormCode : int
 {
-    CURL_FORMADD_OK,
-    CURL_FORMADD_MEMORY,
-    CURL_FORMADD_OPTION_TWICE,
-    CURL_FORMADD_NULL,
-    CURL_FORMADD_UNKNOWN_OPTION,
-    CURL_FORMADD_INCOMPLETE,
-    CURL_FORMADD_ILLEGAL_ARRAY,
-    CURL_FORMADD_DISABLED,
-    CURL_FORMADD_LAST
+	CURL_FORMADD_OK,
+	CURL_FORMADD_MEMORY,
+	CURL_FORMADD_OPTION_TWICE,
+	CURL_FORMADD_NULL,
+	CURL_FORMADD_UNKNOWN_OPTION,
+	CURL_FORMADD_INCOMPLETE,
+	CURL_FORMADD_ILLEGAL_ARRAY,
+	CURL_FORMADD_DISABLED,
+	CURL_FORMADD_LAST
 }
 
-def Curl_formget_callback = fn usz(void* arg, char* buf, usz len);
+alias Curl_formget_callback = fn usz(void* arg, char* buf, usz len);
 
 struct Ssl_backend
 {
-    Sslbackend id;
-    char* name;
+	Sslbackend id;
+	char* name;
 }
 
 enum CurlSslset : int
 {
-    CURLSSLSET_OK,
-    CURLSSLSET_UNKNOWN_BACKEND,
-    CURLSSLSET_TOO_LATE,
-    CURLSSLSET_NO_BACKENDS
+	CURLSSLSET_OK,
+	CURLSSLSET_UNKNOWN_BACKEND,
+	CURLSSLSET_TOO_LATE,
+	CURLSSLSET_NO_BACKENDS
 }
 
 struct Certinfo
 {
-    int num_of_certs;
-    Slist **certinfo;
+	int num_of_certs;
+	Slist **certinfo;
 }
 
 struct Tlssessioninfo
 {
-    Sslbackend backend;
-    void* internals;
+	Sslbackend backend;
+	void* internals;
 }
 
-distinct CURLInfo = int;
+typedef CURLInfo = int;
 
 const CURLInfo CURLINFO_NONE = 0;
 const CURLInfo CURLINFO_EFFECTIVE_URL = 1048577;
@@ -931,164 +931,164 @@ const CURLInfo CURLINFO_LASTONE = 62;
 
 enum Closepolicy : int
 {
-    CURLCLOSEPOLICY_NONE,
-    CURLCLOSEPOLICY_OLDEST,
-    CURLCLOSEPOLICY_LEAST_RECENTLY_USED,
-    CURLCLOSEPOLICY_LEAST_TRAFFIC,
-    CURLCLOSEPOLICY_SLOWEST,
-    CURLCLOSEPOLICY_CALLBACK,
-    CURLCLOSEPOLICY_LAST
+	CURLCLOSEPOLICY_NONE,
+	CURLCLOSEPOLICY_OLDEST,
+	CURLCLOSEPOLICY_LEAST_RECENTLY_USED,
+	CURLCLOSEPOLICY_LEAST_TRAFFIC,
+	CURLCLOSEPOLICY_SLOWEST,
+	CURLCLOSEPOLICY_CALLBACK,
+	CURLCLOSEPOLICY_LAST
 }
 
 enum Lock_data : int
 {
-    CURL_LOCK_DATA_NONE,
-    CURL_LOCK_DATA_SHARE,
-    CURL_LOCK_DATA_COOKIE,
-    CURL_LOCK_DATA_DNS,
-    CURL_LOCK_DATA_SSL_SESSION,
-    CURL_LOCK_DATA_CONNECT,
-    CURL_LOCK_DATA_PSL,
-    CURL_LOCK_DATA_HSTS,
-    CURL_LOCK_DATA_LAST
+	CURL_LOCK_DATA_NONE,
+	CURL_LOCK_DATA_SHARE,
+	CURL_LOCK_DATA_COOKIE,
+	CURL_LOCK_DATA_DNS,
+	CURL_LOCK_DATA_SSL_SESSION,
+	CURL_LOCK_DATA_CONNECT,
+	CURL_LOCK_DATA_PSL,
+	CURL_LOCK_DATA_HSTS,
+	CURL_LOCK_DATA_LAST
 }
 
 enum Lock_access : int
 {
-    CURL_LOCK_ACCESS_NONE,
-    CURL_LOCK_ACCESS_SHARED,
-    CURL_LOCK_ACCESS_SINGLE,
-    CURL_LOCK_ACCESS_LAST
+	CURL_LOCK_ACCESS_NONE,
+	CURL_LOCK_ACCESS_SHARED,
+	CURL_LOCK_ACCESS_SINGLE,
+	CURL_LOCK_ACCESS_LAST
 }
 
-def Curl_lock_function = fn void(Curl* handle, Lock_data data, Lock_access locktype, void* userptr);
-def Curl_unlock_function = fn void(Curl* handle, Lock_data data, void* userptr);
+alias Curl_lock_function = fn void(Curl* handle, Lock_data data, Lock_access locktype, void* userptr);
+alias Curl_unlock_function = fn void(Curl* handle, Lock_data data, void* userptr);
 
 enum CURLSHcode : int
 {
-    CURLSHE_OK,
-    CURLSHE_BAD_OPTION,
-    CURLSHE_IN_USE,
-    CURLSHE_INVALID,
-    CURLSHE_NOMEM,
-    CURLSHE_NOT_BUILT_IN,
-    CURLSHE_LAST
+	CURLSHE_OK,
+	CURLSHE_BAD_OPTION,
+	CURLSHE_IN_USE,
+	CURLSHE_INVALID,
+	CURLSHE_NOMEM,
+	CURLSHE_NOT_BUILT_IN,
+	CURLSHE_LAST
 }
 
 enum CURLSHoption : int
 {
-    CURLSHOPT_NONE,
-    CURLSHOPT_SHARE,
-    CURLSHOPT_UNSHARE,
-    CURLSHOPT_LOCKFUNC,
-    CURLSHOPT_UNLOCKFUNC,
-    CURLSHOPT_USERDATA,
-    CURLSHOPT_LAST
+	CURLSHOPT_NONE,
+	CURLSHOPT_SHARE,
+	CURLSHOPT_UNSHARE,
+	CURLSHOPT_LOCKFUNC,
+	CURLSHOPT_UNLOCKFUNC,
+	CURLSHOPT_USERDATA,
+	CURLSHOPT_LAST
 }
 
 enum CURLversion : int
 {
-    CURLVERSION_FIRST,
-    CURLVERSION_SECOND,
-    CURLVERSION_THIRD,
-    CURLVERSION_FOURTH,
-    CURLVERSION_FIFTH,
-    CURLVERSION_SIXTH,
-    CURLVERSION_SEVENTH,
-    CURLVERSION_EIGHTH,
-    CURLVERSION_NINTH,
-    CURLVERSION_TENTH,
-    CURLVERSION_ELEVENTH,
-    CURLVERSION_LAST
+	CURLVERSION_FIRST,
+	CURLVERSION_SECOND,
+	CURLVERSION_THIRD,
+	CURLVERSION_FOURTH,
+	CURLVERSION_FIFTH,
+	CURLVERSION_SIXTH,
+	CURLVERSION_SEVENTH,
+	CURLVERSION_EIGHTH,
+	CURLVERSION_NINTH,
+	CURLVERSION_TENTH,
+	CURLVERSION_ELEVENTH,
+	CURLVERSION_LAST
 }
 
 struct Version_info_data
 {
-    CURLversion age;
-    char* version;
-    uint version_num;
-    char* host;
-    int features;
-    char* ssl_version;
-    long ssl_version_num;
-    char* libz_version;
-    char* protocols;
-    char* ares;
-    int ares_num;
-    char* libidn;
-    int iconv_ver_num;
-    char* libssh_version;
-    uint brotli_ver_num;
-    char* brotli_version;
-    uint nghttp2_ver_num;
-    char* nghttp2_version;
-    char* quic_version;
-    char* cainfo;
-    char* capath;
-    uint zstd_ver_num;
-    char* zstd_version;
-    char* hyper_version;
-    char* gsasl_version;
-    char* feature_names;
+	CURLversion age;
+	char* version;
+	uint version_num;
+	char* host;
+	int features;
+	char* ssl_version;
+	long ssl_version_num;
+	char* libz_version;
+	char* protocols;
+	char* ares;
+	int ares_num;
+	char* libidn;
+	int iconv_ver_num;
+	char* libssh_version;
+	uint brotli_ver_num;
+	char* brotli_version;
+	uint nghttp2_ver_num;
+	char* nghttp2_version;
+	char* quic_version;
+	char* cainfo;
+	char* capath;
+	uint zstd_ver_num;
+	char* zstd_version;
+	char* hyper_version;
+	char* gsasl_version;
+	char* feature_names;
 }
 
 struct Blob
 {
-    void* data;
-    usz len;
-    int flags;
+	void* data;
+	usz len;
+	int flags;
 }
 
 
 enum CURLMcode : int
 {
-    CURLM_CALL_MULTI_PERFORM,
-    CURLM_OK,
-    CURLM_BAD_HANDLE,
-    CURLM_BAD_EASY_HANDLE,
-    CURLM_OUT_OF_MEMORY,
-    CURLM_INTERNAL_ERROR,
-    CURLM_BAD_SOCKET,
-    CURLM_UNKNOWN_OPTION,
-    CURLM_ADDED_ALREADY,
-    CURLM_RECURSIVE_API_CALL,
-    CURLM_WAKEUP_FAILURE,
-    CURLM_ARGUMENT,
-    CURLM_ABORTED_BY_CALLBACK,
-    CURLM_UNRECOVERABLE_POLL,
-    CURLM_LAST
+	CURLM_CALL_MULTI_PERFORM,
+	CURLM_OK,
+	CURLM_BAD_HANDLE,
+	CURLM_BAD_EASY_HANDLE,
+	CURLM_OUT_OF_MEMORY,
+	CURLM_INTERNAL_ERROR,
+	CURLM_BAD_SOCKET,
+	CURLM_UNKNOWN_OPTION,
+	CURLM_ADDED_ALREADY,
+	CURLM_RECURSIVE_API_CALL,
+	CURLM_WAKEUP_FAILURE,
+	CURLM_ARGUMENT,
+	CURLM_ABORTED_BY_CALLBACK,
+	CURLM_UNRECOVERABLE_POLL,
+	CURLM_LAST
 }
 enum CURLMsgEnum : int
 {
-    CURLMSG_NONE,
-    CURLMSG_DONE,
-    CURLMSG_LAST
+	CURLMSG_NONE,
+	CURLMSG_DONE,
+	CURLMSG_LAST
 }
 
 struct CURLMsg
 {
-    CURLMsgEnum msg;
-    void* easy_handle;
-    union data
-    {
+	CURLMsgEnum msg;
+	void* easy_handle;
+	union data
+	{
 		void* whatever;
 		CURLcode result;
-    }
+	}
 }
 
 struct Waitfd
 {
-    Socket_t fd;
-    short events;
-    short revents;
+	Socket_t fd;
+	short events;
+	short revents;
 }
 
-def CurlM = void;
+alias CurlM = void;
 
-def Curl_socket_callback = fn int(Curl* easy, Socket_t s, int what, void* userp, void* socketp);
-def Curl_multi_timer_callback = fn int(CurlM* multi, long timeout_ms, void* userp);
+alias Curl_socket_callback = fn int(Curl* easy, Socket_t s, int what, void* userp, void* socketp);
+alias Curl_multi_timer_callback = fn int(CurlM* multi, long timeout_ms, void* userp);
 
-distinct CURLMoption = int;
+typedef CURLMoption = int;
 
 const CURLMoption CURLMOPT_SOCKETFUNCTION = 20001;
 const CURLMoption CURLMOPT_SOCKETDATA = 10002;
@@ -1110,121 +1110,121 @@ const CURLMoption CURLMOPT_LASTENTRY = 17;
 
 enum CURLUcode : int
 {
-    CURLUE_OK,
-    CURLUE_BAD_HANDLE,
-    CURLUE_BAD_PARTPOINTER,
-    CURLUE_MALFORMED_INPUT,
-    CURLUE_BAD_PORT_NUMBER,
-    CURLUE_UNSUPPORTED_SCHEME,
-    CURLUE_URLDECODE,
-    CURLUE_OUT_OF_MEMORY,
-    CURLUE_USER_NOT_ALLOWED,
-    CURLUE_UNKNOWN_PART,
-    CURLUE_NO_SCHEME,
-    CURLUE_NO_USER,
-    CURLUE_NO_PASSWORD,
-    CURLUE_NO_OPTIONS,
-    CURLUE_NO_HOST,
-    CURLUE_NO_PORT,
-    CURLUE_NO_QUERY,
-    CURLUE_NO_FRAGMENT,
-    CURLUE_NO_ZONEID,
-    CURLUE_BAD_FILE_URL,
-    CURLUE_BAD_FRAGMENT,
-    CURLUE_BAD_HOSTNAME,
-    CURLUE_BAD_IPV6,
-    CURLUE_BAD_LOGIN,
-    CURLUE_BAD_PASSWORD,
-    CURLUE_BAD_PATH,
-    CURLUE_BAD_QUERY,
-    CURLUE_BAD_SCHEME,
-    CURLUE_BAD_SLASHES,
-    CURLUE_BAD_USER,
-    CURLUE_LACKS_IDN,
-    CURLUE_LAST
+	CURLUE_OK,
+	CURLUE_BAD_HANDLE,
+	CURLUE_BAD_PARTPOINTER,
+	CURLUE_MALFORMED_INPUT,
+	CURLUE_BAD_PORT_NUMBER,
+	CURLUE_UNSUPPORTED_SCHEME,
+	CURLUE_URLDECODE,
+	CURLUE_OUT_OF_MEMORY,
+	CURLUE_USER_NOT_ALLOWED,
+	CURLUE_UNKNOWN_PART,
+	CURLUE_NO_SCHEME,
+	CURLUE_NO_USER,
+	CURLUE_NO_PASSWORD,
+	CURLUE_NO_OPTIONS,
+	CURLUE_NO_HOST,
+	CURLUE_NO_PORT,
+	CURLUE_NO_QUERY,
+	CURLUE_NO_FRAGMENT,
+	CURLUE_NO_ZONEID,
+	CURLUE_BAD_FILE_URL,
+	CURLUE_BAD_FRAGMENT,
+	CURLUE_BAD_HOSTNAME,
+	CURLUE_BAD_IPV6,
+	CURLUE_BAD_LOGIN,
+	CURLUE_BAD_PASSWORD,
+	CURLUE_BAD_PATH,
+	CURLUE_BAD_QUERY,
+	CURLUE_BAD_SCHEME,
+	CURLUE_BAD_SLASHES,
+	CURLUE_BAD_USER,
+	CURLUE_LACKS_IDN,
+	CURLUE_LAST
 }
 enum CURLUPart : int
 {
-    CURLUPART_URL,
-    CURLUPART_SCHEME,
-    CURLUPART_USER,
-    CURLUPART_PASSWORD,
-    CURLUPART_OPTIONS,
-    CURLUPART_HOST,
-    CURLUPART_PORT,
-    CURLUPART_PATH,
-    CURLUPART_QUERY,
-    CURLUPART_FRAGMENT,
-    CURLUPART_ZONEID
+	CURLUPART_URL,
+	CURLUPART_SCHEME,
+	CURLUPART_USER,
+	CURLUPART_PASSWORD,
+	CURLUPART_OPTIONS,
+	CURLUPART_HOST,
+	CURLUPART_PORT,
+	CURLUPART_PATH,
+	CURLUPART_QUERY,
+	CURLUPART_FRAGMENT,
+	CURLUPART_ZONEID
 }
 
 struct Curl_URL
 {
-    char* scheme;
-    char* user;
-    char* password;
-    char* options;
-    char* host;
-    char* zoneid;
-    char* port;
-    char* path;
-    char* query;
-    char* fragment;
-    long portnum;
+	char* scheme;
+	char* user;
+	char* password;
+	char* options;
+	char* host;
+	char* zoneid;
+	char* port;
+	char* path;
+	char* query;
+	char* fragment;
+	long portnum;
 }
 
-def CurlU = Curl_URL;
+alias CurlU = Curl_URL;
 
 enum Easytype : int
 {
-    CURLOT_LONG,
-    CURLOT_VALUES,
-    CURLOT_OFF_T,
-    CURLOT_OBJECT,
-    CURLOT_STRING,
-    CURLOT_SLIST,
-    CURLOT_CBPTR,
-    CURLOT_BLOB,
-    CURLOT_FUNCTION
+	CURLOT_LONG,
+	CURLOT_VALUES,
+	CURLOT_OFF_T,
+	CURLOT_OBJECT,
+	CURLOT_STRING,
+	CURLOT_SLIST,
+	CURLOT_CBPTR,
+	CURLOT_BLOB,
+	CURLOT_FUNCTION
 }
 
 struct Easyoption
 {
-    char* name;
-    CURLoption id;
-    Easytype type;
-    uint flags;
+	char* name;
+	CURLoption id;
+	Easytype type;
+	uint flags;
 }
 
 struct Header
 {
-    char* name;
-    char* value;
-    usz amount;
-    usz index;
-    uint origin;
-    void* anchor;
+	char* name;
+	char* value;
+	usz amount;
+	usz index;
+	uint origin;
+	void* anchor;
 }
 
 enum CURLHcode : int
 {
-    CURLHE_OK,
-    CURLHE_BADINDEX,
-    CURLHE_MISSING,
-    CURLHE_NOHEADERS,
-    CURLHE_NOREQUEST,
-    CURLHE_OUT_OF_MEMORY,
-    CURLHE_BAD_ARGUMENT,
-    CURLHE_NOT_BUILT_IN
+	CURLHE_OK,
+	CURLHE_BADINDEX,
+	CURLHE_MISSING,
+	CURLHE_NOHEADERS,
+	CURLHE_NOREQUEST,
+	CURLHE_OUT_OF_MEMORY,
+	CURLHE_BAD_ARGUMENT,
+	CURLHE_NOT_BUILT_IN
 }
 
 struct Ws_frame
 {
-    int age;
-    int flags;
-    Off_t offset;
-    Off_t bytesleft;
-    usz len;
+	int age;
+	int flags;
+	Off_t offset;
+	Off_t bytesleft;
+	usz len;
 }
 
 const MIME_BOUNDARY_DASHES = 24;
@@ -1234,54 +1234,54 @@ const ENCODING_BUFFER_SIZE = 256;
 
 enum Mimekind : int
 {
-    MIMEKIND_NONE,
-    MIMEKIND_DATA,
-    MIMEKIND_FILE,
-    MIMEKIND_CALLBACK,
-    MIMEKIND_MULTIPART,
-    MIMEKIND_LAST
+	MIMEKIND_NONE,
+	MIMEKIND_DATA,
+	MIMEKIND_FILE,
+	MIMEKIND_CALLBACK,
+	MIMEKIND_MULTIPART,
+	MIMEKIND_LAST
 }
 
 enum Mimestate : int
 {
-    MIMESTATE_BEGIN,
-    MIMESTATE_CURLHEADERS,
-    MIMESTATE_USERHEADERS,
-    MIMESTATE_EOH,
-    MIMESTATE_BODY,
-    MIMESTATE_BOUNDARY1,
-    MIMESTATE_BOUNDARY2,
-    MIMESTATE_CONTENT,
-    MIMESTATE_END,
-    MIMESTATE_LAST
+	MIMESTATE_BEGIN,
+	MIMESTATE_CURLHEADERS,
+	MIMESTATE_USERHEADERS,
+	MIMESTATE_EOH,
+	MIMESTATE_BODY,
+	MIMESTATE_BOUNDARY1,
+	MIMESTATE_BOUNDARY2,
+	MIMESTATE_CONTENT,
+	MIMESTATE_END,
+	MIMESTATE_LAST
 }
 
 struct Mime_state
 {
-    Mimestate state;
-    void* ptr;
-    Off_t offset;
+	Mimestate state;
+	void* ptr;
+	Off_t offset;
 }
 
 struct Mime
 {
-    Mimepart *parent;
-    Mimepart *firstpart;
-    Mimepart *lastpart;
-    char[MIME_BOUNDARY_LEN + 1] boundary;
-    Mime_state state;
+	Mimepart *parent;
+	Mimepart *firstpart;
+	Mimepart *lastpart;
+	char[MIME_BOUNDARY_LEN + 1] boundary;
+	Mime_state state;
 }
 
 struct Mime_encoder_state
 {
-    usz pos;
-    usz bufbeg;
-    usz bufend;
-    char[ENCODING_BUFFER_SIZE] buf;
+	usz pos;
+	usz bufbeg;
+	usz bufend;
+	char[ENCODING_BUFFER_SIZE] buf;
 }
 
-def Encodefunc = fn usz(char* buffer, usz size, bool ateof, Mimepart* part);
-def Sizefunc = fn Off_t(Mimepart* part);
+alias Encodefunc = fn usz(char* buffer, usz size, bool ateof, Mimepart* part);
+alias Sizefunc = fn Off_t(Mimepart* part);
 
 struct Mime_encoder
 {
@@ -1292,46 +1292,46 @@ struct Mime_encoder
 
 struct Mimepart
 {
-    Mime *parent;
-    Mimepart *nextpart;
-    Mimekind kind;
-    uint flags;
-    char* data;
-    Curl_read_callback readfunc;
-    Curl_seek_callback seekfunc;
-    Curl_free_callback freefunc;
-    void* arg;
-    File *fp;
-    Slist *curlheader;
-    Slist *userheader;
-    char* mimetype;
-    char* filename;
-    char* name;
-    Off_t datasize;
-    Mime_state state;
-    Mime_encoder *encoder;
-    Mime_encoder_state encstate;
-    usz lastreadstatus;
+	Mime *parent;
+	Mimepart *nextpart;
+	Mimekind kind;
+	uint flags;
+	char* data;
+	Curl_read_callback readfunc;
+	Curl_seek_callback seekfunc;
+	Curl_free_callback freefunc;
+	void* arg;
+	File *fp;
+	Slist *curlheader;
+	Slist *userheader;
+	char* mimetype;
+	char* filename;
+	char* name;
+	Off_t datasize;
+	Mime_state state;
+	Mime_encoder *encoder;
+	Mime_encoder_state encstate;
+	usz lastreadstatus;
 }
 
 enum CurlUPart : int
 {
-    CURLUPART_URL,
-    CURLUPART_SCHEME,
-    CURLUPART_USER,
-    CURLUPART_PASSWORD,
-    CURLUPART_OPTIONS,
-    CURLUPART_HOST,
-    CURLUPART_PORT,
-    CURLUPART_PATH,
-    CURLUPART_QUERY,
-    CURLUPART_FRAGMENT,
-    CURLUPART_ZONEID
+	CURLUPART_URL,
+	CURLUPART_SCHEME,
+	CURLUPART_USER,
+	CURLUPART_PASSWORD,
+	CURLUPART_OPTIONS,
+	CURLUPART_HOST,
+	CURLUPART_PORT,
+	CURLUPART_PATH,
+	CURLUPART_QUERY,
+	CURLUPART_FRAGMENT,
+	CURLUPART_ZONEID
 }
 
-distinct Easy_ptr = void*;
-distinct Nghttp2_push_promise_ref = void*;
-distinct Pushheaders_ref = void*;
+typedef Easy_ptr = void*;
+typedef Nghttp2_push_promise_ref = void*;
+typedef Pushheaders_ref = void*;
 
 fn int strequal(char* s1, char* s2) @extern("curl_strequal");
 fn int strnequal(char* s1, char* s2, usz n) @extern("curl_strnequal");

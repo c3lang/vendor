@@ -3,7 +3,7 @@
 
 module sqlite3;
 
-distinct ResultStatus = int;
+typedef ResultStatus = int;
 
 const ResultStatus OK =           0;   /* Successful result */
 const ResultStatus ERROR =        1;   /* Generic error */
@@ -37,7 +37,7 @@ const ResultStatus WARNING =     28;   /* Warnings from log() */
 const ResultStatus ROW =         100;  /* step() has another row ready */
 const ResultStatus DONE =        101;  /* step() has finished executing */
 
-distinct ColumnType = int;
+typedef ColumnType = int;
 
 const ColumnType INTEGER  = 1;
 const ColumnType FLOAT    = 2;
@@ -45,9 +45,9 @@ const ColumnType BLOB     = 4;
 const ColumnType NULL     = 5;
 const ColumnType TEXT     = 3;
 
-def SqliteHandle = void*;
-def SqliteStmt = void*;
-def ExecCallback = fn ResultStatus (void* context, CInt num_columns, ZString* result, ZString* col_names);
+alias SqliteHandle = void*;
+alias SqliteStmt = void*;
+alias ExecCallback = fn ResultStatus (void* context, CInt num_columns, ZString* result, ZString* col_names);
 
 extern fn ResultStatus open(
     ZString filename,

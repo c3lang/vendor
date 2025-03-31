@@ -52,33 +52,33 @@ const VK_UUID_SIZE = 16;
 const ulong VK_WHOLE_SIZE = (~0);
 
 
-distinct VkInstance = uptr;
-distinct VkPhysicalDevice = uptr;
-distinct VkDevice = uptr;
-distinct VkQueue = uptr;
-distinct VkCommandBuffer = uptr;
-distinct VkDeviceMemory = uptr;
-distinct VkCommandPool = uptr;
-distinct VkBuffer = uptr;
-distinct VkBufferView = uptr;
-distinct VkImage = uptr;
-distinct VkImageView = uptr;
-distinct VkShaderModule = uptr;
-distinct VkPipeline = uptr;
-distinct VkPipelineLayout = uptr;
-distinct VkSampler = uptr;
-distinct VkDescriptorSet = uptr;
-distinct VkDescriptorSetLayout = uptr;
-distinct VkDescriptorPool = uptr;
-distinct VkFence = uptr;
-distinct VkSemaphore = uptr;
-distinct VkEvent = uptr;
-distinct VkQueryPool = uptr;
-distinct VkFramebuffer = uptr;
-distinct VkRenderPass = uptr;
-distinct VkPipelineCache = uptr;
-distinct VkDescriptorUpdateTemplate = uptr;
-distinct VkSamplerYcbcrConversion = uptr;
+typedef VkInstance = uptr;
+typedef VkPhysicalDevice = uptr;
+typedef VkDevice = uptr;
+typedef VkQueue = uptr;
+typedef VkCommandBuffer = uptr;
+typedef VkDeviceMemory = uptr;
+typedef VkCommandPool = uptr;
+typedef VkBuffer = uptr;
+typedef VkBufferView = uptr;
+typedef VkImage = uptr;
+typedef VkImageView = uptr;
+typedef VkShaderModule = uptr;
+typedef VkPipeline = uptr;
+typedef VkPipelineLayout = uptr;
+typedef VkSampler = uptr;
+typedef VkDescriptorSet = uptr;
+typedef VkDescriptorSetLayout = uptr;
+typedef VkDescriptorPool = uptr;
+typedef VkFence = uptr;
+typedef VkSemaphore = uptr;
+typedef VkEvent = uptr;
+typedef VkQueryPool = uptr;
+typedef VkFramebuffer = uptr;
+typedef VkRenderPass = uptr;
+typedef VkPipelineCache = uptr;
+typedef VkDescriptorUpdateTemplate = uptr;
+typedef VkSamplerYcbcrConversion = uptr;
 enum VkAttachmentLoadOp  : int (int value)
 {
     VK_ATTACHMENT_LOAD_OP_LOAD = 0,
@@ -1209,31 +1209,31 @@ enum VkVendorId  : int (int value)
     VK_VENDOR_ID_MOBILEYE = 0x10007,
     VK_VENDOR_ID_MAX_ENUM = 0x7FFFFFFF
 }
-def PFN_vkInternalAllocationNotification = fn void (
+alias PFN_vkInternalAllocationNotification = fn void (
     void*                                       pUserData,
     usz                                      size,
     VkInternalAllocationType                    allocationType,
     VkSystemAllocationScope                     allocationScope);
-def PFN_vkInternalFreeNotification = fn void (
+alias PFN_vkInternalFreeNotification = fn void (
     void*                                       pUserData,
     usz                                      size,
     VkInternalAllocationType                    allocationType,
     VkSystemAllocationScope                     allocationScope);
-def PFN_vkReallocationFunction = fn void* (
+alias PFN_vkReallocationFunction = fn void* (
     void*                                       pUserData,
     void*                                       pOriginal,
     usz                                      size,
     usz                                      alignment,
     VkSystemAllocationScope                     allocationScope);
-def PFN_vkAllocationFunction = fn void* (
+alias PFN_vkAllocationFunction = fn void* (
     void*                                       pUserData,
     usz                                      size,
     usz                                      alignment,
     VkSystemAllocationScope                     allocationScope);
-def PFN_vkFreeFunction = fn void (
+alias PFN_vkFreeFunction = fn void (
     void*                                       pUserData,
     void*                                       pMemory);
-def PFN_vkVoidFunction = fn void ();
+alias PFN_vkVoidFunction = fn void ();
 struct VkBaseOutStructure
 {
     VkStructureType   sType;
@@ -1663,82 +1663,82 @@ struct VkSamplerYcbcrConversionImageFormatProperties
     uint                           combinedImageSamplerDescriptorCount;
 }
 
-def VkSampleMask = uint;
-def VkBool32 = uint;
-def VkFlags = uint;
-def VkDeviceSize = ulong;
-def VkDeviceAddress = ulong;
-def VkFramebufferCreateFlags = VkFlags;
-def VkQueryPoolCreateFlags = VkFlags;
-def VkRenderPassCreateFlags = VkFlags;
-def VkSamplerCreateFlags = VkFlags;
-def VkPipelineLayoutCreateFlags = VkFlags;
-def VkPipelineCacheCreateFlags = VkFlags;
-def VkPipelineDepthStencilStateCreateFlags = VkFlags;
-def VkPipelineDynamicStateCreateFlags = VkFlags;
-def VkPipelineColorBlendStateCreateFlags = VkFlags;
-def VkPipelineMultisampleStateCreateFlags = VkFlags;
-def VkPipelineRasterizationStateCreateFlags = VkFlags;
-def VkPipelineViewportStateCreateFlags = VkFlags;
-def VkPipelineTessellationStateCreateFlags = VkFlags;
-def VkPipelineInputAssemblyStateCreateFlags = VkFlags;
-def VkPipelineVertexInputStateCreateFlags = VkFlags;
-def VkPipelineShaderStageCreateFlags = VkFlags;
-def VkDescriptorSetLayoutCreateFlags = VkFlags;
-def VkBufferViewCreateFlags = VkFlags;
-def VkInstanceCreateFlags = VkFlags;
-def VkDeviceCreateFlags = VkFlags;
-def VkDeviceQueueCreateFlags = VkFlags;
-def VkQueueFlags = VkFlags;
-def VkMemoryPropertyFlags = VkFlags;
-def VkMemoryHeapFlags = VkFlags;
-def VkAccessFlags = VkFlags;
-def VkBufferUsageFlags = VkFlags;
-def VkBufferCreateFlags = VkFlags;
-def VkShaderStageFlags = VkFlags;
-def VkImageUsageFlags = VkFlags;
-def VkImageCreateFlags = VkFlags;
-def VkImageViewCreateFlags = VkFlags;
-def VkPipelineCreateFlags = VkFlags;
-def VkColorComponentFlags = VkFlags;
-def VkFenceCreateFlags = VkFlags;
-def VkSemaphoreCreateFlags = VkFlags;
-def VkFormatFeatureFlags = VkFlags;
-def VkQueryControlFlags = VkFlags;
-def VkQueryResultFlags = VkFlags;
-def VkShaderModuleCreateFlags = VkFlags;
-def VkEventCreateFlags = VkFlags;
-def VkCommandPoolCreateFlags = VkFlags;
-def VkCommandPoolResetFlags = VkFlags;
-def VkCommandBufferResetFlags = VkFlags;
-def VkCommandBufferUsageFlags = VkFlags;
-def VkQueryPipelineStatisticFlags = VkFlags;
-def VkMemoryMapFlags = VkFlags;
-def VkImageAspectFlags = VkFlags;
-def VkSparseMemoryBindFlags = VkFlags;
-def VkSparseImageFormatFlags = VkFlags;
-def VkSubpassDescriptionFlags = VkFlags;
-def VkPipelineStageFlags = VkFlags;
-def VkSampleCountFlags = VkFlags;
-def VkAttachmentDescriptionFlags = VkFlags;
-def VkStencilFaceFlags = VkFlags;
-def VkCullModeFlags = VkFlags;
-def VkDescriptorPoolCreateFlags = VkFlags;
-def VkDescriptorPoolResetFlags = VkFlags;
-def VkDependencyFlags = VkFlags;
-def VkSubgroupFeatureFlags = VkFlags;
-def VkDescriptorUpdateTemplateCreateFlags = VkFlags;
-def VkPeerMemoryFeatureFlags = VkFlags;
-def VkMemoryAllocateFlags = VkFlags;
-def VkCommandPoolTrimFlags = VkFlags;
-def VkExternalMemoryHandleTypeFlags = VkFlags;
-def VkExternalMemoryFeatureFlags = VkFlags;
-def VkExternalSemaphoreHandleTypeFlags = VkFlags;
-def VkExternalSemaphoreFeatureFlags = VkFlags;
-def VkSemaphoreImportFlags = VkFlags;
-def VkExternalFenceHandleTypeFlags = VkFlags;
-def VkExternalFenceFeatureFlags = VkFlags;
-def VkFenceImportFlags = VkFlags;
+alias VkSampleMask = uint;
+alias VkBool32 = uint;
+alias VkFlags = uint;
+alias VkDeviceSize = ulong;
+alias VkDeviceAddress = ulong;
+alias VkFramebufferCreateFlags = VkFlags;
+alias VkQueryPoolCreateFlags = VkFlags;
+alias VkRenderPassCreateFlags = VkFlags;
+alias VkSamplerCreateFlags = VkFlags;
+alias VkPipelineLayoutCreateFlags = VkFlags;
+alias VkPipelineCacheCreateFlags = VkFlags;
+alias VkPipelineDepthStencilStateCreateFlags = VkFlags;
+alias VkPipelineDynamicStateCreateFlags = VkFlags;
+alias VkPipelineColorBlendStateCreateFlags = VkFlags;
+alias VkPipelineMultisampleStateCreateFlags = VkFlags;
+alias VkPipelineRasterizationStateCreateFlags = VkFlags;
+alias VkPipelineViewportStateCreateFlags = VkFlags;
+alias VkPipelineTessellationStateCreateFlags = VkFlags;
+alias VkPipelineInputAssemblyStateCreateFlags = VkFlags;
+alias VkPipelineVertexInputStateCreateFlags = VkFlags;
+alias VkPipelineShaderStageCreateFlags = VkFlags;
+alias VkDescriptorSetLayoutCreateFlags = VkFlags;
+alias VkBufferViewCreateFlags = VkFlags;
+alias VkInstanceCreateFlags = VkFlags;
+alias VkDeviceCreateFlags = VkFlags;
+alias VkDeviceQueueCreateFlags = VkFlags;
+alias VkQueueFlags = VkFlags;
+alias VkMemoryPropertyFlags = VkFlags;
+alias VkMemoryHeapFlags = VkFlags;
+alias VkAccessFlags = VkFlags;
+alias VkBufferUsageFlags = VkFlags;
+alias VkBufferCreateFlags = VkFlags;
+alias VkShaderStageFlags = VkFlags;
+alias VkImageUsageFlags = VkFlags;
+alias VkImageCreateFlags = VkFlags;
+alias VkImageViewCreateFlags = VkFlags;
+alias VkPipelineCreateFlags = VkFlags;
+alias VkColorComponentFlags = VkFlags;
+alias VkFenceCreateFlags = VkFlags;
+alias VkSemaphoreCreateFlags = VkFlags;
+alias VkFormatFeatureFlags = VkFlags;
+alias VkQueryControlFlags = VkFlags;
+alias VkQueryResultFlags = VkFlags;
+alias VkShaderModuleCreateFlags = VkFlags;
+alias VkEventCreateFlags = VkFlags;
+alias VkCommandPoolCreateFlags = VkFlags;
+alias VkCommandPoolResetFlags = VkFlags;
+alias VkCommandBufferResetFlags = VkFlags;
+alias VkCommandBufferUsageFlags = VkFlags;
+alias VkQueryPipelineStatisticFlags = VkFlags;
+alias VkMemoryMapFlags = VkFlags;
+alias VkImageAspectFlags = VkFlags;
+alias VkSparseMemoryBindFlags = VkFlags;
+alias VkSparseImageFormatFlags = VkFlags;
+alias VkSubpassDescriptionFlags = VkFlags;
+alias VkPipelineStageFlags = VkFlags;
+alias VkSampleCountFlags = VkFlags;
+alias VkAttachmentDescriptionFlags = VkFlags;
+alias VkStencilFaceFlags = VkFlags;
+alias VkCullModeFlags = VkFlags;
+alias VkDescriptorPoolCreateFlags = VkFlags;
+alias VkDescriptorPoolResetFlags = VkFlags;
+alias VkDependencyFlags = VkFlags;
+alias VkSubgroupFeatureFlags = VkFlags;
+alias VkDescriptorUpdateTemplateCreateFlags = VkFlags;
+alias VkPeerMemoryFeatureFlags = VkFlags;
+alias VkMemoryAllocateFlags = VkFlags;
+alias VkCommandPoolTrimFlags = VkFlags;
+alias VkExternalMemoryHandleTypeFlags = VkFlags;
+alias VkExternalMemoryFeatureFlags = VkFlags;
+alias VkExternalSemaphoreHandleTypeFlags = VkFlags;
+alias VkExternalSemaphoreFeatureFlags = VkFlags;
+alias VkSemaphoreImportFlags = VkFlags;
+alias VkExternalFenceHandleTypeFlags = VkFlags;
+alias VkExternalFenceFeatureFlags = VkFlags;
+alias VkFenceImportFlags = VkFlags;
 struct VkDeviceQueueCreateInfo
 {
     VkStructureType   sType;
@@ -2725,7 +2725,7 @@ struct VkPhysicalDeviceVariablePointersFeatures
     VkBool32                           variablePointers;
 }
 
-def VkPhysicalDeviceVariablePointerFeatures = VkPhysicalDeviceVariablePointersFeatures;
+alias VkPhysicalDeviceVariablePointerFeatures = VkPhysicalDeviceVariablePointersFeatures;
 
 struct VkExternalMemoryProperties
 {
@@ -3016,7 +3016,7 @@ struct VkPhysicalDeviceShaderDrawParametersFeatures
     VkBool32                           shaderDrawParameters;
 }
 
-def VkPhysicalDeviceShaderDrawParameterFeatures = VkPhysicalDeviceShaderDrawParametersFeatures;
+alias VkPhysicalDeviceShaderDrawParameterFeatures = VkPhysicalDeviceShaderDrawParametersFeatures;
 
 struct VkPhysicalDeviceProperties
 {

@@ -1,6 +1,6 @@
 module webgpu;
 
-distinct RenderPassEncoder = void*;
+typedef RenderPassEncoder = void*;
 
 
 fn void RenderPassEncoder.beginOcclusionQuery(RenderPassEncoder encoder,

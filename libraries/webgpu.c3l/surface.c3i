@@ -1,6 +1,6 @@
 module webgpu;
 
-distinct Surface = void*;
+typedef Surface = void*;
 
 fn void Surface.configure(Surface surface,
     SurfaceConfiguration* configuration) @extern("wgpuSurfaceConfigure");

@@ -328,63 +328,63 @@ const int DONT_CARE             = -1;
  * GLFW API types
  *************************************************************************/
  
-def GlProc = fn void();
-def VkProc = fn void();
-def Monitor = void;
-def Window = void;
-def Cursor = void;
+alias GlProc = fn void();
+alias VkProc = fn void();
+alias Monitor = void;
+alias Window = void;
+alias Cursor = void;
 
-def ErrorFun = fn void(int error_code, ZString description);
+alias ErrorFun = fn void(int error_code, ZString description);
 
-def WindowPosFun            = fn void(Window* window, int xpos, int ypos); 
-def WindowSizeFun           = fn void(Window* window, int width, int height);
-def WindowCloseFun          = fn void(Window* window);
-def WindowRefreshFun        = fn void(Window* window);
-def WindowFocusFun          = fn void(Window* window, int focused);
-def WindowIconifyFun        = fn void(Window* window, int iconified);
-def WindowMaximizeFun       = fn void(Window* window, int maximized);
-def FramebufferSizeFun      = fn void(Window* window, int width, int height);
-def WindowContentScaleFun   = fn void(Window* window, float xscale, float yscale);
-def MouseButtonFun          = fn void(Window* window, int button, int action, int mods);
-def CursorPosFun            = fn void(Window* window, double xpos, double ypos);
-def CursorEnterFun          = fn void(Window* window, int entered);
-def ScrollFun               = fn void(Window* window, double xoffset, double yoffset);
-def KeyFun                  = fn void(Window* window, int key, int scancode, int action, int mods);
-def CharFun                 = fn void(Window* window, uint codepoint);
-def CharModsFun             = fn void(Window* window, uint codepoint, int mods);
-def DropFun                 = fn void(Window* window, int path_count, ZString[] paths);
-def MonitorFun              = fn void(Monitor* monitor, int event);
-def JoystickFun             = fn void(int jid, int event);
+alias WindowPosFun            = fn void(Window* window, int xpos, int ypos);
+alias WindowSizeFun           = fn void(Window* window, int width, int height);
+alias WindowCloseFun          = fn void(Window* window);
+alias WindowRefreshFun        = fn void(Window* window);
+alias WindowFocusFun          = fn void(Window* window, int focused);
+alias WindowIconifyFun        = fn void(Window* window, int iconified);
+alias WindowMaximizeFun       = fn void(Window* window, int maximized);
+alias FramebufferSizeFun      = fn void(Window* window, int width, int height);
+alias WindowContentScaleFun   = fn void(Window* window, float xscale, float yscale);
+alias MouseButtonFun          = fn void(Window* window, int button, int action, int mods);
+alias CursorPosFun            = fn void(Window* window, double xpos, double ypos);
+alias CursorEnterFun          = fn void(Window* window, int entered);
+alias ScrollFun               = fn void(Window* window, double xoffset, double yoffset);
+alias KeyFun                  = fn void(Window* window, int key, int scancode, int action, int mods);
+alias CharFun                 = fn void(Window* window, uint codepoint);
+alias CharModsFun             = fn void(Window* window, uint codepoint, int mods);
+alias DropFun                 = fn void(Window* window, int path_count, ZString[] paths);
+alias MonitorFun              = fn void(Monitor* monitor, int event);
+alias JoystickFun             = fn void(int jid, int event);
  
 struct VidMode
 {
-  int width;
-  int height;
-  int redBits;
-  int greenBits;
-  int blueBits;
-  int refreshRate;
+	int width;
+	int height;
+	int redBits;
+	int greenBits;
+	int blueBits;
+	int refreshRate;
 }
 
 struct GammaRamp
 {
-  ushort* red;
-  ushort* green;
-  ushort* blue;
-  uint size;
+	ushort* red;
+	ushort* green;
+	ushort* blue;
+	uint size;
 }
  
 struct Image
 {
-  int width;
-  int height;
-  ZString pixels;
+	int width;
+	int height;
+	ZString pixels;
 }
  
 struct GamepadState
 {
-  char[15] buttons;
-  float[6] axes;
+	char[15] buttons;
+	float[6] axes;
 }
 
 

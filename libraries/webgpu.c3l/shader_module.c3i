@@ -1,6 +1,6 @@
 module webgpu;
 
-distinct ShaderModule = void*;
+typedef ShaderModule = void*;
 
 fn void ShaderModule.getCompilationInfo(ShaderModule shaderModule,
     CompilationInfoCallback callback, UserData userData) @extern("wgpuShaderModuleGetCompilationInfo");
@@ -13,10 +13,10 @@ fn void ShaderModule.reference(ShaderModule shaderModule) @extern("wgpuShaderMod
 fn void ShaderModule.release(ShaderModule shaderModule) @extern("wgpuShaderModuleRelease");
 
 
-def CompilationInfoCallback = fn void(CompilationInfoRequestStatus status,
+alias CompilationInfoCallback = fn void(CompilationInfoRequestStatus status,
     CompilationInfo* info, UserData data);
 
-def ShaderStageFlags = CUInt;
+alias ShaderStageFlags = CUInt;
 
 struct CompilationMessage {
     ChainedStruct* next;

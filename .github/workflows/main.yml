@@ -99,15 +99,6 @@ jobs:
           asset_name: raylib55.c3l
           asset_content_type: application/zip
 
-      - name: upload raylib5.5 v7
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/raylib55_v7.c3l
-          asset_name: raylib55_v7.c3l
-          asset_content_type: application/zip
 
       - name: upload sdl2
         uses: actions/upload-release-asset@v1
@@ -137,16 +128,6 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: packages/opengl.c3l
           asset_name: opengl.c3l
-          asset_content_type: application/zip
-
-      - name: upload opengl v7
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/opengl_v7.c3l
-          asset_name: opengl_v7.c3l
           asset_content_type: application/zip
 
       - name: upload vulkan
@@ -197,16 +178,6 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: packages/glfw.c3l
           asset_name: glfw.c3l
-          asset_content_type: application/zip
-
-      - name: upload glfw v7
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/glfw_v7.c3l
-          asset_name: glfw_v7.c3l
           asset_content_type: application/zip
 
       - name: upload pq

@@ -10,8 +10,8 @@ module pq;
  *
  */
 
-def PGconn = void*;
-def PGresult = void*;
+alias PGconn = void*;
+alias PGresult = void*;
 
 enum ConnStatusType : CInt
 {

@@ -1,6 +1,6 @@
 module webgpu;
 
-distinct PipelineLayout = void*;
+typedef PipelineLayout = void*;
 
 fn void PipelineLayout.setLabel(PipelineLayout layout, ZString label) @extern("wgpuPipelineLayoutSetLabel");
 

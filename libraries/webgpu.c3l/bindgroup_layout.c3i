@@ -1,6 +1,6 @@
 module webgpu;
 
-distinct BindGroupLayout = inline void*;
+typedef BindGroupLayout = inline void*;
 
 fn void BindGroupLayout.setLabel(BindGroupLayout layout, ZString label) @extern("wgpuBindGroupLayoutSetLabel");
 
