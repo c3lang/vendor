@@ -13,6 +13,10 @@
             "link-args" : [],
             "linked-libraries" : ["raygui"]
         },
+        "freebsd-x64" : {
+            "link-args" : [],
+            "linked-libraries" : ["raygui"]
+        },
         "windows-x64" : {
             "linked-libraries" : ["raygui","gdi32", "winmm"],
             "wincrt": "none"
