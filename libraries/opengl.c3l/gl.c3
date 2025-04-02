@@ -13711,25 +13711,25 @@ fn void load_gl_GL_VERSION_4_6(GLLoadFn load)
 }
 
 fn void load_all_gl(GLLoadFn load, int version) {
-	if (version >= 1.0) load_gl_GL_VERSION_1_0(load);
-	if (version >= 1.1) load_gl_GL_VERSION_1_1(load);
-	if (version >= 1.2) load_gl_GL_VERSION_1_2(load);
-	if (version >= 1.3) load_gl_GL_VERSION_1_3(load);
-	if (version >= 1.4) load_gl_GL_VERSION_1_4(load);
-	if (version >= 1.5) load_gl_GL_VERSION_1_5(load);
-	if (version >= 2.0) load_gl_GL_VERSION_2_0(load);
-	if (version >= 2.1) load_gl_GL_VERSION_2_1(load);
-	if (version >= 3.0) load_gl_GL_VERSION_3_0(load);
-	if (version >= 3.1) load_gl_GL_VERSION_3_1(load);
-	if (version >= 3.2) load_gl_GL_VERSION_3_2(load);
-	if (version >= 3.3) load_gl_GL_VERSION_3_3(load);
-	if (version >= 4.0) load_gl_GL_VERSION_4_0(load);
-	if (version >= 4.1) load_gl_GL_VERSION_4_1(load);
-	if (version >= 4.2) load_gl_GL_VERSION_4_2(load);
-	if (version >= 4.3) load_gl_GL_VERSION_4_3(load);
-	if (version >= 4.4) load_gl_GL_VERSION_4_4(load);
-	if (version >= 4.5) load_gl_GL_VERSION_4_5(load);
-	if (version >= 4.6) load_gl_GL_VERSION_4_6(load);
+	if (version >= 10) load_gl_GL_VERSION_1_0(load);
+	if (version >= 11) load_gl_GL_VERSION_1_1(load);
+	if (version >= 12) load_gl_GL_VERSION_1_2(load);
+	if (version >= 13) load_gl_GL_VERSION_1_3(load);
+	if (version >= 14) load_gl_GL_VERSION_1_4(load);
+	if (version >= 15) load_gl_GL_VERSION_1_5(load);
+	if (version >= 20) load_gl_GL_VERSION_2_0(load);
+	if (version >= 21) load_gl_GL_VERSION_2_1(load);
+	if (version >= 30) load_gl_GL_VERSION_3_0(load);
+	if (version >= 31) load_gl_GL_VERSION_3_1(load);
+	if (version >= 32) load_gl_GL_VERSION_3_2(load);
+	if (version >= 33) load_gl_GL_VERSION_3_3(load);
+	if (version >= 40) load_gl_GL_VERSION_4_0(load);
+	if (version >= 41) load_gl_GL_VERSION_4_1(load);
+	if (version >= 42) load_gl_GL_VERSION_4_2(load);
+	if (version >= 43) load_gl_GL_VERSION_4_3(load);
+	if (version >= 44) load_gl_GL_VERSION_4_4(load);
+	if (version >= 45) load_gl_GL_VERSION_4_5(load);
+	if (version >= 46) load_gl_GL_VERSION_4_6(load);
 }
 
 fn int load_gl_internal(GLLoadFn load)
