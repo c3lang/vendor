@@ -1,0 +1,23 @@
+{ 
+  "provides" : "box2d",
+  "targets" : {
+    "macos-x64" : {
+      "link-args" : [],
+      "dependencies" : [],
+      "linked-libraries" : []
+    },
+    "macos-aarch64" : {
+      "link-args" : [],
+      "dependencies" : [],
+      "linked-libraries" : []
+    },
+    "linux-x64" : {
+      "link-args" : [],
+      "dependencies" : [],
+      "linked-libraries" : ["BOX2D"]
+    },
+	"windows-x64" : {
+		"linked-libraries" : []
+	}
+  }
+}
