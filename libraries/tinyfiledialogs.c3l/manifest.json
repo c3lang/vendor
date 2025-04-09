@@ -1,0 +1,30 @@
+{
+  "provides" : "tinyfiledialogs",
+  "targets" : {
+    "linux-x86" : {
+      "link-args" : [],
+      "dependencies" : [],
+      "linked-libraries" : ["tinyfiledialogsLinux86"]
+    },
+    "linux-x64" : {
+      "link-args" : [],
+      "dependencies" : [],
+      "linked-libraries" : ["tinyfiledialogsLinux64"]
+    },
+    "linux-aarch64": {
+      "link-args": [],
+      "dependencies": [],
+      "linked-libraries": ["tinyfiledialogsLinuxAarch64"]
+    },
+    "macos-x64" : {
+      "link-args" : [],
+      "dependencies" : [],
+      "linked-libraries" : ["tinyfiledialogsIntel"]
+    },
+    "windows-x64" : {
+      "link-args" : [],
+      "dependencies" : [],
+      "linked-libraries" : ["tinyfiledialogs64", "comdlg32", "ole32"]
+    }
+  }
+}
