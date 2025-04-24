@@ -16,6 +16,6 @@ Other names have been kept as similar as possible, only changing to satisfy the 
 For example the matrix constants (e.g. GL_FLOAT_MAT4x2) change NxN to NXN to comply with C3.
 
 
-The `loadGL` function *must* be called before using any opengl functions. It also must be called after a valid OpenGL context is created (from something like GLFW). The argument it takes in glfw would be `loadGL((GLLoadFn)glfw::getProcAddress)` (the glfw bindings currently do not work with these bindings due to a bug). 
+The `loadGL` function *must* be called before using any opengl functions. It also must be called after a valid OpenGL context is created (from something like GLFW). The argument it takes in glfw would be `loadGL((GLLoadFn)glfw::getProcAddress)`. 
 
 The `loadGL` function returns either 0 if it fails or the current OpenGL version in the format of (major * 10) + minor
