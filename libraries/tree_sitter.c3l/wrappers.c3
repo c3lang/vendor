@@ -4,13 +4,11 @@
 
 module ts::parser;
 
-fault ParserFault {
-  INCOMPATIBLE_LANGUAGE_VERSION,
-}
+faultdef INCOMPATIBLE_LANGUAGE_VERSION;
 
-fn Parser*! new_with_language(Language* language) {
+fn Parser*? new_with_language(Language* language) {
   Parser* parser = ts::parser_new();
-  return ts::parser_set_language(parser, language) ? parser : ParserFault.INCOMPATIBLE_LANGUAGE_VERSION?;
+  return ts::parser_set_language(parser, language) ? parser : INCOMPATIBLE_LANGUAGE_VERSION?;
 }
 
 fn void delete(Parser* parser) {
@@ -38,23 +36,16 @@ fn String Node.get_text(self, char[] data) @inline => (String)data[self.start_by
 
 module ts::query;
 
-fault QueryFault {
-  SYNTAX,
-  NODE_TYPE,
-  FIELD,
-  CAPTURE,
-  STRUCTURE,
-  LANGUAGE,
-}
+faultdef SYNTAX, NODE_TYPE, FIELD, CAPTURE, STRUCTURE, LANGUAGE;
 
-fn QueryFault fault_from_error(QueryError err) @private {
+fn fault fault_from_error(QueryError err) @private {
   switch (err) {
-    case SYNTAX: return QueryFault.SYNTAX;
-    case NODE_TYPE: return QueryFault.NODE_TYPE;
-    case FIELD: return QueryFault.FIELD;
-    case CAPTURE: return QueryFault.CAPTURE;
-    case STRUCTURE: return QueryFault.STRUCTURE;
-    case LANGUAGE: return QueryFault.LANGUAGE;
+    case SYNTAX: return SYNTAX;
+    case NODE_TYPE: return NODE_TYPE;
+    case FIELD: return FIELD;
+    case CAPTURE: return CAPTURE;
+    case STRUCTURE: return STRUCTURE;
+    case LANGUAGE: return LANGUAGE;
     default: unreachable();
   }
 }
@@ -65,7 +56,7 @@ fn QueryFault fault_from_error(QueryError err) @private {
  @param [in] query "The query string containing one or more S-expression patterns."
  @param [out] error_offset "Offset of error in query."
 *>
-fn Query*! new(Language* language, String query, uint* error_offset = null) {
+fn Query*? new(Language* language, String query, uint* error_offset = null) {
   QueryError error_type;
   Query* result = ts::query_new(language, query.ptr, query.len, error_offset, &error_type);
   if (!result) {
@@ -87,22 +78,20 @@ fn void delete(Query* query) {
 <*
  Try to get a QueryCapture from a QueryMatch by name.
 *>
-fn QueryCapture! QueryMatch.get_capture(&match, String name, Query* query) {
+fn QueryCapture? QueryMatch.get_capture(&match, String name, Query* query) {
   for (uint i = 0; i < match.capture_count; i++) {
     QueryCapture capture = match.captures[i];
 
-    String capture_name = {|
-      uint length;
-      ZString str = ts::query_capture_name_for_id(query, capture.index, &length);
-      return (String)str[:length];
-    |};
+    uint length;
+    ZString str = ts::query_capture_name_for_id(query, capture.index, &length);
+    String capture_name = (String)str[:length];
 
     if (name == capture_name) {
       return capture;
     }
   }
 
-  return SearchResult.MISSING?;
+  return NOT_FOUND?;
 }
 
 // Query Capture
