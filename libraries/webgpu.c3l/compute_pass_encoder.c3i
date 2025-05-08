@@ -1,6 +1,6 @@
 module webgpu;
 
-distinct ComputePassEncoder = void*;
+typedef ComputePassEncoder = void*;
 
 fn void ComputePassEncoder.dispatchWorkgroups(ComputePassEncoder encoder,
     CUInt countX, CUInt countY, CUInt countZ) @extern("wgpuComputePassEncoderDispatchWorkgroups");

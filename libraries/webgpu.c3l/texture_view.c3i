@@ -1,6 +1,6 @@
 module webgpu;
 
-distinct TextureView = void*;
+typedef TextureView = void*;
 
 
 fn void TextureView.setLabel(TextureView texture, ZString label) @extern("wgpuTextureViewSetLabel");

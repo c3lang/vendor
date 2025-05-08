@@ -1,6 +1,6 @@
 module webgpu;
 
-distinct Device = void*;
+typedef Device = void*;
 
 fault DeviceError {
     REQUEST_FAILED
@@ -61,17 +61,17 @@ fn void Device.reference(Device device) @extern("wgpuDeviceReference");
 fn void Device.release(Device device) @extern("wgpuDeviceRelease");
 
 
-def DeviceLostCallback = fn void (DeviceLostReason reason, ZString message, UserData data);
+alias DeviceLostCallback = fn void (DeviceLostReason reason, ZString message, UserData data);
 
-def ErrorCallback = fn void(ErrorType type, ZString message, UserData data);
+alias ErrorCallback = fn void(ErrorType type, ZString message, UserData data);
 
-def CreateDeviceAsyncCallback = fn void(CreatePipelineAsyncStatus status,
+alias CreateDeviceAsyncCallback = fn void(CreatePipelineAsyncStatus status,
 	Device device, ZString message, UserData data);
 
-def CreateRenderPipelineAsyncCallback = fn void(CreatePipelineAsyncStatus status,
+alias CreateRenderPipelineAsyncCallback = fn void(CreatePipelineAsyncStatus status,
 	RenderPipeline pipeline, ZString message, UserData data);
 
-def CreateComputePipelineAsyncCallback = fn void(CreatePipelineAsyncStatus status,
+alias CreateComputePipelineAsyncCallback = fn void(CreatePipelineAsyncStatus status,
 	ComputePipeline pipeline, ZString message, UserData data);
 
 struct DeviceDescriptor {

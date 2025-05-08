@@ -14,12 +14,12 @@
     "linux-x64" : {
       "link-args" : [],
       "dependencies" : [],
-      "linked-libraries" : ["raylib", "GLESv2", "glfw", "c"]
+      "linked-libraries" : ["raylib"]
     },
-	"windows-x64" : {
-		"linked-libraries" : ["raylib", "opengl32", "kernel32", "user32", "gdi32", "winmm", "winspool", "comdlg32", "advapi32", "shell32", "ole32", "oleaut32", "uuid", "odbc32", "odbccp32"],
-        "wincrt": "none"
-	},
+ 	  "windows-x64" : {
+		  "linked-libraries" : ["raylib", "gdi32", "winmm"],
+      "wincrt": "none"
+	  },
     "wasm32" : {
       "linked-libraries" : ["raylib"]
     }

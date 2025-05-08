@@ -27,16 +27,16 @@ const TREE_SITTER_MIN_COMPATIBLE_LANGUAGE_VERSION = 13;
 /* Section - Types */
 /*******************/
 
-distinct StateId = ushort;
-distinct Symbol = ushort;
-distinct FieldId = ushort;
+typedef StateId = ushort;
+typedef Symbol = ushort;
+typedef FieldId = ushort;
 
-distinct Language = void;
-distinct Parser = void;
-distinct Tree = void;
-distinct Query = void;
-distinct QueryCursor = void;
-distinct LookaheadIterator = void;
+typedef Language = void;
+typedef Parser = void;
+typedef Tree = void;
+typedef Query = void;
+typedef QueryCursor = void;
+typedef LookaheadIterator = void;
 
 enum InputEncoding : CInt {
   UTF8,
@@ -61,7 +61,7 @@ struct Range {
   uint end_byte;
 }
 
-def Read_Fn = fn ZString (void* payload, uint byte_index, Point position, uint* bytes_read);
+alias Read_Fn = fn ZString (void* payload, uint byte_index, Point position, uint* bytes_read);
 
 struct Input {
   void* payload;
@@ -74,7 +74,7 @@ enum LogType : CInt {
   LEX,
 }
 
-def Log_Fn = fn void (void* payload, LogType log_type, ZString buffer);
+alias Log_Fn = fn void (void* payload, LogType log_type, ZString buffer);
 
 struct Logger {
   void* payload;
@@ -1036,7 +1036,7 @@ fn Language* language_copy(Language* self) @extern("ts_language_copy");
 fn void language_delete(Language* self) @extern("ts_language_delete");
 
 <*
- Get the number of distinct node types in the language.
+ Get the number of typedef node types in the language.
 *>
 fn uint language_symbol_count(Language* self) @extern("ts_language_symbol_count");
 
@@ -1061,7 +1061,7 @@ fn Symbol language_symbol_for_name(
 ) @extern("ts_language_symbol_for_name");
 
 <*
- Get the number of distinct field names in the language.
+ Get the number of typedef field names in the language.
 *>
 fn uint language_field_count(Language* self) @extern("ts_language_field_count");
 
@@ -1168,8 +1168,8 @@ fn ZString lookahead_iterator_current_symbol_name(LookaheadIterator* self) @exte
 /* Section - WebAssembly Integration */
 /************************************/
 
-distinct WasmEngine = void;
-distinct WasmStore = void;
+typedef WasmEngine = void;
+typedef WasmStore = void;
 
 enum WasmErrorKind : CInt {
   NONE,
@@ -1256,10 +1256,10 @@ fn WasmStore* parser_take_wasm_store(Parser*) @extern("ts_parser_take_wasm_store
      of freeing memory that was allocated by the old allocator.
 *>
 
-def Malloc_Fn = fn void* (usz);
-def Calloc_Fn = fn void* (usz, usz);
-def Realloc_Fn = fn void* (usz);
-def Free_Fn = fn void (void*);
+alias Malloc_Fn = fn void* (usz);
+alias Calloc_Fn = fn void* (usz, usz);
+alias Realloc_Fn = fn void* (usz);
+alias Free_Fn = fn void (void*);
 
 fn void set_allocator(
   Malloc_Fn new_malloc,

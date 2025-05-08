@@ -64,7 +64,7 @@ struct Vector4
 }
 
 // Quaternion, 4 components (Vector4 alias)
-def Quaternion = Vector4;
+alias Quaternion = Vector4;
 
 // Matrix, 4x4 components, column major, OpenGL style, right handed
 struct Matrix
@@ -114,10 +114,10 @@ struct Texture
 }
 
 // Texture2D, same as Texture
-def Texture2D = Texture;
+alias Texture2D = Texture;
 
 // TextureCubemap, same as Texture
-def TextureCubemap = Texture;
+alias TextureCubemap = Texture;
 
 // RenderTexture, fbo for texture rendering
 struct RenderTexture
@@ -128,7 +128,7 @@ struct RenderTexture
 }
 
 // RenderTexture2D, same as RenderTexture
-def RenderTexture2D = RenderTexture;
+alias RenderTexture2D = RenderTexture;
 
 // NPatchInfo, n-patch layout info
 struct NPatchInfo
@@ -172,7 +172,7 @@ struct Camera3D
     int projection;         // Camera projection: CAMERA_PERSPECTIVE or CAMERA_ORTHOGRAPHIC
 }
 
-def Camera = Camera3D;    // Camera type fallback, defaults to Camera3D
+alias Camera = Camera3D;    // Camera type fallback, defaults to Camera3D
 
 // Camera2D, defines position/orientation in 2d space
 struct Camera2D
@@ -306,8 +306,8 @@ struct Wave
     void* data;                 // Buffer data pointer
 }
 
-distinct AudioBufferRef = void*;
-distinct AudioProcessorRef = void*;
+typedef AudioBufferRef = void*;
+typedef AudioProcessorRef = void*;
 
 // AudioStream, custom audio stream
 struct AudioStream
@@ -667,10 +667,10 @@ $assert(NPatchLayout.NINE_PATCH.ordinal == 0);
 
 // Callbacks to hook some internal functions
 // WARNING: These callbacks are intended for advance users
-def LoadFileDataCallback = fn char* (char* file_name, uint* bytes_read);                     // FileIO: Load binary data
-def SaveFileDataCallback = fn bool(char* file_name, void* data, uint bytes_to_write);         // FileIO: Save binary data
-def LoadFileTextCallback = fn char*(char* file_name);                                       // FileIO: Load text data
-def SaveFileTextCallback = fn bool(char* file_name, char* text);                            // FileIO: Save text data
+alias LoadFileDataCallback = fn char* (char* file_name, uint* bytes_read);                     // FileIO: Load binary data
+alias SaveFileDataCallback = fn bool(char* file_name, void* data, uint bytes_to_write);         // FileIO: Save binary data
+alias LoadFileTextCallback = fn char*(char* file_name);                                       // FileIO: Load text data
+alias SaveFileTextCallback = fn bool(char* file_name, char* text);                            // FileIO: Save text data
 
 // Window-related functions
 fn void init_window(int width, int height, char* title) @extern("InitWindow");         // Initialize window and OpenGL context
@@ -1609,7 +1609,7 @@ fn RayCollision get_ray_collision_quad(Ray ray, Vector3 p1, Vector3 p2, Vector3 
 // Audio Loading and Playing Functions (Module: audio)
 //------------------------------------------------------------------------------------
 
-def AudioCallback = fn void(void* buffer_data, uint frames);
+alias AudioCallback = fn void(void* buffer_data, uint frames);
 
 // Audio device management functions
 // Initialize audio device and context
@@ -1758,7 +1758,7 @@ module raylib::config;
 // NOTE: Every bit registers one state (use it with bit masks)
 // By default all flags are set to 0
 
-distinct ConfigFlag = uint;
+typedef ConfigFlag = uint;
 
 const ConfigFlag VSYNC_HINT         = 0x00000040;   // Set to try enabling V-Sync on GPU
 const ConfigFlag FULLSCREEN_MODE    = 0x00000002;   // Set to run program in fullscreen
@@ -1782,7 +1782,7 @@ module raylib::keyboard;
 // NOTE: Use GetKeyPressed() to allow redefining
 // required keys for alternative layouts
 
-distinct KeyboardKey = int;
+typedef KeyboardKey = int;
 
 const KeyboardKey NULL            = 0;        // Key: NULL; used for no key pressed
 // Alphanumeric keys
@@ -1901,7 +1901,7 @@ const KeyboardKey VOLUME_DOWN     = 25;       // Key: Android volume down button
 
 module raylib::gesture;
 
-distinct Gesture = int;
+typedef Gesture = int;
 // Gesture
 // NOTE: It could be used as flags to enable only some gestures
 const Gesture NONE        = 0;      // No gesture

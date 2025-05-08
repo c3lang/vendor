@@ -3,14 +3,14 @@
 
 module mysql8;
 
-def Mysql = void*;
-def MysqlRes = void*;
-def MysqlRow = void**;
-def MysqlStmt = void*;
+alias Mysql = void*;
+alias MysqlRes = void*;
+alias MysqlRow = void**;
+alias MysqlStmt = void*;
 
 const int MYSQL_NO_DATA = 100;
 
-distinct FieldType = int;
+typedef FieldType = int;
 
 const FieldType TYPE_DECIMAL = 0;
 const FieldType TYPE_TINY = 1;

@@ -1,6 +1,6 @@
 module webgpu;
 
-distinct Adapter = void*;
+typedef Adapter = void*;
 
 fault AdapterError {
     REQUEST_FAILED
@@ -25,9 +25,9 @@ fn void Adapter.reference(Adapter adapter) @extern("wgpuAdapterReference");
 fn void Adapter.release(Adapter adapter) @extern("wgpuAdapterRelease");
 
 
-def RequestAdapterInfoCallback = fn void(AdapterInfo info, UserData data);
+alias RequestAdapterInfoCallback = fn void(AdapterInfo info, UserData data);
 
-def RequestDeviceCallback = fn void (RequestDeviceStatus status,
+alias RequestDeviceCallback = fn void (RequestDeviceStatus status,
 	Device device, ZString message, UserData data);
 
 enum AdapterType {

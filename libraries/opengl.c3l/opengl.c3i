@@ -1,5 +1,5 @@
 module opengl::internal @local;
-const GL_MAX_VERSION = 46;
+const GL_MAX_VERSION = 45;
 macro int gl_version() @public
 {
     $if $defined(GL_VERSION):
@@ -13,12 +13,62 @@ macro int gl_version() @public
 
 module opengl::gl;
 
-/* Global definitions that are used throughout the versions. */
-distinct GLenum = uint;
-distinct GLbitfield = uint;
-distinct GLclampx = int;
-distinct GLclampf = float;
-distinct GLclampd = double;
-distinct GLhalf = ushort;
-distinct GLsync = uptr;
-def GLDebugProc = fn void(GLenum source,GLenum type,CUInt id,GLenum severity,usz length,ZString message, void *userParam);
+/* Global type definitions */
+typedef GLenum = uint;
+typedef GLbitfield = uint;
+typedef GLclampx = int;
+typedef GLclampf = float;
+typedef GLclampd = double;
+typedef GLsync = uptr;
+typedef GLeglClientBufferEXT = void*;
+typedef GLeglImageOES = void*;
+
+alias GLbyte = ichar;
+alias GLubyte = char;
+alias GLshort = short;
+alias GLushort = ushort;
+alias GLint = int;
+alias GLuint = uint;
+alias GLfloat = float;
+alias GLdouble = double;
+alias GLchar = char;
+alias GLcharARB = char;
+alias GLboolean = char;
+alias GLhalf = ushort;
+alias GLhalfARB = ushort;
+alias GLfixed = int;
+alias GLintptr = iptr;
+alias GLintptrARB = iptr;
+alias GLsizeiptr = isz;
+alias GLsizeiptrARB = isz;
+alias GLint64 = long;
+alias GLint64EXT = long;
+alias GLuint64 = long;
+alias GLuint64EXT = long;
+alias GLsizei = int;
+alias GLhalfNV = ushort;
+alias GLvdpauSurfaceNV = GLintptr;
+alias GLhandleARB = void*;
+
+alias Ext_cl_context = void*;
+alias Ext_cl_event = void*;
+
+alias Ext_GLDEBUGPROC = fn void(GLenum source,GLenum type,CUInt id,GLenum severity,usz length,ZString message, void *userParam);
+alias Ext_GLDEBUGPROCARB = fn void(GLenum source,GLenum type,GLuint id,GLenum severity,GLsizei length,GLchar *message,void *userParam);
+alias Ext_GLDEBUGPROCKHR = fn void(GLenum source,GLenum type,GLuint id,GLenum severity,GLsizei length,GLchar *message,void *userParam);
+alias Ext_GLDEBUGPROCAMD = fn void(GLuint id,GLenum category,GLenum severity,GLsizei length,GLchar *message,void *userParam);
+alias Ext_GLVULKANPROCNV = fn void();
+
+
+/* Internal loading */
+alias GLLoadFn = fn void*(char*);
+
+module opengl;
+import opengl::internal;
+import opengl::gl;
+macro loadGL(GLLoadFn load) {
+    return gl::load_gl_internal(load);
+}
+
+
+

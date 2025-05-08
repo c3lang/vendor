@@ -14,6 +14,9 @@ This repository contains external libraries for use with C3.
 - MySQL 8 https://dev.mysql.com/doc/c-api/8.0/en/
 - SQLite 3 https://sqlite.com/c3ref/intro.html
 - FreeType https://freetype.org/ - WIP
+- LZ4 https://lz4.org
+- LibClang https://clang.llvm.org/docs/LibClang.html
+- tinyfiledialogs http://tinyfiledialogs.sourceforge.net
 
 ## Guide for writing bindings
 

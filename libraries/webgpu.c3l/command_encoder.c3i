@@ -1,6 +1,6 @@
 module webgpu;
 
-distinct CommandEncoder = void*;
+typedef CommandEncoder = void*;
 
 fn ComputePassEncoder CommandEncoder.beginComputePass(CommandEncoder encoder,
     ComputePassDescriptor* descriptor) @extern("wgpuCommandEncoderBeginComputePass");
