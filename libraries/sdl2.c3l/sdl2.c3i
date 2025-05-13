@@ -44,14 +44,14 @@ struct AssertData
 	AssertData* next;
 }
 
-def SpinLock = int;
+alias SpinLock = int;
 
 struct AtomicT 
 {
 	int value;
 }
 
-def AssertionHandler = fn AssertState(AssertData data, void* userdata);
+alias AssertionHandler = fn AssertState(AssertData data, void* userdata);
 
 
 enum ErrorCode : int
@@ -64,14 +64,14 @@ enum ErrorCode : int
 	LASTERROR
 }
 
-distinct Mutex = void*;
-distinct Sem = void*;
-distinct Cond = void*;
-distinct Thread = void*;
-def ThreadID = long;
-distinct Iconv_t = void*;
+typedef Mutex = void*;
+typedef Sem = void*;
+typedef Cond = void*;
+typedef Thread = void*;
+alias ThreadID = long;
+typedef Iconv_t = void*;
 
-def TlSID = ulong;
+alias TlSID = ulong;
 
 enum ThreadPriority : int
 {
@@ -81,11 +81,11 @@ enum ThreadPriority : int
 	THREAD_PRIORITY_TIME_CRITICAL
 }
 
-def SizeFn = fn long(RWops context);
-def SeekFn = fn long(RWops context, long offset, int whence);
-def ReadFn = fn long(RWops context, void* ptr, long size);
-def WriteFn = fn long(RWops context, void* ptr, long size);
-def CloseFn = fn int(RWops context);
+alias SizeFn = fn long(RWops context);
+alias SeekFn = fn long(RWops context, long offset, int whence);
+alias ReadFn = fn long(RWops context, void* ptr, long size);
+alias WriteFn = fn long(RWops context, void* ptr, long size);
+alias CloseFn = fn int(RWops context);
 
 struct RWops
 {
@@ -134,9 +134,9 @@ struct RWops
 	}
 }
 
-def AudioFormat = int;
+alias AudioFormat = int;
 
-def AudioCallback = fn void(void *userdata, char* stream, int len);
+alias AudioCallback = fn void(void *userdata, char* stream, int len);
 
 struct AudioSpec
 {
@@ -151,7 +151,7 @@ struct AudioSpec
 	void *userdata;
 }
 
-def AudioFilter = fn void(AudioCVT* cvt, AudioFormat format);
+alias AudioFilter = fn void(AudioCVT* cvt, AudioFormat format);
 
 struct AudioCVT
 {
@@ -168,7 +168,7 @@ struct AudioCVT
 	int filter_index;
 }
 
-def AudioDeviceID = uint;
+alias AudioDeviceID = uint;
 
 enum AudioStatus : int
 {
@@ -177,7 +177,7 @@ enum AudioStatus : int
 	AUDIO_PAUSED
 }
 
-def AudioStream = void;
+alias AudioStream = void;
 
 enum PixelType : int
 {
@@ -262,7 +262,7 @@ struct PixelFormat
 	PixelFormat* next;
 }
 
-distinct PixelFormatEnum = int;
+typedef PixelFormatEnum = int;
 const PixelFormatEnum PIXELFORMAT_UNKNOWN = 0;
 const PixelFormatEnum PIXELFORMAT_INDEX1LSB = 286261504;
 const PixelFormatEnum PIXELFORMAT_INDEX1MSB = 287310080;
@@ -358,7 +358,7 @@ struct FRect
 	float h;
 }
 
-distinct BlendMode = int;
+typedef BlendMode = int;
 const BlendMode BLENDMODE_NONE = 0;
 const BlendMode BLENDMODE_BLEND = 1;
 const BlendMode BLENDMODE_ADD = 2;
@@ -389,7 +389,7 @@ enum BlendFactor : int
 	BLENDFACTOR_ONE_MINUS_DST_ALPHA,
 }
 
-distinct BlitMap = void*;
+typedef BlitMap = void*;
 
 struct Surface
 {
@@ -430,9 +430,9 @@ struct DisplayMode
 	void* driverData;
 }
 
-def Window = void;
+alias Window = void;
 
-distinct WindowFlags = int;
+typedef WindowFlags = int;
 const WindowFlags WINDOW_FULLSCREEN = 1;
 const WindowFlags WINDOW_OPENGL = 2;
 const WindowFlags WINDOW_SHOWN = 4;
@@ -458,7 +458,7 @@ const WindowFlags WINDOW_VULKAN = 268435456;
 const WindowFlags WINDOW_METAL = 536870912;
 const WindowFlags WINDOW_INPUT_GRABBED = 256;
 
-distinct Scancode = int;
+typedef Scancode = int;
 
 const Scancode SCANCODE_UNKNOWN = 0;
 const Scancode SCANCODE_A = 4;
@@ -709,7 +709,7 @@ const Scancode SCANCODE_CALL = 289;
 const Scancode SCANCODE_ENDCALL = 290;
 const Scancode NUM_SCANCODES = 512;
 
-distinct Keycode = int;
+typedef Keycode = int;
 const Keycode SDLK_UNKNOWN = 0;
 const Keycode SDLK_RETURN = 13;
 const Keycode SDLK_ESCAPE = 27;
@@ -955,7 +955,7 @@ const Keycode SDLK_SOFTRIGHT = 1073742112;
 const Keycode SDLK_CALL = 1073742113;
 const Keycode SDLK_ENDCALL = 1073742114;
 
-distinct Keymod = int;
+typedef Keymod = int;
 
 const Keymod KMOD_NONE = 0;
 const Keymod KMOD_LSHIFT = 1;
@@ -1024,7 +1024,7 @@ enum FlashOperation : int
 	FLASH_UNTIL_FOCUSED
 }
 
-distinct GLContext = void*;
+typedef GLContext = void*;
 
 enum GLattr : int
 {
@@ -1058,14 +1058,14 @@ enum GLattr : int
 	GL_FLOATBUFFERS
 }
 
-distinct GLProfile = int;
+typedef GLProfile = int;
 
 const GLProfile GL_CONTEXT_PROFILE_CORE = 1;
 const GLProfile GL_CONTEXT_PROFILE_COMPATIBILITY = 2;
 const GLProfile GL_CONTEXT_PROFILE_ES = 4;
 
 
-distinct GLContextFlag = int;
+typedef GLContextFlag = int;
 
 const GLContextFlag GL_CONTEXT_DEBUG_FLAG = 1;
 const GLContextFlag GL_CONTEXT_FORWARD_COMPATIBLE_FLAG = 2;
@@ -1098,7 +1098,7 @@ enum HitTestResult : int
 	HITTEST_RESIZE_LEFT
 }
 
-def HitTest = fn void(Window* win, Point* area, void* data);
+alias HitTest = fn void(Window* win, Point* area, void* data);
 
 struct Keysym 
 {
@@ -1142,9 +1142,9 @@ struct Guid
 	char[16] data;
 }
 
-def Joystick = void*;
-def JoystickGUID = Guid;
-def JoystickID = int;
+alias Joystick = void*;
+alias JoystickGUID = Guid;
+alias JoystickID = int;
 
 enum JoystickType : int
 {
@@ -1160,7 +1160,7 @@ enum JoystickType : int
 	JOYSTICK_TYPE_THROTTLE
 }
 
-distinct JoystickPowerLevel = int;
+typedef JoystickPowerLevel = int;
 const JoystickPowerLevel JOYSTICK_POWER_UNKNOWN = -1;
 const JoystickPowerLevel JOYSTICK_POWER_EMPTY = 0;
 const JoystickPowerLevel JOYSTICK_POWER_LOW = 1;
@@ -1169,12 +1169,12 @@ const JoystickPowerLevel JOYSTICK_POWER_FULL = 3;
 const JoystickPowerLevel JOYSTICK_POWER_WIRED = 4;
 const JoystickPowerLevel JOYSTICK_POWER_MAX = 5;
 
-def Update = fn void(void* userdata);
-def SetPlayerIndex = fn int(void* userdata, int player_index);
-def Rumble = fn int(void* userdata, uint low_frequency_rumble, uint high_frequency_rumble);
-def RumbleTriggers = fn int(void* userdata, uint left_rumble, uint right_rumble);
-def SetLED = fn int(void* userdata, char red, char green, char blue);
-def SendEffect = fn int(void* userdata, void* data, int size);
+alias Update = fn void(void* userdata);
+alias SetPlayerIndex = fn int(void* userdata, int player_index);
+alias Rumble = fn int(void* userdata, uint low_frequency_rumble, uint high_frequency_rumble);
+alias RumbleTriggers = fn int(void* userdata, uint left_rumble, uint right_rumble);
+alias SetLED = fn int(void* userdata, char red, char green, char blue);
+alias SendEffect = fn int(void* userdata, void* data, int size);
 
 struct VirtualJoystickDesc {
 	uint version;
@@ -1200,9 +1200,9 @@ struct VirtualJoystickDesc {
 	SendEffect sendEffect;
 }
 
-def SensorID = int;
+alias SensorID = int;
 
-distinct SensorType = int;
+typedef SensorType = int;
 const SensorType SENSOR_INVALID = -1;
 const SensorType SENSOR_UNKNOWN = 0;
 const SensorType SENSOR_ACCEL = 1;
@@ -1212,8 +1212,8 @@ const SensorType SENSOR_GYRO_L = 4;
 const SensorType SENSOR_ACCEL_R = 5;
 const SensorType SENSOR_GYRO_R = 6;
 
-distinct Sensor_hwdata = void*;
-distinct SensorDriver = void*;
+typedef Sensor_hwdata = void*;
+typedef SensorDriver = void*;
 
 
 struct Sensor
@@ -1234,7 +1234,7 @@ struct Sensor
 	Sensor *next;
 }
 
-distinct GameController = void*;
+typedef GameController = void*;
 
 enum GameControllerType : int
 {
@@ -1277,7 +1277,7 @@ struct GameControllerButtonBind
 	}
 }
 
-distinct GameControllerAxis = int;
+typedef GameControllerAxis = int;
 
 const GameControllerAxis CONTROLLER_AXIS_INVALID = -1;
 const GameControllerAxis CONTROLLER_AXIS_LEFTX = 0;
@@ -1288,7 +1288,7 @@ const GameControllerAxis CONTROLLER_AXIS_TRIGGERLEFT = 4;
 const GameControllerAxis CONTROLLER_AXIS_TRIGGERRIGHT = 5;
 const GameControllerAxis CONTROLLER_AXIS_MAX = 6;
 
-distinct GameControllerButton = int;
+typedef GameControllerButton = int;
 
 const GameControllerButton CONTROLLER_BUTTON_INVALID = -1;
 const GameControllerButton CONTROLLER_BUTTON_A = 0;
@@ -1314,10 +1314,10 @@ const GameControllerButton CONTROLLER_BUTTON_PADDLE4 = 19;
 const GameControllerButton CONTROLLER_BUTTON_TOUCHPAD = 20;
 const GameControllerButton CONTROLLER_BUTTON_MAX = 21;
 
-def TouchID = long;
-def FingerID = long;
+alias TouchID = long;
+alias FingerID = long;
 
-distinct TouchDeviceType = int;
+typedef TouchDeviceType = int;
 const TouchDeviceType CONTROLLER_BINDTYPE_NONE = -1;
 const TouchDeviceType CONTROLLER_BINDTYPE_BUTTON = 0;
 const TouchDeviceType CONTROLLER_BINDTYPE_AXIS = 1;
@@ -1331,9 +1331,9 @@ struct Finger
 	float pressure;
 }
 
-def GestureID = long;
+alias GestureID = long;
 
-distinct EventType = int;
+typedef EventType = int;
 const EventType FIRSTEVENT = 0;
 const EventType QUIT = 256;
 const EventType APP_TERMINATING = 257;
@@ -1708,7 +1708,7 @@ struct UserEvent
 	void* data2;
 }
 
-distinct SysWMmsg = void*;
+typedef SysWMmsg = void*;
 
 struct SysWMEvent
 {
@@ -1760,8 +1760,8 @@ enum EventAction : int
     GETEVENT
 }
 
-def EventFilter = fn int(void* userdata, Event event);
-def Haptic = void*;
+alias EventFilter = fn int(void* userdata, Event event);
+alias Haptic = void*;
 
 struct HapticDirection
 {
@@ -1871,7 +1871,7 @@ union HapticEffect
 	HapticCustom custom;
 }
 
-def Hid_Device = void*;
+alias Hid_Device = void*;
 
 struct Hid_Device_Info
 {
@@ -1898,7 +1898,7 @@ enum HintPriority : int
   SDL_HINT_OVERRIDE
 }
 
-def HintCallback = fn void(void* userdata, char* name, char* oldValue, char* newValue);
+alias HintCallback = fn void(void* userdata, char* name, char* oldValue, char* newValue);
 
 enum LogCategory : int
 {
@@ -1924,7 +1924,7 @@ enum LogCategory : int
 	LOG_CATEGORY_CUSTOM
 }
 
-distinct LogPriority = int;
+typedef LogPriority = int;
 
 const LogPriority LOG_PRIORITY_VERBOSE = 1;
 const LogPriority LOG_PRIORITY_DEBUG = 2;
@@ -1934,9 +1934,9 @@ const LogPriority LOG_PRIORITY_ERROR = 5;
 const LogPriority LOG_PRIORITY_CRITICAL = 6;
 const LogPriority NUM_LOG_PRIORITIES = 7;
 
-def LogOutputFunction = fn void(void* userdata, int category, LogPriority priority, char* message);
+alias LogOutputFunction = fn void(void* userdata, int category, LogPriority priority, char* message);
 
-distinct MessageBoxFlags = int;
+typedef MessageBoxFlags = int;
 
 const MessageBoxFlags MESSAGEBOX_ERROR = 16;
 const MessageBoxFlags MESSAGEBOX_WARNING = 32;
@@ -1944,7 +1944,7 @@ const MessageBoxFlags MESSAGEBOX_INFORMATION = 64;
 const MessageBoxFlags MESSAGEBOX_BUTTONS_LEFT_TO_RIGHT = 128;
 const MessageBoxFlags MESSAGEBOX_BUTTONS_RIGHT_TO_LEFT = 256;
 
-distinct MessageBoxButtonFlags = int;
+typedef MessageBoxButtonFlags = int;
 
 const MessageBoxButtonFlags MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT = 1;
 const MessageBoxButtonFlags MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT = 2;
@@ -1989,7 +1989,7 @@ struct MessageBoxData
 	MessageBoxColorScheme* colorscheme;
 }
 
-distinct MetalView = void*;
+typedef MetalView = void*;
 
 enum PowerState : int
 {
@@ -2000,7 +2000,7 @@ enum PowerState : int
   POWERSTATE_CHARGED
 }
 
-distinct RendererFlags = uint;
+typedef RendererFlags = uint;
 
 const RendererFlags RENDERER_SOFTWARE = 1;
 const RendererFlags RENDERER_ACCELERATED = 2;
@@ -2050,8 +2050,8 @@ enum RendererFlip : int
 	FLIP_VERTICAL
 }
 
-def Renderer = void*;
-def Texture = void*;
+alias Renderer = void*;
+alias Texture = void*;
 
 enum WindowShapeModeEnum : int{
 	SHAPE_MODE_DEFAULT,
@@ -2073,8 +2073,8 @@ struct WindowShapeMode
 	WindowShapeParams parameters;
 }
 
-def TimerCallback = fn uint(uint interval, void* param);
-def TimerID = int;
+alias TimerCallback = fn uint(uint interval, void* param);
+alias TimerID = int;
 
 struct Version
 {
@@ -2325,17 +2325,17 @@ fn void* calloc(usz nmemb, usz size) @extern("SDL_calloc");
 fn void* realloc(void* mem, usz size) @extern("SDL_realloc");
 fn void* free(void* mem) @extern("SDL_free");
 
-def Malloc_func = fn void*(usz size);
-def Calloc_func = fn void*(usz nmemb, usz size);
-def Realloc_func = fn void*(void* mem, usz size);
-def Free_func = fn void(void* mem);
+alias Malloc_func = fn void*(usz size);
+alias Calloc_func = fn void*(usz nmemb, usz size);
+alias Realloc_func = fn void*(void* mem, usz size);
+alias Free_func = fn void(void* mem);
 
 fn void* getoriginalmemoryfunctions(Malloc_func* malloc_Func, Calloc_func* calloc_Func, Realloc_func* realloc_Func, Free_func* free_Func) @extern("SDL_GetMemoryFunctions");
 fn int setMemoryfns(Malloc_func malloc_func, Calloc_func calloc_func, Realloc_func realloc_func, Free_func free_func) @extern("SDL_SetMemoryFunctions");
 fn int getNumAllocations() @extern("SDL_GetNumAllocations");
 fn char* getenv(char* name)  @extern("SDL_getenv");
 fn int setenv(char* name, char* value, int overwrite) @extern("SDL_setenv");
-def Compare = fn int(void* pointer, void* pointer_);
+alias Compare = fn int(void* pointer, void* pointer_);
 fn void qsort(void* base, usz nmemb, usz size, Compare* compare) @extern("SDL_qsort");
 fn void* bsearch(void* key, void* base, usz nmemb, usz size, Compare* compare) @extern("SDL_bsearch");
 fn int abs(int x) @extern("SDL_abs");
@@ -2495,7 +2495,7 @@ fn int condBroadcast(Cond cond) @extern("CondBroadcast");
 fn int condWait(Cond cond, Mutex mutex) @extern("CondWait");
 fn int condWaitTimeout(Cond cond, Mutex mutex, uint ms) @extern("CondWaitTimeout");
 
-def ThreadFn = fn int(void* data);
+alias ThreadFn = fn int(void* data);
 
 fn Thread createThread(ThreadFn thread_fn, char name, void* data) @extern("SDL_CreateThread");
 fn Thread createThreadWithStackSize(ThreadFn thread_fn, char name, usz stacksize, void* data) @extern("SDL_CreateThreadWithStackSize");
@@ -2508,7 +2508,7 @@ fn void* detachThread(Thread* thread) @extern("SDL_DetachThread");
 fn TlSID tlsCreate() @extern("SDL_TLSCreate");
 fn void* tlsGet(TlSID id) @extern("SDL_TLSGet");
 
-def TlsDestructor = fn void(void*);
+alias TlsDestructor = fn void(void*);
 
 fn int tlsSet(TlSID id, void* value, TlsDestructor* destructor) @extern("SDL_TLSSet");
 fn void* tlsCleanup() @extern("SDL_TLSCleanup");

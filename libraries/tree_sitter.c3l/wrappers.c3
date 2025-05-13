@@ -59,12 +59,12 @@ fn QueryFault fault_from_error(QueryError err) @private {
   }
 }
 
-/**
- * Create a new query.
- * @param language "Tree-sitter language to use."
- * @param [in] query "The query string containing one or more S-expression patterns."
- * @param [out] error_offset "Offset of error in query."
- **/
+<*
+ Create a new query.
+ @param language "Tree-sitter language to use."
+ @param [in] query "The query string containing one or more S-expression patterns."
+ @param [out] error_offset "Offset of error in query."
+*>
 fn Query*! new(Language* language, String query, uint* error_offset = null) {
   QueryError error_type;
   Query* result = ts::query_new(language, query.ptr, query.len, error_offset, &error_type);
@@ -74,9 +74,9 @@ fn Query*! new(Language* language, String query, uint* error_offset = null) {
   return result;
 }
 
-/**
- * Delete a query, freeing all of the memory that it used.
- */
+<*
+ Delete a query, freeing all of the memory that it used.
+*>
 fn void delete(Query* query) {
   ts::query_delete(query);
 }
@@ -84,9 +84,9 @@ fn void delete(Query* query) {
 // Query Match
 // -----------------------------
 
-/**
- * Try to get a QueryCapture from a QueryMatch by name.
- **/
+<*
+ Try to get a QueryCapture from a QueryMatch by name.
+*>
 fn QueryCapture! QueryMatch.get_capture(&match, String name, Query* query) {
   for (uint i = 0; i < match.capture_count; i++) {
     QueryCapture capture = match.captures[i];

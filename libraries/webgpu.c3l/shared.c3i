@@ -1,6 +1,6 @@
 module webgpu;
 
-def UserData = void*;
+alias UserData = void*;
 
 const UNDEFINED = ~0u;
 

@@ -1,6 +1,6 @@
 module webgpu;
 
-distinct RenderBundleEncoder = void*;
+typedef RenderBundleEncoder = void*;
 
 
 fn void RenderBundleEncoder.draw(RenderBundleEncoder encoder,

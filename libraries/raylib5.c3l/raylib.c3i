@@ -59,7 +59,7 @@ struct Vector4 @compact
 }
 
 // Quaternion, 4 components (Vector4 alias)
-def Quaternion = Vector4;
+alias Quaternion = Vector4;
 
 // Matrix, 4x4 components, column major, OpenGL style, right handed
 struct Matrix @compact
@@ -109,10 +109,10 @@ struct Texture
 }
 
 // Texture2D, same as Texture
-def Texture2D = Texture;
+alias Texture2D = Texture;
 
 // TextureCubemap, same as Texture
-def TextureCubemap = Texture;
+alias TextureCubemap = Texture;
 
 // RenderTexture, fbo for texture rendering
 struct RenderTexture
@@ -123,7 +123,7 @@ struct RenderTexture
 }
 
 // RenderTexture2D, same as RenderTexture
-def RenderTexture2D = RenderTexture;
+alias RenderTexture2D = RenderTexture;
 
 // NPatchInfo, n-patch layout info
 struct NPatchInfo
@@ -167,7 +167,7 @@ struct Camera3D
     CameraProjection projection;    // Camera projection: CAMERA_PERSPECTIVE or CAMERA_ORTHOGRAPHIC
 }
 
-def Camera = Camera3D;    // Camera type fallback, defaults to Camera3D
+alias Camera = Camera3D;    // Camera type fallback, defaults to Camera3D
 
 // Camera2D, defines position/orientation in 2d space
 struct Camera2D
@@ -301,8 +301,8 @@ struct Wave
     void* data;                 // Buffer data pointer
 }
 
-def AudioBufferRef = void*;
-def AudioProcessorRef = void*;
+alias AudioBufferRef = void*;
+alias AudioProcessorRef = void*;
 
 // AudioStream, custom audio stream
 struct AudioStream
@@ -677,10 +677,10 @@ $assert(NPatchLayout.NINE_PATCH.ordinal == 0);
 
 // Callbacks to hook some internal functions
 // WARNING: This callbacks are intended for advance users
-def LoadFileDataCallback = fn char* (char* fileName, uint* bytesRead);                     // FileIO: Load binary data
-def SaveFileDataCallback = fn bool(char* fileName, void* data, uint bytesToWrite);         // FileIO: Save binary data
-def LoadFileTextCallback = fn char*(char* fileName);                                       // FileIO: Load text data
-def SaveFileTextCallback = fn bool(char* fileName, char* text);                            // FileIO: Save text data
+alias LoadFileDataCallback = fn char* (char* fileName, uint* bytesRead);                     // FileIO: Load binary data
+alias SaveFileDataCallback = fn bool(char* fileName, void* data, uint bytesToWrite);         // FileIO: Save binary data
+alias LoadFileTextCallback = fn char*(char* fileName);                                       // FileIO: Load text data
+alias SaveFileTextCallback = fn bool(char* fileName, char* text);                            // FileIO: Save text data
 
 // Window-related functions
 fn void initWindow(int width, int height, char* title) @extern("InitWindow");              // Initialize window and OpenGL context
@@ -1678,7 +1678,7 @@ fn RayCollision getRayCollisionQuad(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3,
 // Audio Loading and Playing Functions (Module: audio)
 //------------------------------------------------------------------------------------
 
-def AudioCallback = fn void(void* bufferdata, uint frames);
+alias AudioCallback = fn void(void* bufferdata, uint frames);
 
 // Audio device management functions
 // Initialize audio device and context
@@ -1827,10 +1827,10 @@ fn void detachAudioMixedProcessor(AudioCallback processor) @extern("DetachAudioM
 // Additional Raylib.c3 Mode helper macros
 //----------------------------------------------------------------------------------
 
-/**
- * Setup canvas (framebuffer) to start drawing, then calls [block].
- * Drawing will end after [block] has finished.
- */
+<*
+ Setup canvas (framebuffer) to start drawing, then calls [block].
+ Drawing will end after [block] has finished.
+*>
 macro void @drawing(;@body)
 {
   beginDrawing();
@@ -1838,10 +1838,10 @@ macro void @drawing(;@body)
   @body();
 }
 
-/**
- * Setup 2D mode with custom camera to start 2D Mode, then calls [block].
- * Mode2D will end after [block] has finished.
- */
+<*
+ Setup 2D mode with custom camera to start 2D Mode, then calls [block].
+ Mode2D will end after [block] has finished.
+*>
 macro void @mode2D(Camera2D camera ;@body)
 {
   beginMode2D(camera);
@@ -1849,10 +1849,10 @@ macro void @mode2D(Camera2D camera ;@body)
   @body();
 }
 
-/**
- * Setup 3D mode with custom camera to start 2D Mode, then calls [block].
- * Mode2D will end after [block] has finished.
- */
+<*
+ Setup 3D mode with custom camera to start 2D Mode, then calls [block].
+ Mode2D will end after [block] has finished.
+*>
 macro void @mode3D(Camera3D camera ;@body)
 {
   beginMode3D(camera);
@@ -1860,10 +1860,10 @@ macro void @mode3D(Camera3D camera ;@body)
   @body();
 }
 
-/**
- * Setup texture mode to draw to render texture, then calls [block].
- * texture mode will end after [block] has finished.
- */
+<*
+ Setup texture mode to draw to render texture, then calls [block].
+ texture mode will end after [block] has finished.
+*>
 macro void @textureMode(RenderTexture2D texture ;@body)
 {
   beginTextureMode(texture);
@@ -1872,10 +1872,10 @@ macro void @textureMode(RenderTexture2D texture ;@body)
 }
 
 
-/**
- * Setup custom shqder mode then calls [block].
- * shader mode will end after [block] has finished.
- */
+<*
+ Setup custom shqder mode then calls [block].
+ shader mode will end after [block] has finished.
+*>
 macro void @shaderMode(Shader shader ;@body)
 {
   beginShaderMode(shader);
@@ -1883,21 +1883,21 @@ macro void @shaderMode(Shader shader ;@body)
   @body();
 }
 
-/**
- * Setup blending mode, then calls [block].
- * blend mode will end after [block] has finished.
- */
+<*
+ Setup blending mode, then calls [block].
+ blend mode will end after [block] has finished.
+*>
 macro void @blendMode(BlendMode mode ;@body)
 {
-  beginShaderMode(mode);
-  defer endShaderMode();
+  beginBlendMode((int)mode);
+  defer endBlendMode();
   @body();
 }
 
-/**
- * Setup scissor mode then calls [block].
- * scissor mode will end after [block] has finished.
- */
+<*
+ Setup scissor mode then calls [block].
+ scissor mode will end after [block] has finished.
+*>
 macro void @scissorMode(int x, int y, int width, int height ;@body)
 {
   beginScissorMode(x, y, width, height);
@@ -1905,10 +1905,10 @@ macro void @scissorMode(int x, int y, int width, int height ;@body)
   @body();
 }
 
-/**
- * Setup stereo rendering mode, then calls [block].
- * stereo rendering mode will end after [block] has finished.
- */
+<*
+ Setup stereo rendering mode, then calls [block].
+ stereo rendering mode will end after [block] has finished.
+*>
 macro void @vrMode(VrStereoConfig config ;@body)
 {
   beginVrStereoMode(config);
@@ -1923,7 +1923,7 @@ macro void @vrMode(VrStereoConfig config ;@body)
 // NOTE: Every bit registers one state (use it with bit masks)
 // By default all flags are set to 0
 
-distinct ConfigFlag = uint;
+typedef ConfigFlag = uint;
 
 const ConfigFlag FLAG_VSYNC_HINT         = 0x00000040;   // Set to try enabling V-Sync on GPU
 const ConfigFlag FLAG_FULLSCREEN_MODE    = 0x00000002;   // Set to run program in fullscreen
@@ -1944,7 +1944,7 @@ const ConfigFlag FLAG_INTERLACED_HINT    = 0x00010000;   // Set to try enabling 
 // NOTE: Use GetKeyPressed() to allow redefining
 // required keys for alternative layouts
 
-distinct KeyboardKey = int;
+typedef KeyboardKey = int;
 
 const KeyboardKey KEY_NULL            = 0;        // Key: NULL; used for no key pressed
 // Alphanumeric keys
@@ -2061,7 +2061,7 @@ const KeyboardKey KEY_MENU            = 82;       // Key: Android menu button
 const KeyboardKey KEY_VOLUME_UP       = 24;       // Key: Android volume up button
 const KeyboardKey KEY_VOLUME_DOWN     = 25;       // Key: Android volume down button
 
-distinct Gesture = int;
+typedef Gesture = int;
 // Gesture
 // NOTE: It could be used as flags to enable only some gestures
 const Gesture GESTURE_NONE        = 0;      // No gesture

@@ -1,6 +1,6 @@
 module webgpu;
 
-distinct Instance = void*;
+typedef Instance = void*;
 
 fn Surface Instance.createSurface(Instance instance,
     SurfaceDescriptor* descriptor) @extern("wgpuInstanceCreateSurface");
@@ -19,7 +19,7 @@ fn void Instance.reference(Instance instance) @extern("wgpuInstanceReference");
 fn void Instance.release(Instance instance) @extern("wgpuInstanceRelease");
 
 
-def RequestAdapterCallback = fn void(RequestAdapterStatus status,
+alias RequestAdapterCallback = fn void(RequestAdapterStatus status,
     Adapter adapter, ZString message, UserData result);
 
 

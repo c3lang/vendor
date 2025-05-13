@@ -1,6 +1,6 @@
 module webgpu;
 
-distinct Buffer = void*;
+typedef Buffer = void*;
 
 fn void Buffer.destroy(Buffer buffer) @extern("wgpuBufferDestroy");
 
@@ -26,9 +26,9 @@ fn void Buffer.reference(Buffer buffer) @extern("wgpuBufferReference");
 fn void Buffer.release(Buffer buffer) @extern("wgpuBufferRelease");
 
 
-def BufferMapAsyncCallback = fn void(BufferMapAsyncStatus status, UserData data);
+alias BufferMapAsyncCallback = fn void(BufferMapAsyncStatus status, UserData data);
 
-distinct BufferMappedRange = void*;
+typedef BufferMappedRange = void*;
 
 
 struct BufferDescriptor {

@@ -1,8 +1,8 @@
 module webgpu;
 
-distinct Queue = void*;
+typedef Queue = void*;
 
-def BufferData = void*;
+alias BufferData = void*;
 
 fn void Queue.onSubmittedWorkDone(Queue queue, SubmittedWorkDoneCallback callback,
     UserData data) @extern("wgpuQueueOnSubmittedWorkDone");
@@ -21,7 +21,7 @@ fn void Queue.reference(Queue queue) @extern("wgpuQueueReference");
 fn void Queue.release(Queue queue) @extern("wgpuQueueRelease");
 
 
-def SubmittedWorkDoneCallback = fn void(QueueWorkDoneStatus status, UserData data);
+alias SubmittedWorkDoneCallback = fn void(QueueWorkDoneStatus status, UserData data);
 
 struct QueueDescriptor {
     ChainedStruct* next;

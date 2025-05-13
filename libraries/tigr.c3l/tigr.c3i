@@ -211,7 +211,7 @@ struct Font
 	Glyph *glyphs;
 }
 
-distinct TCodepage = int;
+typedef TCodepage = int;
 const TCodepage TCP_ASCII = 0;
 const TCodepage TCP_1252 = 1252;
 const TCodepage TCP_UTF32 = 12001;
@@ -247,7 +247,7 @@ fn int textHeight(Font *font, char* text) @extern("tigrTextHeight");
 
 extern Font *tfont;
 
-distinct TKey = int;
+typedef TKey = int;
 const TKey TK_PAD0 = 128;
 const TKey TK_PAD1 = 129;
 const TKey TK_PAD2 = 130;

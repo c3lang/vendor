@@ -1,6 +1,6 @@
 module webgpu;
 
-distinct RenderBundle = void*;
+typedef RenderBundle = void*;
 
 fn void RenderBundle.setLabel(RenderBundle bundle, ZString label) @extern("wgpuRenderBundleSetLabel");
 

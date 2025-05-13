@@ -1,6 +1,6 @@
 module webgpu;
 
-distinct RenderPipeline = void*;
+typedef RenderPipeline = void*;
 
 
 fn BindGroupLayout RenderPipeline.getBindGroupLayout(RenderPipeline pipeline,
