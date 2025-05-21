@@ -9,8 +9,6 @@ macro int gl_version() @public
     $endif
 }
 
-
-
 module opengl::gl;
 
 /* Global type definitions */
@@ -64,11 +62,19 @@ alias Ext_GLVULKANPROCNV = fn void();
 alias GLLoadFn = fn void*(char*);
 
 module opengl;
-import opengl::internal;
-import opengl::gl;
-macro loadGL(GLLoadFn load) {
-    return gl::load_gl_internal(load);
+import opengl::internal, opengl::gl;
+
+macro loadGL(GLLoadFn load) @deprecated("Use opengl::init")
+{
+	return gl::load_gl_internal(load);
 }
 
+faultdef GL_INIT_FAILED;
+fn int? init(GLLoadFn load)
+{
+	int version = gl::load_gl_internal(load);
+	if (version == 0) return GL_INIT_FAILED?;
+	return version;
+}
 
 
