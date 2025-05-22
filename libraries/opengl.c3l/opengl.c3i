@@ -70,7 +70,7 @@ macro loadGL(GLLoadFn load) @deprecated("Use opengl::init")
 }
 
 faultdef GL_INIT_FAILED;
-fn int? init(GLLoadFn load)
+macro int? init(GLLoadFn load)
 {
 	int version = gl::load_gl_internal(load);
 	if (version == 0) return GL_INIT_FAILED?;
