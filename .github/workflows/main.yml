@@ -99,6 +99,15 @@ jobs:
           asset_name: raylib55.c3l
           asset_content_type: application/zip
 
+      - name: upload box2d
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: packages/box2d.c3l
+          asset_name: box2d.c3l
+          asset_content_type: application/zip
 
       - name: upload sdl2
         uses: actions/upload-release-asset@v1
