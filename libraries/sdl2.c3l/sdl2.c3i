@@ -134,7 +134,7 @@ struct RWops
 	}
 }
 
-alias AudioFormat = int;
+alias AudioFormat = ushort;
 
 alias AudioCallback = fn void(void *userdata, char* stream, int len);
 
@@ -144,8 +144,8 @@ struct AudioSpec
 	AudioFormat format;
 	char channels;
 	char silence;
-	uint samples;
-	uint padding;
+	ushort samples;
+	ushort padding;
 	uint size;
 	AudioCallback callback;
 	void *userdata;
