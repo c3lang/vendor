@@ -2,9 +2,7 @@ module webgpu;
 
 typedef Adapter = void*;
 
-fault AdapterError {
-    REQUEST_FAILED
-}
+faultdef ADAPTER_REQUEST_FAILED;
 
 fn usz Adapter.enumerateFeatures(Adapter adapter, FeatureName* features) @extern("wgpuAdapterEnumerateFeatures");
 

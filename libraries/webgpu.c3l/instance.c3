@@ -1,7 +1,7 @@
 module webgpu;
 import std::io;
 
-fn Adapter! Instance.requestAdapter(Instance instance, RequestAdapterOptions* options) {
+fn Adapter? Instance.requestAdapter(Instance instance, RequestAdapterOptions* options) {
 
     Adapter adapter = null;
 
@@ -18,6 +18,6 @@ fn Adapter! Instance.requestAdapter(Instance instance, RequestAdapterOptions* op
     if(adapter) {
         return adapter;
     } else {
-        return AdapterError.REQUEST_FAILED?;
+        return ADAPTER_REQUEST_FAILED?;
     }
 }

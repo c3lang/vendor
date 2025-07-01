@@ -1,6 +1,6 @@
 module webgpu;
 
-fn Device! Adapter.requestDevice(Adapter adapter, DeviceDescriptor* descriptor = null) {
+fn Device? Adapter.requestDevice(Adapter adapter, DeviceDescriptor* descriptor = null) {
 
     Device device = null;
 
@@ -17,6 +17,6 @@ fn Device! Adapter.requestDevice(Adapter adapter, DeviceDescriptor* descriptor =
     if(device) {
         return device;
     } else {
-        return DeviceError.REQUEST_FAILED?;
+        return DEVICE_REQUEST_FAILED?;
     }
 }

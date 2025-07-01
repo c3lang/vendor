@@ -2,9 +2,7 @@ module webgpu;
 
 typedef Device = void*;
 
-fault DeviceError {
-    REQUEST_FAILED
-}
+faultdef DEVICE_REQUEST_FAILED;
 
 fn void* getProcAddress(Device device, ZString name) @extern("wgpuGetProcAddress");
 
