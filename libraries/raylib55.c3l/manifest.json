@@ -14,12 +14,12 @@
     "linux-x64" : {
       "link-args" : [],
       "dependencies" : [],
-      "linked-libraries" : ["raylib"]
+      "linked-libraries" : ["m", "raylib"]
     },
     "freebsd-x64" : {
       "link-args" : [],
       "dependencies" : [],
-      "linked-libraries" : ["raylib"]
+      "linked-libraries" : ["m","raylib"]
     },
 	  "windows-x64" : {
 		  "linked-libraries" : ["raylib", "gdi32", "winmm"],
