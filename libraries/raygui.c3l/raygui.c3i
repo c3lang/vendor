@@ -1,5 +1,6 @@
 module raygui::rg;
 import raylib5::rl;
+import std::io;
 
 const RAYGUI_VERSION_MAJOR = 4;
 const RAYGUI_VERSION_MINOR = 0;
@@ -179,7 +180,7 @@ extern fn CInt guiColorPanelHSV(Rectangle bounds, char *text, Vector3 *colorHsv)
 // NOTE(HM) zstr is the ID string for the "#iconID#sometext" ability.
 // If you need the id as a integer, use the enum ordinal, like so:
 // FILE_OPEN.ordinal;
-enum GuiIconName : int (inline ZString zstr)  {
+enum GuiIconName : CInt (ZString icon_id)  {
 	ICON_NONE                = "#0#",
 	FOLDER_FILE_OPEN         = "#1#",
 	FILE_SAVE_CLASSIC        = "#2#",
