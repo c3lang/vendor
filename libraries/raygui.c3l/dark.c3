@@ -547,15 +547,16 @@ const GlyphInfo[DARK_FONT_RECS.len] DARK_FONT_GLYPHS = {
     { 255, 1, 4, 7, {}},
 };
 
+$assert DARK_SIZE_PROPS.len == DARK_STYLE_PROPS_COUNT;
 // Style loading function: Dark
 fn void load()
 {
     // Load style properties provided
     // NOTE: Default properties are propagated
-    for (int i = 0; i < DARK_STYLE_PROPS_COUNT; i++)
-    {
-        rg::guiSetStyle(DARK_SIZE_PROPS[i].controlId, DARK_SIZE_PROPS[i].propertyId, DARK_SIZE_PROPS[i].propertyValue);
-    }
+	foreach (prop : DARK_SIZE_PROPS[:DARK_STYLE_PROPS_COUNT])
+	{
+		rg::guiSetStyle(prop.controlId, prop.propertyId, prop.propertyValue);
+	}
 
     // Custom font loading
     // NOTE: Compressed font image data (DEFLATE), it requires DecompressData() function
@@ -563,9 +564,7 @@ fn void load()
     char *data = rl::decompressData(&DARK_FONT_DATA, DARK_STYLE_FONT_ATLAS_COMP_SIZE, &darkFontDataSize);
     Image imFont = { data, 512, 256, 1, UNCOMPRESSED_GRAY_ALPHA };
 
-    Font font = {};
-    font.baseSize = 16;
-    font.glyphCount = DARK_FONT_RECS.len;
+    Font font = {.baseSize = 16, .glyphCount = DARK_FONT_GLYPHS.len};
 
     // Load texture from image
     font.texture = rl::loadTextureFromImage(imFont);
@@ -574,12 +573,12 @@ fn void load()
     // Copy char recs data from global fontRecs
     // NOTE: Required to avoid issues if trying to free font
     font.recs = mem::new_array(Rectangle, font.glyphCount);
-    font.recs[0:font.glyphCount] = DARK_FONT_RECS;
+    font.recs[0:font.glyphCount] = DARK_FONT_RECS[..];
 
     // Copy font char info data from global fontChars
     // NOTE: Required to avoid issues if trying to free font
     font.glyphs = mem::new_array(GlyphInfo, font.glyphCount);
-    font.glyphs[0:font.glyphCount] = DARK_FONT_GLYPHS;
+    font.glyphs[0:font.glyphCount] = DARK_FONT_GLYPHS[..];
 
     rg::guiSetFont(font);
 
