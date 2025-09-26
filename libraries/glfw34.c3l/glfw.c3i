@@ -1,0 +1,602 @@
+
+module glfw;
+
+/*************************************************************************
+ * GLFW API tokens
+ *************************************************************************/
+
+const int VERSION_MAJOR     = 3; 
+const int VERSION_MINOR     = 4;
+const int VERSION_REVISION  = 0;
+const int TRUE              = 1;
+const int FALSE             = 0;
+
+const uint RELEASE          = 0;
+const uint PRESS            = 1;
+const uint REPEAT           = 2;
+const uint HAT_CENTERED     = 0;
+const uint HAT_UP           = 1;
+const uint HAT_RIGHT        = 2;
+const uint HAT_DOWN         = 4;
+const uint HAT_LEFT         = 8;
+const uint HAT_RIGHT_UP     = (HAT_RIGHT | HAT_UP);
+const uint HAT_RIGHT_DOWN   = (HAT_RIGHT | HAT_DOWN);
+const uint HAT_LEFT_UP      = (HAT_LEFT | HAT_UP);
+const uint HAT_LEFT_DOWN    = (HAT_LEFT | HAT_DOWN);
+
+const int KEY_UNKNOWN       = -1;
+
+/* Printable keys */
+const int KEY_SPACE         = 32;
+const int KEY_APOSTROPHE    = 39;  /* ' */
+const int KEY_COMMA         = 44;  /* , */
+const int KEY_MINUS         = 45;  /* - */
+const int KEY_PERIOD        = 46;  /* . */
+const int KEY_SLASH         = 47;  /* / */
+const int KEY_0             = 48;
+const int KEY_1             = 49;
+const int KEY_2             = 50;
+const int KEY_3             = 51;
+const int KEY_4             = 52;
+const int KEY_5             = 53;
+const int KEY_6             = 54;
+const int KEY_7             = 55;
+const int KEY_8             = 56;
+const int KEY_9             = 57;
+const int KEY_SEMICOLON     = 59;  /* ; */
+const int KEY_EQUAL         = 61;  /* = */
+const int KEY_A             = 65;
+const int KEY_B             = 66;
+const int KEY_C             = 67;
+const int KEY_D             = 68;
+const int KEY_E             = 69;
+const int KEY_F             = 70;
+const int KEY_G             = 71;
+const int KEY_H             = 72;
+const int KEY_I             = 73;
+const int KEY_J             = 74;
+const int KEY_K             = 75;
+const int KEY_L             = 76;
+const int KEY_M             = 77;
+const int KEY_N             = 78;
+const int KEY_O             = 79;
+const int KEY_P             = 80;
+const int KEY_Q             = 81;
+const int KEY_R             = 82;
+const int KEY_S             = 83;
+const int KEY_T             = 84;
+const int KEY_U             = 85;
+const int KEY_V             = 86;
+const int KEY_W             = 87;
+const int KEY_X             = 88;
+const int KEY_Y             = 89;
+const int KEY_Z             = 90;
+const int KEY_LEFT_BRACKET  = 91;  /* [ */
+const int KEY_BACKSLASH     = 92;  /* \ */
+const int KEY_RIGHT_BRACKET = 93;  /* ] */
+const int KEY_GRAVE_ACCENT  = 96;  /* ` */
+const int KEY_WORLD_1       = 161; /* non-US #1 */
+const int KEY_WORLD_2       = 162; /* non-US #2 */
+
+
+/* Function keys */
+const int KEY_ESCAPE           = 256;
+const int KEY_ENTER            = 257;
+const int KEY_TAB              = 258;
+const int KEY_BACKSPACE        = 259;
+const int KEY_INSERT           = 260;
+const int KEY_DELETE           = 261;
+const int KEY_RIGHT            = 262;
+const int KEY_LEFT             = 263;
+const int KEY_DOWN             = 264;
+const int KEY_UP               = 265;
+const int KEY_PAGE_UP          = 266;
+const int KEY_PAGE_DOWN        = 267;
+const int KEY_HOME             = 268;
+const int KEY_END              = 269;
+const int KEY_CAPS_LOCK        = 280;
+const int KEY_SCROLL_LOCK      = 281;
+const int KEY_NUM_LOCK         = 282;
+const int KEY_PRINT_SCREEN     = 283;
+const int KEY_PAUSE            = 284;
+const int KEY_F1               = 290;
+const int KEY_F2               = 291;
+const int KEY_F3               = 292;
+const int KEY_F4               = 293;
+const int KEY_F5               = 294;
+const int KEY_F6               = 295;
+const int KEY_F7               = 296;
+const int KEY_F8               = 297;
+const int KEY_F9               = 298;
+const int KEY_F10              = 299;
+const int KEY_F11              = 300;
+const int KEY_F12              = 301;
+const int KEY_F13              = 302;
+const int KEY_F14              = 303;
+const int KEY_F15              = 304;
+const int KEY_F16              = 305;
+const int KEY_F17              = 306;
+const int KEY_F18              = 307;
+const int KEY_F19              = 308;
+const int KEY_F20              = 309;
+const int KEY_F21              = 310;
+const int KEY_F22              = 311;
+const int KEY_F23              = 312;
+const int KEY_F24              = 313;
+const int KEY_F25              = 314;
+const int KEY_KP_0             = 320;
+const int KEY_KP_1             = 321;
+const int KEY_KP_2             = 322;
+const int KEY_KP_3             = 323;
+const int KEY_KP_4             = 324;
+const int KEY_KP_5             = 325;
+const int KEY_KP_6             = 326;
+const int KEY_KP_7             = 327;
+const int KEY_KP_8             = 328;
+const int KEY_KP_9             = 329;
+const int KEY_KP_DECIMAL       = 330;
+const int KEY_KP_DIVIDE        = 331;
+const int KEY_KP_MULTIPLY      = 332;
+const int KEY_KP_SUBTRACT      = 333;
+const int KEY_KP_ADD           = 334;
+const int KEY_KP_ENTER         = 335;
+const int KEY_KP_EQUAL         = 336;
+const int KEY_LEFT_SHIFT       = 340;
+const int KEY_LEFT_CONTROL     = 341;
+const int KEY_LEFT_ALT         = 342;
+const int KEY_LEFT_SUPER       = 343;
+const int KEY_RIGHT_SHIFT      = 344;
+const int KEY_RIGHT_CONTROL    = 345;
+const int KEY_RIGHT_ALT        = 346;
+const int KEY_RIGHT_SUPER      = 347;
+const int KEY_MENU             = 348;
+
+const int KEY_LAST             = KEY_MENU;
+ 
+const int MOD_SHIFT         = 0x0001;
+const int MOD_CONTROL       = 0x0002;
+const int MOD_ALT           = 0x0004;
+const int MOD_SUPER         = 0x0008;
+const int MOD_CAPS_LOCK     = 0x0010;
+const int MOD_NUM_LOCK      = 0x0020;
+
+const int MOUSE_BUTTON_1       = 0;
+const int MOUSE_BUTTON_2       = 1;
+const int MOUSE_BUTTON_3       = 2;
+const int MOUSE_BUTTON_4       = 3;
+const int MOUSE_BUTTON_5       = 4;
+const int MOUSE_BUTTON_6       = 5;
+const int MOUSE_BUTTON_7       = 6;
+const int MOUSE_BUTTON_8       = 7;
+const int MOUSE_BUTTON_LAST    = MOUSE_BUTTON_8;
+const int MOUSE_BUTTON_LEFT    = MOUSE_BUTTON_1;
+const int MOUSE_BUTTON_RIGHT   = MOUSE_BUTTON_2;
+const int MOUSE_BUTTON_MIDDLE  = MOUSE_BUTTON_3;
+const int JOYSTICK_1           = 0;
+const int JOYSTICK_2           = 1;
+const int JOYSTICK_3           = 2;
+const int JOYSTICK_4           = 3;
+const int JOYSTICK_5           = 4;
+const int JOYSTICK_6           = 5;
+const int JOYSTICK_7           = 6;
+const int JOYSTICK_8           = 7;
+const int JOYSTICK_9           = 8;
+const int JOYSTICK_10          = 9;
+const int JOYSTICK_11          = 10;
+const int JOYSTICK_12          = 11;
+const int JOYSTICK_13          = 12;
+const int JOYSTICK_14          = 13;
+const int JOYSTICK_15          = 14;
+const int JOYSTICK_16          = 15;
+const int JOYSTICK_LAST        = JOYSTICK_16;
+const int GAMEPAD_BUTTON_A             = 0;
+const int GAMEPAD_BUTTON_B             = 1;
+const int GAMEPAD_BUTTON_X             = 2;
+const int GAMEPAD_BUTTON_Y             = 3;
+const int GAMEPAD_BUTTON_LEFT_BUMPER   = 4;
+const int GAMEPAD_BUTTON_RIGHT_BUMPER  = 5;
+const int GAMEPAD_BUTTON_BACK          = 6;
+const int GAMEPAD_BUTTON_START         = 7;
+const int GAMEPAD_BUTTON_GUIDE         = 8;
+const int GAMEPAD_BUTTON_LEFT_THUMB    = 9;
+const int GAMEPAD_BUTTON_RIGHT_THUMB   = 10;
+const int GAMEPAD_BUTTON_DPAD_UP       = 11;
+const int GAMEPAD_BUTTON_DPAD_RIGHT    = 12;
+const int GAMEPAD_BUTTON_DPAD_DOWN     = 13;
+const int GAMEPAD_BUTTON_DPAD_LEFT     = 14;
+const int GAMEPAD_BUTTON_LAST          = GAMEPAD_BUTTON_DPAD_LEFT;
+
+const int GAMEPAD_BUTTON_CROSS       = GAMEPAD_BUTTON_A;
+const int GAMEPAD_BUTTON_CIRCLE      = GAMEPAD_BUTTON_B;
+const int GAMEPAD_BUTTON_SQUARE      = GAMEPAD_BUTTON_X;
+const int GAMEPAD_BUTTON_TRIANGLE    = GAMEPAD_BUTTON_Y;
+const int GAMEPAD_AXIS_LEFT_X        = 0;
+const int GAMEPAD_AXIS_LEFT_Y        = 1;
+const int GAMEPAD_AXIS_RIGHT_X       = 2;
+const int GAMEPAD_AXIS_RIGHT_Y       = 3;
+const int GAMEPAD_AXIS_LEFT_TRIGGER  = 4;
+const int GAMEPAD_AXIS_RIGHT_TRIGGER = 5;
+const int GAMEPAD_AXIS_LAST          = GAMEPAD_AXIS_RIGHT_TRIGGER;
+const int NO_ERROR                = 0;
+const int NOT_INITIALIZED         = 0x00010001;
+const int NO_CURRENT_CONTEXT      = 0x00010002;
+const int INVALID_ENUM            = 0x00010003;
+const int INVALID_VALUE           = 0x00010004;
+const int OUT_OF_MEMORY           = 0x00010005;
+const int API_UNAVAILABLE         = 0x00010006;
+const int VERSION_UNAVAILABLE     = 0x00010007;
+const int PLATFORM_ERROR          = 0x00010008;
+const int FORMAT_UNAVAILABLE      = 0x00010009;
+const int NO_WINDOW_CONTEXT       = 0x0001000A;
+const int CURSOR_UNAVAILABLE      = 0x0001000B;
+const int FEATURE_UNAVAILABLE     = 0x0001000C;
+const int FEATURE_UNIMPLEMENTED   = 0x0001000D;
+const int PLATFORM_UNAVAILABLE    = 0x0001000E;
+const int FOCUSED                 = 0x00020001;
+const int ICONIFIED               = 0x00020002;
+const int RESIZABLE               = 0x00020003;
+const int VISIBLE                 = 0x00020004;
+const int DECORATED               = 0x00020005;
+const int AUTO_ICONIFY            = 0x00020006;
+const int FLOATING                = 0x00020007;
+const int MAXIMIZED               = 0x00020008;
+const int CENTER_CURSOR           = 0x00020009;
+const int TRANSPARENT_FRAMEBUFFER = 0x0002000A;
+const int HOVERED                 = 0x0002000B;
+const int FOCUS_ON_SHOW           = 0x0002000C;
+const int MOUSE_PASSTHROUGH       = 0x0002000D;
+const int POSITION_X              = 0x0002000E;
+const int POSITION_Y              = 0x0002000F;
+
+const int RED_BITS             = 0x00021001;
+const int GREEN_BITS           = 0x00021002;
+const int BLUE_BITS            = 0x00021003;
+const int ALPHA_BITS           = 0x00021004;
+const int DEPTH_BITS           = 0x00021005;
+const int STENCIL_BITS         = 0x00021006;
+const int ACCUM_RED_BITS       = 0x00021007;
+const int ACCUM_GREEN_BITS     = 0x00021008;
+const int ACCUM_BLUE_BITS      = 0x00021009;
+const int ACCUM_ALPHA_BITS     = 0x0002100A;
+const int AUX_BUFFERS          = 0x0002100B;
+const int STEREO               = 0x0002100C;
+const int SAMPLES              = 0x0002100D;
+const int SRGB_CAPABLE         = 0x0002100E;
+const int REFRESH_RATE         = 0x0002100F;
+const int DOUBLEBUFFER         = 0x00021010;
+
+const int CLIENT_API               = 0x00022001;
+const int CONTEXT_VERSION_MAJOR    = 0x00022002;
+const int CONTEXT_VERSION_MINOR    = 0x00022003;
+const int CONTEXT_REVISION         = 0x00022004;
+const int CONTEXT_ROBUSTNESS       = 0x00022005;
+const int OPENGL_FORWARD_COMPAT    = 0x00022006;
+const int CONTEXT_DEBUG            = 0x00022007;
+const int OPENGL_DEBUG_CONTEXT     = CONTEXT_DEBUG;
+const int OPENGL_PROFILE           = 0x00022008;
+const int CONTEXT_RELEASE_BEHAVIOR = 0x00022009;
+const int CONTEXT_NO_ERROR         = 0x0002200A;
+const int CONTEXT_CREATION_API     = 0x0002200B;
+const int SCALE_TO_MONITOR         = 0x0002200C;
+const int SCALE_FRAMEBUFFER        = 0x0002200D;
+const int COCOA_RETINA_FRAMEBUFFER = 0x00023001;
+const int COCOA_FRAME_NAME         = 0x00023002;
+const int COCOA_GRAPHICS_SWITCHING = 0x00023003;
+const int X11_CLASS_NAME           = 0x00024001;
+const int X11_INSTANCE_NAME        = 0x00024002;
+const int WIN32_KEYBOARD_MENU      = 0x00025001;
+const int WIN32_SHOWDEFAULT        = 0x00025002;
+const int WAYLAND_APP_ID           = 0x00026001;
+const int NO_API                   =          0;
+const int OPENGL_API               = 0x00030001;
+const int OPENGL_ES_API            = 0x00030002;
+
+const int NO_ROBUSTNESS         =          0;
+const int NO_RESET_NOTIFICATION = 0x00031001;
+const int LOSE_CONTEXT_ON_RESET = 0x00031002;
+
+const int OPENGL_ANY_PROFILE    =          0;
+const int OPENGL_CORE_PROFILE   = 0x00032001;
+const int OPENGL_COMPAT_PROFILE = 0x00032002;
+
+const int CURSOR                = 0x00033001;
+const int STICKY_KEYS           = 0x00033002;
+const int STICKY_MOUSE_BUTTONS  = 0x00033003;
+const int LOCK_KEY_MODS         = 0x00033004;
+const int RAW_MOUSE_MOTION      = 0x00033005;
+
+const int CURSOR_NORMAL         = 0x00034001;
+const int CURSOR_HIDDEN         = 0x00034002;
+const int CURSOR_DISABLED       = 0x00034003;
+const int CURSOR_CAPTURED       = 0x00034004;
+
+const int ANY_RELEASE_BEHAVIOR   =          0;
+const int RELEASE_BEHAVIOR_FLUSH = 0x00035001;
+const int RELEASE_BEHAVIOR_NONE  = 0x00035002;
+
+const int NATIVE_CONTEXT_API    = 0x00036001;
+const int EGL_CONTEXT_API       = 0x00036002;
+const int OSMESA_CONTEXT_API    = 0x00036003;
+
+const int ANGLE_PLATFORM_TYPE_NONE     = 0x00037001;
+const int ANGLE_PLATFORM_TYPE_OPENGL   = 0x00037002;
+const int ANGLE_PLATFORM_TYPE_OPENGLES = 0x00037003;
+const int ANGLE_PLATFORM_TYPE_D3D9     = 0x00037004;
+const int ANGLE_PLATFORM_TYPE_D3D11    = 0x00037005;
+const int ANGLE_PLATFORM_TYPE_VULKAN   = 0x00037007;
+const int ANGLE_PLATFORM_TYPE_METAL    = 0x00037008;
+
+const int WAYLAND_PREFER_LIBDECOR  = 0x00038001;
+const int WAYLAND_DISABLE_LIBDECOR = 0x00038002;
+
+const ANY_POSITION = 0x80000000;
+
+const int ARROW_CURSOR          = 0x00036001;
+const int IBEAM_CURSOR          = 0x00036002;
+const int CROSSHAIR_CURSOR      = 0x00036003;
+const int POINTING_HAND_CURSOR  = 0x00036004;
+const int RESIZE_EW_CURSOR      = 0x00036005;
+const int RESIZE_NS_CURSOR      = 0x00036006;
+const int RESIZE_NWSE_CURSOR    = 0x00036007;
+const int RESIZE_NESW_CURSOR    = 0x00036008;
+const int RESIZE_ALL_CURSOR     = 0x00036009;
+const int NOT_ALLOWED_CURSOR    = 0x0003600A;
+const int HRESIZE_CURSOR        = RESIZE_EW_CURSOR;
+const int VRESIZE_CURSOR        = RESIZE_NS_CURSOR;
+const int HAND_CURSOR           = POINTING_HAND_CURSOR;
+const int CONNECTED             = 0x00040001;
+const int DISCONNECTED          = 0x00040002;
+
+const int JOYSTICK_HAT_BUTTONS   = 0x00050001;
+const int ANGLE_PLATFORM_TYPE    = 0x00050002;
+const int PLATFORM               = 0x00050003;
+const int COCOA_CHDIR_RESOURCES  = 0x00051001;
+const int COCOA_MENUBAR          = 0x00051002;
+const int X11_XCB_VULKAN_SURFACE = 0x00052001;
+const int WAYLAND_LIBDECOR       = 0x00053001;
+
+const int GLFW_ANY_PLATFORM          = 0x00060000;
+const int GLFW_PLATFORM_WIN32        = 0x00060001;
+const int GLFW_PLATFORM_COCOA        = 0x00060002;
+const int GLFW_PLATFORM_WAYLAND      = 0x00060003;
+const int GLFW_PLATFORM_X11          = 0x00060004;
+const int GLFW_PLATFORM_NULL         = 0x00060005;
+
+const int DONT_CARE             = -1;
+
+
+/*************************************************************************
+ * GLFW API types
+ *************************************************************************/
+ 
+alias GlfwGlProc = fn void();
+alias GlfwVkProc = fn void();
+alias GlfwMonitor = void;
+alias GlfwWindow = void;
+alias GlfwCursor = void;
+
+alias GlfwAllocateFn = fn void*(usz size, void* user);
+alias GlfwReallocateFn = fn void*(void* block, usz size, void* user);
+alias GlfwDeallocateFn = fn void(void* block, void* user);
+alias GlfwErrorFn = fn void(int error_code, ZString description);
+
+alias GlfwWindowPosFn            = fn void(GlfwWindow* window, int xpos, int ypos);
+alias GlfwWindowSizeFn           = fn void(GlfwWindow* window, int width, int height);
+alias GlfwWindowCloseFn          = fn void(GlfwWindow* window);
+alias GlfwWindowRefreshFn        = fn void(GlfwWindow* window);
+alias GlfwWindowFocusFn          = fn void(GlfwWindow* window, int focused);
+alias GlfwWindowIconifyFn        = fn void(GlfwWindow* window, int iconified);
+alias GlfwWindowMaximizeFn       = fn void(GlfwWindow* window, int maximized);
+alias GlfwFramebufferSizeFn      = fn void(GlfwWindow* window, int width, int height);
+alias GlfwWindowContentScaleFn   = fn void(GlfwWindow* window, float xscale, float yscale);
+alias GlfwMouseButtonFn          = fn void(GlfwWindow* window, int button, int action, int mods);
+alias GlfwCursorPosFn            = fn void(GlfwWindow* window, double xpos, double ypos);
+alias GlfwCursorEnterFn          = fn void(GlfwWindow* window, int entered);
+alias GlfwScrollFn               = fn void(GlfwWindow* window, double xoffset, double yoffset);
+alias GlfwKeyFn                  = fn void(GlfwWindow* window, int key, int scancode, int action, int mods);
+alias GlfwCharFn                 = fn void(GlfwWindow* window, uint codepoint);
+alias GlfwCharModsFn             = fn void(GlfwWindow* window, uint codepoint, int mods);
+alias GlfwDropFn                 = fn void(GlfwWindow* window, int path_count, ZString[] paths);
+alias GlfwMonitorFn              = fn void(GlfwMonitor* monitor, int event);
+alias GlfwJoystickFn             = fn void(int jid, int event);
+ 
+struct GlfwVidMode
+{
+	int width;
+	int height;
+	int redBits;
+	int greenBits;
+	int blueBits;
+	int refreshRate;
+}
+
+struct GlfwGammaRamp
+{
+	ushort* red;
+	ushort* green;
+	ushort* blue;
+	uint size;
+}
+ 
+struct GlfwImage
+{
+	int width;
+	int height;
+	ZString pixels;
+}
+ 
+struct GlfwGamepadState
+{
+	char[15] buttons;
+	float[6] axes;
+}
+
+struct GlfwAllocator
+{
+	GlfwAllocateFn allocate;
+	GlfwReallocateFn reallocate;
+	GlfwDeallocateFn deallocate;
+	void* user;
+}
+
+/*************************************************************************
+ * GLFW API functions
+ *************************************************************************/
+
+fn int init() @extern("glfwInit");
+fn void terminate() @extern("glfwTerminate");
+fn void initHint(int hint, int value) @extern("glfwInitHint");
+fn void initAllocator(GlfwAllocator* allocator) @extern("glfwInitAllocator");
+fn void getVersion(int* major, int* minor, int* rev) @extern("glfwGetVersion");
+fn ZString getVersionString() @extern("glfwGetVersionString");
+fn int getError(String* description) @extern("glfwGetError");
+fn GlfwErrorFn setErrorCallback(GlfwErrorFn callback) @extern("glfwSetErrorCallback");
+fn int getPlatform() @extern("glfwGetPlatform");
+fn int platformSupported(int platform) @extern("glfwPlatformSupported");
+
+fn GlfwMonitor** getMonitors(int* count) @extern("glfwGetMonitors");
+fn GlfwMonitor* getPrimaryMonitor() @extern("glfwGetPrimaryMonitor");
+fn void getMonitorPos(GlfwMonitor* monitor, int* xpos, int* ypos) @extern("glfwGetMonitorPos");
+fn void getMonitorWorkarea(GlfwMonitor* monitor, int* xpos, int* ypos, int* width, int* height) @extern("glfwGetMonitorWorkarea");
+fn void getMonitorPhysicalSize(GlfwMonitor* monitor, int* widthMM, int* heightMM) @extern("glfwGetMonitorPhysicalSize");
+fn void getMonitorContentScale(GlfwMonitor* monitor, float* xscale, float* yscale) @extern("glfwGetMonitorContentScale");
+fn ZString getMonitorName(GlfwMonitor* monitor) @extern("glfwGetMonitorName");
+fn void setMonitorUserPointer(GlfwMonitor* monitor, void* pointer) @extern("glfwSetMonitorUserPointer");
+fn void* getMonitorUserPointer(GlfwMonitor* monitor) @extern("glfwGetMonitorUserPointer");
+fn GlfwMonitorFn setMonitorCallback(GlfwMonitorFn callback) @extern("glfwSetMonitorCallback");
+ 
+fn GlfwVidMode* getVideoModes(GlfwMonitor* monitor, int* count) @extern("glfwGetVideoModes");
+fn GlfwVidMode* getVideoMode(GlfwMonitor* monitor) @extern("glfwGetVideoMode");
+ 
+fn void setGamma(GlfwMonitor* monitor, float gamma) @extern("glfwSetGamma");
+fn GlfwGammaRamp* getGlfwGammaRamp(GlfwMonitor* monitor) @extern("glfwGetGlfwGammaRamp");
+fn void setGlfwGammaRamp(GlfwMonitor* monitor, GlfwGammaRamp* ramp) @extern("glfwSetGlfwGammaRamp");
+ 
+fn void defaultWindowHints() @extern("glfwDefaultWindowHints");
+fn void windowHint(int hint, int value) @extern("glfwWindowHint");
+fn void windowHintString(int hint, ZString value) @extern("glfwWindowHintString");
+fn GlfwWindow* createWindow(int width, int height, ZString title, GlfwMonitor* monitor, GlfwWindow* share) @extern("glfwCreateWindow");
+fn void destroyWindow(GlfwWindow* window) @extern("glfwDestroyWindow");
+fn int windowShouldClose(GlfwWindow* window) @extern("glfwWindowShouldClose");
+fn void setWindowShouldClose(GlfwWindow* window, int value) @extern("glfwSetWindowShouldClose");
+fn ZString getWindowTitle(GlfwWindow* window) @extern("glfwGetWindowTitle");
+fn void setWindowTitle(GlfwWindow* window, ZString title) @extern("glfwSetWindowTitle");
+fn void setWindowIcon(GlfwWindow* window, int count, GlfwImage* images) @extern("glfwSetWindowIcon");
+fn void getWindowPos(GlfwWindow* window, int* xpos, int* ypos) @extern("glfwGetWindowPos");
+fn void setWindowPos(GlfwWindow* window, int xpos, int ypos) @extern("glfwSetWindowPos");
+fn void getWindowSize(GlfwWindow* window, int* width, int* height) @extern("glfwGetWindowSize");
+fn void setWindowSizeLimits(GlfwWindow* window, int minwidth, int minheight, int maxwidth, int maxheight) @extern("glfwSetWindowSizeLimits");
+fn void setWindowAspectRatio(GlfwWindow* window, int numer, int denom) @extern("glfwSetWindowAspectRatio");
+fn void setWindowSize(GlfwWindow* window, int width, int height) @extern("glfwSetWindowSize");
+fn void getFramebufferSize(GlfwWindow* window, int* width, int* height) @extern("glfwGetFramebufferSize");
+fn void getWindowFrameSize(GlfwWindow* window, int* left, int* top, int* right, int* bottom) @extern("glfwGetWindowFrameSize");
+fn void getWindowContentScale(GlfwWindow* window, float* xscale, float* yscale) @extern("glfwGetWindowContentScale");
+fn float getWindowOpacity(GlfwWindow* window) @extern("glfwGetWindowOpacity");
+fn void setWindowOpacity(GlfwWindow* window, float opacity) @extern("glfwSetWindowOpacity");
+fn void iconifyWindow(GlfwWindow* window) @extern("glfwIconifyWindow");
+fn void restoreWindow(GlfwWindow* window) @extern("glfwRestoreWindow");
+fn void maximizeWindow(GlfwWindow* window) @extern("glfwMaximizeWindow");
+fn void showWindow(GlfwWindow* window) @extern("glfwShowWindow");
+fn void hideWindow(GlfwWindow* window) @extern("glfwHideWindow");
+fn void focusWindow(GlfwWindow* window) @extern("glfwFocusWindow");
+fn void requestWindowAttention(GlfwWindow* window) @extern("glfwRequestWindowAttention");
+fn GlfwMonitor* getWindowMonitor(GlfwWindow* window) @extern("glfwGetWindowMonitor");
+fn void setWindowMonitor(GlfwWindow* window, GlfwMonitor* monitor, int xpos, int ypos, int width, int height, int refreshRate) @extern("glfwSetWindowMonitor");
+fn int getWindowAttrib(GlfwWindow* window, int attrib) @extern("glfwGetWindowAttrib");
+fn void setWindowAttrib(GlfwWindow* window, int attrib, int value) @extern("glfwSetWindowAttrib");
+fn void setWindowUserPointer(GlfwWindow* window, void* pointer) @extern("glfwSetWindowUserPointer");
+fn void* getWindowUserPointer(GlfwWindow* window) @extern("glfwGetWindowUserPointer");
+fn GlfwWindowPosFn setWindowPosCallback(GlfwWindow* window, GlfwWindowPosFn callback) @extern("glfwSetWindowPosCallback");
+fn GlfwWindowSizeFn setWindowSizeCallback(GlfwWindow* window, GlfwWindowSizeFn callback) @extern("glfwSetWindowSizeCallback");
+fn GlfwWindowCloseFn setWindowCloseCallback(GlfwWindow* window, GlfwWindowCloseFn callback) @extern("glfwSetWindowCloseCallback");
+fn GlfwWindowRefreshFn setWindowRefreshCallback(GlfwWindow* window, GlfwWindowRefreshFn callback) @extern("glfwSetWindowRefreshCallback");
+fn GlfwWindowFocusFn setWindowFocusCallback(GlfwWindow* window, GlfwWindowFocusFn callback) @extern("glfwSetWindowFocusCallback");
+fn GlfwWindowIconifyFn setWindowIconifyCallback(GlfwWindow* window, GlfwWindowIconifyFn callback) @extern("glfwSetWindowIconifyCallback");
+fn GlfwWindowMaximizeFn setWindowMaximizeCallback(GlfwWindow* window, GlfwWindowMaximizeFn callback) @extern("glfwSetWindowMaximizeCallback");
+fn GlfwFramebufferSizeFn setFramebufferSizeCallback(GlfwWindow* window, GlfwFramebufferSizeFn callback) @extern("glfwSetFramebufferSizeCallback");
+fn GlfwWindowContentScaleFn setWindowContentScaleCallback(GlfwWindow* window, GlfwWindowContentScaleFn callback) @extern("glfwSetWindowContentScaleCallback");
+ 
+fn void pollEvents() @extern("glfwPollEvents");
+fn void waitEvents() @extern("glfwWaitEvents");
+fn void waitEventsTimeout(double timeout) @extern("glfwWaitEventsTimeout");
+fn void postEmptyEvent() @extern("glfwPostEmptyEvent");
+ 
+fn int getInputMode(GlfwWindow* window, int mode) @extern("glfwGetInputMode");
+fn void setInputMode(GlfwWindow* window, int mode, int value) @extern("glfwSetInputMode");
+fn int rawMouseMotionSupported() @extern("glfwRawMouseMotionSupported");
+fn ZString getKeyName(int key, int scancode) @extern("glfwGetKeyName");
+fn int getKeyScancode(int key) @extern("glfwGetKeyScancode");
+fn int getKey(GlfwWindow* window, int key) @extern("glfwGetKey");
+fn int getMouseButton(GlfwWindow* window, int button) @extern("glfwGetMouseButton");
+
+fn void getCursorPos(GlfwWindow* window, double* xpos, double* ypos) @extern("glfwGetCursorPos");
+fn void setCursorPos(GlfwWindow* window, double xpos, double ypos) @extern("glfwSetCursorPos");
+fn GlfwCursor* createCursor(GlfwImage* image, int xhot, int yhot) @extern("glfwCreateCursor");
+fn GlfwCursor* createStandardCursor(int shape) @extern("glfwCreateStandardCursor");
+fn void destroyCursor(GlfwCursor* cursor) @extern("glfwDestroyCursor");
+fn void setCursor(GlfwWindow* window, GlfwCursor* cursor) @extern("glfwSetCursor");
+ 
+fn GlfwKeyFn setKeyCallback(GlfwWindow* window, GlfwKeyFn callback) @extern("glfwSetKeyCallback");
+fn GlfwCharFn setCharCallback(GlfwWindow* window, GlfwCharFn callback) @extern("glfwSetCharCallback");
+fn GlfwCharModsFn setCharModsCallback(GlfwWindow* window, GlfwCharModsFn callback) @extern("glfwSetCharModsCallback");
+fn GlfwMouseButtonFn setMouseButtonCallback(GlfwWindow* window, GlfwMouseButtonFn callback) @extern("glfwSetMouseButtonCallback");
+fn GlfwCursorPosFn setCursorPosCallback(GlfwWindow* window, GlfwCursorPosFn callback) @extern("glfwSetCursorPosCallback");
+fn GlfwCursorEnterFn setCursorEnterCallback(GlfwWindow* window, GlfwCursorEnterFn callback) @extern("glfwSetCursorEnterCallback");
+fn GlfwScrollFn setScrollCallback(GlfwWindow* window, GlfwScrollFn callback) @extern("glfwSetScrollCallback");
+fn GlfwDropFn setDropCallback(GlfwWindow* window, GlfwDropFn callback) @extern("glfwSetDropCallback");
+ 
+fn int joystickPresent(int jid) @extern("glfwJoystickPresent");
+fn float* getJoystickAxes(int jid, int* count) @extern("glfwGetJoystickAxes");
+fn ZString getJoystickButtons(int jid, int* count) @extern("glfwGetJoystickButtons");
+fn ZString getJoystickHats(int jid, int* count) @extern("glfwGetJoystickHats");
+fn ZString getJoystickName(int jid) @extern("glfwGetJoystickName");
+fn ZString getJoystickGUID(int jid) @extern("glfwGetJoystickGUID");
+fn void setJoystickUserPointer(int jid, void* pointer) @extern("glfwSetJoystickUserPointer");
+fn void* getJoystickUserPointer(int jid) @extern("glfwGetJoystickUserPointer");
+fn int joystickIsGamepad(int jid) @extern("glfwJoystickIsGamepad");
+fn GlfwJoystickFn setJoystickCallback(GlfwJoystickFn callback) @extern("glfwSetJoystickCallback");
+fn int updateGamepadMappings(ZString string) @extern("glfwUpdateGamepadMappings");
+fn ZString getGamepadName(int jid) @extern("glfwGetGamepadName");
+fn int getGlfwGamepadState(int jid, GlfwGamepadState* state) @extern("glfwGetGlfwGamepadState");
+ 
+fn void setClipboardString(GlfwWindow* window, ZString string) @extern("glfwSetClipboardString");
+fn ZString getClipboardString(GlfwWindow* window) @extern("glfwGetClipboardString");
+ 
+fn double getTime() @extern("glfwGetTime");
+fn void setTime(double time) @extern("glfwSetTime");
+fn ulong getTimerValue() @extern("glfwGetTimerValue");
+fn ulong getTimerFrequency() @extern("glfwGetTimerFrequency");
+ 
+fn void makeContextCurrent(GlfwWindow* window) @extern("glfwMakeContextCurrent");
+fn GlfwWindow* getCurrentContext() @extern("glfwGetCurrentContext");
+fn void swapBuffers(GlfwWindow* window) @extern("glfwSwapBuffers");
+fn void swapInterval(int interval) @extern("glfwSwapInterval");
+ 
+fn int extensionSupported(ZString extension) @extern("glfwExtensionSupported");
+fn GlfwGlProc getProcAddress(ZString procname) @extern("glfwGetProcAddress");
+fn int vulkanSupported() @extern("glfwVulkanSupported");
+fn ZString* getRequiredInstanceExtensions(ulong* count) @extern("glfwGetRequiredInstanceExtensions");
+
+
+module vulkan @if(!$defined(env::GLFW_INCLUDE_VULKAN) ||| !env::GLFW_INCLUDE_VULKAN);
+module glfw @if($defined(env::GLFW_INCLUDE_VULKAN) &&& env::GLFW_INCLUDE_VULKAN);
+
+import vulkan;
+
+alias PFN_vkGetInstanceProcAddr = fn void(vk::Instance instance, ZString name);
+
+fn void initVulkanLoader(PFN_vkGetInstanceProcAddr loader)
+  @extern("glfwInitVulkanLoader");
+
+fn GlfwVkProc getInstanceProcAddress(vk::Instance instance, ZString procname) 
+  @extern("glfwGetInstanceProcAddress");
+
+fn int getPhysicalDevicePresentationSupport(vk::Instance instance, vk::PhysicalDevice device, uint queuefamily) 
+  @extern("glfwGetPhysicalDevicePresentationSupport");
+
+fn vk::Result createWindowSurface(vk::Instance instance, GlfwWindow* window, vk::AllocationCallbacks* allocator, vk::SurfaceKHR* surface) 
+  @extern("glfwCreateWindowSurface");
+
+ 
+ 
+
