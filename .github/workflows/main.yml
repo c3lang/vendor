@@ -199,6 +199,16 @@ jobs:
           asset_name: glfw.c3l
           asset_content_type: application/zip
 
+      - name: upload glfw3.4
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: packages/glfw34.c3l
+          asset_name: glfw34.c3l
+          asset_content_type: application/zip
+
       - name: upload pq
         uses: actions/upload-release-asset@v1
         env:
