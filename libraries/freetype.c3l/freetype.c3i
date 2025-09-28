@@ -1,0 +1,605 @@
+module freetype::ft;
+
+// typedef int FT_Error;
+fault Error {
+    OK,
+    CANNOT_OPEN_RESOURCE,
+    UNKNOWN_FILE_FORMAT,
+    INVALID_FILE_FORMAT,
+    INVALID_VERSION,
+    LOWER_MODULE_VERSION,
+    INVALID_ARGUMENT,
+    UNIMPLEMENTED_FEATURE,
+    INVALID_TABLE,
+    INVALID_OFFSET,
+    ARRAY_TOO_LARGE,
+    MISSING_MODULE,
+    MISSING_PROPERTY,
+    INVALID_GLYPH_INDEX,
+    INVALID_CHARACTER_CODE,
+    INVALID_GLYPH_FORMAT,
+    CANNOT_RENDER_GLYPH,
+    INVALID_OUTLINE,
+    INVALID_COMPOSITE,
+    TOO_MANY_HINTS,
+    INVALID_PIXEL_SIZE,
+    INVALID_HANDLE,
+    INVALID_LIBRARY_HANDLE,
+    INVALID_DRIVER_HANDLE,
+    INVALID_FACE_HANDLE,
+    INVALID_SIZE_HANDLE,
+    INVALID_SLOT_HANDLE,
+    INVALID_CHARMAP_HANDLE,
+    INVALID_CACHE_HANDLE,
+    INVALID_STREAM_HANDLE,
+    TOO_MANY_DRIVERS,
+    TOO_MANY_EXTENSIONS,
+    OUT_OF_MEMORY,
+    UNLISTED_OBJECT,
+    CANNOT_OPEN_STREAM,
+    INVALID_STREAM_SEEK,
+    INVALID_STREAM_SKIP,
+    INVALID_STREAM_READ,
+    INVALID_STREAM_OPERATION,
+    INVALID_FRAME_OPERATION,
+    NESTED_FRAME_ACCESS,
+    INVALID_FRAME_READ,
+    RASTER_UNINITIALIZED,
+    RASTER_CORRUPTED,
+    RASTER_OVERFLOW,
+    RASTER_NEGATIVE_HEIGHT,
+    TOO_MANY_CACHES,
+    INVALID_OPCODE,
+    TOO_FEW_ARGUMENTS,
+    STACK_OVERFLOW,
+    CODE_OVERFLOW,
+    BAD_ARGUMENT,
+    DIVIDE_BY_ZERO,
+    INVALID_REFERENCE,
+    DEBUG_OPCODE,
+    ENDF_IN_EXEC_STREAM,
+    NESTED_DEFS,
+    INVALID_CODERANGE,
+    EXECUTION_TOO_LONG,
+    TOO_MANY_FUNCTION_DEFS,
+    TOO_MANY_INSTRUCTION_DEFS,
+    TABLE_MISSING,
+    HORIZ_HEADER_MISSING,
+    LOCATIONS_MISSING,
+    NAME_TABLE_MISSING,
+    CMAP_TABLE_MISSING,
+    HMTX_TABLE_MISSING,
+    POST_TABLE_MISSING,
+    INVALID_HORIZ_METRICS,
+    INVALID_CHARMAP_FORMAT,
+    INVALID_PPEM,
+    INVALID_VERT_METRICS,
+    COULD_NOT_FIND_CONTEXT,
+    INVALID_POST_TABLE_FORMAT,
+    INVALID_POST_TABLE,
+    DEF_IN_GLYF_BYTECODE,
+    MISSING_BITMAP,
+    SYNTAX_ERROR,
+    STACK_UNDERFLOW,
+    IGNORE,
+    NO_UNICODE_GLYPH_NAME,
+    GLYPH_TOO_BIG,
+    MISSING_STARTFONT_FIELD,
+    MISSING_FONT_FIELD,
+    MISSING_SIZE_FIELD,
+    MISSING_FONTBOUNDINGBOX_FIELD,
+    MISSING_CHARS_FIELD,
+    MISSING_STARTCHAR_FIELD,
+    MISSING_ENCODING_FIELD,
+    MISSING_BBX_FIELD,
+    BBX_TOO_BIG,
+    CORRUPTED_FONT_HEADER,
+    CORRUPTED_FONT_GLYPHS,
+}
+
+const Error[*] CINT_TO_ERROR = {
+    [0] = OK,
+    [0x01] = CANNOT_OPEN_RESOURCE,
+    [0x02] = UNKNOWN_FILE_FORMAT,
+    [0x03] = INVALID_FILE_FORMAT,
+    [0x04] = INVALID_VERSION,
+    [0x05] = LOWER_MODULE_VERSION,
+    [0x06] = INVALID_ARGUMENT,
+    [0x07] = UNIMPLEMENTED_FEATURE,
+    [0x08] = INVALID_TABLE,
+    [0x09] = INVALID_OFFSET,
+    [0x0A] = ARRAY_TOO_LARGE,
+    [0x0B] = MISSING_MODULE,
+    [0x0C] = MISSING_PROPERTY,
+
+    /*glyph/charactererrors*/
+
+    [0x10] = INVALID_GLYPH_INDEX,
+    [0x11] = INVALID_CHARACTER_CODE,
+    [0x12] = INVALID_GLYPH_FORMAT,
+    [0x13] = CANNOT_RENDER_GLYPH,
+    [0x14] = INVALID_OUTLINE,
+    [0x15] = INVALID_COMPOSITE,
+    [0x16] = TOO_MANY_HINTS,
+    [0x17] = INVALID_PIXEL_SIZE,
+
+    /*handleerrors*/
+
+    [0x20] = INVALID_HANDLE,
+    [0x21] = INVALID_LIBRARY_HANDLE,
+    [0x22] = INVALID_DRIVER_HANDLE,
+    [0x23] = INVALID_FACE_HANDLE,
+    [0x24] = INVALID_SIZE_HANDLE,
+    [0x25] = INVALID_SLOT_HANDLE,
+    [0x26] = INVALID_CHARMAP_HANDLE,
+    [0x27] = INVALID_CACHE_HANDLE,
+    [0x28] = INVALID_STREAM_HANDLE,
+
+    /*drivererrors*/
+
+    [0x30] = TOO_MANY_DRIVERS,
+    [0x31] = TOO_MANY_EXTENSIONS,
+
+    /*drivererrors*/
+
+    [0x40] = OUT_OF_MEMORY,
+    [0x41] = UNLISTED_OBJECT,
+
+    /*streamerrors*/
+
+    [0x51] = CANNOT_OPEN_STREAM,
+    [0x52] = INVALID_STREAM_SEEK,
+    [0x53] = INVALID_STREAM_SKIP,
+    [0x54] = INVALID_STREAM_READ,
+    [0x55] = INVALID_STREAM_OPERATION,
+    [0x56] = INVALID_FRAME_OPERATION,
+    [0x57] = NESTED_FRAME_ACCESS,
+    [0x58] = INVALID_FRAME_READ,
+
+    /*rastererrors*/
+
+    [0x60] = RASTER_UNINITIALIZED,
+    [0x61] = RASTER_CORRUPTED,
+    [0x62] = RASTER_OVERFLOW,
+    [0x63] = RASTER_NEGATIVE_HEIGHT,
+
+    /*cacheerrors*/
+
+    [0x70] = TOO_MANY_CACHES,
+
+    /*TrueTypeandSFNTerrors*/
+
+    [0x80] = INVALID_OPCODE,
+    [0x81] = TOO_FEW_ARGUMENTS,
+    [0x82] = STACK_OVERFLOW,
+    [0x83] = CODE_OVERFLOW,
+    [0x84] = BAD_ARGUMENT,
+    [0x85] = DIVIDE_BY_ZERO,
+    [0x86] = INVALID_REFERENCE,
+    [0x87] = DEBUG_OPCODE,
+    [0x88] = ENDF_IN_EXEC_STREAM,
+    [0x89] = NESTED_DEFS,
+    [0x8A] = INVALID_CODERANGE,
+    [0x8B] = EXECUTION_TOO_LONG,
+    [0x8C] = TOO_MANY_FUNCTION_DEFS,
+    [0x8D] = TOO_MANY_INSTRUCTION_DEFS,
+    [0x8E] = TABLE_MISSING,
+    [0x8F] = HORIZ_HEADER_MISSING,
+    [0x90] = LOCATIONS_MISSING,
+    [0x91] = NAME_TABLE_MISSING,
+    [0x92] = CMAP_TABLE_MISSING,
+    [0x93] = HMTX_TABLE_MISSING,
+    [0x94] = POST_TABLE_MISSING,
+    [0x95] = INVALID_HORIZ_METRICS,
+    [0x96] = INVALID_CHARMAP_FORMAT,
+    [0x97] = INVALID_PPEM,
+    [0x98] = INVALID_VERT_METRICS,
+    [0x99] = COULD_NOT_FIND_CONTEXT,
+    [0x9A] = INVALID_POST_TABLE_FORMAT,
+    [0x9B] = INVALID_POST_TABLE,
+    [0x9C] = DEF_IN_GLYF_BYTECODE,
+    [0x9D] = MISSING_BITMAP,
+
+    /*CFF,CID,andType1errors*/
+
+    [0xA0] = SYNTAX_ERROR,
+    [0xA1] = STACK_UNDERFLOW,
+    [0xA2] = IGNORE,
+    [0xA3] = NO_UNICODE_GLYPH_NAME,
+    [0xA4] = GLYPH_TOO_BIG,
+
+    /*BDFerrors*/
+
+    [0xB0] = MISSING_STARTFONT_FIELD,
+    [0xB1] = MISSING_FONT_FIELD,
+    [0xB2] = MISSING_SIZE_FIELD,
+    [0xB3] = MISSING_FONTBOUNDINGBOX_FIELD,
+    [0xB4] = MISSING_CHARS_FIELD,
+    [0xB5] = MISSING_STARTCHAR_FIELD,
+    [0xB6] = MISSING_ENCODING_FIELD,
+    [0xB7] = MISSING_BBX_FIELD,
+    [0xB8] = BBX_TOO_BIG,
+    [0xB9] = CORRUPTED_FONT_HEADER,
+    [0xBA] = CORRUPTED_FONT_GLYPHS,
+};
+
+// #define FT_LOAD_DEFAULT                      0x0
+const LOAD_DEFAULT =                            0x0;
+// #define FT_LOAD_NO_SCALE                     ( 1L << 0  )
+const LOAD_NO_SCALE =                           ( 1L << 0  );
+// #define FT_LOAD_NO_HINTING                   ( 1L << 1  )
+const LOAD_NO_HINTING =                         ( 1L << 1  );
+// #define FT_LOAD_RENDER                       ( 1L << 2  )
+const LOAD_RENDER =                             ( 1L << 2  );
+// #define FT_LOAD_NO_BITMAP                    ( 1L << 3  )
+const LOAD_NO_BITMAP =                          ( 1L << 3  );
+// #define FT_LOAD_VERTICAL_LAYOUT              ( 1L << 4  )
+const LOAD_VERTICAL_LAYOUT =                    ( 1L << 4  );
+// #define FT_LOAD_FORCE_AUTOHINT               ( 1L << 5  )
+const LOAD_FORCE_AUTOHINT =                     ( 1L << 5  );
+// #define FT_LOAD_CROP_BITMAP                  ( 1L << 6  )
+const LOAD_CROP_BITMAP =                        ( 1L << 6  );
+// #define FT_LOAD_PEDANTIC                     ( 1L << 7  )
+const LOAD_PEDANTIC =                           ( 1L << 7  );
+// #define FT_LOAD_IGNORE_GLOBAL_ADVANCE_WIDTH  ( 1L << 9  )
+const LOAD_IGNORE_GLOBAL_ADVANCE_WIDTH =        ( 1L << 9  );
+// #define FT_LOAD_NO_RECURSE                   ( 1L << 10 )
+const LOAD_NO_RECURSE =                         ( 1L << 10 );
+// #define FT_LOAD_IGNORE_TRANSFORM             ( 1L << 11 )
+const LOAD_IGNORE_TRANSFORM =                   ( 1L << 11 );
+// #define FT_LOAD_MONOCHROME                   ( 1L << 12 )
+const LOAD_MONOCHROME =                         ( 1L << 12 );
+// #define FT_LOAD_LINEAR_DESIGN                ( 1L << 13 )
+const LOAD_LINEAR_DESIGN =                      ( 1L << 13 );
+// #define FT_LOAD_SBITS_ONLY                   ( 1L << 14 )
+const LOAD_SBITS_ONLY =                         ( 1L << 14 );
+// #define FT_LOAD_NO_AUTOHINT                  ( 1L << 15 )
+const LOAD_NO_AUTOHINT =                        ( 1L << 15 );
+//   /* Bits 16-19 are used by `FT_LOAD_TARGET_` */
+// #define FT_LOAD_COLOR                        ( 1L << 20 )
+const LOAD_COLOR =                              ( 1L << 20 );
+// #define FT_LOAD_COMPUTE_METRICS              ( 1L << 21 )
+const LOAD_COMPUTE_METRICS =                    ( 1L << 21 );
+// #define FT_LOAD_BITMAP_METRICS_ONLY          ( 1L << 22 )
+const LOAD_BITMAP_METRICS_ONLY =                ( 1L << 22 );
+// #define FT_LOAD_NO_SVG                       ( 1L << 24 )
+const LOAD_NO_SVG =                             ( 1L << 24 );
+
+def RenderMode = CInt;
+const RenderMode RENDER_MODE_NORMAL = 0;
+const RenderMode RENDER_MODE_LIGHT = 1;
+const RenderMode RENDER_MODE_MONO = 2;
+const RenderMode RENDER_MODE_LCD = 3;
+const RenderMode RENDER_MODE_LCD_V = 4;
+const RenderMode RENDER_MODE_SDF = 5;
+const RenderMode RENDER_MODE_MAX = 6;
+
+
+//typedef signed short FT_Short;
+def Short = CShort;
+// typedef signed int FT_Int;
+def Int = CInt;
+// typedef char FT_String;
+def String = CChar;
+// typedef unsigned int FT_UInt;
+def UInt = CUInt;
+// typedef unsigned short FT_UShort;
+def UShort = CUShort;
+// typedef signed long FT_Long;
+def Long = CLong;
+// typedef unsigned long FT_ULong;
+def ULong = CULong;
+// typedef signed int FT_Int32;
+def Int32 = CInt;
+// typedef unsigned int FT_UInt32;
+def UInt32 = CUInt;
+// typedef signed long FT_Fixed;
+def Fixed = CLong;
+// typedef signed long FT_F26Dot6;
+def F26Dot6 = CLong;
+// typedef signed long FT_Pos;
+def Pos = CLong;
+
+// FT_Library
+def Library = void*;
+
+struct Matrix {
+    Fixed xx, xy;
+    Fixed yx, yy;
+}
+
+struct BBox {
+    // FT_Pos  xMin, yMin;
+    Pos xMin, yMin;
+    // FT_Pos  xMax, yMax;
+    Pos xMax, yMax;
+}
+
+// typedef void  (*FT_Generic_Finalizer)( void*  object );
+// def GenericFinalizer = fn void(void* object);
+
+struct Generic {
+    // void*                 data;
+    void* data;
+    // FT_Generic_Finalizer  finalizer;
+    void* finalizer;
+}
+
+struct CharMapRec {
+    // FT_Face face;
+    Face face;
+    // FT_Encoding encoding;
+    CInt encoding;
+    // FT_UShort platform_id;
+    UShort platform_id;
+    // FT_UShort encoding_id;
+    UShort encoding_id;
+}
+// typedef struct FT_CharMapRec_*  FT_CharMap;
+def CharMap = CharMapRec*;
+
+struct BitmapSize {
+    // FT_Short height;
+    Short height;
+    // FT_Short width;
+    Short width;
+    // FT_Pos size;
+    Pos size;
+    // FT_Pos x_ppem;
+    Pos x_ppem;
+    // FT_Pos y_ppem;
+    Pos y_ppem;
+}
+
+struct Bitmap {
+    // unsigned int rows;
+    CUInt rows;
+    // unsigned int width;
+    UInt width;
+    // int pitch;
+    CInt pitch;
+    // unsigned char* buffer;
+    CUChar* buffer;
+    // unsigned short num_grays;
+    CUShort num_grays;
+    // unsigned char pixel_mode;
+    CUChar pixel_mode;
+    // unsigned char palette_mode;
+    CUChar palette_mode;
+    // void* palette;
+    void* palette;
+}
+
+struct Vector {
+    // FT_Pos  x;
+    Pos  x;
+    // FT_Pos  y;
+    Pos  y;
+}
+
+struct GlyphMetrics {
+    // FT_Pos width;
+    Pos width;
+    // FT_Pos height;
+    Pos height;
+    // FT_Pos horiBearingX;
+    Pos horiBearingX;
+    // FT_Pos horiBearingY;
+    Pos horiBearingY;
+    // FT_Pos horiAdvance;
+    Pos horiAdvance;
+    // FT_Pos vertBearingX;
+    Pos vertBearingX;
+    // FT_Pos vertBearingY;
+    Pos vertBearingY;
+    // FT_Pos vertAdvance;
+    Pos vertAdvance;
+}
+
+struct Outline {
+    // unsigned short n_contours;
+    CUShort n_contours;
+    // unsigned short n_points;
+    CUShort n_points;
+    // FT_Vector* points;
+    Vector * points;
+    // unsigned char* tags;
+    CUChar* tags;
+    // unsigned short* contours;
+    CUShort* contours;
+    // int  flags;
+    CInt flags;
+}
+
+struct SizeMetrics {
+    // FT_UShort x_ppem;
+    UShort x_ppem;
+    // FT_UShort y_ppem;
+    UShort y_ppem;
+    // FT_Fixed x_scale;
+    Fixed x_scale;
+    // FT_Fixed y_scale;
+    Fixed y_scale;
+    // FT_Pos ascender;
+    Pos ascender;
+    // FT_Pos descender;
+    Pos descender;
+    // FT_Pos height;
+    Pos height;
+    // FT_Pos max_advance;
+    Pos max_advance;
+}
+
+struct SizeRec {
+    // FT_Face face;
+    Face face;
+    // FT_Generic generic;
+    Generic generic;
+    // FT_Size_Metrics metrics;
+    SizeMetrics metrics;
+    // FT_Size_Internal internal;
+    void* internal;
+}
+// typedef struct FT_SizeRec_*  FT_Size;
+def Size = SizeRec*;
+
+struct GlyphSlotRec {
+    // FT_Library library;
+    Library library;
+    // FT_Face face;
+    Face face;
+    // FT_GlyphSlot next;
+    GlyphSlot next;
+    // FT_UInt glyph_index;
+    UInt glyph_index;
+    // FT_Generic generic;
+    Generic generic;
+    // FT_Glyph_Metrics metrics;
+    GlyphMetrics metrics;
+    // FT_Fixed linearHoriAdvance;
+    Fixed linearHoriAdvance;
+    // FT_Fixed linearVertAdvance;
+    Fixed linearVertAdvance;
+    // FT_Vector advance;
+    Vector advance;
+    // FT_Glyph_Format format;
+    CInt format;
+    // FT_Bitmap bitmap;
+    Bitmap bitmap;
+    // FT_Int bitmap_left;
+    CInt bitmap_left;
+    // FT_Int bitmap_top;
+    CInt bitmap_top;
+    // FT_Outline outline;
+    Outline outline;
+    // FT_UInt num_subglyphs;
+    UInt num_subglyphs;
+    // FT_SubGlyph subglyphs;
+    void* subglyphs;
+    // void* control_data;
+    void* control_data;
+    // long control_len;
+    CLong control_len;
+    // FT_Pos lsb_delta;
+    Pos lsb_delta;
+    // FT_Pos rsb_delta;
+    Pos rsb_delta;
+    // void* other;
+    void* other;
+    // FT_Slot_Internal internal;
+    void* internal;
+}
+// typedef struct FT_GlyphSlotRec_*  FT_GlyphSlot;
+def GlyphSlot = GlyphSlotRec*;
+
+struct FaceRec {
+    // FT_Long num_faces;
+    Long num_faces;
+    // FT_Long face_index;
+    Long face_index;
+    // FT_Long face_flags;
+    Long face_flags;
+    // FT_Long style_flags;
+    Long style_flags;
+    // FT_Long num_glyphs;
+    Long num_glyphs;
+    // FT_String* family_name;
+    String* family_name;
+    // FT_String* style_name;
+    String* style_name;
+    // FT_Int num_fixed_sizes;
+    CInt num_fixed_sizes;
+    // FT_Bitmap_Size* available_sizes;
+    BitmapSize* available_sizes;
+    // FT_Int num_charmaps;
+    Int num_charmaps;
+    // FT_CharMap* charmaps;
+    CharMap* charmaps;
+    // FT_Generic generic;
+    Generic generic;
+    // FT_BBox bbox;
+    BBox bbox;
+    // FT_UShort units_per_EM;
+    UShort units_per_EM;
+    // FT_Short ascender;
+    Short ascender;
+    // FT_Short descender;
+    Short descender;
+    // FT_Short height;
+    Short height;
+    // FT_Short max_advance_width;
+    Short max_advance_width;
+    // FT_Short max_advance_height;
+    Short max_advance_height;
+    // FT_Short underline_position;
+    Short underline_position;
+    // FT_Short underline_thickness;
+    Short underline_thickness;
+    // FT_GlyphSlot glyph;
+    GlyphSlot glyph;
+    // FT_Size size;
+    Size size;
+    //FT_CharMap charmap;
+    CharMap charmap;
+    // FT_Driver driver;
+    void* driver;
+    // FT_Memory memory;
+    void* memory;
+    // FT_Stream stream;
+    void* stream;
+    // FT_ListRec sizes_list;
+    void* sizes_list;
+    // FT_Generic autohint;
+    void* autohint;
+    // void* extensions;
+    void* extensions;
+    // FT_Face_Internal internal;
+    void* internal;
+}
+// typedef struct FT_FaceRec_*  FT_Face;
+def Face = FaceRec*;
+
+fn CInt initFreeType(Library* library) @extern("FT_Init_FreeType");
+fn CInt doneFreeType(Library library) @extern("FT_Done_FreeType");
+
+fn CInt newFace(Library* library, ZString pathname, Long face_index, Face* aface) @extern("FT_New_Face");
+fn CInt doneFace(Face face) @extern("FT_Done_Face");
+
+fn UInt getCharIndex(Face face, ULong charcode) @extern("FT_Get_Char_Index");
+
+fn CInt loadGlyph(Face face, UInt glyph_index, Long load_flags) @extern("FT_Load_Glyph");
+
+fn CInt loadChar(Face face, ULong char_code, Long load_flags) @extern("FT_Load_Char");
+
+fn CInt setPixelSizes(Face face, UInt pixel_width, UInt pixel_height) @extern("FT_Set_Pixel_Sizes");
+
+fn CInt setCharSize(Face face, F26Dot6 char_width, F26Dot6 char_height, CUInt horz_resolution, UInt vert_resolution ) @extern("FT_Set_Char_Size");
+
+fn CInt renderGlryph(GlyphSlot glyph, RenderMode render_mode) @extern("FT_Render_Glyph");
+
+fn CInt propertySet(Library library, CChar* module_name, CChar* property_name, void* value) @extern("FT_Property_Set");
+
+// typedef enum  FT_Encoding
+def Encoding = CULong;
+
+// FT_ENC_TAG
+macro Encoding encTag($a, $b, $c, $d) {
+    return (Encoding)(($a << 24) | ($b << 16) | ($c << 8) | $d);
+}
+
+const Encoding ENCODING_NONE = encTag(0, 0, 0, 0);
+const Encoding ENCODING_MS_SYMBOL = encTag('s', 'y', 'm', 'b');
+const Encoding ENCODING_UNICODE = encTag('u', 'n', 'i', 'c');
+const Encoding ENCODING_SJIS = encTag('s', 'j', 'i', 's');
+const Encoding ENCODING_PRC = encTag('g', 'b', ' ', ' ');
+const Encoding ENCODING_BIG5 = encTag('b', 'i', 'g', '5');
+const Encoding ENCODING_WANSUNG = encTag('w', 'a', 'n', 's');
+const Encoding ENCODING_JOHAB = encTag('j', 'o', 'h', 'a');
+const Encoding ENCODING_ADOBE_STANDARD = encTag('A', 'D', 'O', 'B');
+const Encoding ENCODING_ADOBE_EXPERT = encTag('A', 'D', 'B', 'E');
+const Encoding ENCODING_ADOBE_CUSTOM = encTag('A', 'D', 'B', 'C');
+const Encoding ENCODING_ADOBE_LATIN_1 = encTag('l', 'a', 't', '1');
+const Encoding ENCODING_OLD_LATIN_2 = encTag('l', 'a', 't', '2');
+const Encoding ENCODING_APPLE_ROMAN = encTag('a', 'r', 'm', 'n');
+
+fn CInt selectCharmap(Face face, Encoding encoding) @extern("FT_Select_Charmap");
