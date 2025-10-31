@@ -3,11 +3,11 @@ module webgpu;
 typedef TextureView = void*;
 
 
-fn void TextureView.setLabel(TextureView texture, ZString label) @extern("wgpuTextureViewSetLabel");
+fn void TextureView.setLabel(TextureView texture, ZString label) @cname("wgpuTextureViewSetLabel");
 
-fn void TextureView.reference(TextureView texture) @extern("wgpuTextureViewReference");
+fn void TextureView.reference(TextureView texture) @cname("wgpuTextureViewReference");
 
-fn void TextureView.release(TextureView texture) @extern("wgpuTextureViewRelease");
+fn void TextureView.release(TextureView texture) @cname("wgpuTextureViewRelease");
 
 
 struct TextureViewDescriptor {

@@ -2,11 +2,11 @@ module webgpu;
 
 typedef PipelineLayout = void*;
 
-fn void PipelineLayout.setLabel(PipelineLayout layout, ZString label) @extern("wgpuPipelineLayoutSetLabel");
+fn void PipelineLayout.setLabel(PipelineLayout layout, ZString label) @cname("wgpuPipelineLayoutSetLabel");
 
-fn void PipelineLayout.reference(PipelineLayout layout) @extern("wgpuPipelineLayoutReference");
+fn void PipelineLayout.reference(PipelineLayout layout) @cname("wgpuPipelineLayoutReference");
 
-fn void PipelineLayout.release(PipelineLayout layout) @extern("wgpuPipelineLayoutRelease");
+fn void PipelineLayout.release(PipelineLayout layout) @cname("wgpuPipelineLayoutRelease");
 
 
 struct PipelineLayoutDescriptor {

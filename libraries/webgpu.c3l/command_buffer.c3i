@@ -2,11 +2,11 @@ module webgpu;
 
 typedef CommandBuffer = void*;
 
-fn void CommandBuffer.setLabel(CommandBuffer buffer, ZString label) @extern("wgpuCommandBufferSetLabel");
+fn void CommandBuffer.setLabel(CommandBuffer buffer, ZString label) @cname("wgpuCommandBufferSetLabel");
 
-fn void CommandBuffer.reference(CommandBuffer buffer) @extern("wgpuCommandBufferReference");
+fn void CommandBuffer.reference(CommandBuffer buffer) @cname("wgpuCommandBufferReference");
 
-fn void CommandBuffer.release(CommandBuffer buffer) @extern("wgpuCommandBufferRelease");
+fn void CommandBuffer.release(CommandBuffer buffer) @cname("wgpuCommandBufferRelease");
 
 
 struct CommandBufferDescriptor {

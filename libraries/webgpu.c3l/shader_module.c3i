@@ -3,14 +3,14 @@ module webgpu;
 typedef ShaderModule = void*;
 
 fn void ShaderModule.getCompilationInfo(ShaderModule shaderModule,
-    CompilationInfoCallback callback, UserData userData) @extern("wgpuShaderModuleGetCompilationInfo");
+    CompilationInfoCallback callback, UserData userData) @cname("wgpuShaderModuleGetCompilationInfo");
 
 fn void ShaderModule.setLabel(ShaderModule shaderModule,
-    ZString label) @extern("wgpuShaderModuleSetLabel");
+    ZString label) @cname("wgpuShaderModuleSetLabel");
 
-fn void ShaderModule.reference(ShaderModule shaderModule) @extern("wgpuShaderModuleReference");
+fn void ShaderModule.reference(ShaderModule shaderModule) @cname("wgpuShaderModuleReference");
 
-fn void ShaderModule.release(ShaderModule shaderModule) @extern("wgpuShaderModuleRelease");
+fn void ShaderModule.release(ShaderModule shaderModule) @cname("wgpuShaderModuleRelease");
 
 
 alias CompilationInfoCallback = fn void(CompilationInfoRequestStatus status,

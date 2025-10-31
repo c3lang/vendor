@@ -3,17 +3,17 @@ module webgpu;
 typedef QuerySet = void*;
 
 
-fn void QuerySet.destroy(QuerySet querySet) @extern("wgpuQuerySetDestroy");
+fn void QuerySet.destroy(QuerySet querySet) @cname("wgpuQuerySetDestroy");
 
-fn CUInt QuerySet.getCount(QuerySet querySet) @extern("wgpuQuerySetGetCount");
+fn CUInt QuerySet.getCount(QuerySet querySet) @cname("wgpuQuerySetGetCount");
 
-fn QueryType QuerySet.getType(QuerySet querySet) @extern("wgpuQuerySetGetType");
+fn QueryType QuerySet.getType(QuerySet querySet) @cname("wgpuQuerySetGetType");
 
-fn void QuerySet.setLabel(QuerySet querySet, ZString label) @extern("wgpuQuerySetSetLabel");
+fn void QuerySet.setLabel(QuerySet querySet, ZString label) @cname("wgpuQuerySetSetLabel");
 
-fn void QuerySet.reference(QuerySet querySet) @extern("wgpuQuerySetReference");
+fn void QuerySet.reference(QuerySet querySet) @cname("wgpuQuerySetReference");
 
-fn void QuerySet.release(QuerySet querySet) @extern("wgpuQuerySetRelease");
+fn void QuerySet.release(QuerySet querySet) @cname("wgpuQuerySetRelease");
 
 
 struct QuerySetDescriptor {

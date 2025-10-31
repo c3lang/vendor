@@ -3,14 +3,14 @@ module webgpu;
 typedef ComputePipeline = void*;
 
 fn void ComputePipeline.setBindGroupLayout(ComputePipeline pipeline, CUInt groupIndex)
-    @extern("wgpuComputePipelineSetBindGroup");
+    @cname("wgpuComputePipelineSetBindGroup");
 
 fn void ComputePipeline.setLabel(ComputePipeline pipeline, ZString label)
-    @extern("wgpuComputePipelineSetLabel");
+    @cname("wgpuComputePipelineSetLabel");
 
-fn void ComputePipeline.reference(ComputePipeline pipeline) @extern("wgpuComputePipelineReference");
+fn void ComputePipeline.reference(ComputePipeline pipeline) @cname("wgpuComputePipelineReference");
 
-fn void ComputePipeline.release(ComputePipeline pipeline) @extern("wgpuComputePipelineRelease");
+fn void ComputePipeline.release(ComputePipeline pipeline) @cname("wgpuComputePipelineRelease");
 
 struct ComputePipelineDescriptor {
     ChainedStruct* next;

@@ -5,20 +5,20 @@ typedef Queue = void*;
 alias BufferData = void*;
 
 fn void Queue.onSubmittedWorkDone(Queue queue, SubmittedWorkDoneCallback callback,
-    UserData data) @extern("wgpuQueueOnSubmittedWorkDone");
+    UserData data) @cname("wgpuQueueOnSubmittedWorkDone");
 
-fn void Queue.setLabel(Queue queue, ZString label) @extern("wgpuQueueSetLabel");
+fn void Queue.setLabel(Queue queue, ZString label) @cname("wgpuQueueSetLabel");
 
-fn void Queue.submit(Queue queue, usz count, CommandBuffer* commands) @extern("wgpuQueueSubmit");
+fn void Queue.submit(Queue queue, usz count, CommandBuffer* commands) @cname("wgpuQueueSubmit");
 
-fn void Queue.writeBuffer(Queue queue, Buffer buffer, CULong bufferOffset, BufferData data, usz dataSize) @extern("wgpuQueueWriteBuffer");
+fn void Queue.writeBuffer(Queue queue, Buffer buffer, CULong bufferOffset, BufferData data, usz dataSize) @cname("wgpuQueueWriteBuffer");
 
 fn void Queue.writeTexture(Queue queue, ImageCopyTexture* destination, BufferData data, usz dataSize,
-    TextureDataLayout* layout, Extent3D* writeSize) @extern("wgpuQueueWriteTexture");
+    TextureDataLayout* layout, Extent3D* writeSize) @cname("wgpuQueueWriteTexture");
 
-fn void Queue.reference(Queue queue) @extern("wgpuQueueReference");
+fn void Queue.reference(Queue queue) @cname("wgpuQueueReference");
 
-fn void Queue.release(Queue queue) @extern("wgpuQueueRelease");
+fn void Queue.release(Queue queue) @cname("wgpuQueueRelease");
 
 
 alias SubmittedWorkDoneCallback = fn void(QueueWorkDoneStatus status, UserData data);

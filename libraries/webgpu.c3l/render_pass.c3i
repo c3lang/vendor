@@ -4,71 +4,71 @@ typedef RenderPassEncoder = void*;
 
 
 fn void RenderPassEncoder.beginOcclusionQuery(RenderPassEncoder encoder,
-    CUInt queryIndex) @extern("wgpuRenderPassEncoderBeginOcclusionQuery");
+    CUInt queryIndex) @cname("wgpuRenderPassEncoderBeginOcclusionQuery");
 
 fn void RenderPassEncoder.draw(RenderPassEncoder encoder,
     CUInt vertexCount, CUInt instanceCount, CUInt firstVertex = 0, CUInt firstInstance = 0)
-    @extern("wgpuRenderPassEncoderDraw");
+    @cname("wgpuRenderPassEncoderDraw");
 
 fn void RenderPassEncoder.drawIndexed(RenderPassEncoder encoder,
     CUInt indexCount, CUInt instanceCount, CUInt firstIndex = 0, CInt baseVertex = 0, CUInt firstInstance = 0)
-    @extern("wgpuRenderPassEncoderDrawIndexed");
+    @cname("wgpuRenderPassEncoderDrawIndexed");
 
 fn void RenderPassEncoder.drawIndexedIndirect(RenderPassEncoder encoder,
-    Buffer buffer, CULong offset) @extern("wgpuRenderPassEncoderDrawIndexedIndirect");
+    Buffer buffer, CULong offset) @cname("wgpuRenderPassEncoderDrawIndexedIndirect");
 
 fn void RenderPassEncoder.drawIndirect(RenderPassEncoder encoder,
-    Buffer buffer, CULong offset) @extern("wgpuRenderPassEncoderDrawIndirect");
+    Buffer buffer, CULong offset) @cname("wgpuRenderPassEncoderDrawIndirect");
 
-fn RenderBundle RenderPassEncoder.end(RenderPassEncoder encoder) @extern("wgpuRenderPassEncoderEnd");
+fn RenderBundle RenderPassEncoder.end(RenderPassEncoder encoder) @cname("wgpuRenderPassEncoderEnd");
 
-fn void RenderPassEncoder.endOcclusionQuery(RenderPassEncoder encoder) @extern("wgpuRenderPassEncoderEndOcclusionQuery");
+fn void RenderPassEncoder.endOcclusionQuery(RenderPassEncoder encoder) @cname("wgpuRenderPassEncoderEndOcclusionQuery");
 
 fn void RenderPassEncoder.executeBundles(RenderPassEncoder encoder,
-    usz count, RenderBundle* bundles) @extern("wgpuRenderPassEncoderExecuteBundles");
+    usz count, RenderBundle* bundles) @cname("wgpuRenderPassEncoderExecuteBundles");
 
 fn void RenderPassEncoder.insertDebugMarker(RenderPassEncoder encoder,
-    ZString label) @extern("wgpuRenderPassEncoderInsertDebugMarker");
+    ZString label) @cname("wgpuRenderPassEncoderInsertDebugMarker");
 
 fn void RenderPassEncoder.popDebugGroup(RenderPassEncoder encoder)
-    @extern("wgpuRenderPassEncoderPopDebugGroup");
+    @cname("wgpuRenderPassEncoderPopDebugGroup");
 
 fn void RenderPassEncoder.pushDebugGroup(RenderPassEncoder encoder, ZString label)
-    @extern("wgpuRenderPassEncoderPushDebugGroup");
+    @cname("wgpuRenderPassEncoderPushDebugGroup");
 
 fn void RenderPassEncoder.setBlendConstant(RenderPassEncoder encoder, Color* color)
-    @extern("wgpuRenderPassEncoderSetBlendConstant");
+    @cname("wgpuRenderPassEncoderSetBlendConstant");
 
 fn void RenderPassEncoder.setBindGroup(RenderPassEncoder encoder, CUInt groupIndex, BindGroup bindGroup,
-	usz dynamicOffsetCount = 0, CUInt* dynamicOffsets = null) @extern("wgpuRenderPassEncoderSetBindGroup");
+	usz dynamicOffsetCount = 0, CUInt* dynamicOffsets = null) @cname("wgpuRenderPassEncoderSetBindGroup");
 
 fn void RenderPassEncoder.setIndexBuffer(RenderPassEncoder encoder,
     Buffer buffer, IndexFormat format, CULong offset, CULong size)
-    @extern("wgpuRenderPassEncoderSetIndexBuffer");
+    @cname("wgpuRenderPassEncoderSetIndexBuffer");
 
 fn void RenderPassEncoder.setLabel(RenderPassEncoder encoder, ZString label)
-    @extern("wgpuRenderPassEncoderSetLabel");
+    @cname("wgpuRenderPassEncoderSetLabel");
 
 fn void RenderPassEncoder.setPipeline(RenderPassEncoder encoder, RenderPipeline pipeline)
-    @extern("wgpuRenderPassEncoderSetPipeline");
+    @cname("wgpuRenderPassEncoderSetPipeline");
 
 fn void RenderPassEncoder.setScissorRect(RenderPassEncoder encoder,
-    CUInt x, CUInt y, CUInt width, CUInt height) @extern("wgpuRenderPassEncoderSetScissorRect");
+    CUInt x, CUInt y, CUInt width, CUInt height) @cname("wgpuRenderPassEncoderSetScissorRect");
 
 fn void RenderPassEncoder.setStencilReference(RenderPassEncoder encoder,
-    CUInt reference) @extern("wgpuRenderPassEncoderSetStencilReference");
+    CUInt reference) @cname("wgpuRenderPassEncoderSetStencilReference");
 
 fn void RenderPassEncoder.setVertexBuffer(RenderPassEncoder encoder,
     CUInt slot, Buffer buffer, CULong offset, CULong size)
-    @extern("wgpuRenderPassEncoderSetVertexBuffer");
+    @cname("wgpuRenderPassEncoderSetVertexBuffer");
 
 fn void RenderPassEncoder.setViewport(RenderPassEncoder encoder,
     float x, float y, float width, float height, float minDepth, float maxDepth)
-    @extern("wgpuRenderPassEncoderSetViewport");
+    @cname("wgpuRenderPassEncoderSetViewport");
 
-fn void RenderPassEncoder.reference(RenderPassEncoder encoder) @extern("wgpuRenderPassEncoderReference");
+fn void RenderPassEncoder.reference(RenderPassEncoder encoder) @cname("wgpuRenderPassEncoderReference");
 
-fn void RenderPassEncoder.release(RenderPassEncoder encoder) @extern("wgpuRenderPassEncoderRelease");
+fn void RenderPassEncoder.release(RenderPassEncoder encoder) @cname("wgpuRenderPassEncoderRelease");
 
 
 struct RenderPassDescriptor {

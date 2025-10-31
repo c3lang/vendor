@@ -4,59 +4,59 @@ typedef Device = void*;
 
 faultdef DEVICE_REQUEST_FAILED;
 
-fn void* getProcAddress(Device device, ZString name) @extern("wgpuGetProcAddress");
+fn void* getProcAddress(Device device, ZString name) @cname("wgpuGetProcAddress");
 
-fn BindGroup Device.createBindGroup(Device device, BindGroupDescriptor* descriptor) @extern("wgpuDeviceCreateBindGroup");
+fn BindGroup Device.createBindGroup(Device device, BindGroupDescriptor* descriptor) @cname("wgpuDeviceCreateBindGroup");
 
-fn BindGroupLayout Device.createBindGroupLayout(Device device, BindGroupLayoutDescriptor* descriptor) @extern("wgpuDeviceCreateBindGroupLayout");
+fn BindGroupLayout Device.createBindGroupLayout(Device device, BindGroupLayoutDescriptor* descriptor) @cname("wgpuDeviceCreateBindGroupLayout");
 
-fn Buffer Device.createBuffer(Device device, BufferDescriptor* descriptor) @extern("wgpuDeviceCreateBuffer");
+fn Buffer Device.createBuffer(Device device, BufferDescriptor* descriptor) @cname("wgpuDeviceCreateBuffer");
 
-fn CommandEncoder Device.createCommandEncoder(Device device, CommandEncoderDescriptor* descriptor = null) @extern("wgpuDeviceCreateCommandEncoder");
+fn CommandEncoder Device.createCommandEncoder(Device device, CommandEncoderDescriptor* descriptor = null) @cname("wgpuDeviceCreateCommandEncoder");
 
-fn ComputePipeline Device.createComputePipeline(Device device, ComputePipelineDescriptor* descriptor) @extern("wgpuDeviceCreateComputePipeline");
+fn ComputePipeline Device.createComputePipeline(Device device, ComputePipelineDescriptor* descriptor) @cname("wgpuDeviceCreateComputePipeline");
 
 fn void Device.createComputePipelineAsync(Device device, ComputePipelineDescriptor* descriptor,
-	CreateComputePipelineAsyncCallback callback) @extern("wgpuDeviceCreateComputePipelineAsync");
+	CreateComputePipelineAsyncCallback callback) @cname("wgpuDeviceCreateComputePipelineAsync");
 
-fn PipelineLayout Device.createPipelineLayout(Device device, PipelineLayoutDescriptor* descriptor) @extern("wgpuDeviceCreatePipelineLayout");
+fn PipelineLayout Device.createPipelineLayout(Device device, PipelineLayoutDescriptor* descriptor) @cname("wgpuDeviceCreatePipelineLayout");
 
-fn QuerySet Device.createQuerySet(Device device, QuerySetDescriptor* descriptor) @extern("wgpuDeviceCreateQuerySet");
+fn QuerySet Device.createQuerySet(Device device, QuerySetDescriptor* descriptor) @cname("wgpuDeviceCreateQuerySet");
 
-fn RenderBundleEncoder Device.createRenderBundleEncoder(Device device, RenderBundleEncoderDescriptor* descriptor) @extern("wgpuDeviceCreateRenderBundleEncoder");
+fn RenderBundleEncoder Device.createRenderBundleEncoder(Device device, RenderBundleEncoderDescriptor* descriptor) @cname("wgpuDeviceCreateRenderBundleEncoder");
 
-fn RenderPipeline Device.createRenderPipeline(Device device, RenderPipelineDescriptor* descriptor) @extern("wgpuDeviceCreateRenderPipeline");
+fn RenderPipeline Device.createRenderPipeline(Device device, RenderPipelineDescriptor* descriptor) @cname("wgpuDeviceCreateRenderPipeline");
 
 fn void Device.createRenderPipelineAsync(Device device, RenderPipelineDescriptor* descriptor,
-	CreateRenderPipelineAsyncCallback callback) @extern("wgpuDeviceCreateRenderPipelineAsync");
+	CreateRenderPipelineAsyncCallback callback) @cname("wgpuDeviceCreateRenderPipelineAsync");
 
-fn Sampler Device.createSampler(Device device, SamplerDescriptor* descriptor) @extern("wgpuDeviceCreateSampler");
+fn Sampler Device.createSampler(Device device, SamplerDescriptor* descriptor) @cname("wgpuDeviceCreateSampler");
 
-fn ShaderModule Device.createShaderModule(Device device, ShaderModuleDescriptor* descriptor) @extern("wgpuDeviceCreateShaderModule");
+fn ShaderModule Device.createShaderModule(Device device, ShaderModuleDescriptor* descriptor) @cname("wgpuDeviceCreateShaderModule");
 
-fn Texture Device.createTexture(Device device, TextureDescriptor* descriptor) @extern("wgpuDeviceCreateTexture");
+fn Texture Device.createTexture(Device device, TextureDescriptor* descriptor) @cname("wgpuDeviceCreateTexture");
 
-fn void Device.destroy(Device device) @extern("wgpuDeviceDestroy");
+fn void Device.destroy(Device device) @cname("wgpuDeviceDestroy");
 
-fn usz Device.enumerateFeatures(Device device, FeatureName* features) @extern("wgpuDeviceEnumerateFeatures");
+fn usz Device.enumerateFeatures(Device device, FeatureName* features) @cname("wgpuDeviceEnumerateFeatures");
 
-fn CBool Device.getLimits(Device device, SupportedLimits* limits) @extern("wgpuDeviceGetLimits");
+fn CBool Device.getLimits(Device device, SupportedLimits* limits) @cname("wgpuDeviceGetLimits");
 
-fn Queue Device.getQueue(Device device) @extern("wgpuDeviceGetQueue");
+fn Queue Device.getQueue(Device device) @cname("wgpuDeviceGetQueue");
 
-fn CBool Device.hasFeature(Device device, FeatureName feature) @extern("wgpuDeviceHasFeature");
+fn CBool Device.hasFeature(Device device, FeatureName feature) @cname("wgpuDeviceHasFeature");
 
-fn void Device.popErrorScope(Device device, ErrorCallback callback) @extern("wgpuDevicePopErrorScope");
+fn void Device.popErrorScope(Device device, ErrorCallback callback) @cname("wgpuDevicePopErrorScope");
 
-fn void Device.pushErrorScope(Device device, ErrorFilter filter) @extern("wgpuDevicePushErrorScope");
+fn void Device.pushErrorScope(Device device, ErrorFilter filter) @cname("wgpuDevicePushErrorScope");
 
-fn void Device.setLabel(Device device, ZString label) @extern("wgpuDeviceSetLabel");
+fn void Device.setLabel(Device device, ZString label) @cname("wgpuDeviceSetLabel");
 
-fn void Device.setUncapturedErrorCallback(Device device, ErrorCallback callback) @extern("wgpuDeviceSetUncapturedErrorCallback");
+fn void Device.setUncapturedErrorCallback(Device device, ErrorCallback callback) @cname("wgpuDeviceSetUncapturedErrorCallback");
 
-fn void Device.reference(Device device) @extern("wgpuDeviceReference");
+fn void Device.reference(Device device) @cname("wgpuDeviceReference");
 
-fn void Device.release(Device device) @extern("wgpuDeviceRelease");
+fn void Device.release(Device device) @cname("wgpuDeviceRelease");
 
 
 alias DeviceLostCallback = fn void (DeviceLostReason reason, ZString message, UserData data);

@@ -4,23 +4,23 @@ typedef Adapter = void*;
 
 faultdef ADAPTER_REQUEST_FAILED;
 
-fn usz Adapter.enumerateFeatures(Adapter adapter, FeatureName* features) @extern("wgpuAdapterEnumerateFeatures");
+fn usz Adapter.enumerateFeatures(Adapter adapter, FeatureName* features) @cname("wgpuAdapterEnumerateFeatures");
 
-fn CBool Adapter.getLimits(Adapter adapter, SupportedLimits* limits) @extern("wgpuAdapterGetLimits");
+fn CBool Adapter.getLimits(Adapter adapter, SupportedLimits* limits) @cname("wgpuAdapterGetLimits");
 
-fn void Adapter.getProperties(Adapter adapter, AdapterProperties* properties) @extern("wgpuAdapterGetProperties");
+fn void Adapter.getProperties(Adapter adapter, AdapterProperties* properties) @cname("wgpuAdapterGetProperties");
 
-fn CBool Adapter.hasFeature(Adapter adapter, FeatureName feature) @extern("wgpuAdapterHasFeature");
+fn CBool Adapter.hasFeature(Adapter adapter, FeatureName feature) @cname("wgpuAdapterHasFeature");
 
-fn void Adapter.requestAdapterInfo(Adapter adapter, RequestAdapterInfoCallback callback, UserData data) @extern("wgpuAdapterRequestAdapterInfo");
+fn void Adapter.requestAdapterInfo(Adapter adapter, RequestAdapterInfoCallback callback, UserData data) @cname("wgpuAdapterRequestAdapterInfo");
 
 fn void Adapter.requestDeviceAsync(Adapter adapter,
     DeviceDescriptor* descriptor, RequestDeviceCallback callback,
-	UserData data) @extern("wgpuAdapterRequestDevice");
+	UserData data) @cname("wgpuAdapterRequestDevice");
 
-fn void Adapter.reference(Adapter adapter) @extern("wgpuAdapterReference");
+fn void Adapter.reference(Adapter adapter) @cname("wgpuAdapterReference");
 
-fn void Adapter.release(Adapter adapter) @extern("wgpuAdapterRelease");
+fn void Adapter.release(Adapter adapter) @cname("wgpuAdapterRelease");
 
 
 alias RequestAdapterInfoCallback = fn void(AdapterInfo info, UserData data);

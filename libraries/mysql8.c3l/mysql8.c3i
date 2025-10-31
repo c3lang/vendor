@@ -101,24 +101,24 @@ enum Autocommit : CInt {
     AUTOCOMMIT_ON
 }
 
-extern fn CULong        affected_rows(Mysql mysql) @extern("mysql_affected_rows");
-extern fn bool          autocommit(Mysql mysql, Autocommit mode) @extern("mysql_autocommit");
-extern fn void          close(Mysql mysql) @extern("mysql_close");
-extern fn bool          commit(Mysql mysql) @extern("mysql_commit");
-extern fn Mysql         init(Mysql mysql) @extern("mysql_init");
-extern fn CUInt         errno(Mysql mysql) @extern("mysql_errno");
-extern fn ZString       error(Mysql mysql) @extern("mysql_error");
-extern fn MysqlRow      fetch_row(MysqlRes result) @extern("mysql_fetch_row");
-extern fn void          free_result(MysqlRes result) @extern("mysql_free_result");
-extern fn void          library_end() @extern("mysql_server_end");
-extern fn CInt          library_init(CInt argc, void* argv, void* groups) @extern("mysql_server_init");
-extern fn CUInt         num_fields(MysqlRes result) @extern("mysql_num_fields");
-extern fn CInt          options(Mysql *mysql, MysqlOption option, void *arg) @extern("mysql_options");
-extern fn CInt          ping(Mysql mysql) @extern("mysql_ping");
-extern fn Mysql         real_connect(Mysql mysql, ZString host, ZString user, ZString passwd, ZString db, CUInt port, ZString unix_socket, CULong client_flag) @extern("mysql_real_connect");
-extern fn CInt          real_query(Mysql mysql, ZString stmt_str, CULong length) @extern("mysql_real_query");
-extern fn bool          rollback(Mysql mysql) @extern("mysql_rollback");
-extern fn MysqlRes      use_result(Mysql mysql) @extern("mysql_use_result");
+extern fn CULong        affected_rows(Mysql mysql) @cname("mysql_affected_rows");
+extern fn bool          autocommit(Mysql mysql, Autocommit mode) @cname("mysql_autocommit");
+extern fn void          close(Mysql mysql) @cname("mysql_close");
+extern fn bool          commit(Mysql mysql) @cname("mysql_commit");
+extern fn Mysql         init(Mysql mysql) @cname("mysql_init");
+extern fn CUInt         errno(Mysql mysql) @cname("mysql_errno");
+extern fn ZString       error(Mysql mysql) @cname("mysql_error");
+extern fn MysqlRow      fetch_row(MysqlRes result) @cname("mysql_fetch_row");
+extern fn void          free_result(MysqlRes result) @cname("mysql_free_result");
+extern fn void          library_end() @cname("mysql_server_end");
+extern fn CInt          library_init(CInt argc, void* argv, void* groups) @cname("mysql_server_init");
+extern fn CUInt         num_fields(MysqlRes result) @cname("mysql_num_fields");
+extern fn CInt          options(Mysql *mysql, MysqlOption option, void *arg) @cname("mysql_options");
+extern fn CInt          ping(Mysql mysql) @cname("mysql_ping");
+extern fn Mysql         real_connect(Mysql mysql, ZString host, ZString user, ZString passwd, ZString db, CUInt port, ZString unix_socket, CULong client_flag) @cname("mysql_real_connect");
+extern fn CInt          real_query(Mysql mysql, ZString stmt_str, CULong length) @cname("mysql_real_query");
+extern fn bool          rollback(Mysql mysql) @cname("mysql_rollback");
+extern fn MysqlRes      use_result(Mysql mysql) @cname("mysql_use_result");
 
 // Prepared Statement Functions
 
@@ -146,16 +146,16 @@ struct MysqlBind  {
   void *extension;
 }
 
-extern fn CULong        stmt_affected_rows(MysqlStmt stmt) @extern("mysql_stmt_affected_rows");
-extern fn bool          stmt_bind_param(MysqlStmt stmt, MysqlBind* bind) @extern("mysql_stmt_bind_param");
-extern fn bool          stmt_close(MysqlStmt stmt) @extern("mysql_stmt_close");
-extern fn CInt          stmt_execute(MysqlStmt stmt) @extern("mysql_stmt_execute");
-extern fn CInt          stmt_fetch(MysqlStmt stmt) @extern("mysql_stmt_fetch");
-extern fn CInt          stmt_fetch_column(MysqlStmt stmt, MysqlBind* bind, CUInt column, CULong offset) @extern("mysql_stmt_fetch_column");
-extern fn CUInt         stmt_field_count(MysqlStmt stmt) @extern("mysql_stmt_field_count");
-extern fn bool          stmt_free_result(MysqlStmt stmt) @extern("mysql_stmt_free_result");
-extern fn MysqlStmt     stmt_init(Mysql mysql) @extern("mysql_stmt_init");
-extern fn CInt          stmt_next_result(MysqlStmt stmt) @extern("mysql_stmt_next_result");
-extern fn CInt          stmt_prepare(MysqlStmt stmt, ZString stmt_str, CULong length) @extern("mysql_stmt_prepare");
-extern fn CInt          stmt_store_result(MysqlStmt stmt) @extern("mysql_stmt_store_result");
-extern fn bool          stmt_bind_result(MysqlStmt stmt, MysqlBind *bind) @extern("mysql_stmt_bind_result");
+extern fn CULong        stmt_affected_rows(MysqlStmt stmt) @cname("mysql_stmt_affected_rows");
+extern fn bool          stmt_bind_param(MysqlStmt stmt, MysqlBind* bind) @cname("mysql_stmt_bind_param");
+extern fn bool          stmt_close(MysqlStmt stmt) @cname("mysql_stmt_close");
+extern fn CInt          stmt_execute(MysqlStmt stmt) @cname("mysql_stmt_execute");
+extern fn CInt          stmt_fetch(MysqlStmt stmt) @cname("mysql_stmt_fetch");
+extern fn CInt          stmt_fetch_column(MysqlStmt stmt, MysqlBind* bind, CUInt column, CULong offset) @cname("mysql_stmt_fetch_column");
+extern fn CUInt         stmt_field_count(MysqlStmt stmt) @cname("mysql_stmt_field_count");
+extern fn bool          stmt_free_result(MysqlStmt stmt) @cname("mysql_stmt_free_result");
+extern fn MysqlStmt     stmt_init(Mysql mysql) @cname("mysql_stmt_init");
+extern fn CInt          stmt_next_result(MysqlStmt stmt) @cname("mysql_stmt_next_result");
+extern fn CInt          stmt_prepare(MysqlStmt stmt, ZString stmt_str, CULong length) @cname("mysql_stmt_prepare");
+extern fn CInt          stmt_store_result(MysqlStmt stmt) @cname("mysql_stmt_store_result");
+extern fn bool          stmt_bind_result(MysqlStmt stmt, MysqlBind *bind) @cname("mysql_stmt_bind_result");

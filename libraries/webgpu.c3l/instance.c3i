@@ -3,20 +3,20 @@ module webgpu;
 typedef Instance = void*;
 
 fn Surface Instance.createSurface(Instance instance,
-    SurfaceDescriptor* descriptor) @extern("wgpuInstanceCreateSurface");
+    SurfaceDescriptor* descriptor) @cname("wgpuInstanceCreateSurface");
 
-fn Instance createInstance(InstanceDescriptor* descriptor = null) @extern("wgpuCreateInstance");
+fn Instance createInstance(InstanceDescriptor* descriptor = null) @cname("wgpuCreateInstance");
 
-fn void Instance.hasWGSLLanguageFeature(Instance instance, WgslFeatureName feature) @extern("wgpuInstanceHasWGSLLanguageFeature");
+fn void Instance.hasWGSLLanguageFeature(Instance instance, WgslFeatureName feature) @cname("wgpuInstanceHasWGSLLanguageFeature");
 
-fn void Instance.processEvents(Instance instance) @extern("wgpuInstanceProcessEvents");
+fn void Instance.processEvents(Instance instance) @cname("wgpuInstanceProcessEvents");
 
 fn void Instance.requestAdapterAsync(Instance instance, RequestAdapterOptions* options,
-    RequestAdapterCallback callback, UserData data) @extern("wgpuInstanceRequestAdapter");
+    RequestAdapterCallback callback, UserData data) @cname("wgpuInstanceRequestAdapter");
 
-fn void Instance.reference(Instance instance) @extern("wgpuInstanceReference");
+fn void Instance.reference(Instance instance) @cname("wgpuInstanceReference");
 
-fn void Instance.release(Instance instance) @extern("wgpuInstanceRelease");
+fn void Instance.release(Instance instance) @cname("wgpuInstanceRelease");
 
 
 alias RequestAdapterCallback = fn void(RequestAdapterStatus status,

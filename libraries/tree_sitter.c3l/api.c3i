@@ -38,109 +38,125 @@ typedef TSQuery = void;
 typedef TSQueryCursor = void;
 typedef TSLookaheadIterator = void;
 
-enum TSInputEncoding : CInt {
-  UTF8,
-  UTF16,
+enum TSInputEncoding : CInt
+{
+	UTF8,
+	UTF16,
 }
 
-enum TSSymbolType : CInt {
-  REGULAR,
-  ANONYMOUS,
-  AUXILIARY,
+enum TSSymbolType : CInt
+{
+	REGULAR,
+	ANONYMOUS,
+	AUXILIARY,
 }
 
-struct TSPoint {
-  uint row;
-  uint column;
+struct TSPoint
+{
+	uint row;
+	uint column;
 }
 
-struct TSRange {
-  TSPoint start_point;
-  TSPoint end_point;
-  uint start_byte;
-  uint end_byte;
+struct TSRange
+{
+	TSPoint start_point;
+	TSPoint end_point;
+	uint start_byte;
+	uint end_byte;
 }
 
 alias TSRead_Fn = fn ZString (void* payload, uint byte_index, TSPoint position, uint* bytes_read);
 
-struct TSInput {
-  void* payload;
-  TSRead_Fn read;
-  TSInputEncoding encoding;
+struct TSInput
+{
+	void* payload;
+	TSRead_Fn read;
+	TSInputEncoding encoding;
 }
 
-enum TSLogType : CInt {
-  PARSE,
-  LEX,
+enum TSLogType : CInt
+{
+	PARSE,
+	LEX,
 }
 
 alias TSLog_Fn = fn void (void* payload, TSLogType log_type, ZString buffer);
 
-struct TSLogger {
-  void* payload;
-  TSLog_Fn log;
+struct TSLogger
+{
+	void* payload;
+	TSLog_Fn log;
 }
 
-struct TSInputEdit {
-  uint start_byte;
-  uint old_end_byte;
-  uint new_end_byte;
-  TSPoint start_point;
-  TSPoint old_end_point;
-  TSPoint new_end_point;
+struct TSInputEdit
+{
+	uint start_byte;
+	uint old_end_byte;
+	uint new_end_byte;
+	TSPoint start_point;
+	TSPoint old_end_point;
+	TSPoint new_end_point;
 }
 
-struct TSNode {
-  uint[4] context;
-  void* id;
-  TSTree* tree;
+struct TSNode
+{
+    uint[4] context;
+    void* id;
+    TSTree* tree;
 }
 
-struct TSTreeCursor {
-  void* tree;
-  void* id;
-  uint[3] context;
+struct TSTreeCursor
+{
+    void* tree;
+    void* id;
+    uint[3] context;
 }
 
-struct TSQueryCapture {
-  TSNode node;
-  uint index;
+struct TSQueryCapture
+{
+    TSNode node;
+    uint index;
 }
 
-enum TSQuantifier : CInt {
-  ZERO,
-  ZERO_OR_ONE,
-  ZERO_OR_MORE,
-  ONE,
-  ONE_OR_MORE,
+enum TSQuantifier : CInt
+{
+	ZERO,
+	ZERO_OR_ONE,
+	ZERO_OR_MORE,
+	ONE,
+	ONE_OR_MORE,
 }
 
-struct TSQueryMatch {
-  uint id;
-  ushort pattern_index;
-  ushort capture_count;
-  TSQueryCapture* captures;
+struct TSQueryMatch
+{
+    uint id;
+    ushort pattern_index;
+    ushort capture_count;
+    TSQueryCapture* captures;
 }
 
-enum TSQueryPredicateStepType : CInt {
-  DONE,
-  CAPTURE,
-  STRING,
+enum TSQueryPredicateStepType : CInt
+{
+	DONE,
+	CAPTURE,
+	STRING,
 }
 
-struct TSQueryPredicateStep {
-  TSQueryPredicateStepType type;
-  uint value_id;
+struct TSQueryPredicateStep
+{
+	TSQueryPredicateStepType type;
+	uint value_id;
 }
 
-enum TSQueryError : CInt {
-  NONE,
-  SYNTAX,
-  NODE_TYPE,
-  FIELD,
-  CAPTURE,
-  STRUCTURE,
-  LANGUAGE,
+enum TSQueryError : CInt
+{
+	NONE,
+	SYNTAX,
+	NODE_TYPE,
+	FIELD,
+	CAPTURE,
+	STRUCTURE,
+	LANGUAGE,
 }
 
 /********************/
@@ -150,17 +166,17 @@ enum TSQueryError : CInt {
 <*
  Create a new parser.
 *>
-fn TSParser* parser_new() @extern("ts_parser_new");
+fn TSParser* parser_new() @cname("ts_parser_new");
 
 <*
  Delete the parser, freeing all of the memory that it used.
 *>
-fn void parser_delete(TSParser* self) @extern("ts_parser_delete");
+fn void parser_delete(TSParser* self) @cname("ts_parser_delete");
 
 <*
  Get the parser's current language.
 *>
-fn TSLanguage* parser_language(TSParser* self) @extern("ts_parser_language");
+fn TSLanguage* parser_language(TSParser* self) @cname("ts_parser_language");
 
 <*
  Set the language that the parser should use for parsing.
@@ -172,7 +188,7 @@ fn TSLanguage* parser_language(TSParser* self) @extern("ts_parser_language");
  and compare it to this library's [`TREE_SITTER_LANGUAGE_VERSION`] and
  [`TREE_SITTER_MIN_COMPATIBLE_LANGUAGE_VERSION`] constants.
 *>
-fn bool parser_set_language(TSParser* self, TSLanguage* language) @extern("ts_parser_set_language");
+fn bool parser_set_language(TSParser* self, TSLanguage* language) @cname("ts_parser_set_language");
 
 <*
  Set the ranges of text that the parser should include when parsing.
@@ -200,7 +216,7 @@ fn bool parser_set_included_ranges(
   TSParser* self,
   TSRange* ranges,
   uint count
-) @extern("ts_parser_set_included_ranges");
+) @cname("ts_parser_set_included_ranges");
 
 <*
  Get the ranges of text that the parser will include when parsing.
@@ -212,7 +228,7 @@ fn bool parser_set_included_ranges(
 fn TSRange* parser_included_ranges(
   TSParser* self,
   uint* count
-) @extern("ts_parser_included_ranges");
+) @cname("ts_parser_included_ranges");
 
 <*
  Use the parser to parse some source code and create a syntax tree.
@@ -257,10 +273,10 @@ fn TSRange* parser_included_ranges(
  [`bytes_read`]: TSInput::read
 *>
 fn TSTree* parser_parse(
-  TSParser* self,
-  TSTree* old_tree,
-  TSInput input
-) @extern("ts_parser_parse");
+	TSParser* self,
+	TSTree* old_tree,
+	TSInput input
+) @cname("ts_parser_parse");
 
 <*
  Use the parser to parse some source code stored in one contiguous buffer.
@@ -269,11 +285,11 @@ fn TSTree* parser_parse(
  length in bytes.
 *>
 fn TSTree* parser_parse_string(
-  TSParser* self,
-  TSTree* old_tree,
-  char* string,
-  uint length
-) @extern("ts_parser_parse_string");
+	TSParser* self,
+	TSTree* old_tree,
+	char* string,
+	uint length
+) @cname("ts_parser_parse_string");
 
 <*
  Use the parser to parse some source code stored in one contiguous buffer with
@@ -282,12 +298,12 @@ fn TSTree* parser_parse_string(
  the text is encoded as UTF8 or UTF16.
 *>
 fn TSTree* parser_parse_string_encoding(
-  TSParser* self,
-  TSTree* old_tree,
-  char* string,
-  uint length,
-  TSInputEncoding encoding
-) @extern("ts_parser_parse_string_encoding");
+	TSParser* self,
+	TSTree* old_tree,
+	char* string,
+	uint length,
+	TSInputEncoding encoding
+) @cname("ts_parser_parse_string_encoding");
 
 <*
  Instruct the parser to start the next parse from the beginning.
@@ -298,7 +314,7 @@ fn TSTree* parser_parse_string_encoding(
  and instead intend to use this parser to parse some other document, you must
  call [`ts_parser_reset`] first.
 *>
-fn void parser_reset(TSParser* self) @extern("ts_parser_reset");
+fn void parser_reset(TSParser* self) @cname("ts_parser_reset");
 
 <*
  Set the maximum duration in microseconds that parsing should be allowed to
@@ -307,12 +323,12 @@ fn void parser_reset(TSParser* self) @extern("ts_parser_reset");
  If parsing takes longer than this, it will halt early, returning NULL.
  See [`ts_parser_parse`] for more information.
 *>
-fn void parser_set_timeout_micros(TSParser* self, ulong timeout_micros) @extern("ts_parser_set_timeout_micros");
+fn void parser_set_timeout_micros(TSParser* self, ulong timeout_micros) @cname("ts_parser_set_timeout_micros");
 
 <*
  Get the duration in microseconds that parsing is allowed to take.
 *>
-fn ulong parser_timeout_micros(TSParser* self) @extern("ts_parser_timeout_micros");
+fn ulong parser_timeout_micros(TSParser* self) @cname("ts_parser_timeout_micros");
 
 <*
  Set the parser's current cancellation flag pointer.
@@ -321,12 +337,12 @@ fn ulong parser_timeout_micros(TSParser* self) @extern("ts_parser_timeout_micros
  from this pointer during parsing. If it reads a non-zero value, it will
  halt early, returning NULL. See [`ts_parser_parse`] for more information.
 *>
-fn void parser_set_cancellation_flag(TSParser* self, usz* flag) @extern("ts_parser_set_cancellation_flag");
+fn void parser_set_cancellation_flag(TSParser* self, usz* flag) @cname("ts_parser_set_cancellation_flag");
 
 <*
  Get the parser's current cancellation flag pointer.
 *>
-fn usz* parser_cancellation_flag(TSParser* self) @extern("ts_parser_cancellation_flag");
+fn usz* parser_cancellation_flag(TSParser* self) @cname("ts_parser_cancellation_flag");
 
 <*
  Set the logger that a parser should use during parsing.
@@ -335,12 +351,12 @@ fn usz* parser_cancellation_flag(TSParser* self) @extern("ts_parser_cancellation
  previously assigned, the caller is responsible for releasing any memory
  owned by the previous logger.
 *>
-fn void parser_set_logger(TSParser* self, TSLogger logger) @extern("ts_parser_set_logger");
+fn void parser_set_logger(TSParser* self, TSLogger logger) @cname("ts_parser_set_logger");
 
 <*
  Get the parser's current logger.
 *>
-fn TSLogger parser_logger(TSParser* self) @extern("ts_parser_logger");
+fn TSLogger parser_logger(TSParser* self) @cname("ts_parser_logger");
 
 <*
  Set the file descriptor to which the parser should write debugging graphs
@@ -348,7 +364,7 @@ fn TSLogger parser_logger(TSParser* self) @extern("ts_parser_logger");
  to pipe these graphs directly to a `dot(1)` process in order to generate
  SVG output. You can turn off this logging by passing a negative number.
 *>
-fn void parser_print_dot_graphs(TSParser* self, CInt fd) @extern("ts_parser_print_dot_graphs");
+fn void parser_print_dot_graphs(TSParser* self, CInt fd) @cname("ts_parser_print_dot_graphs");
 
 /******************/
 /* Section - Tree */
@@ -360,17 +376,17 @@ fn void parser_print_dot_graphs(TSParser* self, CInt fd) @extern("ts_parser_prin
  You need to copy a syntax tree in order to use it on more than one thread at
  a time, as syntax trees are not thread safe.
 *>
-fn TSTree* tree_copy(TSTree* self) @extern("ts_tree_copy");
+fn TSTree* tree_copy(TSTree* self) @cname("ts_tree_copy");
 
 <*
  Delete the syntax tree, freeing all of the memory that it used.
 *>
-fn void tree_delete(TSTree* self) @extern("ts_tree_delete");
+fn void tree_delete(TSTree* self) @cname("ts_tree_delete");
 
 <*
  Get the root node of the syntax tree.
 *>
-fn TSNode tree_root_node(TSTree* self) @extern("ts_tree_root_node");
+fn TSNode tree_root_node(TSTree* self) @cname("ts_tree_root_node");
 
 <*
  Get the root node of the syntax tree, but with its position
@@ -380,19 +396,19 @@ fn TSNode tree_root_node_with_offset(
   TSTree* self,
   uint offset_bytes,
   TSPoint offset_extent
-) @extern("ts_tree_root_node_with_offset");
+) @cname("ts_tree_root_node_with_offset");
 
 <*
  Get the language that was used to parse the syntax tree.
 *>
-fn TSLanguage* tree_language(TSTree* self) @extern("ts_tree_language");
+fn TSLanguage* tree_language(TSTree* self) @cname("ts_tree_language");
 
 <*
  Get the array of included ranges that was used to parse the syntax tree.
 
  The returned pointer must be freed by the caller.
 *>
-fn TSRange* tree_included_ranges(TSTree* self, uint* length) @extern("ts_tree_included_ranges");
+fn TSRange* tree_included_ranges(TSTree* self, uint* length) @cname("ts_tree_included_ranges");
 
 <*
  Edit the syntax tree to keep it in sync with source code that has been
@@ -401,7 +417,7 @@ fn TSRange* tree_included_ranges(TSTree* self, uint* length) @extern("ts_tree_in
  You must describe the edit both in terms of byte offsets and in terms of
  (row, column) coordinates.
 *>
-fn void tree_edit(TSTree* self, TSInputEdit* edit) @extern("ts_tree_edit");
+fn void tree_edit(TSTree* self, TSInputEdit* edit) @cname("ts_tree_edit");
 
 <*
  Compare an old edited syntax tree to a new syntax tree representing the same
@@ -418,15 +434,15 @@ fn void tree_edit(TSTree* self, TSInputEdit* edit) @extern("ts_tree_edit");
  given `length` pointer.
 *>
 fn TSRange* tree_get_changed_ranges(
-  TSTree* old_tree,
-  TSTree* new_tree,
-  uint* length
-) @extern("ts_tree_get_changed_ranges");
+	TSTree* old_tree,
+	TSTree* new_tree,
+	uint* length
+) @cname("ts_tree_get_changed_ranges");
 
 <*
  Write a DOT graph describing the syntax tree to the given file.
 *>
-fn void tree_print_dot_graph(TSTree* self, CInt file_descriptor) @extern("ts_tree_print_dot_graph");
+fn void tree_print_dot_graph(TSTree* self, CInt file_descriptor) @cname("ts_tree_print_dot_graph");
 
 /******************/
 /* Section - Node */
@@ -435,50 +451,50 @@ fn void tree_print_dot_graph(TSTree* self, CInt file_descriptor) @extern("ts_tre
 <*
  Get the node's type as a null-terminated string.
 *>
-fn ZString node_type(TSNode self) @extern("ts_node_type");
+fn ZString node_type(TSNode self) @cname("ts_node_type");
 
 <*
  Get the node's type as a numerical id.
 *>
-fn TSSymbol node_symbol(TSNode self) @extern("ts_node_symbol");
+fn TSSymbol node_symbol(TSNode self) @cname("ts_node_symbol");
 
 <*
  Get the node's language.
 *>
-fn TSLanguage* node_language(TSNode self) @extern("ts_node_language");
+fn TSLanguage* node_language(TSNode self) @cname("ts_node_language");
 
 <*
  Get the node's type as it appears in the grammar ignoring aliases as a
  null-terminated string.
 *>
-fn ZString node_grammar_type(TSNode self) @extern("ts_node_grammar_type");
+fn ZString node_grammar_type(TSNode self) @cname("ts_node_grammar_type");
 
 <*
  Get the node's type as a numerical id as it appears in the grammar ignoring
  aliases. This should be used in [`ts_language_next_state`] instead of
  [`ts_node_symbol`].
 *>
-fn TSSymbol node_grammar_symbol(TSNode self) @extern("ts_node_grammar_symbol");
+fn TSSymbol node_grammar_symbol(TSNode self) @cname("ts_node_grammar_symbol");
 
 <*
  Get the node's start byte.
 *>
-fn uint node_start_byte(TSNode self) @extern("ts_node_start_byte");
+fn uint node_start_byte(TSNode self) @cname("ts_node_start_byte");
 
 <*
  Get the node's start position in terms of rows and columns.
 *>
-fn TSPoint node_start_point(TSNode self) @extern("ts_node_start_point");
+fn TSPoint node_start_point(TSNode self) @cname("ts_node_start_point");
 
 <*
  Get the node's end byte.
 *>
-fn uint node_end_byte(TSNode self) @extern("ts_node_end_byte");
+fn uint node_end_byte(TSNode self) @cname("ts_node_end_byte");
 
 <*
  Get the node's end position in terms of rows and columns.
 *>
-fn TSPoint node_end_point(TSNode self) @extern("ts_node_end_point");
+fn TSPoint node_end_point(TSNode self) @cname("ts_node_end_point");
 
 <*
  Get an S-expression representing the node as a string.
@@ -486,110 +502,110 @@ fn TSPoint node_end_point(TSNode self) @extern("ts_node_end_point");
  This string is allocated with `malloc` and the caller is responsible for
  freeing it using `free`.
 *>
-fn ZString node_string(TSNode self) @extern("ts_node_string");
+fn ZString node_string(TSNode self) @cname("ts_node_string");
 
 <*
  Check if the node is null. Functions like [`ts_node_child`] and
  [`ts_node_next_sibling`] will return a null node to indicate that no such node
  was found.
 *>
-fn bool node_is_null(TSNode self) @extern("ts_node_is_null");
+fn bool node_is_null(TSNode self) @cname("ts_node_is_null");
 
 <*
  Check if the node is *named*. Named nodes correspond to named rules in the
  grammar, whereas *anonymous* nodes correspond to string literals in the
  grammar.
 *>
-fn bool node_is_named(TSNode self) @extern("ts_node_is_named");
+fn bool node_is_named(TSNode self) @cname("ts_node_is_named");
 
 <*
  Check if the node is *missing*. Missing nodes are inserted by the parser in
  order to recover from certain kinds of syntax errors.
 *>
-fn bool node_is_missing(TSNode self) @extern("ts_node_is_missing");
+fn bool node_is_missing(TSNode self) @cname("ts_node_is_missing");
 
 <*
  Check if the node is *extra*. Extra nodes represent things like comments,
  which are not required the grammar, but can appear anywhere.
 *>
-fn bool node_is_extra(TSNode self) @extern("ts_node_is_extra");
+fn bool node_is_extra(TSNode self) @cname("ts_node_is_extra");
 
 <*
  Check if a syntax node has been edited.
 *>
-fn bool node_has_changes(TSNode self) @extern("ts_node_has_changes");
+fn bool node_has_changes(TSNode self) @cname("ts_node_has_changes");
 
 <*
  Check if the node is a syntax error or contains any syntax errors.
 *>
-fn bool node_has_error(TSNode self) @extern("ts_node_has_error");
+fn bool node_has_error(TSNode self) @cname("ts_node_has_error");
 
 <*
  Check if the node is a syntax error.
 *>
-fn bool node_is_error(TSNode self) @extern("ts_node_is_error");
+fn bool node_is_error(TSNode self) @cname("ts_node_is_error");
 
 <*
  Get this node's parse state.
 *>
-fn TSStateId node_parse_state(TSNode self) @extern("ts_node_parse_state");
+fn TSStateId node_parse_state(TSNode self) @cname("ts_node_parse_state");
 
 <*
  Get the parse state after this node.
 *>
-fn TSStateId node_next_parse_state(TSNode self) @extern("ts_node_next_parse_state");
+fn TSStateId node_next_parse_state(TSNode self) @cname("ts_node_next_parse_state");
 
 <*
  Get the node's immediate parent.
  Prefer [`ts_node_child_containing_descendant`] for
  iterating over the node's ancestors.
 *>
-fn TSNode node_parent(TSNode self) @extern("ts_node_parent");
+fn TSNode node_parent(TSNode self) @cname("ts_node_parent");
 
 <*
  Get the node's child that contains `descendant`.
 *>
-fn TSNode node_child_containing_descendant(TSNode self, TSNode descendant) @extern("ts_node_child_containing_descendant");
+fn TSNode node_child_containing_descendant(TSNode self, TSNode descendant) @cname("ts_node_child_containing_descendant");
 
 <*
  Get the node's child at the given index, where zero represents the first
  child.
 *>
-fn TSNode node_child(TSNode self, uint child_index) @extern("ts_node_child");
+fn TSNode node_child(TSNode self, uint child_index) @cname("ts_node_child");
 
 <*
  Get the field name for node's child at the given index, where zero represents
  the first child. Returns NULL, if no field is found.
 *>
-fn ZString node_field_name_for_child(TSNode self, uint child_index) @extern("ts_node_field_name_for_child");
+fn ZString node_field_name_for_child(TSNode self, uint child_index) @cname("ts_node_field_name_for_child");
 
 <*
  Get the node's number of children.
 *>
-fn uint node_child_count(TSNode self) @extern("ts_node_child_count");
+fn uint node_child_count(TSNode self) @cname("ts_node_child_count");
 
 <*
  Get the node's *named* child at the given index.
 
  See also [`ts_node_is_named`].
 *>
-fn TSNode node_named_child(TSNode self, uint child_index) @extern("ts_node_named_child");
+fn TSNode node_named_child(TSNode self, uint child_index) @cname("ts_node_named_child");
 
 <*
  Get the node's number of *named* children.
 
  See also [`ts_node_is_named`].
 *>
-fn uint node_named_child_count(TSNode self) @extern("ts_node_named_child_count");
+fn uint node_named_child_count(TSNode self) @cname("ts_node_named_child_count");
 
 <*
  Get the node's child with the given field name.
 *>
 fn TSNode node_child_by_field_name(
-  TSNode self,
-  ZString name,
-  uint name_length
-) @extern("ts_node_child_by_field_name");
+	TSNode self,
+	ZString name,
+	uint name_length
+) @cname("ts_node_child_by_field_name");
 
 <*
  Get the node's child with the given numerical field id.
@@ -597,48 +613,48 @@ fn TSNode node_child_by_field_name(
  You can convert a field name to an id using the
  [`ts_language_field_id_for_name`] function.
 *>
-fn TSNode node_child_by_field_id(TSNode self, TSFieldId field_id) @extern("ts_node_child_by_field_id");
+fn TSNode node_child_by_field_id(TSNode self, TSFieldId field_id) @cname("ts_node_child_by_field_id");
 
 <*
  Get the node's next / previous sibling.
 *>
-fn TSNode node_next_sibling(TSNode self) @extern("ts_node_next_sibling");
-fn TSNode node_prev_sibling(TSNode self) @extern("ts_node_prev_sibling");
+fn TSNode node_next_sibling(TSNode self) @cname("ts_node_next_sibling");
+fn TSNode node_prev_sibling(TSNode self) @cname("ts_node_prev_sibling");
 
 <*
  Get the node's next / previous *named* sibling.
 *>
-fn TSNode node_next_named_sibling(TSNode self) @extern("ts_node_next_named_sibling");
-fn TSNode node_prev_named_sibling(TSNode self) @extern("ts_node_prev_named_sibling");
+fn TSNode node_next_named_sibling(TSNode self) @cname("ts_node_next_named_sibling");
+fn TSNode node_prev_named_sibling(TSNode self) @cname("ts_node_prev_named_sibling");
 
 <*
  Get the node's first child that extends beyond the given byte offset.
 *>
-fn TSNode node_first_child_for_byte(TSNode self, uint byte) @extern("ts_node_first_child_for_byte");
+fn TSNode node_first_child_for_byte(TSNode self, uint byte) @cname("ts_node_first_child_for_byte");
 
 <*
  Get the node's first named child that extends beyond the given byte offset.
 *>
-fn TSNode node_first_named_child_for_byte(TSNode self, uint byte) @extern("ts_node_first_named_child_for_byte");
+fn TSNode node_first_named_child_for_byte(TSNode self, uint byte) @cname("ts_node_first_named_child_for_byte");
 
 <*
  Get the node's number of descendants, including one for the node itself.
 *>
-fn uint node_descendant_count(TSNode self) @extern("ts_node_descendant_count");
+fn uint node_descendant_count(TSNode self) @cname("ts_node_descendant_count");
 
 <*
  Get the smallest node within this node that spans the given range of bytes
  or (row, column) positions.
 *>
-fn TSNode node_descendant_for_byte_range(TSNode self, uint start, uint end) @extern("ts_node_descendant_for_byte_range");
-fn TSNode node_descendant_for_point_range(TSNode self, TSPoint start, TSPoint end) @extern("ts_node_descendant_for_point_range");
+fn TSNode node_descendant_for_byte_range(TSNode self, uint start, uint end) @cname("ts_node_descendant_for_byte_range");
+fn TSNode node_descendant_for_point_range(TSNode self, TSPoint start, TSPoint end) @cname("ts_node_descendant_for_point_range");
 
 <*
  Get the smallest named node within this node that spans the given range of
  bytes or (row, column) positions.
 *>
-fn TSNode node_named_descendant_for_byte_range(TSNode self, uint start, uint end) @extern("ts_node_named_descendant_for_byte_range");
-fn TSNode node_named_descendant_for_point_range(TSNode self, TSPoint start, TSPoint end) @extern("ts_node_named_descendant_for_point_range");
+fn TSNode node_named_descendant_for_byte_range(TSNode self, uint start, uint end) @cname("ts_node_named_descendant_for_byte_range");
+fn TSNode node_named_descendant_for_point_range(TSNode self, TSPoint start, TSPoint end) @cname("ts_node_named_descendant_for_point_range");
 
 <*
  Edit the node to keep it in-sync with source code that has been edited.
@@ -649,12 +665,12 @@ fn TSNode node_named_descendant_for_point_range(TSNode self, TSPoint start, TSPo
  when you have a [`TSNode`] instance that you want to keep and continue to use
  after an edit.
 *>
-fn void node_edit(TSNode self, TSInputEdit* edit) @extern("ts_node_edit");
+fn void node_edit(TSNode self, TSInputEdit* edit) @cname("ts_node_edit");
 
 <*
  Check if two nodes are identical.
 *>
-fn bool node_eq(TSNode self, TSNode other) @extern("ts_node_eq");
+fn bool node_eq(TSNode self, TSNode other) @cname("ts_node_eq");
 
 /************************/
 /* Section - TreeCursor */
@@ -667,17 +683,17 @@ fn bool node_eq(TSNode self, TSNode other) @extern("ts_node_eq");
  possible using the [`TSNode`] functions. It is a mutable object that is always
  on a certain syntax node, and can be moved imperatively to different nodes.
 *>
-fn TSTreeCursor tree_cursor_new(TSNode node) @extern("ts_tree_cursor_new");
+fn TSTreeCursor tree_cursor_new(TSNode node) @cname("ts_tree_cursor_new");
 
 <*
  Delete a tree cursor, freeing all of the memory that it used.
 *>
-fn void tree_cursor_delete(TSTreeCursor* self) @extern("ts_tree_cursor_delete");
+fn void tree_cursor_delete(TSTreeCursor* self) @cname("ts_tree_cursor_delete");
 
 <*
  Re-initialize a tree cursor to start at a different node.
 *>
-fn void tree_cursor_reset(TSTreeCursor* self, TSNode node) @extern("ts_tree_cursor_reset");
+fn void tree_cursor_reset(TSTreeCursor* self, TSNode node) @cname("ts_tree_cursor_reset");
 
 <*
  Re-initialize a tree cursor to the same position as another cursor.
@@ -685,12 +701,12 @@ fn void tree_cursor_reset(TSTreeCursor* self, TSNode node) @extern("ts_tree_curs
  Unlike [`ts_tree_cursor_reset`], this will not lose parent information and
  allows reusing already created cursors.
 *>
-fn void tree_cursor_reset_to(TSTreeCursor* dst, TSTreeCursor* src) @extern("ts_tree_cursor_reset_to");
+fn void tree_cursor_reset_to(TSTreeCursor* dst, TSTreeCursor* src) @cname("ts_tree_cursor_reset_to");
 
 <*
  Get the tree cursor's current node.
 *>
-fn TSNode tree_cursor_current_node(TSTreeCursor* self) @extern("ts_tree_cursor_current_node");
+fn TSNode tree_cursor_current_node(TSTreeCursor* self) @cname("ts_tree_cursor_current_node");
 
 <*
  Get the field name of the tree cursor's current node.
@@ -698,7 +714,7 @@ fn TSNode tree_cursor_current_node(TSTreeCursor* self) @extern("ts_tree_cursor_c
  This returns `NULL` if the current node doesn't have a field.
  See also [`ts_node_child_by_field_name`].
 *>
-fn ZString tree_cursor_current_field_name(TSTreeCursor* self) @extern("ts_tree_cursor_current_field_name");
+fn ZString tree_cursor_current_field_name(TSTreeCursor* self) @cname("ts_tree_cursor_current_field_name");
 
 <*
  Get the field id of the tree cursor's current node.
@@ -706,7 +722,7 @@ fn ZString tree_cursor_current_field_name(TSTreeCursor* self) @extern("ts_tree_c
  This returns zero if the current node doesn't have a field.
  See also [`ts_node_child_by_field_id`], [`ts_language_field_id_for_name`].
 *>
-fn TSFieldId tree_cursor_current_field_id(TSTreeCursor* self) @extern("ts_tree_cursor_current_field_id");
+fn TSFieldId tree_cursor_current_field_id(TSTreeCursor* self) @cname("ts_tree_cursor_current_field_id");
 
 <*
  Move the cursor to the parent of its current node.
@@ -714,7 +730,7 @@ fn TSFieldId tree_cursor_current_field_id(TSTreeCursor* self) @extern("ts_tree_c
  This returns `true` if the cursor successfully moved, and returns `false`
  if there was no parent node (the cursor was already on the root node).
 *>
-fn bool tree_cursor_goto_parent(TSTreeCursor* self) @extern("ts_tree_cursor_goto_parent");
+fn bool tree_cursor_goto_parent(TSTreeCursor* self) @cname("ts_tree_cursor_goto_parent");
 
 <*
  Move the cursor to the next sibling of its current node.
@@ -722,7 +738,7 @@ fn bool tree_cursor_goto_parent(TSTreeCursor* self) @extern("ts_tree_cursor_goto
  This returns `true` if the cursor successfully moved, and returns `false`
  if there was no next sibling node.
 *>
-fn bool tree_cursor_goto_next_sibling(TSTreeCursor* self) @extern("ts_tree_cursor_goto_next_sibling");
+fn bool tree_cursor_goto_next_sibling(TSTreeCursor* self) @cname("ts_tree_cursor_goto_next_sibling");
 
 <*
  Move the cursor to the previous sibling of its current node.
@@ -735,7 +751,7 @@ fn bool tree_cursor_goto_next_sibling(TSTreeCursor* self) @extern("ts_tree_curso
  the worst case, this will need to iterate through all the children upto the
  previous sibling node to recalculate its position.
 *>
-fn bool tree_cursor_goto_previous_sibling(TSTreeCursor* self) @extern("ts_tree_cursor_goto_previous_sibling");
+fn bool tree_cursor_goto_previous_sibling(TSTreeCursor* self) @cname("ts_tree_cursor_goto_previous_sibling");
 
 <*
  Move the cursor to the first child of its current node.
@@ -743,7 +759,7 @@ fn bool tree_cursor_goto_previous_sibling(TSTreeCursor* self) @extern("ts_tree_c
  This returns `true` if the cursor successfully moved, and returns `false`
  if there were no children.
 *>
-fn bool tree_cursor_goto_first_child(TSTreeCursor* self) @extern("ts_tree_cursor_goto_first_child");
+fn bool tree_cursor_goto_first_child(TSTreeCursor* self) @cname("ts_tree_cursor_goto_first_child");
 
 <*
  Move the cursor to the last child of its current node.
@@ -755,26 +771,26 @@ fn bool tree_cursor_goto_first_child(TSTreeCursor* self) @extern("ts_tree_cursor
  because it needs to iterate through all the children to compute the child's
  position.
 *>
-fn bool tree_cursor_goto_last_child(TSTreeCursor* self) @extern("ts_tree_cursor_goto_last_child");
+fn bool tree_cursor_goto_last_child(TSTreeCursor* self) @cname("ts_tree_cursor_goto_last_child");
 
 <*
  Move the cursor to the node that is the nth descendant of
  the original node that the cursor was constructed with, where
  zero represents the original node itself.
 *>
-fn void tree_cursor_goto_descendant(TSTreeCursor* self, uint goal_descendant_index) @extern("ts_tree_cursor_goto_descendant");
+fn void tree_cursor_goto_descendant(TSTreeCursor* self, uint goal_descendant_index) @cname("ts_tree_cursor_goto_descendant");
 
 <*
  Get the index of the cursor's current node out of all of the
  descendants of the original node that the cursor was constructed with.
 *>
-fn uint tree_cursor_current_descendant_index(TSTreeCursor* self) @extern("ts_tree_cursor_current_descendant_index");
+fn uint tree_cursor_current_descendant_index(TSTreeCursor* self) @cname("ts_tree_cursor_current_descendant_index");
 
 <*
  Get the depth of the cursor's current node relative to the original
  node that the cursor was constructed with.
 *>
-fn uint tree_cursor_current_depth(TSTreeCursor* self) @extern("ts_tree_cursor_current_depth");
+fn uint tree_cursor_current_depth(TSTreeCursor* self) @cname("ts_tree_cursor_current_depth");
 
 <*
  Move the cursor to the first child of its current node that extends beyond
@@ -783,10 +799,10 @@ fn uint tree_cursor_current_depth(TSTreeCursor* self) @extern("ts_tree_cursor_cu
  This returns the index of the child node if one was found, and returns -1
  if no such child was found.
 *>
-fn long tree_cursor_goto_first_child_for_byte(TSTreeCursor* self, uint goal_byte) @extern("ts_tree_cursor_goto_first_child_for_byte");
-fn long tree_cursor_goto_first_child_for_point(TSTreeCursor* self, TSPoint goal_point) @extern("ts_tree_cursor_goto_first_child_for_point");
+fn long tree_cursor_goto_first_child_for_byte(TSTreeCursor* self, uint goal_byte) @cname("ts_tree_cursor_goto_first_child_for_byte");
+fn long tree_cursor_goto_first_child_for_point(TSTreeCursor* self, TSPoint goal_point) @cname("ts_tree_cursor_goto_first_child_for_point");
 
-fn TSTreeCursor tree_cursor_copy(TSTreeCursor* cursor) @extern("ts_tree_cursor_copy");
+fn TSTreeCursor tree_cursor_copy(TSTreeCursor* cursor) @cname("ts_tree_cursor_copy");
 
 /*******************/
 /* Section - Query */
@@ -804,24 +820,24 @@ fn TSTreeCursor tree_cursor_copy(TSTreeCursor* cursor) @extern("ts_tree_cursor_c
  2. The type of error is written to the `error_type` parameter.
 *>
 fn TSQuery* query_new(
-  TSLanguage* language,
-  char* source,
-  uint source_len,
-  uint* error_offset,
-  TSQueryError* error_type
-) @extern("ts_query_new");
+	TSLanguage* language,
+	char* source,
+	uint source_len,
+	uint* error_offset,
+	TSQueryError* error_type
+) @cname("ts_query_new");
 
 <*
  Delete a query, freeing all of the memory that it used.
 *>
-fn void query_delete(TSQuery* self) @extern("ts_query_delete");
+fn void query_delete(TSQuery* self) @cname("ts_query_delete");
 
 <*
  Get the number of patterns, captures, or string literals in the query.
 *>
-fn uint query_pattern_count(TSQuery* self) @extern("ts_query_pattern_count");
-fn uint query_capture_count(TSQuery* self) @extern("ts_query_capture_count");
-fn uint query_string_count(TSQuery* self) @extern("ts_query_string_count");
+fn uint query_pattern_count(TSQuery* self) @cname("ts_query_pattern_count");
+fn uint query_capture_count(TSQuery* self) @cname("ts_query_capture_count");
+fn uint query_string_count(TSQuery* self) @cname("ts_query_string_count");
 
 <*
  Get the byte offset where the given pattern starts in the query's source.
@@ -829,7 +845,7 @@ fn uint query_string_count(TSQuery* self) @extern("ts_query_string_count");
  This can be useful when combining queries by concatenating their source
  code strings.
 *>
-fn uint query_start_byte_for_pattern(TSQuery *self, uint pattern_index) @extern("ts_query_start_byte_for_pattern");
+fn uint query_start_byte_for_pattern(TSQuery *self, uint pattern_index) @cname("ts_query_start_byte_for_pattern");
 
 <*
  Get the byte offset where the given pattern ends in the query's source.
@@ -837,7 +853,7 @@ fn uint query_start_byte_for_pattern(TSQuery *self, uint pattern_index) @extern(
  This can be useful when combining queries by concatenating their source
  code strings.
 *>
-fn uint query_end_byte_for_pattern(TSQuery *self, uint pattern_index) @extern("ts_query_end_byte_for_pattern");
+fn uint query_end_byte_for_pattern(TSQuery *self, uint pattern_index) @cname("ts_query_end_byte_for_pattern");
 
 <*
  Get all of the predicates for the given pattern in the query.
@@ -856,15 +872,15 @@ fn uint query_end_byte_for_pattern(TSQuery *self, uint pattern_index) @extern("t
     predicates, then there will be two steps with this `type` in the array.
 *>
 fn TSQueryPredicateStep* query_predicates_for_pattern(
-  TSQuery* self,
-  uint pattern_index,
-  uint* step_count
-) @extern("ts_query_predicates_for_pattern");
+	TSQuery* self,
+	uint pattern_index,
+	uint* step_count
+) @cname("ts_query_predicates_for_pattern");
 
 <*
  Check if the given pattern in the query has a single root node.
 *>
-fn bool query_is_pattern_rooted(TSQuery* self, uint pattern_index) @extern("ts_query_is_pattern_rooted");
+fn bool query_is_pattern_rooted(TSQuery* self, uint pattern_index) @cname("ts_query_is_pattern_rooted");
 
 <*
  Check if the given pattern in the query is 'non local'.
@@ -874,13 +890,13 @@ fn bool query_is_pattern_rooted(TSQuery* self, uint pattern_index) @extern("ts_q
  patterns disable certain optimizations that would otherwise be possible
  when executing a query on a specific range of a syntax tree.
  *>
-fn bool query_is_pattern_non_local(TSQuery* self, uint pattern_index) @extern("ts_query_is_pattern_non_local");
+fn bool query_is_pattern_non_local(TSQuery* self, uint pattern_index) @cname("ts_query_is_pattern_non_local");
 
 <*
  Check if a given pattern is guaranteed to match once a given step is reached.
  The step is specified by its byte offset in the query's source code.
  *>
-fn bool query_is_pattern_guaranteed_at_step(TSQuery* self, uint byte_offset) @extern("ts_query_is_pattern_guaranteed_at_step");
+fn bool query_is_pattern_guaranteed_at_step(TSQuery* self, uint byte_offset) @cname("ts_query_is_pattern_guaranteed_at_step");
 
 <*
  Get the name and length of one of the query's captures, or one of the
@@ -888,26 +904,26 @@ fn bool query_is_pattern_guaranteed_at_step(TSQuery* self, uint byte_offset) @ex
  numeric id based on the order that it appeared in the query's source.
 *>
 fn ZString query_capture_name_for_id(
-  TSQuery* self,
-  uint index,
-  uint* length
-) @extern("ts_query_capture_name_for_id");
+	TSQuery* self,
+	uint index,
+	uint* length
+) @cname("ts_query_capture_name_for_id");
 
 <*
  Get the quantifier of the query's captures. Each capture is * associated
  with a numeric id based on the order that it appeared in the query's source.
 *>
 fn TSQuantifier query_capture_quantifier_for_id(
-  TSQuery* self,
-  uint pattern_index,
-  uint capture_index
-) @extern("ts_query_capture_quantifier_for_id");
+	TSQuery* self,
+	uint pattern_index,
+	uint capture_index
+) @cname("ts_query_capture_quantifier_for_id");
 
 fn ZString query_string_value_for_id(
-  TSQuery* self,
-  uint index,
-  uint* length
-) @extern("ts_query_string_value_for_id");
+	TSQuery* self,
+	uint index,
+	uint* length
+) @cname("ts_query_string_value_for_id");
 
 <*
  Disable a certain capture within a query.
@@ -916,7 +932,7 @@ fn ZString query_string_value_for_id(
  any resource usage associated with recording the capture. Currently, there
  is no way to undo this.
 *>
-fn void query_disable_capture(TSQuery* self, ZString name, uint length) @extern("ts_query_disable_capture");
+fn void query_disable_capture(TSQuery* self, ZString name, uint length) @cname("ts_query_disable_capture");
 
 <*
  Disable a certain pattern within a query.
@@ -924,7 +940,7 @@ fn void query_disable_capture(TSQuery* self, ZString name, uint length) @extern(
  This prevents the pattern from matching and removes most of the overhead
  associated with the pattern. Currently, there is no way to undo this.
 *>
-fn void query_disable_pattern(TSQuery* self, uint pattern_index) @extern("ts_query_disable_pattern");
+fn void query_disable_pattern(TSQuery* self, uint pattern_index) @cname("ts_query_disable_pattern");
 
 <*
  Create a new cursor for executing a given query.
@@ -948,17 +964,17 @@ fn void query_disable_pattern(TSQuery* self, uint pattern_index) @extern("ts_que
   You can then start executing another query on another node by calling
   [`ts_query_cursor_exec`] again.
 *>
-fn TSQueryCursor* query_cursor_new() @extern("ts_query_cursor_new");
+fn TSQueryCursor* query_cursor_new() @cname("ts_query_cursor_new");
 
 <*
  Delete a query cursor, freeing all of the memory that it used.
 *>
-fn void query_cursor_delete(TSQueryCursor* self) @extern("ts_query_cursor_delete");
+fn void query_cursor_delete(TSQueryCursor* self) @cname("ts_query_cursor_delete");
 
 <*
  Start running a given query on a given node.
 *>
-fn void query_cursor_exec(TSQueryCursor* self, TSQuery* query, TSNode node) @extern("ts_query_cursor_exec");
+fn void query_cursor_exec(TSQueryCursor* self, TSQuery* query, TSNode node) @cname("ts_query_cursor_exec");
 
 <*
  Manage the maximum number of in-progress matches allowed by this query
@@ -971,16 +987,16 @@ fn void query_cursor_exec(TSQueryCursor* self, TSQuery* query, TSNode node) @ext
  any number of pending matches, dynamically allocating new space for them as
  needed as the query is executed.
 *>
-fn bool query_cursor_did_exceed_match_limit(TSQueryCursor* self) @extern("ts_query_cursor_did_exceed_match_limit");
-fn uint query_cursor_match_limit(TSQueryCursor* self) @extern("ts_query_cursor_match_limit");
-fn void query_cursor_set_match_limit(TSQueryCursor* self, uint limit) @extern("ts_query_cursor_set_match_limit");
+fn bool query_cursor_did_exceed_match_limit(TSQueryCursor* self) @cname("ts_query_cursor_did_exceed_match_limit");
+fn uint query_cursor_match_limit(TSQueryCursor* self) @cname("ts_query_cursor_match_limit");
+fn void query_cursor_set_match_limit(TSQueryCursor* self, uint limit) @cname("ts_query_cursor_set_match_limit");
 
 <*
  Set the range of bytes or (row, column) positions in which the query
  will be executed.
 *>
-fn void query_cursor_set_byte_range(TSQueryCursor* self, uint start_byte, uint end_byte) @extern("ts_query_cursor_set_byte_range");
-fn void query_cursor_set_point_range(TSQueryCursor* self, TSPoint start_point, TSPoint end_point) @extern("ts_query_cursor_set_point_range");
+fn void query_cursor_set_byte_range(TSQueryCursor* self, uint start_byte, uint end_byte) @cname("ts_query_cursor_set_byte_range");
+fn void query_cursor_set_point_range(TSQueryCursor* self, TSPoint start_point, TSPoint end_point) @cname("ts_query_cursor_set_point_range");
 
 <*
  Advance to the next match of the currently running query.
@@ -988,8 +1004,8 @@ fn void query_cursor_set_point_range(TSQueryCursor* self, TSPoint start_point, T
  If there is a match, write it to `*match` and return `true`.
  Otherwise, return `false`.
 *>
-fn bool query_cursor_next_match(TSQueryCursor* self, TSQueryMatch* match) @extern("ts_query_cursor_next_match");
-fn void query_cursor_remove_match(TSQueryCursor* self, uint match_id) @extern("ts_query_cursor_remove_match");
+fn bool query_cursor_next_match(TSQueryCursor* self, TSQueryMatch* match) @cname("ts_query_cursor_next_match");
+fn void query_cursor_remove_match(TSQueryCursor* self, uint match_id) @cname("ts_query_cursor_remove_match");
 
 <*
  Advance to the next capture of the currently running query.
@@ -998,10 +1014,10 @@ fn void query_cursor_remove_match(TSQueryCursor* self, uint match_id) @extern("t
  the matche's capture list to `*capture_index`. Otherwise, return `false`.
 *>
 fn bool query_cursor_next_capture(
-  TSQueryCursor* self,
-  TSQueryMatch* match,
-  uint* capture_index
-) @extern("ts_query_cursor_next_capture");
+	TSQueryCursor* self,
+	TSQueryMatch* match,
+	uint* capture_index
+) @cname("ts_query_cursor_next_capture");
 
 <*
  Set the maximum start depth for a query cursor.
@@ -1017,7 +1033,7 @@ fn bool query_cursor_next_capture(
 
  Set to `UINT32_MAX` to remove the maximum start depth.
 *>
-fn void query_cursor_set_max_start_depth(TSQueryCursor* self, uint max_start_depth) @extern("ts_query_cursor_set_max_start_depth");
+fn void query_cursor_set_max_start_depth(TSQueryCursor* self, uint max_start_depth) @cname("ts_query_cursor_set_max_start_depth");
 
 /**********************/
 /* Section - Language */
@@ -1026,53 +1042,53 @@ fn void query_cursor_set_max_start_depth(TSQueryCursor* self, uint max_start_dep
 <*
  Get another reference to the given language.
 *>
-fn TSLanguage* language_copy(TSLanguage* self) @extern("ts_language_copy");
+fn TSLanguage* language_copy(TSLanguage* self) @cname("ts_language_copy");
 
 <*
  Free any dynamically-allocated resources for this language, if
  this is the last reference.
 *>
-fn void language_delete(TSLanguage* self) @extern("ts_language_delete");
+fn void language_delete(TSLanguage* self) @cname("ts_language_delete");
 
 <*
  Get the number of typedef node types in the language.
 *>
-fn uint language_symbol_count(TSLanguage* self) @extern("ts_language_symbol_count");
+fn uint language_symbol_count(TSLanguage* self) @cname("ts_language_symbol_count");
 
 <*
  Get the number of valid states in this language.
 *>
-fn uint language_state_count(TSLanguage* self) @extern("ts_language_state_count");
+fn uint language_state_count(TSLanguage* self) @cname("ts_language_state_count");
 
 <*
  Get a node type string for the given numerical id.
 *>
-fn ZString language_symbol_name(TSLanguage* self, TSSymbol symbol) @extern("ts_language_symbol_name");
+fn ZString language_symbol_name(TSLanguage* self, TSSymbol symbol) @cname("ts_language_symbol_name");
 
 <*
  Get the numerical id for the given node type string.
 *>
 fn TSSymbol language_symbol_for_name(
-  TSLanguage* self,
-  ZString string,
-  uint length,
-  bool is_named
-) @extern("ts_language_symbol_for_name");
+	TSLanguage* self,
+	ZString string,
+	uint length,
+	bool is_named
+) @cname("ts_language_symbol_for_name");
 
 <*
  Get the number of typedef field names in the language.
 *>
-fn uint language_field_count(TSLanguage* self) @extern("ts_language_field_count");
+fn uint language_field_count(TSLanguage* self) @cname("ts_language_field_count");
 
 <*
  Get the field name string for the given numerical id.
 *>
-fn ZString language_field_name_for_id(TSLanguage* self, TSFieldId id) @extern("ts_language_field_name_for_id");
+fn ZString language_field_name_for_id(TSLanguage* self, TSFieldId id) @cname("ts_language_field_name_for_id");
 
 <*
  Get the numerical id for the given field name string.
 *>
-fn TSFieldId language_field_id_for_name(TSLanguage* self, char* name, uint name_length) @extern("ts_language_field_id_for_name");
+fn TSFieldId language_field_id_for_name(TSLanguage* self, char* name, uint name_length) @cname("ts_language_field_id_for_name");
 
 <*
  Check whether the given node type id belongs to named nodes, anonymous nodes,
@@ -1080,7 +1096,7 @@ fn TSFieldId language_field_id_for_name(TSLanguage* self, char* name, uint name_
 
  See also [`ts_node_is_named`]. Hidden nodes are never returned from the API.
 *>
-fn TSSymbolType language_symbol_type(TSLanguage* self, TSSymbol symbol) @extern("ts_language_symbol_type");
+fn TSSymbolType language_symbol_type(TSLanguage* self, TSSymbol symbol) @cname("ts_language_symbol_type");
 
 <*
  Get the ABI version number for this language. This version number is used
@@ -1089,14 +1105,14 @@ fn TSSymbolType language_symbol_type(TSLanguage* self, TSSymbol symbol) @extern(
 
  See also [`ts_parser_set_language`].
 *>
-fn uint language_version(TSLanguage* self) @extern("ts_language_version");
+fn uint language_version(TSLanguage* self) @cname("ts_language_version");
 
 <*
  Get the next parse state. Combine this with lookahead iterators to generate
  completion suggestions or valid symbols in error nodes. Use
  [`ts_node_grammar_symbol`] for valid symbols.
 *>
-fn TSStateId language_next_state(TSLanguage* self, TSStateId state, TSSymbol symbol) @extern("ts_language_next_state");
+fn TSStateId language_next_state(TSLanguage* self, TSStateId state, TSSymbol symbol) @cname("ts_language_next_state");
 
 /********************************/
 /* Section - Lookahead Iterator */
@@ -1117,12 +1133,12 @@ fn TSStateId language_next_state(TSLanguage* self, TSStateId state, TSSymbol sym
  iterator on its first leaf node state. For `MISSING` nodes, a lookahead
  iterator created on the previous non-extra leaf node may be appropriate.
 *>
-fn TSLookaheadIterator* lookahead_iterator_new(TSLanguage* self, TSStateId state) @extern("ts_lookahead_iterator_new");
+fn TSLookaheadIterator* lookahead_iterator_new(TSLanguage* self, TSStateId state) @cname("ts_lookahead_iterator_new");
 
 <*
  Delete a lookahead iterator freeing all the memory used.
 *>
-fn void lookahead_iterator_delete(TSLookaheadIterator* self) @extern("ts_lookahead_iterator_delete");
+fn void lookahead_iterator_delete(TSLookaheadIterator* self) @cname("ts_lookahead_iterator_delete");
 
 <*
  Reset the lookahead iterator to another state.
@@ -1130,7 +1146,7 @@ fn void lookahead_iterator_delete(TSLookaheadIterator* self) @extern("ts_lookahe
  This returns `true` if the iterator was reset to the given state and `false`
  otherwise.
 *>
-fn bool lookahead_iterator_reset_state(TSLookaheadIterator* self, TSStateId state) @extern("ts_lookahead_iterator_reset_state");
+fn bool lookahead_iterator_reset_state(TSLookaheadIterator* self, TSStateId state) @cname("ts_lookahead_iterator_reset_state");
 
 <*
  Reset the lookahead iterator.
@@ -1138,30 +1154,30 @@ fn bool lookahead_iterator_reset_state(TSLookaheadIterator* self, TSStateId stat
  This returns `true` if the language was set successfully and `false`
  otherwise.
 *>
-fn bool lookahead_iterator_reset(TSLookaheadIterator* self, TSLanguage* language, TSStateId state) @extern("ts_lookahead_iterator_reset");
+fn bool lookahead_iterator_reset(TSLookaheadIterator* self, TSLanguage* language, TSStateId state) @cname("ts_lookahead_iterator_reset");
 
 <*
  Get the current language of the lookahead iterator.
 *>
-fn TSLanguage* lookahead_iterator_language(TSLookaheadIterator* self) @extern("ts_lookahead_iterator_language");
+fn TSLanguage* lookahead_iterator_language(TSLookaheadIterator* self) @cname("ts_lookahead_iterator_language");
 
 <*
  Advance the lookahead iterator to the next symbol.
 
  This returns `true` if there is a new symbol and `false` otherwise.
 *>
-fn bool lookahead_iterator_next(TSLookaheadIterator* self) @extern("ts_lookahead_iterator_next");
+fn bool lookahead_iterator_next(TSLookaheadIterator* self) @cname("ts_lookahead_iterator_next");
 
 <*
  Get the current symbol of the lookahead iterator;
 *>
-fn TSSymbol lookahead_iterator_current_symbol(TSLookaheadIterator* self) @extern("ts_lookahead_iterator_current_symbol");
+fn TSSymbol lookahead_iterator_current_symbol(TSLookaheadIterator* self) @cname("ts_lookahead_iterator_current_symbol");
 
 <*
  Get the current symbol type of the lookahead iterator as a null terminated
  string.
 *>
-fn ZString lookahead_iterator_current_symbol_name(TSLookaheadIterator* self) @extern("ts_lookahead_iterator_current_symbol_name");
+fn ZString lookahead_iterator_current_symbol_name(TSLookaheadIterator* self) @cname("ts_lookahead_iterator_current_symbol_name");
 
 /*************************************/
 /* Section - WebAssembly Integration */
@@ -1170,31 +1186,33 @@ fn ZString lookahead_iterator_current_symbol_name(TSLookaheadIterator* self) @ex
 typedef TSWasmEngine = void;
 typedef TSWasmStore = void;
 
-enum TSWasmErrorKind : CInt {
-  NONE,
-  PARSE,
-  COMPILE,
-  INSTANTIATE,
-  ALLOCATE,
+enum TSWasmErrorKind : CInt
+{
+	NONE,
+	PARSE,
+	COMPILE,
+	INSTANTIATE,
+	ALLOCATE,
 }
 
-struct TSWasmError {
-  TSWasmErrorKind kind;
-  ZString message;
+struct TSWasmError
+{
+	TSWasmErrorKind kind;
+	ZString message;
 }
 
 <*
  Create a Wasm store.
 *>
 fn TSWasmStore* wasm_store_new(
-  TSWasmEngine* engine,
-  TSWasmError* error
-) @extern("ts_wasm_store_new");
+	TSWasmEngine* engine,
+	TSWasmError* error
+) @cname("ts_wasm_store_new");
 
 <*
  Free the memory associated with the given Wasm store.
 *>
-fn void wasm_store_delete(TSWasmStore*) @extern("ts_wasm_store_delete");
+fn void wasm_store_delete(TSWasmStore*) @cname("ts_wasm_store_delete");
 
 <*
  Create a language from a buffer of Wasm. The resulting language behaves
@@ -1204,35 +1222,35 @@ fn void wasm_store_delete(TSWasmStore*) @extern("ts_wasm_store_delete");
  was used to originally load it.
 *>
 fn TSLanguage* wasm_store_load_language(
-  TSWasmStore*,
-  ZString name,
-  ZString wasm,
-  uint wasm_len,
-  TSWasmError* error
-) @extern("ts_wasm_store_load_language");
+	TSWasmStore*,
+	ZString name,
+	ZString wasm,
+	uint wasm_len,
+	TSWasmError* error
+) @cname("ts_wasm_store_load_language");
 
 <*
  Get the number of languages instantiated in the given wasm store.
 *>
-fn usz wasm_store_language_count(TSWasmStore*) @extern("ts_wasm_store_language_count");
+fn usz wasm_store_language_count(TSWasmStore*) @cname("ts_wasm_store_language_count");
 
 <*
  Check if the language came from a Wasm module. If so, then in order to use
  this language with a TSParser*, that parser must have a Wasm store assigned.
 *>
-fn bool language_is_wasm(TSLanguage*) @extern("ts_language_is_wasm");
+fn bool language_is_wasm(TSLanguage*) @cname("ts_language_is_wasm");
 
 <*
  Assign the given Wasm store to the parser. A parser must have a Wasm store
  in order to use Wasm languages.
 *>
-fn void parser_set_wasm_store(TSParser*, TSWasmStore*) @extern("ts_parser_set_wasm_store");
+fn void parser_set_wasm_store(TSParser*, TSWasmStore*) @cname("ts_parser_set_wasm_store");
 
 <*
  Remove the parser's current Wasm store and return it. This returns NULL if
  the parser doesn't have a Wasm store.
 *>
-fn TSWasmStore* parser_take_wasm_store(TSParser*) @extern("ts_parser_take_wasm_store");
+fn TSWasmStore* parser_take_wasm_store(TSParser*) @cname("ts_parser_take_wasm_store");
 
 /**********************************/
 /* Section - Global Configuration */
@@ -1261,8 +1279,8 @@ alias TSRealloc_Fn = fn void* (usz);
 alias TSFree_Fn = fn void (void*);
 
 fn void set_allocator(
-  TSMalloc_Fn new_malloc,
-  TSCalloc_Fn new_calloc,
-  TSRealloc_Fn new_realloc,
-  TSFree_Fn new_free
-) @extern("ts_set_allocator");
+	TSMalloc_Fn new_malloc,
+	TSCalloc_Fn new_calloc,
+	TSRealloc_Fn new_realloc,
+	TSFree_Fn new_free
+) @cname("ts_set_allocator");

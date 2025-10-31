@@ -2,29 +2,29 @@ module webgpu;
 
 typedef Texture = void*;
 
-fn TextureView Texture.createView(Texture texture, TextureViewDescriptor* descriptor = null) @extern("wgpuTextureCreateView");
+fn TextureView Texture.createView(Texture texture, TextureViewDescriptor* descriptor = null) @cname("wgpuTextureCreateView");
 
-fn void Texture.destroy(Texture texture) @extern("wgpuTextureDestroy");
+fn void Texture.destroy(Texture texture) @cname("wgpuTextureDestroy");
 
-fn CUInt Texture.getDepthOrArrayLayers(Texture texture) @extern("wgpuTextureGetDepthOrArrayLayers");
+fn CUInt Texture.getDepthOrArrayLayers(Texture texture) @cname("wgpuTextureGetDepthOrArrayLayers");
 
-fn TextureDimension Texture.getDimension(Texture texture) @extern("wgpuTextureGetDimension");
+fn TextureDimension Texture.getDimension(Texture texture) @cname("wgpuTextureGetDimension");
 
-fn TextureFormat Texture.getFormat(Texture texture) @extern("wgpuTextureGetFormat");
+fn TextureFormat Texture.getFormat(Texture texture) @cname("wgpuTextureGetFormat");
 
-fn CUInt Texture.getHeight(Texture texture) @extern("wgpuTextureGetHeight");
+fn CUInt Texture.getHeight(Texture texture) @cname("wgpuTextureGetHeight");
 
-fn CUInt Texture.getMipLevelCount(Texture texture) @extern("wgpuTextureGetMipLevelCount");
+fn CUInt Texture.getMipLevelCount(Texture texture) @cname("wgpuTextureGetMipLevelCount");
 
-fn CUInt Texture.getSampleCount(Texture texture) @extern("wgpuTextureGetSampleCount");
+fn CUInt Texture.getSampleCount(Texture texture) @cname("wgpuTextureGetSampleCount");
 
-fn CUInt Texture.getWidth(Texture texture) @extern("wgpuTextureGetWidth");
+fn CUInt Texture.getWidth(Texture texture) @cname("wgpuTextureGetWidth");
 
-fn void Texture.setLabel(Texture texture, ZString label) @extern("wgpuTextureSetLabel");
+fn void Texture.setLabel(Texture texture, ZString label) @cname("wgpuTextureSetLabel");
 
-fn void Texture.reference(Texture texture) @extern("wgpuTextureReference");
+fn void Texture.reference(Texture texture) @cname("wgpuTextureReference");
 
-fn void Texture.release(Texture texture) @extern("wgpuTextureRelease");
+fn void Texture.release(Texture texture) @cname("wgpuTextureRelease");
 
 
 struct TextureDescriptor {

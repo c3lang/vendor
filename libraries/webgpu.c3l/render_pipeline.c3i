@@ -4,14 +4,14 @@ typedef RenderPipeline = void*;
 
 
 fn BindGroupLayout RenderPipeline.getBindGroupLayout(RenderPipeline pipeline,
-    CUInt groupIndex) @extern("wgpuRenderPipelineGetBindGroupLayout");
+    CUInt groupIndex) @cname("wgpuRenderPipelineGetBindGroupLayout");
 
 fn void RenderPipeline.setLabel(RenderPipeline pipeline,
-    ZString label) @extern("wgpuRenderPipelineSetLabel");
+    ZString label) @cname("wgpuRenderPipelineSetLabel");
 
-fn void RenderPipeline.reference(RenderPipeline pipeline) @extern("wgpuRenderPipelineReference");
+fn void RenderPipeline.reference(RenderPipeline pipeline) @cname("wgpuRenderPipelineReference");
 
-fn void RenderPipeline.release(RenderPipeline pipeline) @extern("wgpuRenderPipelineRelease");
+fn void RenderPipeline.release(RenderPipeline pipeline) @cname("wgpuRenderPipelineRelease");
 
 
 

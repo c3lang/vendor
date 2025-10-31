@@ -2,11 +2,11 @@ module webgpu;
 
 typedef Sampler = void*;
 
-fn void Sampler.setLabel(Sampler sampler, ZString label) @extern("wgpuSamplerSetLabel");
+fn void Sampler.setLabel(Sampler sampler, ZString label) @cname("wgpuSamplerSetLabel");
 
-fn void Sampler.reference(Sampler sampler) @extern("wgpuSamplerReference");
+fn void Sampler.reference(Sampler sampler) @cname("wgpuSamplerReference");
 
-fn void Sampler.release(Sampler sampler) @extern("wgpuSamplerRelease");
+fn void Sampler.release(Sampler sampler) @cname("wgpuSamplerRelease");
 
 
 struct SamplerDescriptor {

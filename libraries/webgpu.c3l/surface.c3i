@@ -3,29 +3,29 @@ module webgpu;
 typedef Surface = void*;
 
 fn void Surface.configure(Surface surface,
-    SurfaceConfiguration* configuration) @extern("wgpuSurfaceConfigure");
+    SurfaceConfiguration* configuration) @cname("wgpuSurfaceConfigure");
 
 fn void Surface.getCapabilities(Surface surface,
-    Adapter adapter, SurfaceCapabilities* capabilities) @extern("wgpuSurfaceGetCapabilities");
+    Adapter adapter, SurfaceCapabilities* capabilities) @cname("wgpuSurfaceGetCapabilities");
 
-fn Texture Surface.getCurrentTexture(Surface surface, SurfaceTexture* texture) @extern("wgpuSurfaceGetCurrentTexture");
+fn Texture Surface.getCurrentTexture(Surface surface, SurfaceTexture* texture) @cname("wgpuSurfaceGetCurrentTexture");
 
 fn TextureFormat Surface.getPreferredFormat(Surface surface,
-    Adapter adapter) @extern("wgpuSurfaceGetPreferredFormat");
+    Adapter adapter) @cname("wgpuSurfaceGetPreferredFormat");
 
-fn void Surface.present(Surface surface) @extern("wgpuSurfacePresent");
+fn void Surface.present(Surface surface) @cname("wgpuSurfacePresent");
 
 fn void Surface.setLabel(Surface surface,
-    ZString label) @extern("wgpuSurfaceSetLabel");
+    ZString label) @cname("wgpuSurfaceSetLabel");
 
-fn void Surface.unconfigure(Surface surface) @extern("wgpuSurfaceUnconfigure");
+fn void Surface.unconfigure(Surface surface) @cname("wgpuSurfaceUnconfigure");
 
-fn void Surface.reference(Surface surface) @extern("wgpuSurfaceReference");
+fn void Surface.reference(Surface surface) @cname("wgpuSurfaceReference");
 
-fn void Surface.release(Surface surface) @extern("wgpuSurfaceRelease");
+fn void Surface.release(Surface surface) @cname("wgpuSurfaceRelease");
 
 fn void SurfaceCapabilities.freeMembers(SurfaceCapabilities* capabilities)
-    @extern("wgpuSurfaceCapabilitiesFreeMembers");
+    @cname("wgpuSurfaceCapabilitiesFreeMembers");
 
 
 struct SurfaceDescriptor {

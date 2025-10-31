@@ -267,41 +267,41 @@ enum Oid : int (int oid) {
 
 // Connection Control Functions
 
-extern fn PGconn connectdb(ZString conninfo) @extern("PQconnectdb");
-extern fn void finish(PGconn conn) @extern("PQfinish");
+extern fn PGconn connectdb(ZString conninfo) @cname("PQconnectdb");
+extern fn void finish(PGconn conn) @cname("PQfinish");
 
 // Connection Status Functions
 
-extern fn ZString db(PGconn conn) @extern("PQdb");
-extern fn ZString user(PGconn conn) @extern("PQuser");
-extern fn ZString pass(PGconn conn) @extern("PQpass");
-extern fn ZString host(PGconn conn) @extern("PQhost");
-extern fn ZString hostaddr(PGconn conn) @extern("PQhostaddr");
-extern fn ZString port(PGconn conn) @extern("PQport");
-extern fn ZString tty(PGconn conn) @extern("PQtty") @deprecated;
-extern fn ZString options(PGconn conn) @extern("PQoptions");
-extern fn ConnStatusType status(PGconn conn) @extern("PQstatus");
+extern fn ZString db(PGconn conn) @cname("PQdb");
+extern fn ZString user(PGconn conn) @cname("PQuser");
+extern fn ZString pass(PGconn conn) @cname("PQpass");
+extern fn ZString host(PGconn conn) @cname("PQhost");
+extern fn ZString hostaddr(PGconn conn) @cname("PQhostaddr");
+extern fn ZString port(PGconn conn) @cname("PQport");
+extern fn ZString tty(PGconn conn) @cname("PQtty") @deprecated;
+extern fn ZString options(PGconn conn) @cname("PQoptions");
+extern fn ConnStatusType status(PGconn conn) @cname("PQstatus");
 // TODO
-extern fn CInt server_version(PGconn conn) @extern("PQserverVersion");
-extern fn ZString error_message(PGconn conn) @extern("PQerrorMessage");
+extern fn CInt server_version(PGconn conn) @cname("PQserverVersion");
+extern fn ZString error_message(PGconn conn) @cname("PQerrorMessage");
 // TODO
 
 // Command Execution Functions
 
-extern fn PGresult exec(PGconn conn, ZString command) @extern("PQexec");
-extern fn ExecStatusType result_status(PGresult res) @extern("PQresultStatus");
-extern fn void clear(PGresult res) @extern("PQclear");
-extern fn CInt ntuples(PGresult res) @extern("PQntuples");
-extern fn CInt nfields(PGresult res) @extern("PQnfields");
-extern fn ZString fname(PGresult res, CInt column_number) @extern("PQfname");
-extern fn CInt fnumber(PGresult res, ZString column_name) @extern("PQfnumber");
-extern fn ColumnFormatCode fformat(PGresult res, CInt column_number) @extern("PQfformat");
-extern fn CInt ftype(PGresult res, CInt column_number) @extern("PQftype");
-extern fn ZString getvalue(PGresult res, CInt row_number, CInt column_number) @extern("PQgetvalue");
-extern fn bool getisnull(PGresult res, CInt row_number, CInt column_number) @extern("PQgetisnull");
-extern fn ZString cmd_status(PGresult res) @extern("PQcmdStatus");
-extern fn ZString cmd_tuples(PGresult res) @extern("PQcmdTuples");
-extern fn ZString result_error_message(PGresult res) @extern("PQresultErrorMessage");
+extern fn PGresult exec(PGconn conn, ZString command) @cname("PQexec");
+extern fn ExecStatusType result_status(PGresult res) @cname("PQresultStatus");
+extern fn void clear(PGresult res) @cname("PQclear");
+extern fn CInt ntuples(PGresult res) @cname("PQntuples");
+extern fn CInt nfields(PGresult res) @cname("PQnfields");
+extern fn ZString fname(PGresult res, CInt column_number) @cname("PQfname");
+extern fn CInt fnumber(PGresult res, ZString column_name) @cname("PQfnumber");
+extern fn ColumnFormatCode fformat(PGresult res, CInt column_number) @cname("PQfformat");
+extern fn CInt ftype(PGresult res, CInt column_number) @cname("PQftype");
+extern fn ZString getvalue(PGresult res, CInt row_number, CInt column_number) @cname("PQgetvalue");
+extern fn bool getisnull(PGresult res, CInt row_number, CInt column_number) @cname("PQgetisnull");
+extern fn ZString cmd_status(PGresult res) @cname("PQcmdStatus");
+extern fn ZString cmd_tuples(PGresult res) @cname("PQcmdTuples");
+extern fn ZString result_error_message(PGresult res) @cname("PQresultErrorMessage");
 extern fn PGresult exec_params(PGconn conn,
                        ZString command,
                        CInt nParams,
@@ -309,7 +309,7 @@ extern fn PGresult exec_params(PGconn conn,
                        ZString* paramValues,
                        CInt* paramLengths,
                        CInt* paramFormats,
-                       CInt resultFormat) @extern("PQexecParams");
+                       CInt resultFormat) @cname("PQexecParams");
 // Miscellaneous Functions
 
-extern fn CInt lib_version() @extern("PQlibVersion");
+extern fn CInt lib_version() @cname("PQlibVersion");

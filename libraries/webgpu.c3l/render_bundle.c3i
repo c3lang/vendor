@@ -2,11 +2,11 @@ module webgpu;
 
 typedef RenderBundle = void*;
 
-fn void RenderBundle.setLabel(RenderBundle bundle, ZString label) @extern("wgpuRenderBundleSetLabel");
+fn void RenderBundle.setLabel(RenderBundle bundle, ZString label) @cname("wgpuRenderBundleSetLabel");
 
-fn void RenderBundle.reference(RenderBundle bundle) @extern("wgpuRenderBundleReference");
+fn void RenderBundle.reference(RenderBundle bundle) @cname("wgpuRenderBundleReference");
 
-fn void RenderBundle.release(RenderBundle bundle) @extern("wgpuRenderBundleRelease");
+fn void RenderBundle.release(RenderBundle bundle) @cname("wgpuRenderBundleRelease");
 
 
 struct RenderBundleDescriptor {

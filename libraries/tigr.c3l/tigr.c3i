@@ -54,27 +54,27 @@ struct Tigr
 // the effective window size might be integer scaled to a larger size. In TIGR_AUTO mode,
 // this means that the Tigr bitmap will change size if the window is moved between
 // retina and non-retina screens.
-fn Tigr *window(int w, int h, char* title, int flags) @extern("tigrWindow");
+fn Tigr *window(int w, int h, char* title, int flags) @cname("tigrWindow");
 
 // Creates an empty off-screen bitmap.
-fn Tigr *bitmap(int w, int h) @extern("tigrBitmap");
+fn Tigr *bitmap(int w, int h) @cname("tigrBitmap");
 
 // Deletes a window/bitmap.
-fn void free(Tigr *bmp) @extern("tigrFree");
+fn void free(Tigr *bmp) @cname("tigrFree");
 
 // Returns non-zero if the user requested to close a window.
-fn int closed(Tigr *bmp) @extern("tigrClosed");
+fn int closed(Tigr *bmp) @cname("tigrClosed");
 
 // Displays a window's contents on-screen and updates input.
-fn void update(Tigr *bmp) @extern("tigrUpdate");
+fn void update(Tigr *bmp) @cname("tigrUpdate");
 
 // Called before doing direct OpenGL calls and before tigrUpdate.
 // Returns non-zero if OpenGL is available.
-fn int beginOpenGL(Tigr *bmp) @extern("tigrBeginOpenGL");
+fn int beginOpenGL(Tigr *bmp) @cname("tigrBeginOpenGL");
 
 // Sets post shader for a window.
 // This replaces the built-in post-FX shader.
-fn void setPostShader(Tigr *bmp, char* code, int size) @extern("tigrSetPostShader");
+fn void setPostShader(Tigr *bmp, char* code, int size) @cname("tigrSetPostShader");
 
 // Sets post-FX properties for a window.
 //
@@ -83,49 +83,49 @@ fn void setPostShader(Tigr *bmp, char* code, int size) @extern("tigrSetPostShade
 // p2: vblur - use bilinear filtering along the y-axis (pixels)
 // p3: scanlines - CRT scanlines effect (0-1)
 // p4: contrast - contrast boost (1 = no change, 2 = 2X contrast, etc)
-fn void setPostFX(Tigr *bmp, float p1, float p2, float p3, float p4) @extern("tigrSetPostFX");
+fn void setPostFX(Tigr *bmp, float p1, float p2, float p3, float p4) @cname("tigrSetPostFX");
 
 // Drawing ----------------------------------------------------------------
 
 // Helper for reading pixels.
 // For high performance, just access bmp->pix directly.
-fn TPixel get(Tigr *bmp, int x, int y) @extern("tigrGet");
+fn TPixel get(Tigr *bmp, int x, int y) @cname("tigrGet");
 
 // Plots a pixel.
 // Clips and blends.
 // For high performance, just access bmp->pix directly.
-fn void tigrPlot(Tigr *bmp, int x, int y, TPixel pix) @extern("tigrPlot");
+fn void tigrPlot(Tigr *bmp, int x, int y, TPixel pix) @cname("tigrPlot");
 
 // Clears a bitmap to a color.
 // No blending, no clipping.
-fn void clear(Tigr *bmp, TPixel color) @extern("tigrClear");
+fn void clear(Tigr *bmp, TPixel color) @cname("tigrClear");
 
 // Fills a rectangular area.
 // No blending, no clipping.
-fn void fill(Tigr *bmp, int x, int y, int w, int h, TPixel color) @extern("tigrFill");
+fn void fill(Tigr *bmp, int x, int y, int w, int h, TPixel color) @cname("tigrFill");
 
 // Draws a line.
 // Start pixel is drawn, end pixel is not.
 // Clips and blends.
-fn void line(Tigr *bmp, int x0, int y0, int x1, int y1, TPixel color) @extern("tigrLine");
+fn void line(Tigr *bmp, int x0, int y0, int x1, int y1, TPixel color) @cname("tigrLine");
 
 // Draws an empty rectangle.
 // Drawing a 1x1 rectangle yields the same result as calling tigrPlot.
 // Clips and blends.
-fn void rect(Tigr *bmp, int x, int y, int w, int h, TPixel color) @extern("tigrRect");
+fn void rect(Tigr *bmp, int x, int y, int w, int h, TPixel color) @cname("tigrRect");
 
 // Fills a rectangle.
 // Fills the inside of the specified rectangular area.
 // Calling tigrRect followed by tigrFillRect using the same arguments
 // causes no overdrawing.
 // Clips and blends.
-fn void fillRect(Tigr *bmp, int x, int y, int w, int h, TPixel color) @extern("tigrFillRect");
+fn void fillRect(Tigr *bmp, int x, int y, int w, int h, TPixel color) @cname("tigrFillRect");
 
 // Draws a circle.
 // Drawing a zero radius circle yields the same result as calling tigrPlot.
 // Drawing a circle with radius one draws a circle three pixels wide.
 // Clips and blends.
-fn void circle(Tigr *bmp, int x, int y, int r, TPixel color) @extern("tigrCircle");
+fn void circle(Tigr *bmp, int x, int y, int r, TPixel color) @cname("tigrCircle");
 
 // Fills a circle.
 // Fills the inside of the specified circle.
@@ -133,11 +133,11 @@ fn void circle(Tigr *bmp, int x, int y, int r, TPixel color) @extern("tigrCircle
 // causes no overdrawing.
 // Filling a circle with zero radius has no effect.
 // Clips and blends.
-fn void fillCircle(Tigr *bmp, int x, int y, int r, TPixel color) @extern("tigrFillCircle");
+fn void fillCircle(Tigr *bmp, int x, int y, int r, TPixel color) @cname("tigrFillCircle");
 
 // Sets clip rect.
 // Set to (0, 0, -1, -1) to reset clipping to full bitmap.
-fn void clip(Tigr *bmp, int cx, int cy, int cw, int ch) @extern("tigrClip");
+fn void clip(Tigr *bmp, int cx, int cy, int cw, int ch) @cname("tigrClip");
 
 // Copies bitmap data.
 // dx/dy = dest co-ordinates
@@ -146,7 +146,7 @@ fn void clip(Tigr *bmp, int cx, int cy, int cw, int ch) @extern("tigrClip");
 //
 // RGBAdest = RGBAsrc
 // Clips, does not blend.
-fn void blit(Tigr *dest, Tigr *src, int dx, int dy, int sx, int sy, int w, int h) @extern("tigrBlit");
+fn void blit(Tigr *dest, Tigr *src, int dx, int dy, int sx, int sy, int w, int h) @cname("tigrBlit");
 
 // Same as tigrBlit, but alpha blends the source bitmap with the
 // target using per pixel alpha and the specified global alpha.
@@ -160,7 +160,7 @@ fn void blit(Tigr *dest, Tigr *src, int dx, int dy, int sx, int sy, int w, int h
 // Blit mode == TIGR_BLEND_ALPHA:
 // Adest = Asrc * Ablend + Adest * (1 - Ablend)
 // Clips and blends.
-fn void blitAlpha(Tigr *dest, Tigr *src, int dx, int dy, int sx, int sy, int w, int h, float alpha) @extern("tigrBlitAlpha");
+fn void blitAlpha(Tigr *dest, Tigr *src, int dx, int dy, int sx, int sy, int w, int h, float alpha) @cname("tigrBlitAlpha");
 
 // Same as tigrBlit, but tints the source bitmap with a color
 // and alpha blends the resulting source with the destination.
@@ -178,7 +178,7 @@ fn void blitAlpha(Tigr *dest, Tigr *src, int dx, int dy, int sx, int sy, int w, 
 // Blit mode == TIGR_BLEND_ALPHA:
 // Adest = Ablend * Ablend + Adest * (1 - Ablend)
 // Clips and blends.
-fn void blitTint(Tigr *dest, Tigr *src, int dx, int dy, int sx, int sy, int w, int h, TPixel tint) @extern("tigrBlitTint");
+fn void blitTint(Tigr *dest, Tigr *src, int dx, int dy, int sx, int sy, int w, int h, TPixel tint) @cname("tigrBlitTint");
 
 enum BlitMode : int
 {
@@ -187,7 +187,7 @@ enum BlitMode : int
 }
 
 // Set destination bitmap blend mode for blit operations.
-fn void blitMode(Tigr *dest, int mode) @extern("tigrBlitMode");
+fn void blitMode(Tigr *dest, int mode) @cname("tigrBlitMode");
 
 // Helper for making colors.
 macro TPixel rgb(char r, char g,  char b) => { r, g, b, 0xff };
@@ -230,20 +230,20 @@ const TCodepage TCP_UTF32 = 12001;
 // For UTF32 - the font bitmap contains a subset of Unicode characters
 // and must be in the format generated by tigrFont for UTF32.
 //
-fn Font *loadFont(Tigr *bitmap, int codepage) @extern("tigrLoadFont");
+fn Font *loadFont(Tigr *bitmap, int codepage) @cname("tigrLoadFont");
 
 // Frees a font.
-fn void freeFont(Font *font) @extern("tigrFreeFont");
+fn void freeFont(Font *font) @cname("tigrFreeFont");
 
 // Prints UTF-8 text onto a bitmap.
 // NOTE:
 //  This uses the target bitmap blit mode.
 //  See tigrBlitTint for details.
-fn void print(Tigr *dest, Font *font, int x, int y, TPixel color, char* text, ...) @extern("tigrPrint");
+fn void print(Tigr *dest, Font *font, int x, int y, TPixel color, char* text, ...) @cname("tigrPrint");
 
 // Returns the width/height of a string.
-fn int textWidth(Font *font, char* text) @extern("tigrTextWidth");
-fn int textHeight(Font *font, char* text) @extern("tigrTextHeight");
+fn int textWidth(Font *font, char* text) @cname("tigrTextWidth");
+fn int textHeight(Font *font, char* text) @cname("tigrTextHeight");
 
 extern Font *tfont;
 
@@ -319,7 +319,7 @@ const TKey TK_RSQUARE = 195;
 const TKey TK_TICK = 196;
 
 // Returns mouse input for a window.
-fn void mouse(Tigr *bmp, int *x, int *y, int *buttons) @extern("tigrMouse");
+fn void mouse(Tigr *bmp, int *x, int *y, int *buttons) @cname("tigrMouse");
 
 struct TouchPoint
 {
@@ -329,58 +329,58 @@ struct TouchPoint
 
 // Reads touch input for a window.
 // Returns number of touch points read.
-fn int touch(Tigr *bmp, TouchPoint *points, int maxPoints) @extern("tigrTouch");
+fn int touch(Tigr *bmp, TouchPoint *points, int maxPoints) @cname("tigrTouch");
 
 // Reads the keyboard for a window.
 // Returns non-zero if a key is pressed/held.
 // tigrKeyDown tests for the initial press, tigrKeyHeld repeats each frame.
-fn int keyDown(Tigr *bmp, TKey key) @extern("tigrKeyDown");
-fn int keyHeld(Tigr *bmp, TKey key) @extern("tigrKeyHeld");
+fn int keyDown(Tigr *bmp, TKey key) @cname("tigrKeyDown");
+fn int keyHeld(Tigr *bmp, TKey key) @cname("tigrKeyHeld");
 
 // Reads character input for a window.
 // Returns the Unicode value of the last key pressed, or 0 if none.
-fn int readChar(Tigr *bmp) @extern("tigrReadChar");
+fn int readChar(Tigr *bmp) @cname("tigrReadChar");
 
 // Show / hide virtual keyboard.
 // (Only available on iOS / Android)
-fn void showKeyboard(int show) @extern("tigrShowKeyboard");
+fn void showKeyboard(int show) @cname("tigrShowKeyboard");
 
 
 // Bitmap I/O -------------------------------------------------------------
 
 // Loads a PNG, from either a file or memory. (fileName is UTF-8)
 // On error, returns NULL and sets errno.
-fn Tigr *loadImage(char* fileName) @extern("tigrLoadImage");
-fn Tigr *loadImageMem(void *data, int length) @extern("tigrLoadImageMem");
+fn Tigr *loadImage(char* fileName) @cname("tigrLoadImage");
+fn Tigr *loadImageMem(void *data, int length) @cname("tigrLoadImageMem");
 
 // Saves a PNG to a file. (fileName is UTF-8)
 // On error, returns zero and sets errno.
-fn int saveImage(char* fileName, Tigr *bmp) @extern("tigrSaveImage");
+fn int saveImage(char* fileName, Tigr *bmp) @cname("tigrSaveImage");
 
 
 // Helpers ----------------------------------------------------------------
 
 // Returns the amount of time elapsed since tigrTime was last called,
 // or zero on the first call.
-fn float time() @extern("tigrTime");
+fn float time() @cname("tigrTime");
 
 // Displays an error message and quits. (UTF-8)
 // 'bmp' can be NULL.
-fn void error(Tigr *bmp, char* message, ...) @extern("tigrError");
+fn void error(Tigr *bmp, char* message, ...) @cname("tigrError");
 
 // Reads an entire file into memory. (fileName is UTF-8)
 // Free it yourself after with 'free'.
 // On error, returns NULL and sets errno.
 // TIGR will automatically append a NUL terminator byte
 // to the end (not included in the length)
-fn void *readFile(char* fileName, int *length) @extern("tigrReadFile");
+fn void *readFile(char* fileName, int *length) @cname("tigrReadFile");
 
 // Decompresses DEFLATEd zip/zlib data into a buffer.
 // Returns non-zero on success.
-fn int inlate(void *out, uint outlen, void *in, uint inlen) @extern("tigrInflate");
+fn int inlate(void *out, uint outlen, void *in, uint inlen) @cname("tigrInflate");
 
 // Decodes a single UTF8 codepoint and returns the next pointer.
-fn char *decodeUTF8(char* text, int* cp) @extern("tigrDecodeUTF8");
+fn char *decodeUTF8(char* text, int* cp) @cname("tigrDecodeUTF8");
 
 // Encodes a single UTF8 codepoint and returns the next pointer.
-fn char *encodeUTF8(char* text, int cp) @extern("tigrEncodeUTF8");
+fn char *encodeUTF8(char* text, int cp) @cname("tigrEncodeUTF8");

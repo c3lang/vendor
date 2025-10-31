@@ -3,34 +3,34 @@ module webgpu;
 typedef ComputePassEncoder = void*;
 
 fn void ComputePassEncoder.dispatchWorkgroups(ComputePassEncoder encoder,
-    CUInt countX, CUInt countY, CUInt countZ) @extern("wgpuComputePassEncoderDispatchWorkgroups");
+    CUInt countX, CUInt countY, CUInt countZ) @cname("wgpuComputePassEncoderDispatchWorkgroups");
 
 fn void ComputePassEncoder.dispatchWorkgroupsIndirect(ComputePassEncoder encoder,
-    Buffer buffer, CULong offset) @extern("wgpuComputePassEncoderDispatchWorkgroupsIndirect");
+    Buffer buffer, CULong offset) @cname("wgpuComputePassEncoderDispatchWorkgroupsIndirect");
 
-fn void ComputePassEncoder.end(ComputePassEncoder encoder) @extern("wgpuComputePassEncoderEnd");
+fn void ComputePassEncoder.end(ComputePassEncoder encoder) @cname("wgpuComputePassEncoderEnd");
 
 fn void ComputePassEncoder.insertDebugMarker(ComputePassEncoder encoder,
-    ZString label) @extern("wgpuComputePassEncoderInsertDebugMarker");
+    ZString label) @cname("wgpuComputePassEncoderInsertDebugMarker");
 
 fn void ComputePassEncoder.popDebugGroup(ComputePassEncoder encoder)
-    @extern("wgpuComputePassEncoderPopDebugGroup");
+    @cname("wgpuComputePassEncoderPopDebugGroup");
 
 fn void ComputePassEncoder.pushDebugGroup(ComputePassEncoder encoder, ZString label)
-    @extern("wgpuComputePassEncoderPushDebugGroup");
+    @cname("wgpuComputePassEncoderPushDebugGroup");
 
 fn void ComputePassEncoder.setBindGroup(ComputePassEncoder encoder, CUInt groupIndex)
-    @extern("wgpuComputePassEncoderSetBindGroup");
+    @cname("wgpuComputePassEncoderSetBindGroup");
 
 fn void ComputePassEncoder.setLabel(ComputePassEncoder encoder, ZString label)
-    @extern("wgpuComputePassEncoderSetLabel");
+    @cname("wgpuComputePassEncoderSetLabel");
 
 fn void ComputePassEncoder.setPipeline(ComputePassEncoder encoder, ComputePipeline pipeline)
-    @extern("wgpuComputePassEncoderSetPipeline");
+    @cname("wgpuComputePassEncoderSetPipeline");
 
-fn void ComputePassEncoder.reference(ComputePassEncoder encoder) @extern("wgpuComputePassEncoderReference");
+fn void ComputePassEncoder.reference(ComputePassEncoder encoder) @cname("wgpuComputePassEncoderReference");
 
-fn void ComputePassEncoder.release(ComputePassEncoder encoder) @extern("wgpuComputePassEncoderRelease");
+fn void ComputePassEncoder.release(ComputePassEncoder encoder) @cname("wgpuComputePassEncoderRelease");
 
 
 struct ComputePassTimestampWrites {

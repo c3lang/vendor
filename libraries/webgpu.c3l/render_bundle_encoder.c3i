@@ -5,50 +5,50 @@ typedef RenderBundleEncoder = void*;
 
 fn void RenderBundleEncoder.draw(RenderBundleEncoder encoder,
     CUInt vertexCount, CUInt instanceCount, CUInt firstVertex = 0, CUInt firstInstance = 0)
-    @extern("wgpuRenderBundleEncoderDraw");
+    @cname("wgpuRenderBundleEncoderDraw");
 
 fn void RenderBundleEncoder.drawIndexed(RenderBundleEncoder encoder,
     CUInt indexCount, CUInt instanceCount, CUInt firstIndex = 0, CInt baseVertex = 0, CUInt firstInstance = 0)
-    @extern("wgpuRenderBundleEncoderDrawIndexed");
+    @cname("wgpuRenderBundleEncoderDrawIndexed");
 
 fn void RenderBundleEncoder.drawIndexedIndirect(RenderBundleEncoder encoder,
-    Buffer buffer, CULong offset) @extern("wgpuRenderBundleEncoderDrawIndexedIndirect");
+    Buffer buffer, CULong offset) @cname("wgpuRenderBundleEncoderDrawIndexedIndirect");
 
 fn void RenderBundleEncoder.drawIndirect(RenderBundleEncoder encoder,
-    Buffer buffer, CULong offset) @extern("wgpuRenderBundleEncoderDrawIndirect");
+    Buffer buffer, CULong offset) @cname("wgpuRenderBundleEncoderDrawIndirect");
 
 fn RenderBundle RenderBundleEncoder.finish(RenderBundleEncoder encoder,
-    RenderBundleDescriptor* descriptor) @extern("wgpuRenderBundleEncoderFinish");
+    RenderBundleDescriptor* descriptor) @cname("wgpuRenderBundleEncoderFinish");
 
 fn void RenderBundleEncoder.insertDebugMarker(RenderBundleEncoder encoder,
-    ZString label) @extern("wgpuRenderBundleEncoderInsertDebugMarker");
+    ZString label) @cname("wgpuRenderBundleEncoderInsertDebugMarker");
 
 fn void RenderBundleEncoder.popDebugGroup(RenderBundleEncoder encoder)
-    @extern("wgpuRenderBundleEncoderPopDebugGroup");
+    @cname("wgpuRenderBundleEncoderPopDebugGroup");
 
 fn void RenderBundleEncoder.pushDebugGroup(RenderBundleEncoder encoder, ZString label)
-    @extern("wgpuRenderBundleEncoderPushDebugGroup");
+    @cname("wgpuRenderBundleEncoderPushDebugGroup");
     
 fn void RenderBundleEncoder.setBindGroup(RenderBundleEncoder encoder, CUInt index)
-    @extern("wgpuRenderBundleEncoderSetBindGroup");
+    @cname("wgpuRenderBundleEncoderSetBindGroup");
 
 fn void RenderBundleEncoder.setIndexBuffer(RenderBundleEncoder encoder,
     Buffer buffer, IndexFormat format, CULong offset, CULong size)
-    @extern("wgpuRenderBundleEncoderSetIndexBuffer");
+    @cname("wgpuRenderBundleEncoderSetIndexBuffer");
 
 fn void RenderBundleEncoder.setLabel(RenderBundleEncoder encoder, ZString label)
-    @extern("wgpuRenderBundleEncoderSetLabel");
+    @cname("wgpuRenderBundleEncoderSetLabel");
 
 fn void RenderBundleEncoder.setPipeline(RenderBundleEncoder encoder, ComputePipeline pipeline)
-    @extern("wgpuRenderBundleEncoderSetPipeline");
+    @cname("wgpuRenderBundleEncoderSetPipeline");
 
 fn void RenderBundleEncoder.setVertexBuffer(RenderBundleEncoder encoder,
     CUInt slot, Buffer buffer, IndexFormat format, CULong offset, CULong size)
-    @extern("wgpuRenderBundleEncoderSetVertexBuffer");
+    @cname("wgpuRenderBundleEncoderSetVertexBuffer");
 
-fn void RenderBundleEncoder.reference(RenderBundleEncoder encoder) @extern("wgpuRenderBundleEncoderReference");
+fn void RenderBundleEncoder.reference(RenderBundleEncoder encoder) @cname("wgpuRenderBundleEncoderReference");
 
-fn void RenderBundleEncoder.release(RenderBundleEncoder encoder) @extern("wgpuRenderBundleEncoderRelease");
+fn void RenderBundleEncoder.release(RenderBundleEncoder encoder) @cname("wgpuRenderBundleEncoderRelease");
 
 
 struct RenderBundleEncoderDescriptor {

@@ -2,28 +2,28 @@ module webgpu;
 
 typedef Buffer = void*;
 
-fn void Buffer.destroy(Buffer buffer) @extern("wgpuBufferDestroy");
+fn void Buffer.destroy(Buffer buffer) @cname("wgpuBufferDestroy");
 
 // wgpuBufferGetConstMappedRange left out, since C3 has no void const *
 
-fn BufferMapState Buffer.getMapState(Buffer buffer, usz offset, usz size) @extern("wgpuBufferGetMapState");
+fn BufferMapState Buffer.getMapState(Buffer buffer, usz offset, usz size) @cname("wgpuBufferGetMapState");
 
-fn BufferMappedRange Buffer.getMappedRange(Buffer buffer) @extern("wgpuBufferGetMappedRange");
+fn BufferMappedRange Buffer.getMappedRange(Buffer buffer) @cname("wgpuBufferGetMappedRange");
 
-fn CULong Buffer.getSize(Buffer buffer) @extern("wgpuBufferGetSize");
+fn CULong Buffer.getSize(Buffer buffer) @cname("wgpuBufferGetSize");
 
-fn BufferUsage Buffer.getUsage(Buffer buffer) @extern("wgpuBufferGetUsage");
+fn BufferUsage Buffer.getUsage(Buffer buffer) @cname("wgpuBufferGetUsage");
 
 fn void Buffer.mapAsync(Buffer buffer, MapMode mode, usz offset, usz size,
-    BufferMapAsyncCallback callback, UserData data) @extern("wgpuBufferMapAsync");
+    BufferMapAsyncCallback callback, UserData data) @cname("wgpuBufferMapAsync");
 
-fn void Buffer.setLabel(Buffer buffer, ZString label) @extern("wgpuBufferSetLabel");
+fn void Buffer.setLabel(Buffer buffer, ZString label) @cname("wgpuBufferSetLabel");
 
-fn void Buffer.unmap(Buffer buffer) @extern("wgpuBufferUnmap");
+fn void Buffer.unmap(Buffer buffer) @cname("wgpuBufferUnmap");
 
-fn void Buffer.reference(Buffer buffer) @extern("wgpuBufferReference");
+fn void Buffer.reference(Buffer buffer) @cname("wgpuBufferReference");
 
-fn void Buffer.release(Buffer buffer) @extern("wgpuBufferRelease");
+fn void Buffer.release(Buffer buffer) @cname("wgpuBufferRelease");
 
 
 alias BufferMapAsyncCallback = fn void(BufferMapAsyncStatus status, UserData data);

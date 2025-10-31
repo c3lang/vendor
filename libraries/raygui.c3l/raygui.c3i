@@ -95,83 +95,83 @@ enum GuiControl : CUShort {
 //----------------------------------------------------------------------------------
 
 // Global gui state control functions
-extern fn void guiEnable() @extern("GuiEnable");                                 // Enable gui controls (global state)
-extern fn void guiDisable() @extern("GuiDisable");                                // Disable gui controls (global state)
-extern fn void guiLock() @extern("GuiLock");                                   // Lock gui controls (global state)
-extern fn void guiUnlock() @extern("GuiUnlock");                                 // Unlock gui controls (global state)
-extern fn bool guiIsLocked() @extern("GuiIsLocked");                               // Check if gui is locked (global state)
-extern fn void guiSetAlpha(float alpha) @extern("GuiSetAlpha");                        // Set gui controls alpha (global state), alpha goes from 0.0f to 1.0f
-extern fn void guiSetState(GuiState state) @extern("GuiSetState");                          // Set gui state (global state)
-extern fn GuiState guiGetState() @extern("GuiGetState");                                // Get gui state (global state)
+extern fn void guiEnable() @cname("GuiEnable");                                 // Enable gui controls (global state)
+extern fn void guiDisable() @cname("GuiDisable");                                // Disable gui controls (global state)
+extern fn void guiLock() @cname("GuiLock");                                   // Lock gui controls (global state)
+extern fn void guiUnlock() @cname("GuiUnlock");                                 // Unlock gui controls (global state)
+extern fn bool guiIsLocked() @cname("GuiIsLocked");                               // Check if gui is locked (global state)
+extern fn void guiSetAlpha(float alpha) @cname("GuiSetAlpha");                        // Set gui controls alpha (global state), alpha goes from 0.0f to 1.0f
+extern fn void guiSetState(GuiState state) @cname("GuiSetState");                          // Set gui state (global state)
+extern fn GuiState guiGetState() @cname("GuiGetState");                                // Get gui state (global state)
 
 // Font set/get functions
-extern fn void guiSetFont(Font font) @extern("GuiSetFont");                           // Set gui custom font (global state)
-extern fn Font guiGetFont() @extern("GuiGetFont");                                // Get gui custom font (global state)
+extern fn void guiSetFont(Font font) @cname("GuiSetFont");                           // Set gui custom font (global state)
+extern fn Font guiGetFont() @cname("GuiGetFont");                                // Get gui custom font (global state)
 
 // Style set/get functions
-extern fn void guiSetStyle(GuiControl control, GuiControlProperty property, CInt value) @extern("GuiSetStyle"); // Set one style property
-extern fn CInt guiGetStyle(GuiControl control, GuiControlProperty property) @extern("GuiGetStyle");           // Get one style property
+extern fn void guiSetStyle(GuiControl control, GuiControlProperty property, CInt value) @cname("GuiSetStyle"); // Set one style property
+extern fn CInt guiGetStyle(GuiControl control, GuiControlProperty property) @cname("GuiGetStyle");           // Get one style property
 
 // Styles loading functions
-extern fn void guiLoadStyle(char *fileName) @extern("GuiLoadStyle");              // Load style file over global style variable (.rgs)
-extern fn void guiLoadStyleDefault() @extern("GuiLoadStyleDefault");                       // Load style default over global style
+extern fn void guiLoadStyle(char *fileName) @cname("GuiLoadStyle");              // Load style file over global style variable (.rgs)
+extern fn void guiLoadStyleDefault() @cname("GuiLoadStyleDefault");                       // Load style default over global style
 
 // Tooltips management functions
-extern fn void guiEnableTooltip() @extern("GuiEnableTooltip");                          // Enable gui tooltips (global state)
-extern fn void guiDisableTooltip() @extern("GuiDisableTooltip");                         // Disable gui tooltips (global state)
-extern fn void guiSetTooltip(char *tooltip) @extern("GuiSetTooltip");              // Set tooltip string
+extern fn void guiEnableTooltip() @cname("GuiEnableTooltip");                          // Enable gui tooltips (global state)
+extern fn void guiDisableTooltip() @cname("GuiDisableTooltip");                         // Disable gui tooltips (global state)
+extern fn void guiSetTooltip(char *tooltip) @cname("GuiSetTooltip");              // Set tooltip string
 
 // Icons functionality
-extern fn char *guiIconText (GuiIconName iconId, char *text) @extern("GuiIconText"); // Get text with icon id prepended (if supported)
-extern fn void guiSetIconScale(CInt scale) @extern("GuiSetIconScale");                      // Set default icon drawing size
-extern fn CUInt *guiGetIcons() @extern("GuiGetIcons");                      // Get raygui icons data pointer
-extern fn char **guiLoadIcons(char *fileName, bool loadIconsName) @extern("GuiLoadIcons"); // Load raygui icons file (.rgi) into internal icons data
-extern fn void guiDrawIcon(GuiIconName iconId, CInt posX, CInt posY, CInt pixelSize, Color color) @extern("GuiDrawIcon"); // Draw icon using pixel size at specified position
+extern fn char *guiIconText (GuiIconName iconId, char *text) @cname("GuiIconText"); // Get text with icon id prepended (if supported)
+extern fn void guiSetIconScale(CInt scale) @cname("GuiSetIconScale");                      // Set default icon drawing size
+extern fn CUInt *guiGetIcons() @cname("GuiGetIcons");                      // Get raygui icons data pointer
+extern fn char **guiLoadIcons(char *fileName, bool loadIconsName) @cname("GuiLoadIcons"); // Load raygui icons file (.rgi) into internal icons data
+extern fn void guiDrawIcon(GuiIconName iconId, CInt posX, CInt posY, CInt pixelSize, Color color) @cname("GuiDrawIcon"); // Draw icon using pixel size at specified position
 
 
 // Controls
 //----------------------------------------------------------------------------------------------------------
 // Container/separator controls, useful for controls organization
-extern fn bool guiWindowBox(Rectangle bounds, char *title) @extern("GuiWindowBox");                                       // Window Box control, shows a window that can be closed
-extern fn bool guiGroupBox(Rectangle bounds, char *text) @extern("GuiGroupBox");                                         // Group Box control with text name
-extern fn bool guiLine(Rectangle bounds, char *text) @extern("GuiLine");                                             // Line separator control, could contain text
-extern fn bool guiPanel(Rectangle bounds, char *text) @extern("GuiPanel");                                            // Panel control, useful to group controls
-extern fn bool guiTabBar(Rectangle bounds, char **text, CInt count, CInt *active) @extern("GuiTabBar");                  // Tab Bar control, returns TAB to be closed or -1
-extern fn bool guiScrollPanel(Rectangle bounds, char *text, Rectangle content, Vector2 *scroll, Rectangle *view) @extern("GuiScrollPanel"); // Scroll Panel control
+extern fn bool guiWindowBox(Rectangle bounds, char *title) @cname("GuiWindowBox");                                       // Window Box control, shows a window that can be closed
+extern fn bool guiGroupBox(Rectangle bounds, char *text) @cname("GuiGroupBox");                                         // Group Box control with text name
+extern fn bool guiLine(Rectangle bounds, char *text) @cname("GuiLine");                                             // Line separator control, could contain text
+extern fn bool guiPanel(Rectangle bounds, char *text) @cname("GuiPanel");                                            // Panel control, useful to group controls
+extern fn bool guiTabBar(Rectangle bounds, char **text, CInt count, CInt *active) @cname("GuiTabBar");                  // Tab Bar control, returns TAB to be closed or -1
+extern fn bool guiScrollPanel(Rectangle bounds, char *text, Rectangle content, Vector2 *scroll, Rectangle *view) @cname("GuiScrollPanel"); // Scroll Panel control
 
 // Basic controls set
-extern fn bool guiLabel(Rectangle bounds, char *text) @extern("GuiLabel");                                            // Label control, shows text
-extern fn bool guiButton(Rectangle bounds, char *text) @extern("GuiButton");                                           // Button control, returns true when clicked
-extern fn bool guiLabelButton(Rectangle bounds, char *text) @extern("GuiLabelButton");                                      // Label button control, show true when clicked
-extern fn bool guiToggle(Rectangle bounds, char *text, bool *active) @extern("GuiToggle");                             // Toggle Button control, returns true when active
-extern fn bool guiToggleGroup(Rectangle bounds, char *text, CInt *active) @extern("GuiToggleGroup");                         // Toggle Group control, returns active toggle index
-extern fn bool guiToggleSlider(Rectangle bounds, char *text, CInt *active) @extern("GuiToggleSlider");                        // Toggle Slider control, returns true when clicked
-extern fn bool guiCheckBox(Rectangle bounds, char *text, bool *checked) @extern("GuiCheckBox");                          // Check Box control, returns true when active
-extern fn bool guiComboBox(Rectangle bounds, char *text, CInt *active) @extern("GuiComboBox");                            // Combo Box control, returns selected item index
+extern fn bool guiLabel(Rectangle bounds, char *text) @cname("GuiLabel");                                            // Label control, shows text
+extern fn bool guiButton(Rectangle bounds, char *text) @cname("GuiButton");                                           // Button control, returns true when clicked
+extern fn bool guiLabelButton(Rectangle bounds, char *text) @cname("GuiLabelButton");                                      // Label button control, show true when clicked
+extern fn bool guiToggle(Rectangle bounds, char *text, bool *active) @cname("GuiToggle");                             // Toggle Button control, returns true when active
+extern fn bool guiToggleGroup(Rectangle bounds, char *text, CInt *active) @cname("GuiToggleGroup");                         // Toggle Group control, returns active toggle index
+extern fn bool guiToggleSlider(Rectangle bounds, char *text, CInt *active) @cname("GuiToggleSlider");                        // Toggle Slider control, returns true when clicked
+extern fn bool guiCheckBox(Rectangle bounds, char *text, bool *checked) @cname("GuiCheckBox");                          // Check Box control, returns true when active
+extern fn bool guiComboBox(Rectangle bounds, char *text, CInt *active) @cname("GuiComboBox");                            // Combo Box control, returns selected item index
 
-extern fn bool guiDropdownBox(Rectangle bounds, char *text, CInt *active, bool editMode) @extern("GuiDropdownBox");          // Dropdown Box control, returns selected item
-extern fn bool guiSpinner(Rectangle bounds, char *text, CInt *value, CInt minValue, CInt maxValue, bool editMode) @extern("GuiSpinner"); // Spinner control, returns selected value
-extern fn bool guiValueBox(Rectangle bounds, char *text, CInt *value, CInt minValue, CInt maxValue, bool editMode) @extern("GuiValueBox"); // Value Box control, updates input text with numbers
-extern fn bool guiTextBox(Rectangle bounds, char *text, CInt textSize, bool editMode) @extern("GuiTextBox");                   // Text Box control, updates input text
+extern fn bool guiDropdownBox(Rectangle bounds, char *text, CInt *active, bool editMode) @cname("GuiDropdownBox");          // Dropdown Box control, returns selected item
+extern fn bool guiSpinner(Rectangle bounds, char *text, CInt *value, CInt minValue, CInt maxValue, bool editMode) @cname("GuiSpinner"); // Spinner control, returns selected value
+extern fn bool guiValueBox(Rectangle bounds, char *text, CInt *value, CInt minValue, CInt maxValue, bool editMode) @cname("GuiValueBox"); // Value Box control, updates input text with numbers
+extern fn bool guiTextBox(Rectangle bounds, char *text, CInt textSize, bool editMode) @cname("GuiTextBox");                   // Text Box control, updates input text
 
-extern fn bool guiSlider(Rectangle bounds, char *textLeft, char *textRight, float *value, float minValue, float maxValue) @extern("GuiSlider"); // Slider control, returns selected value
-extern fn bool guiSliderBar(Rectangle bounds, char *textLeft, char *textRight, float *value, float minValue, float maxValue) @extern("GuiSliderBar"); // Slider Bar control, returns selected value
-extern fn bool guiProgressBar(Rectangle bounds, char *textLeft, char *textRight, float *value, float minValue, float maxValue) @extern("GuiProgressBar"); // Progress Bar control, shows current progress value
-extern fn bool guiStatusBar(Rectangle bounds, char *text) @extern("GuiStatusBar");                                        // Status Bar control, shows info text
-extern fn bool guiDummyRec(Rectangle bounds, char *text) @extern("GuiDummyRec");                                         // Dummy control for placeholders
-extern fn bool guiGrid(Rectangle bounds, char *text, float spacing, CInt subdivs, Vector2 *mouseCell) @extern("GuiGrid"); // Grid control, returns mouse cell position
+extern fn bool guiSlider(Rectangle bounds, char *textLeft, char *textRight, float *value, float minValue, float maxValue) @cname("GuiSlider"); // Slider control, returns selected value
+extern fn bool guiSliderBar(Rectangle bounds, char *textLeft, char *textRight, float *value, float minValue, float maxValue) @cname("GuiSliderBar"); // Slider Bar control, returns selected value
+extern fn bool guiProgressBar(Rectangle bounds, char *textLeft, char *textRight, float *value, float minValue, float maxValue) @cname("GuiProgressBar"); // Progress Bar control, shows current progress value
+extern fn bool guiStatusBar(Rectangle bounds, char *text) @cname("GuiStatusBar");                                        // Status Bar control, shows info text
+extern fn bool guiDummyRec(Rectangle bounds, char *text) @cname("GuiDummyRec");                                         // Dummy control for placeholders
+extern fn bool guiGrid(Rectangle bounds, char *text, float spacing, CInt subdivs, Vector2 *mouseCell) @cname("GuiGrid"); // Grid control, returns mouse cell position
 
 // Advance controls set
-extern fn CInt guiListView(Rectangle bounds, char *text, CInt *scrollIndex, CInt *active) @extern("GuiListView");          // List View control, returns selected list item index
-extern fn CInt guiListViewEx(Rectangle bounds, char **text, CInt count, CInt *scrollIndex, CInt *active, CInt *focus) @extern("GuiListViewEx"); // List View with extended parameters
-extern fn CInt guiMessageBox(Rectangle bounds, char *title, char *message, char *buttons) @extern("GuiMessageBox"); // Message Box control, displays a message
-extern fn CInt guiTextInputBox(Rectangle bounds, char *title, char *message, char *buttons, char *text, CInt textMaxSize, bool *secretViewActive) @extern("GuiTextInputBox"); // Text Input Box control, ask for text, supports secret
-extern fn CInt guiColorPicker(Rectangle bounds, char *text, Color *color) @extern("GuiColorPicker");                        // Color Picker control (multiple color controls)
-extern fn CInt guiColorPanel(Rectangle bounds, char *text, Color *color) @extern("GuiColorPanel");                         // Color Panel control
-extern fn CInt guiColorBarAlpha(Rectangle bounds, char *text, float *alpha) @extern("GuiColorBarAlpha");                      // Color Bar Alpha control
-extern fn CInt guiColorBarHue(Rectangle bounds, char *text, float *value) @extern("GuiColorBarHue");                        // Color Bar Hue control
-extern fn CInt guiColorPickerHSV(Rectangle bounds, char *text, Vector3 *colorHsv) @extern("GuiColorPickerHSV");                // Color Picker control that avoids conversion to RGB on each call (multiple color controls)
-extern fn CInt guiColorPanelHSV(Rectangle bounds, char *text, Vector3 *colorHsv) @extern("GuiColorPanelHSV");                 // Color Panel control that returns HSV color value, used by GuiColorPickerHSV()
+extern fn CInt guiListView(Rectangle bounds, char *text, CInt *scrollIndex, CInt *active) @cname("GuiListView");          // List View control, returns selected list item index
+extern fn CInt guiListViewEx(Rectangle bounds, char **text, CInt count, CInt *scrollIndex, CInt *active, CInt *focus) @cname("GuiListViewEx"); // List View with extended parameters
+extern fn CInt guiMessageBox(Rectangle bounds, char *title, char *message, char *buttons) @cname("GuiMessageBox"); // Message Box control, displays a message
+extern fn CInt guiTextInputBox(Rectangle bounds, char *title, char *message, char *buttons, char *text, CInt textMaxSize, bool *secretViewActive) @cname("GuiTextInputBox"); // Text Input Box control, ask for text, supports secret
+extern fn CInt guiColorPicker(Rectangle bounds, char *text, Color *color) @cname("GuiColorPicker");                        // Color Picker control (multiple color controls)
+extern fn CInt guiColorPanel(Rectangle bounds, char *text, Color *color) @cname("GuiColorPanel");                         // Color Panel control
+extern fn CInt guiColorBarAlpha(Rectangle bounds, char *text, float *alpha) @cname("GuiColorBarAlpha");                      // Color Bar Alpha control
+extern fn CInt guiColorBarHue(Rectangle bounds, char *text, float *value) @cname("GuiColorBarHue");                        // Color Bar Hue control
+extern fn CInt guiColorPickerHSV(Rectangle bounds, char *text, Vector3 *colorHsv) @cname("GuiColorPickerHSV");                // Color Picker control that avoids conversion to RGB on each call (multiple color controls)
+extern fn CInt guiColorPanelHSV(Rectangle bounds, char *text, Vector3 *colorHsv) @cname("GuiColorPanelHSV");                 // Color Panel control that returns HSV color value, used by GuiColorPickerHSV()
 //----------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------

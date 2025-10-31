@@ -4,33 +4,33 @@ module tinyfd;
 // If requested usage documentation and contracts can be added.
 
 // $if (env::WIN32)
-extern int winUtf8 @extern("tinyfd_winUtf8") @if(env::WIN32);
+extern int winUtf8 @cname("tinyfd_winUtf8") @if(env::WIN32);
 
-fn ZString utf8toMbcs(ZString aUtf8string) @extern("tinyfd_utf8toMbcs") @if(env::WIN32);
-fn ZString utf16toMbcs(WString aUtf16string) @extern("tinyfd_utf16toMbcs") @if(env::WIN32);
-fn WString mbcsTo16(ZString aMbcsString) @extern("tinyfd_mbcsTo16") @if(env::WIN32);
-fn ZString mbcsTo8(ZString aMbcsString) @extern("tinyfd_mbcsTo8") @if(env::WIN32);
-fn WString utf8to16(ZString aUtf8string) @extern("tinyfd_utf8to16") @if(env::WIN32);
-fn ZString utf16to8(WString aUtf16string) @extern("tinyfd_utf16to8") @if(env::WIN32);
+fn ZString utf8toMbcs(ZString aUtf8string) @cname("tinyfd_utf8toMbcs") @if(env::WIN32);
+fn ZString utf16toMbcs(WString aUtf16string) @cname("tinyfd_utf16toMbcs") @if(env::WIN32);
+fn WString mbcsTo16(ZString aMbcsString) @cname("tinyfd_mbcsTo16") @if(env::WIN32);
+fn ZString mbcsTo8(ZString aMbcsString) @cname("tinyfd_mbcsTo8") @if(env::WIN32);
+fn WString utf8to16(ZString aUtf8string) @cname("tinyfd_utf8to16") @if(env::WIN32);
+fn ZString utf16to8(WString aUtf16string) @cname("tinyfd_utf16to8") @if(env::WIN32);
 // $endif
 
-extern char[8] version @extern("tinyfd_version");
-extern char[] needs @extern("tinyfd_needs");
-extern bool verbose @extern("tinyfd_verbose");
-extern bool silent @extern("tinyfd_silent");
+extern char[8] version @cname("tinyfd_version");
+extern char[] needs @cname("tinyfd_needs");
+extern bool verbose @cname("tinyfd_verbose");
+extern bool silent @cname("tinyfd_silent");
 
-extern bool allowCursesDialogs @extern("tinyfd_allowCursesDialogs");
-extern bool forceConsole @extern("tinyfd_forceConsole");
+extern bool allowCursesDialogs @cname("tinyfd_allowCursesDialogs");
+extern bool forceConsole @cname("tinyfd_forceConsole");
 
-extern char[1024] response @extern("tinyfd_response");
+extern char[1024] response @cname("tinyfd_response");
 
-fn void beep() @extern("tinyfd_beep");
+fn void beep() @cname("tinyfd_beep");
 
 fn int notifyPopup(
 	ZString aTitle,
 	ZString aMessage,
 	ZString aIconType)
-@extern("tinyfd_notifyPopup");
+@cname("tinyfd_notifyPopup");
 
 fn int messageBox(
 	ZString aTitle,
@@ -38,13 +38,13 @@ fn int messageBox(
 	ZString aDialogtype,
 	ZString aIconType,
 	int aDefaultButton)
-@extern("tinyfd_messageBox");
+@cname("tinyfd_messageBox");
 
 fn ZString inputBox(
 	ZString aTitle,
 	ZString aMessage,
 	ZString aDefaultInput)
-@extern("tinyfd_inputBox");
+@cname("tinyfd_inputBox");
 
 fn ZString saveFileDialog(
 	ZString aTitle,
@@ -52,7 +52,7 @@ fn ZString saveFileDialog(
 	int aNumOfFilterPatterns,
 	ZString aFilterPatterns,
 	ZString aSingleFilterDescription)
-@extern("tinyfd_saveFileDialog");
+@cname("tinyfd_saveFileDialog");
 
 fn ZString openFileDialog(
 	ZString aTitle,
@@ -61,25 +61,25 @@ fn ZString openFileDialog(
 	ZString aFilterPatterns,
 	ZString aSingleFilterDescription,
 	int aAllowMultipleSelects)
-@extern("tinyfd_openFileDialog");
+@cname("tinyfd_openFileDialog");
 
 fn ZString selectFolderDialog(
 	ZString aTitle,
 	ZString aDefaultPath)
-@extern("tinyfd_selectFolderDialog");
+@cname("tinyfd_selectFolderDialog");
 
 fn ZString colorChooser(
 	ZString aTitle,
 	ZString aDefaultHexRGB,
 	ichar[3] aDefaultRGB,
 	ichar[3] aoResultRGB)
-@extern("tinyfd_colorChooser");
+@cname("tinyfd_colorChooser");
 
 fn int notifyPopupW(
 	WString aTitle,
 	WString aMessage,
 	WString aIconType)
-@extern("tinyfd_notifyPopupW") @if(env::WIN32);
+@cname("tinyfd_notifyPopupW") @if(env::WIN32);
 
 fn int messageBoxW(
 	WString aTitle,
@@ -87,13 +87,13 @@ fn int messageBoxW(
 	WString aDialogtype,
 	WString aIconType,
 	int aDefaultButton)
-@extern("tinyfd_messageBoxW") @if(env::WIN32);
+@cname("tinyfd_messageBoxW") @if(env::WIN32);
 
 fn WString inputBoxW(
 	WString aTitle,
 	WString aMessage,
 	WString aDefaultInput)
-@extern("tinyfd_inputBoxW") @if(env::WIN32);
+@cname("tinyfd_inputBoxW") @if(env::WIN32);
 
 fn WString saveFileDialogW(
 	WString aTitle,
@@ -101,7 +101,7 @@ fn WString saveFileDialogW(
 	int aNumOfFilterPatterns,
 	WString aFilterPatterns,
 	WString aSingleFilterDescription)
-@extern("tinyfd_saveFileDialogW") @if(env::WIN32);
+@cname("tinyfd_saveFileDialogW") @if(env::WIN32);
 
 fn WString openFileDialogW(
 	WString aTitle,
@@ -110,16 +110,16 @@ fn WString openFileDialogW(
 	WString aFilterPatterns,
 	WString aSingleFilterDescription,
 	int aAllowMultipleSelects)
-@extern("tinyfd_openFileDialogW") @if(env::WIN32);
+@cname("tinyfd_openFileDialogW") @if(env::WIN32);
 
 fn WString selectFolderDialogW(
 	WString aTitle,
 	WString aDefaultPath)
-@extern("tinyfd_selectFolderDialogW") @if(env::WIN32);
+@cname("tinyfd_selectFolderDialogW") @if(env::WIN32);
 
 fn WString colorChooserW(
 	WString aTitle,
 	WString aDefaultHexRGB,
 	ichar[3] aDefaultRGB,
 	ichar[3] aoResultRGB)
-@extern("tinyfd_colorChooserW") @if(env::WIN32);
+@cname("tinyfd_colorChooserW") @if(env::WIN32);

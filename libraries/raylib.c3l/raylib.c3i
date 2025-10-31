@@ -673,206 +673,206 @@ alias LoadFileTextCallback = fn char*(char* file_name);                         
 alias SaveFileTextCallback = fn bool(char* file_name, char* text);                            // FileIO: Save text data
 
 // Window-related functions
-fn void init_window(int width, int height, char* title) @extern("InitWindow");         // Initialize window and OpenGL context
-fn bool window_should_close() @extern("WindowShouldClose");                                     // Check if KEY_ESCAPE pressed or Close icon pressed
-fn void close_window() @extern("CloseWindow");                                                  // Close window and unload OpenGL context
-fn bool is_window_ready() @extern("IsWindowReady");                                             // Check if window has been initialized successfully
-fn bool is_window_fullscreen() @extern("IsWindowFullscreen");                                   // Check if window is currently fullscreen
-fn bool is_window_hidden() @extern("IsWindowHidden");                                           // Check if window is currently hidden (only PLATFORM_DESKTOP)
-fn bool is_window_minimized() @extern("IsWindowMinimized");                                     // Check if window is currently minimized (only PLATFORM_DESKTOP)
-fn bool is_window_maximized() @extern("IsWindowMaximized");                                     // Check if window is currently maximized (only PLATFORM_DESKTOP)
-fn bool is_window_focused() @extern("IsWindowFocused");                                         // Check if window is currently focused (only PLATFORM_DESKTOP)
-fn bool is_window_resized() @extern("IsWindowResized");                                         // Check if window has been resized last frame
-fn bool is_window_state(uint flag) @extern("IsWindowState");                                    // Check if one specific window flag is enabled
-fn void set_window_state(uint flag) @extern("SetWindowState");                                  // Set window configuration state using flags (only PLATFORM_DESKTOP)
-fn void clear_window_state(uint flags) @extern("ClearWindowState");                             // Clear window configuration state flags (only PLATFORM_DESKTOP)
-fn void toggle_fullscreen() @extern("ToggleFullscreen");                                        // Toggle window state: fullscreen/windowed (only PLATFORM_DESKTOP)
-fn void maximize_window() @extern("MaximizeWindow");                                            // Set window state: maximized, if resizable (only PLATFORM_DESKTOP)
-fn void minimize_window() @extern("MinimizeWindow");                                            // Set window state: minimized, if resizable (only PLATFORM_DESKTOP)
-fn void restore_window() @extern("RestoreWindow");                                              // Set window state: not minimized/maximized (only PLATFORM_DESKTOP)
-fn void set_window_icon(Image image) @extern("SetWindowIcon");                                  // Set icon for window (single image, RGBA 32bit, only PLATFORM_DESKTOP)
-fn void set_window_icons(Image *images, int count) @extern("SetWindowIcons");                   // Set icon for window (multiple images, RGBA 32bit, only PLATFORM_DESKTOP)
-fn void set_window_title(char* title) @extern("SetWindowTitle");                                // Set title for window (only PLATFORM_DESKTOP)
-fn void set_window_position(int x, int y) @extern("SetWindowPosition");                         // Set window position on screen (only PLATFORM_DESKTOP)
-fn void set_window_monitor(int monitor) @extern("SetWindowMonitor(int monitor");                // Set monitor for the current window (fullscreen mode)
-fn void set_window_min_size(int width, int height) @extern("SetWindowMinSize");                 // Set window minimum dimensions (for FLAG_WINDOW_RESIZABLE)
-fn void set_window_size(int width, int height) @extern("SetWindowSize");                        // Set window dimensions
-fn void set_window_opacity(float opacity) @extern("SetWindowOpacity");                          // Set window opacity [0.0f..1.0f] (only PLATFORM_DESKTOP)
-fn void* get_window_handle() @extern("GetWindowHandle");                                        // Get native window handle
-fn int get_screen_width() @extern("GetScreenWidth");                                            // Get current screen width
-fn int get_screen_height() @extern("GetScreenHeight");                                          // Get current screen height
-fn int get_render_width() @extern("GetRenderWidth");                                            // Get current render width (it considers HiDPI)
-fn int get_render_height() @extern("GetRenderHeight");                                          // Get current render height (it considers HiDPI)
-fn int get_monitor_count() @extern("GetMonitorCount");                                          // Get number of connected monitors
-fn int get_current_monitor() @extern("GetCurrentMonitor");                                      // Get current connected monitor
-fn Vector2 get_monitor_position(int monitor) @extern("GetMonitorPosition");                     // Get specified monitor position
-fn int get_monitor_width(int monitor) @extern("GetMonitorWidth");                               // Get specified monitor width (current video mode used by monitor)
-fn int get_monitor_height(int monitor) @extern("GetMonitorHeight");                             // Get specified monitor height(current video mode used by monitor)
-fn int get_monitor_physical_width(int monitor) @extern("GetMonitorPhysicalWidth");              // Get specified monitor physical width in millimetres
-fn int get_monitor_physical_height(int monitor) @extern("GetMonitorPhysicalHeight");            // Get specified monitor physical height in millimetres
-fn int get_monitor_refresh_rate(int monitor) @extern("GetMonitorRefreshRate");                  // Get specified monitor refresh rate
-fn Vector2 get_window_position() @extern("GetWindowPosition");                                  // Get window position XY on monitor
-fn Vector2 get_window_scale_dpi() @extern("GetWindowScaleDPI");                                 // Get window scale DPI factor
-fn char* get_monitor_name(int monitor) @extern("GetMonitorName");                               // Get the human-readable, UTF-8 encoded name of the primary monitor
-fn void set_clipboard_text(char* text) @extern("SetClipboardText(char* text");                  // Set clipboard text content
-fn char* get_clipboard_text() @extern("GetClipboardText");                                      // Get clipboard text content
-fn void enableEventWaiting() @extern("EnableEventWaiting");                                     // Enable waiting for events on EndDrawing(), no automatic event polling
-fn void disable_event_waiting() @extern("DisableEventWaiting");                                 // Disable waiting for events on EndDrawing(), automatic events polling
+fn void init_window(int width, int height, char* title) @cname("InitWindow");         // Initialize window and OpenGL context
+fn bool window_should_close() @cname("WindowShouldClose");                                     // Check if KEY_ESCAPE pressed or Close icon pressed
+fn void close_window() @cname("CloseWindow");                                                  // Close window and unload OpenGL context
+fn bool is_window_ready() @cname("IsWindowReady");                                             // Check if window has been initialized successfully
+fn bool is_window_fullscreen() @cname("IsWindowFullscreen");                                   // Check if window is currently fullscreen
+fn bool is_window_hidden() @cname("IsWindowHidden");                                           // Check if window is currently hidden (only PLATFORM_DESKTOP)
+fn bool is_window_minimized() @cname("IsWindowMinimized");                                     // Check if window is currently minimized (only PLATFORM_DESKTOP)
+fn bool is_window_maximized() @cname("IsWindowMaximized");                                     // Check if window is currently maximized (only PLATFORM_DESKTOP)
+fn bool is_window_focused() @cname("IsWindowFocused");                                         // Check if window is currently focused (only PLATFORM_DESKTOP)
+fn bool is_window_resized() @cname("IsWindowResized");                                         // Check if window has been resized last frame
+fn bool is_window_state(uint flag) @cname("IsWindowState");                                    // Check if one specific window flag is enabled
+fn void set_window_state(uint flag) @cname("SetWindowState");                                  // Set window configuration state using flags (only PLATFORM_DESKTOP)
+fn void clear_window_state(uint flags) @cname("ClearWindowState");                             // Clear window configuration state flags (only PLATFORM_DESKTOP)
+fn void toggle_fullscreen() @cname("ToggleFullscreen");                                        // Toggle window state: fullscreen/windowed (only PLATFORM_DESKTOP)
+fn void maximize_window() @cname("MaximizeWindow");                                            // Set window state: maximized, if resizable (only PLATFORM_DESKTOP)
+fn void minimize_window() @cname("MinimizeWindow");                                            // Set window state: minimized, if resizable (only PLATFORM_DESKTOP)
+fn void restore_window() @cname("RestoreWindow");                                              // Set window state: not minimized/maximized (only PLATFORM_DESKTOP)
+fn void set_window_icon(Image image) @cname("SetWindowIcon");                                  // Set icon for window (single image, RGBA 32bit, only PLATFORM_DESKTOP)
+fn void set_window_icons(Image *images, int count) @cname("SetWindowIcons");                   // Set icon for window (multiple images, RGBA 32bit, only PLATFORM_DESKTOP)
+fn void set_window_title(char* title) @cname("SetWindowTitle");                                // Set title for window (only PLATFORM_DESKTOP)
+fn void set_window_position(int x, int y) @cname("SetWindowPosition");                         // Set window position on screen (only PLATFORM_DESKTOP)
+fn void set_window_monitor(int monitor) @cname("SetWindowMonitor(int monitor");                // Set monitor for the current window (fullscreen mode)
+fn void set_window_min_size(int width, int height) @cname("SetWindowMinSize");                 // Set window minimum dimensions (for FLAG_WINDOW_RESIZABLE)
+fn void set_window_size(int width, int height) @cname("SetWindowSize");                        // Set window dimensions
+fn void set_window_opacity(float opacity) @cname("SetWindowOpacity");                          // Set window opacity [0.0f..1.0f] (only PLATFORM_DESKTOP)
+fn void* get_window_handle() @cname("GetWindowHandle");                                        // Get native window handle
+fn int get_screen_width() @cname("GetScreenWidth");                                            // Get current screen width
+fn int get_screen_height() @cname("GetScreenHeight");                                          // Get current screen height
+fn int get_render_width() @cname("GetRenderWidth");                                            // Get current render width (it considers HiDPI)
+fn int get_render_height() @cname("GetRenderHeight");                                          // Get current render height (it considers HiDPI)
+fn int get_monitor_count() @cname("GetMonitorCount");                                          // Get number of connected monitors
+fn int get_current_monitor() @cname("GetCurrentMonitor");                                      // Get current connected monitor
+fn Vector2 get_monitor_position(int monitor) @cname("GetMonitorPosition");                     // Get specified monitor position
+fn int get_monitor_width(int monitor) @cname("GetMonitorWidth");                               // Get specified monitor width (current video mode used by monitor)
+fn int get_monitor_height(int monitor) @cname("GetMonitorHeight");                             // Get specified monitor height(current video mode used by monitor)
+fn int get_monitor_physical_width(int monitor) @cname("GetMonitorPhysicalWidth");              // Get specified monitor physical width in millimetres
+fn int get_monitor_physical_height(int monitor) @cname("GetMonitorPhysicalHeight");            // Get specified monitor physical height in millimetres
+fn int get_monitor_refresh_rate(int monitor) @cname("GetMonitorRefreshRate");                  // Get specified monitor refresh rate
+fn Vector2 get_window_position() @cname("GetWindowPosition");                                  // Get window position XY on monitor
+fn Vector2 get_window_scale_dpi() @cname("GetWindowScaleDPI");                                 // Get window scale DPI factor
+fn char* get_monitor_name(int monitor) @cname("GetMonitorName");                               // Get the human-readable, UTF-8 encoded name of the primary monitor
+fn void set_clipboard_text(char* text) @cname("SetClipboardText(char* text");                  // Set clipboard text content
+fn char* get_clipboard_text() @cname("GetClipboardText");                                      // Get clipboard text content
+fn void enableEventWaiting() @cname("EnableEventWaiting");                                     // Enable waiting for events on EndDrawing(), no automatic event polling
+fn void disable_event_waiting() @cname("DisableEventWaiting");                                 // Disable waiting for events on EndDrawing(), automatic events polling
 
 // Custom frame control functions
 // NOTE: Those functions are intended for advance users that want full control over the frame processing
 // By default EndDrawing() does this job: draws everything + SwapScreenBuffer() + manage frame timming + PollInputEvents()
 // To avoid that behaviour and control frame processes manually, enable in config.h: SUPPORT_CUSTOM_FRAME_CONTROL
-fn void swap_screen_buffer() @extern("SwapScreenBuffer");                                    // Swap back buffer with front buffer (screen drawing)
-fn void poll_input_events() @extern("PollInputEvents");                                      // Register all input events
-fn void wait_time(double time) @extern("WaitTime");                                          // Wait for some time (halt program execution)
+fn void swap_screen_buffer() @cname("SwapScreenBuffer");                                    // Swap back buffer with front buffer (screen drawing)
+fn void poll_input_events() @cname("PollInputEvents");                                      // Register all input events
+fn void wait_time(double time) @cname("WaitTime");                                          // Wait for some time (halt program execution)
 
 // Cursor-related functions
-fn void show_cursor() @extern("ShowCursor");                                                 // Shows cursor
-fn void hide_cursor() @extern("HideCursor");                                                 // Hides cursor
-fn bool is_cursor_hidden() @extern("IsCursorHidden");                                        // Check if cursor is not visible
-fn void enable_cursor() @extern("EnableCursor");                                             // Enables cursor (unlock cursor)
-fn void disable_cursor() @extern("DisableCursor");                                           // Disables cursor (lock cursor)
-fn bool is_cursor_on_screen() @extern("IsCursorOnScreen");                                   // Check if cursor is on the screen
+fn void show_cursor() @cname("ShowCursor");                                                 // Shows cursor
+fn void hide_cursor() @cname("HideCursor");                                                 // Hides cursor
+fn bool is_cursor_hidden() @cname("IsCursorHidden");                                        // Check if cursor is not visible
+fn void enable_cursor() @cname("EnableCursor");                                             // Enables cursor (unlock cursor)
+fn void disable_cursor() @cname("DisableCursor");                                           // Disables cursor (lock cursor)
+fn bool is_cursor_on_screen() @cname("IsCursorOnScreen");                                   // Check if cursor is on the screen
 
 // Drawing-related functions
-fn void clear_background(Color color) @extern("ClearBackground");                            // Set background color (framebuffer clear color)
-fn void begin_drawing() @extern("BeginDrawing");                                             // Setup canvas (framebuffer) to start drawing
-fn void end_drawing() @extern("EndDrawing");                                                 // End canvas drawing and swap buffers (double buffering)
-fn void begin_mode2d(Camera2D camera) @extern("BeginMode2D");                                // Begin 2D mode with custom camera (2D)
-fn void end_mode2d() @extern("EndMode2D");                                                   // Ends 2D mode with custom camera
-fn void begin_mode3d(Camera3D camera) @extern("BeginMode3D");                                // Begin 3D mode with custom camera (3D)
-fn void end_mode3d() @extern("EndMode3D");                                                   // Ends 3D mode and returns to default 2D orthographic mode
-fn void begin_texture_mode(RenderTexture2D target) @extern("BeginTextureMode");              // Begin drawing to render texture
-fn void end_texture_mode() @extern("EndTextureMode");                                        // Ends drawing to render texture
-fn void begin_shader_mode(Shader shader) @extern("BeginShaderMode");                         // Begin custom shader drawing
-fn void end_shader_mode() @extern("EndShaderMode");                                          // End custom shader drawing (use default shader)
-fn void begin_blend_mode(int mode) @extern("BeginBlendMode");                                // Begin blending mode (alpha, additive, multiplied, subtract, custom)
-fn void end_blend_mode() @extern("EndBlendMode");                                            // End blending mode (reset to default: alpha blending)
-fn void begin_scissor_mode(int x, int y, int w, int h) @extern("BeginScissorMode");          // Begin scissor mode (define screen area for following drawing)
-fn void end_scissor_mode() @extern("EndScissorMode");                                        // End scissor mode
-fn void begin_vr_stereo_mode(VrStereoConfig config) @extern("BeginVrStereoMode");            // Begin stereo rendering (requires VR simulator)
-fn void end_vr_stereo_mode() @extern("EndVrStereoMode");                                     // End stereo rendering (requires VR simulator)
+fn void clear_background(Color color) @cname("ClearBackground");                            // Set background color (framebuffer clear color)
+fn void begin_drawing() @cname("BeginDrawing");                                             // Setup canvas (framebuffer) to start drawing
+fn void end_drawing() @cname("EndDrawing");                                                 // End canvas drawing and swap buffers (double buffering)
+fn void begin_mode2d(Camera2D camera) @cname("BeginMode2D");                                // Begin 2D mode with custom camera (2D)
+fn void end_mode2d() @cname("EndMode2D");                                                   // Ends 2D mode with custom camera
+fn void begin_mode3d(Camera3D camera) @cname("BeginMode3D");                                // Begin 3D mode with custom camera (3D)
+fn void end_mode3d() @cname("EndMode3D");                                                   // Ends 3D mode and returns to default 2D orthographic mode
+fn void begin_texture_mode(RenderTexture2D target) @cname("BeginTextureMode");              // Begin drawing to render texture
+fn void end_texture_mode() @cname("EndTextureMode");                                        // Ends drawing to render texture
+fn void begin_shader_mode(Shader shader) @cname("BeginShaderMode");                         // Begin custom shader drawing
+fn void end_shader_mode() @cname("EndShaderMode");                                          // End custom shader drawing (use default shader)
+fn void begin_blend_mode(int mode) @cname("BeginBlendMode");                                // Begin blending mode (alpha, additive, multiplied, subtract, custom)
+fn void end_blend_mode() @cname("EndBlendMode");                                            // End blending mode (reset to default: alpha blending)
+fn void begin_scissor_mode(int x, int y, int w, int h) @cname("BeginScissorMode");          // Begin scissor mode (define screen area for following drawing)
+fn void end_scissor_mode() @cname("EndScissorMode");                                        // End scissor mode
+fn void begin_vr_stereo_mode(VrStereoConfig config) @cname("BeginVrStereoMode");            // Begin stereo rendering (requires VR simulator)
+fn void end_vr_stereo_mode() @cname("EndVrStereoMode");                                     // End stereo rendering (requires VR simulator)
 
 // VR stereo config functions for VR simulator
-fn VrStereoConfig load_vr_stereo_config(VrDeviceInfo device) @extern("LoadVrStereoConfig");  // Load VR stereo config for VR simulator device parameters
-fn void unload_vr_stereo_config(VrStereoConfig config) @extern("UnloadVrStereoConfig");      // Unload VR stereo config
+fn VrStereoConfig load_vr_stereo_config(VrDeviceInfo device) @cname("LoadVrStereoConfig");  // Load VR stereo config for VR simulator device parameters
+fn void unload_vr_stereo_config(VrStereoConfig config) @cname("UnloadVrStereoConfig");      // Unload VR stereo config
 
 // Shader management functions
 // NOTE: Shader functionality is not available on OpenGL 1.1
-fn Shader load_shader(char* vs_file_name, char* fs_file_name) @extern("LoadShader");         // Load shader from files and bind default locations
-fn Shader load_shader_from_memory(char* vs, char* fs) @extern("LoadShaderFromMemory");       // Load shader from code strings and bind default locations
-fn bool is_shader_ready(Shader shader) @extern("IsShaderReady");                             // Check if a shader is ready
+fn Shader load_shader(char* vs_file_name, char* fs_file_name) @cname("LoadShader");         // Load shader from files and bind default locations
+fn Shader load_shader_from_memory(char* vs, char* fs) @cname("LoadShaderFromMemory");       // Load shader from code strings and bind default locations
+fn bool is_shader_ready(Shader shader) @cname("IsShaderReady");                             // Check if a shader is ready
 
-fn int get_shader_location(Shader shader, char* uniform_name) @extern("GetShaderLocation");   // Get shader uniform location
-fn int get_shader_location_attrib(Shader shader, char* attr) @extern("GetShaderLocationAttrib");  // Get shader attribute location
-fn void set_shader_value(Shader shader, int loc_index, void* value, int uniform_type) @extern("SetShaderValue"); // Set shader uniform value
-fn void set_shader_value_v(Shader shader, int loc_index, void* value, int uniform_type, int count) @extern("SetShaderValueV");   // Set shader uniform value vector
-fn void set_shader_value_matrix(Shader shader, int loc_index, Matrix mat) @extern("SetShaderValueMatrix"); // Set shader uniform value (matrix 4x4)
-fn void set_shader_value_texture(Shader shader, int loc_index, Texture2D texture) @extern("SetShaderValueTexture"); // Set shader uniform value for texture (sampler2d)
-fn void unload_shader(Shader shader) @extern("UnloadShader");                                // Unload shader from GPU memory (VRAM)
+fn int get_shader_location(Shader shader, char* uniform_name) @cname("GetShaderLocation");   // Get shader uniform location
+fn int get_shader_location_attrib(Shader shader, char* attr) @cname("GetShaderLocationAttrib");  // Get shader attribute location
+fn void set_shader_value(Shader shader, int loc_index, void* value, int uniform_type) @cname("SetShaderValue"); // Set shader uniform value
+fn void set_shader_value_v(Shader shader, int loc_index, void* value, int uniform_type, int count) @cname("SetShaderValueV");   // Set shader uniform value vector
+fn void set_shader_value_matrix(Shader shader, int loc_index, Matrix mat) @cname("SetShaderValueMatrix"); // Set shader uniform value (matrix 4x4)
+fn void set_shader_value_texture(Shader shader, int loc_index, Texture2D texture) @cname("SetShaderValueTexture"); // Set shader uniform value for texture (sampler2d)
+fn void unload_shader(Shader shader) @cname("UnloadShader");                                // Unload shader from GPU memory (VRAM)
 
 // Screen-space-related functions
-fn Ray get_mouse_ray(Vector2 mouse_position, Camera camera) @extern("GetMouseRay");           // Get a ray trace from mouse position
-fn Matrix get_camera_matrix(Camera camera) @extern("GetCameraMatrix");                       // Get camera transform matrix (view matrix)
-fn Matrix get_camera_matrix2d(Camera2D camera) @extern("GetCameraMatrix2D");                 // Get camera 2d transform matrix
-fn Vector2 get_world_to_screen(Vector3 position, Camera camera) @extern("GetWorldToScreen"); // Get the screen space position for a 3d world space position
-fn Vector2 get_screen_to_world2d(Vector2 position, Camera2D camera) @extern("GetScreenToWorld2D"); // Get the world space position for a 2d camera screen space position
-fn Vector2 get_world_to_screen_ex(Vector3 position, Camera camera, int width, int height) @extern("GetWorldToScreenEx"); // Get size position for a 3d world space position
-fn Vector2 get_world_to_screen2d(Vector2 position, Camera2D camera) @extern("GetWorldToScreen2D"); // Get the screen space position for a 2d camera world space position
+fn Ray get_mouse_ray(Vector2 mouse_position, Camera camera) @cname("GetMouseRay");           // Get a ray trace from mouse position
+fn Matrix get_camera_matrix(Camera camera) @cname("GetCameraMatrix");                       // Get camera transform matrix (view matrix)
+fn Matrix get_camera_matrix2d(Camera2D camera) @cname("GetCameraMatrix2D");                 // Get camera 2d transform matrix
+fn Vector2 get_world_to_screen(Vector3 position, Camera camera) @cname("GetWorldToScreen"); // Get the screen space position for a 3d world space position
+fn Vector2 get_screen_to_world2d(Vector2 position, Camera2D camera) @cname("GetScreenToWorld2D"); // Get the world space position for a 2d camera screen space position
+fn Vector2 get_world_to_screen_ex(Vector3 position, Camera camera, int width, int height) @cname("GetWorldToScreenEx"); // Get size position for a 3d world space position
+fn Vector2 get_world_to_screen2d(Vector2 position, Camera2D camera) @cname("GetWorldToScreen2D"); // Get the screen space position for a 2d camera world space position
 
 // Timing-related functions
-fn void set_target_fps(int fps) @extern("SetTargetFPS");                                     // Set target FPS (maximum)
-fn int get_fps() @extern("GetFPS");                                                          // Get current FPS
-fn float get_frame_time() @extern("GetFrameTime");                                           // Get time in seconds for last frame drawn (delta time)
-fn double get_time() @extern("GetTime");                                                     // Get elapsed time in seconds since InitWindow()
+fn void set_target_fps(int fps) @cname("SetTargetFPS");                                     // Set target FPS (maximum)
+fn int get_fps() @cname("GetFPS");                                                          // Get current FPS
+fn float get_frame_time() @cname("GetFrameTime");                                           // Get time in seconds for last frame drawn (delta time)
+fn double get_time() @cname("GetTime");                                                     // Get elapsed time in seconds since InitWindow()
 
 // Misc. functions
-fn int get_random_value(int min, int max) @extern("GetRandomValue");                         // Get a random value between min and max (both included)
-fn void set_random_seed(uint seed) @extern("SetRandomSeed");                                 // Set the seed for the random number generator
-fn void take_screenshot(char* file_ame) @extern("TakeScreenshot");                           // Takes a screenshot of current screen (filename extension defines format)
-fn void set_config_flags(ConfigFlag flags) @extern("SetConfigFlags");                              // Setup init configuration flags (view FLAGS)
+fn int get_random_value(int min, int max) @cname("GetRandomValue");                         // Get a random value between min and max (both included)
+fn void set_random_seed(uint seed) @cname("SetRandomSeed");                                 // Set the seed for the random number generator
+fn void take_screenshot(char* file_ame) @cname("TakeScreenshot");                           // Takes a screenshot of current screen (filename extension defines format)
+fn void set_config_flags(ConfigFlag flags) @cname("SetConfigFlags");                              // Setup init configuration flags (view FLAGS)
 
-fn void trace_log(TraceLogLevel log_level, char* text, ...) @extern("TraceLog");              // Show trace log messages (LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR...)
-fn void set_trace_log_level(TraceLogLevel log_level) @extern("SetTraceLogLevel");             // Set the current threshold (minimum) log level
-fn void* mem_alloc(uint size) @extern("MemAlloc");                                            // Internal memory allocator
-fn void* mem_realloc(void* ptr, uint size) @extern("MemRealloc");                             // Internal memory reallocator
-fn void mem_free(void* ptr) @extern("MemFree");                                              // Internal memory free
+fn void trace_log(TraceLogLevel log_level, char* text, ...) @cname("TraceLog");              // Show trace log messages (LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR...)
+fn void set_trace_log_level(TraceLogLevel log_level) @cname("SetTraceLogLevel");             // Set the current threshold (minimum) log level
+fn void* mem_alloc(uint size) @cname("MemAlloc");                                            // Internal memory allocator
+fn void* mem_realloc(void* ptr, uint size) @cname("MemRealloc");                             // Internal memory reallocator
+fn void mem_free(void* ptr) @cname("MemFree");                                              // Internal memory free
 
-fn void open_url(char *url) @extern("OpenURL");                                             // Open URL with default system browser (if available)
+fn void open_url(char *url) @cname("OpenURL");                                             // Open URL with default system browser (if available)
 
 // Set custom callbacks
 // WARNING: Callbacks setup is intended for advance users
-fn void set_load_file_data_callback(LoadFileDataCallback callback) @extern("SetLoadFileDataCallback"); // Set custom file binary data loader
-fn void set_save_file_data_callback(SaveFileDataCallback callback) @extern("SetSaveFileDataCallback"); // Set custom file binary data saver
-fn void set_load_file_text_callback(LoadFileTextCallback callback) @extern("SetLoadFileTextCallback"); // Set custom file text data loader
-fn void set_save_file_text_callback(SaveFileTextCallback callback) @extern("SetSaveFileTextCallback"); // Set custom file text data saver
+fn void set_load_file_data_callback(LoadFileDataCallback callback) @cname("SetLoadFileDataCallback"); // Set custom file binary data loader
+fn void set_save_file_data_callback(SaveFileDataCallback callback) @cname("SetSaveFileDataCallback"); // Set custom file binary data saver
+fn void set_load_file_text_callback(LoadFileTextCallback callback) @cname("SetLoadFileTextCallback"); // Set custom file text data loader
+fn void set_save_file_text_callback(SaveFileTextCallback callback) @cname("SetSaveFileTextCallback"); // Set custom file text data saver
 
 // Files management functions
 // Load file data as byte array (read)
-fn char* load_file_data(char* file_name, uint* bytes_read) @extern("LoadFileData");
+fn char* load_file_data(char* file_name, uint* bytes_read) @cname("LoadFileData");
 // Unload file data allocated by load_file_data()
-fn void unload_file_data(char* data) @extern("UnloadFileData");
+fn void unload_file_data(char* data) @cname("UnloadFileData");
 // Save data to file from byte array (write), returns true on success
-fn bool save_file_data(char* file_name, void* data, uint bytes_to_write) @extern("SaveFileData");
+fn bool save_file_data(char* file_name, void* data, uint bytes_to_write) @cname("SaveFileData");
 // Export data to code (.h), returns true on success
-fn bool export_data_as_code(char* data, uint size, char *file_name) @extern("ExportDataAsCode");
+fn bool export_data_as_code(char* data, uint size, char *file_name) @cname("ExportDataAsCode");
 // Load text data from file (read), returns a '\0' terminated string
-fn char* load_file_text(char* file_name) @extern("LoadFileText");
+fn char* load_file_text(char* file_name) @cname("LoadFileText");
 // Unload file text data allocated by LoadFileText()
-fn void unload_file_text(char* text) @extern("UnloadFileText");
+fn void unload_file_text(char* text) @cname("UnloadFileText");
 // Save text data to file (write), string must be '\0' terminated, returns true on success
-fn bool save_file_text(char* file_name, char* text) @extern("SaveFileText");
+fn bool save_file_text(char* file_name, char* text) @cname("SaveFileText");
 // Check if file exists
-fn bool file_exists(char* file_name) @extern("FileExists");
+fn bool file_exists(char* file_name) @cname("FileExists");
 // Check if a directory path exists
-fn bool directory_exists(char* dir_path) @extern("DirectoryExists");
+fn bool directory_exists(char* dir_path) @cname("DirectoryExists");
 // Check file extension (including point: .png, .wav)
-fn bool is_file_extension(char* file_name, char* ext) @extern("IsFileExtension");
+fn bool is_file_extension(char* file_name, char* ext) @cname("IsFileExtension");
 // Get file length in bytes (NOTE: GetFileSize() conflicts with windows.h)
-fn int get_file_length(char *file_name) @extern("GetFileLength");
+fn int get_file_length(char *file_name) @cname("GetFileLength");
 // Get pointer to extension for a filename string (includes dot: '.png')
-fn char* get_file_extension(char* file_name) @extern("GetFileExtension");
+fn char* get_file_extension(char* file_name) @cname("GetFileExtension");
 // Get pointer to filename for a path string
-fn char* get_file_name(char* file_path) @extern("GetFileName");
+fn char* get_file_name(char* file_path) @cname("GetFileName");
 // Get filename string without extension (uses static string)
-fn char* get_file_name_without_ext(char* file_path) @extern("GetFileNameWithoutExt");
+fn char* get_file_name_without_ext(char* file_path) @cname("GetFileNameWithoutExt");
 // Get full path for a given file_name with path (uses static string)
-fn char* get_directory_path(char* file_path) @extern("GetDirectoryPath");
+fn char* get_directory_path(char* file_path) @cname("GetDirectoryPath");
 // Get previous directory path for a given path (uses static string)
-fn char* get_prev_directory_path(char* dir_path) @extern("GetPrevDirectoryPath");
+fn char* get_prev_directory_path(char* dir_path) @cname("GetPrevDirectoryPath");
 // Get current working directory (uses static string)
-fn char* get_working_directory() @extern("GetWorkingDirectory");
+fn char* get_working_directory() @cname("GetWorkingDirectory");
 // Get the directory if the running application (uses static string)
-fn char* get_application_directory() @extern("GetApplicationDirectory");
+fn char* get_application_directory() @cname("GetApplicationDirectory");
 // Change working directory, return true on success
-fn bool change_directory(char* dir) @extern("ChangeDirectory");
+fn bool change_directory(char* dir) @cname("ChangeDirectory");
 // Check if a given path is a file or a directory
-fn bool is_path_file(char *path) @extern("IsPathFile");
+fn bool is_path_file(char *path) @cname("IsPathFile");
 // Load directory filepaths
-fn FilePathList load_directory_files(char *dir_path) @extern("LoadDirectoryFiles");
+fn FilePathList load_directory_files(char *dir_path) @cname("LoadDirectoryFiles");
 // Load directory filepaths with extension filtering and recursive directory scan
-fn FilePathList load_directory_files_ex(char *base_path, char *filter, bool scan_subdirs) @extern("LoadDirectoryFilesEx");
+fn FilePathList load_directory_files_ex(char *base_path, char *filter, bool scan_subdirs) @cname("LoadDirectoryFilesEx");
 // Unload filepaths
-fn void unload_directory_files(FilePathList files) @extern("UnloadDirectoryFiles");
+fn void unload_directory_files(FilePathList files) @cname("UnloadDirectoryFiles");
 // Check if a file has been dropped into window
-fn bool is_file_dropped() @extern("IsFileDropped");
+fn bool is_file_dropped() @cname("IsFileDropped");
 // Load dropped filepaths
-fn FilePathList load_dropped_files() @extern("LoadDroppedFiles");
+fn FilePathList load_dropped_files() @cname("LoadDroppedFiles");
 // Unload dropped filepaths
-fn void unload_dropped_files(FilePathList files) @extern("UnloadDroppedFiles");
+fn void unload_dropped_files(FilePathList files) @cname("UnloadDroppedFiles");
 // Get file modification time (last write time)
-fn CLong get_file_mod_time(char* file_name) @extern("GetFileModTime");
+fn CLong get_file_mod_time(char* file_name) @cname("GetFileModTime");
 
 // Compression/Encoding functionality
 // Compress data (DEFLATE algorithm)
-fn char* compress_data(char* data, int data_size, int *comp_data_size) @extern("CompressData");
+fn char* compress_data(char* data, int data_size, int *comp_data_size) @cname("CompressData");
 // Decompress data (DEFLATE algorithm)
-fn char* decompress_data(char* comp_data, int comp_data_size, int *data_size) @extern("DecompressData");
+fn char* decompress_data(char* comp_data, int comp_data_size, int *data_size) @cname("DecompressData");
 // Encode data to Base64 string
-fn char* encode_data_base64(char* data, int data_size, int *output_size) @extern("EncodeDataBase64");
+fn char* encode_data_base64(char* data, int data_size, int *output_size) @cname("EncodeDataBase64");
 // Decode Base64 string data
-fn char* decode_data_base64(char* data, int *output_size) @extern("DecodeDataBase64");
+fn char* decode_data_base64(char* data, int *output_size) @cname("DecodeDataBase64");
 
 //------------------------------------------------------------------------------------
 // Input Handling Functions (Module: core)
@@ -880,112 +880,112 @@ fn char* decode_data_base64(char* data, int *output_size) @extern("DecodeDataBas
 
 // Input-related functions: keyboard
 // Check if a key has been pressed once
-fn bool is_key_pressed(KeyboardKey key) @extern("IsKeyPressed");
+fn bool is_key_pressed(KeyboardKey key) @cname("IsKeyPressed");
 // Check if a key is being pressed
-fn bool is_key_down(KeyboardKey key) @extern("IsKeyDown");
+fn bool is_key_down(KeyboardKey key) @cname("IsKeyDown");
 // Check if a key has been released once
-fn bool is_key_released(KeyboardKey key) @extern("IsKeyReleased");
+fn bool is_key_released(KeyboardKey key) @cname("IsKeyReleased");
 // Check if a key is NOT being pressed
-fn bool is_key_up(KeyboardKey key) @extern("IsKeyUp");
+fn bool is_key_up(KeyboardKey key) @cname("IsKeyUp");
 // Set a custom key to exit program (default is ESC)
-fn void set_exit_key(KeyboardKey key) @extern("SetExitKey");
+fn void set_exit_key(KeyboardKey key) @cname("SetExitKey");
 // Get key pressed (keycode), call it multiple times for keys queued, returns 0 when the queue is empty
-fn int get_key_pressed() @extern("GetKeyPressed");
+fn int get_key_pressed() @cname("GetKeyPressed");
 // Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty
-fn int get_char_pressed() @extern("GetCharPressed");
+fn int get_char_pressed() @cname("GetCharPressed");
 
 // Input-related functions: gamepads
 // Check if a gamepad is available
-fn bool is_gamepad_available(int gamepad) @extern("IsGamepadAvailable");
+fn bool is_gamepad_available(int gamepad) @cname("IsGamepadAvailable");
 // Get gamepad internal name id
-fn char* get_gamepad_name(int gamepad) @extern("GetGamepadName");
+fn char* get_gamepad_name(int gamepad) @cname("GetGamepadName");
 // Check if a gamepad button has been pressed once
-fn bool is_gamepad_button_pressed(int gamepad, int button) @extern("IsGamepadButtonPressed");
+fn bool is_gamepad_button_pressed(int gamepad, int button) @cname("IsGamepadButtonPressed");
 // Check if a gamepad button is being pressed
-fn bool is_gamepad_button_down(int gamepad, int button) @extern("IsGamepadButtonDown");
+fn bool is_gamepad_button_down(int gamepad, int button) @cname("IsGamepadButtonDown");
 // Check if a gamepad button has been released once
-fn bool is_gamepad_button_released(int gamepad, int button) @extern("IsGamepadButtonReleased");
+fn bool is_gamepad_button_released(int gamepad, int button) @cname("IsGamepadButtonReleased");
 // Check if a gamepad button is NOT being pressed
-fn bool is_gamepad_button_up(int gamepad, int button) @extern("IsGamepadButtonUp");
+fn bool is_gamepad_button_up(int gamepad, int button) @cname("IsGamepadButtonUp");
 // Get the last gamepad button pressed
-fn int get_gamepad_button_pressed() @extern("GetGamepadButtonPressed");
+fn int get_gamepad_button_pressed() @cname("GetGamepadButtonPressed");
 // Get gamepad axis count for a gamepad
-fn int get_gamepad_axis_count(int gamepad) @extern("GetGamepadAxisCount");
+fn int get_gamepad_axis_count(int gamepad) @cname("GetGamepadAxisCount");
 // Get axis movement value for a gamepad axis
-fn float get_gamepad_axis_movement(int gamepad, int axis) @extern("GetGamepadAxisMovement");
+fn float get_gamepad_axis_movement(int gamepad, int axis) @cname("GetGamepadAxisMovement");
 // Set internal gamepad mappings (SDL_GameControllerDB)
-fn int set_gamepad_mappings(char* mappings) @extern("SetGamepadMappings");
+fn int set_gamepad_mappings(char* mappings) @cname("SetGamepadMappings");
 
 // Input-related functions: mouse
 // Check if a mouse button has been pressed once
-fn bool is_mouse_button_pressed(MouseButton button) @extern("IsMouseButtonPressed");
+fn bool is_mouse_button_pressed(MouseButton button) @cname("IsMouseButtonPressed");
 // Check if a mouse button is being pressed
-fn bool is_mouse_button_down(MouseButton button) @extern("IsMouseButtonDown");
+fn bool is_mouse_button_down(MouseButton button) @cname("IsMouseButtonDown");
 // Check if a mouse button has been released once
-fn bool is_mouse_button_released(MouseButton button) @extern("IsMouseButtonReleased");
+fn bool is_mouse_button_released(MouseButton button) @cname("IsMouseButtonReleased");
 // Check if a mouse button is NOT being pressed
-fn bool is_mouse_button_up(MouseButton button) @extern("IsMouseButtonUp");
+fn bool is_mouse_button_up(MouseButton button) @cname("IsMouseButtonUp");
 // Get mouse position X
-fn int get_mouse_x() @extern("GetMouseX");
+fn int get_mouse_x() @cname("GetMouseX");
 // Get mouse position Y
-fn int get_mouse_y() @extern("GetMouseY");
+fn int get_mouse_y() @cname("GetMouseY");
 // Get mouse position XY
-fn Vector2 get_mouse_position() @extern("GetMousePosition");
+fn Vector2 get_mouse_position() @cname("GetMousePosition");
 // Get mouse delta between frames
-fn Vector2 get_mouse_delta() @extern("GetMouseDelta");
+fn Vector2 get_mouse_delta() @cname("GetMouseDelta");
 // Set mouse position XY
-fn void set_mouse_position(int x, int y) @extern("SetMousePosition");
+fn void set_mouse_position(int x, int y) @cname("SetMousePosition");
 // Set mouse offset
-fn void set_mouse_offset(int offsetX, int offsetY) @extern("SetMouseOffset");
+fn void set_mouse_offset(int offsetX, int offsetY) @cname("SetMouseOffset");
 // Set mouse scaling
-fn void set_mouse_scale(float scaleX, float scaleY) @extern("SetMouseScale");
+fn void set_mouse_scale(float scaleX, float scaleY) @cname("SetMouseScale");
 // Get mouse wheel movement for X or Y, whichever is larger
-fn float get_mouse_wheel_move() @extern("GetMouseWheelMove");
+fn float get_mouse_wheel_move() @cname("GetMouseWheelMove");
 // Get mouse wheel movement for both X and Y
-fn Vector2 get_mouse_wheel_move_v() @extern("GetMouseWheelMoveV");
+fn Vector2 get_mouse_wheel_move_v() @cname("GetMouseWheelMoveV");
 
 // Set mouse cursor
-fn void set_mouse_cursor(int cursor) @extern("SetMouseCursor");
+fn void set_mouse_cursor(int cursor) @cname("SetMouseCursor");
 
 // Input-related functions: touch
 // Get touch position X for touch point 0 (relative to screen size)
-fn int get_touch_x() @extern("GetTouchX");
+fn int get_touch_x() @cname("GetTouchX");
 // Get touch position Y for touch point 0 (relative to screen size)
-fn int get_touch_y() @extern("GetTouchY");
+fn int get_touch_y() @cname("GetTouchY");
 // Get touch position XY for a touch point index (relative to screen size)
-fn Vector2 get_touch_position(int index) @extern("GetTouchPosition");
+fn Vector2 get_touch_position(int index) @cname("GetTouchPosition");
 // Get touch point identifier for given index
-fn int get_touch_point_id(int index) @extern("GetTouchPointId");
+fn int get_touch_point_id(int index) @cname("GetTouchPointId");
 // Get number of touch points
-fn int get_touch_point_count() @extern("GetTouchPointCount");
+fn int get_touch_point_count() @cname("GetTouchPointCount");
 
 //------------------------------------------------------------------------------------
 // Gestures and Touch Handling Functions (Module: rgestures)
 //------------------------------------------------------------------------------------
 // Enable a set of gestures using flags
-fn void set_gestures_enabled(Gesture flags) @extern("SetGesturesEnabled");
+fn void set_gestures_enabled(Gesture flags) @cname("SetGesturesEnabled");
 // Check if a gesture have been detected
-fn bool is_gesture_detected(Gesture gesture) @extern("IsGestureDetected");
+fn bool is_gesture_detected(Gesture gesture) @cname("IsGestureDetected");
 // Get latest detected gesture
-fn Gesture get_gesture_detected() @extern("GetGestureDetected");
+fn Gesture get_gesture_detected() @cname("GetGestureDetected");
 // Get gesture hold time in milliseconds
-fn float get_gesture_hold_duration() @extern("GetGestureHoldDuration");
+fn float get_gesture_hold_duration() @cname("GetGestureHoldDuration");
 // Get gesture drag vector
-fn Vector2 get_gesture_drag_vector() @extern("GetGestureDragVector");
+fn Vector2 get_gesture_drag_vector() @cname("GetGestureDragVector");
 // Get gesture drag angle
-fn float get_gesture_drag_angle() @extern("GetGestureDragAngle");
+fn float get_gesture_drag_angle() @cname("GetGestureDragAngle");
 // Get gesture pinch delta
-fn Vector2 get_gesture_pinch_vector() @extern("GetGesturePinchVector");
+fn Vector2 get_gesture_pinch_vector() @cname("GetGesturePinchVector");
 // Get gesture pinch angle
-fn float get_gesture_pinch_angle() @extern("GetGesturePinchAngle");
+fn float get_gesture_pinch_angle() @cname("GetGesturePinchAngle");
 
 //------------------------------------------------------------------------------------
 // Camera System Functions (Module: rcamera)
 //------------------------------------------------------------------------------------
 // Update camera position for selected mode
-fn void update_camera(Camera* camera, int mode) @extern("UpdateCamera");
+fn void update_camera(Camera* camera, int mode) @cname("UpdateCamera");
 // Update camera movement/rotation
-fn void update_camera_pro(Camera* camera, Vector3 movement, Vector3 rotation, float zoom) @extern("UpdateCameraPro");
+fn void update_camera_pro(Camera* camera, Vector3 movement, Vector3 rotation, float zoom) @cname("UpdateCameraPro");
 
 //------------------------------------------------------------------------------------
 // Basic Shapes Drawing Functions (Module: shapes)
@@ -994,106 +994,106 @@ fn void update_camera_pro(Camera* camera, Vector3 movement, Vector3 rotation, fl
 // NOTE: It can be useful when using basic shapes and one single font,
 // defining a font char white rectangle would allow drawing everything in a single draw call
 // Set texture and rectangle to be used on shapes drawing
-fn void set_shapes_texture(Texture2D texture, Rectangle source) @extern("SetShapesTexture");
+fn void set_shapes_texture(Texture2D texture, Rectangle source) @cname("SetShapesTexture");
 
 // Basic shapes drawing functions
 // Draw a pixel
-fn void draw_pixel(int posX, int posY, Color color) @extern("DrawPixel");
+fn void draw_pixel(int posX, int posY, Color color) @cname("DrawPixel");
 // Draw a pixel (Vector version)
-fn void draw_pixel_v(Vector2 position, Color color) @extern("DrawPixelV");
+fn void draw_pixel_v(Vector2 position, Color color) @cname("DrawPixelV");
 // Draw a line
-fn void draw_line(int start_pos_x, int start_pos_y, int end_pos_x, int end_pos_y, Color color) @extern("DrawLine");
+fn void draw_line(int start_pos_x, int start_pos_y, int end_pos_x, int end_pos_y, Color color) @cname("DrawLine");
 // Draw a line (Vector version)
-fn void draw_line_v(Vector2 start_pos, Vector2 end_pos, Color color) @extern("DrawLineV");
+fn void draw_line_v(Vector2 start_pos, Vector2 end_pos, Color color) @cname("DrawLineV");
 // Draw a line defining thickness
-fn void draw_line_ex(Vector2 start_pos, Vector2 end_pos, float thick, Color color) @extern("DrawLineEx");
+fn void draw_line_ex(Vector2 start_pos, Vector2 end_pos, float thick, Color color) @cname("DrawLineEx");
 // Draw a line using cubic-bezier curves in-out
-fn void draw_line_bezier(Vector2 start_pos, Vector2 end_pos, float thick, Color color) @extern("DrawLineBezier");
+fn void draw_line_bezier(Vector2 start_pos, Vector2 end_pos, float thick, Color color) @cname("DrawLineBezier");
 // Draw line using quadratic bezier curves with a control point
-fn void draw_line_bezier_quad(Vector2 start_pos, Vector2 end_pos, Vector2 control_pos, float thick, Color color) @extern("DrawLineBezierQuad");
+fn void draw_line_bezier_quad(Vector2 start_pos, Vector2 end_pos, Vector2 control_pos, float thick, Color color) @cname("DrawLineBezierQuad");
 // Draw line using cubic bezier curves with 2 control points
-fn void draw_line_bezier_cubic(Vector2 start_pos, Vector2 end_pos, Vector2 start_control_pos, Vector2 end_control_pos, float thick, Color color) @extern("DrawLineBezierCubic");
+fn void draw_line_bezier_cubic(Vector2 start_pos, Vector2 end_pos, Vector2 start_control_pos, Vector2 end_control_pos, float thick, Color color) @cname("DrawLineBezierCubic");
 // Draw lines sequence
-fn void draw_line_strip(Vector2 *points, int point_count, Color color) @extern("DrawLineStrip");
+fn void draw_line_strip(Vector2 *points, int point_count, Color color) @cname("DrawLineStrip");
 // Draw a color-filled circle
-fn void draw_circle(int centerX, int centerY, float radius, Color color) @extern("DrawCircle");
+fn void draw_circle(int centerX, int centerY, float radius, Color color) @cname("DrawCircle");
 // Draw a piece of a circle
-fn void draw_circle_sector(Vector2 center, float radius, float start_angle, float end_angle, int segments, Color color) @extern("DrawCircleSector");
+fn void draw_circle_sector(Vector2 center, float radius, float start_angle, float end_angle, int segments, Color color) @cname("DrawCircleSector");
 // Draw circle sector outline
-fn void draw_circle_sector_lines(Vector2 center, float radius, float start_angle, float end_angle, int segments, Color color) @extern("DrawCircleSectorLines");
+fn void draw_circle_sector_lines(Vector2 center, float radius, float start_angle, float end_angle, int segments, Color color) @cname("DrawCircleSectorLines");
 // Draw a gradient-filled circle
-fn void draw_circle_gradient(int centerX, int centerY, float radius, Color color1, Color color2) @extern("DrawCircleGradient");
+fn void draw_circle_gradient(int centerX, int centerY, float radius, Color color1, Color color2) @cname("DrawCircleGradient");
 // Draw a color-filled circle (Vector version)
-fn void draw_circle_v(Vector2 center, float radius, Color color) @extern("DrawCircleV");
+fn void draw_circle_v(Vector2 center, float radius, Color color) @cname("DrawCircleV");
 // Draw circle outline
-fn void draw_circle_lines(int centerX, int centerY, float radius, Color color) @extern("DrawCircleLines");
+fn void draw_circle_lines(int centerX, int centerY, float radius, Color color) @cname("DrawCircleLines");
 // Draw ellipse
-fn void draw_ellipse(int centerX, int centerY, float radiusH, float radiusV, Color color) @extern("DrawEllipse");
+fn void draw_ellipse(int centerX, int centerY, float radiusH, float radiusV, Color color) @cname("DrawEllipse");
 // Draw ellipse outline
-fn void draw_ellipse_lines(int centerX, int centerY, float radiusH, float radiusV, Color color) @extern("DrawEllipseLines");
+fn void draw_ellipse_lines(int centerX, int centerY, float radiusH, float radiusV, Color color) @cname("DrawEllipseLines");
 // Draw ring
-fn void draw_ring(Vector2 center, float inner_radius, float outer_radius, float start_angle, float end_angle, int segments, Color color) @extern("DrawRing");
+fn void draw_ring(Vector2 center, float inner_radius, float outer_radius, float start_angle, float end_angle, int segments, Color color) @cname("DrawRing");
 // Draw ring outline
-fn void draw_ring_lines(Vector2 center, float inner_radius, float outer_radius, float start_angle, float end_angle, int segments, Color color) @extern("DrawRingLines");
+fn void draw_ring_lines(Vector2 center, float inner_radius, float outer_radius, float start_angle, float end_angle, int segments, Color color) @cname("DrawRingLines");
 // Draw a color-filled rectangle
-fn void draw_rectangle(int posX, int posY, int width, int height, Color color) @extern("DrawRectangle");
+fn void draw_rectangle(int posX, int posY, int width, int height, Color color) @cname("DrawRectangle");
 // Draw a color-filled rectangle (Vector version)
-fn void draw_rectangle_v(Vector2 position, Vector2 size, Color color) @extern("DrawRectangleV");
+fn void draw_rectangle_v(Vector2 position, Vector2 size, Color color) @cname("DrawRectangleV");
 // Draw a color-filled rectangle
-fn void draw_rectangle_rec(Rectangle rec, Color color) @extern("DrawRectangleRec");
+fn void draw_rectangle_rec(Rectangle rec, Color color) @cname("DrawRectangleRec");
 // Draw a color-filled rectangle with pro parameters
-fn void draw_rectangle_pro(Rectangle rec, Vector2 origin, float rotation, Color color) @extern("DrawRectanglePro");
+fn void draw_rectangle_pro(Rectangle rec, Vector2 origin, float rotation, Color color) @cname("DrawRectanglePro");
 // Draw a vertical-gradient-filled rectangle
-fn void draw_rectangle_gradient_v(int posX, int posY, int width, int height, Color color1, Color color2) @extern("DrawRectangleGradientV");
+fn void draw_rectangle_gradient_v(int posX, int posY, int width, int height, Color color1, Color color2) @cname("DrawRectangleGradientV");
 // Draw a horizontal-gradient-filled rectangle
-fn void draw_rectangle_gradient_h(int posX, int posY, int width, int height, Color color1, Color color2) @extern("DrawRectangleGradientH");
+fn void draw_rectangle_gradient_h(int posX, int posY, int width, int height, Color color1, Color color2) @cname("DrawRectangleGradientH");
 // Draw a gradient-filled rectangle with custom vertex colors
-fn void draw_rectangle_gradient_ex(Rectangle rec, Color col1, Color col2, Color col3, Color col4) @extern("DrawRectangleGradientEx");
+fn void draw_rectangle_gradient_ex(Rectangle rec, Color col1, Color col2, Color col3, Color col4) @cname("DrawRectangleGradientEx");
 // Draw rectangle outline
-fn void draw_rectangle_lines(int posX, int posY, int width, int height, Color color) @extern("DrawRectangleLines");
+fn void draw_rectangle_lines(int posX, int posY, int width, int height, Color color) @cname("DrawRectangleLines");
 // Draw rectangle outline with extended parameters
-fn void draw_rectangle_lines_ex(Rectangle rec, float line_thick, Color color) @extern("DrawRectangleLinesEx");
+fn void draw_rectangle_lines_ex(Rectangle rec, float line_thick, Color color) @cname("DrawRectangleLinesEx");
 // Draw rectangle with rounded edges
-fn void draw_rectangle_rounded(Rectangle rec, float roundness, int segments, Color color) @extern("DrawRectangleRounded");
+fn void draw_rectangle_rounded(Rectangle rec, float roundness, int segments, Color color) @cname("DrawRectangleRounded");
 // Draw rectangle with rounded edges outline
-fn void draw_rectangle_rounded_lines(Rectangle rec, float roundness, int segments, float line_thick, Color color) @extern("DrawRectangleRoundedLines");
+fn void draw_rectangle_rounded_lines(Rectangle rec, float roundness, int segments, float line_thick, Color color) @cname("DrawRectangleRoundedLines");
 // Draw a color-filled triangle (vertex in counter-clockwise order!)
-fn void draw_triangle(Vector2 v1, Vector2 v2, Vector2 v3, Color color) @extern("DrawTriangle");
+fn void draw_triangle(Vector2 v1, Vector2 v2, Vector2 v3, Color color) @cname("DrawTriangle");
 // Draw triangle outline (vertex in counter-clockwise order!)
-fn void draw_triangle_lines(Vector2 v1, Vector2 v2, Vector2 v3, Color color) @extern("DrawTriangleLines");
+fn void draw_triangle_lines(Vector2 v1, Vector2 v2, Vector2 v3, Color color) @cname("DrawTriangleLines");
 // Draw a triangle fan defined by points (first vertex is the center)
-fn void draw_triangle_fan(Vector2 *points, int point_count, Color color) @extern("DrawTriangleFan");
+fn void draw_triangle_fan(Vector2 *points, int point_count, Color color) @cname("DrawTriangleFan");
 // Draw a triangle strip defined by points
-fn void draw_triangle_strip(Vector2 *points, int point_count, Color color) @extern("DrawTriangleStrip");
+fn void draw_triangle_strip(Vector2 *points, int point_count, Color color) @cname("DrawTriangleStrip");
 // Draw a regular polygon (Vector version)
-fn void draw_poly(Vector2 center, int sides, float radius, float rotation, Color color) @extern("DrawPoly");
+fn void draw_poly(Vector2 center, int sides, float radius, float rotation, Color color) @cname("DrawPoly");
 // Draw a polygon outline of n sides
-fn void draw_poly_lines(Vector2 center, int sides, float radius, float rotation, Color color) @extern("DrawPolyLines");
+fn void draw_poly_lines(Vector2 center, int sides, float radius, float rotation, Color color) @cname("DrawPolyLines");
 // Draw a polygon outline of n sides with extended parameters
-fn void draw_poly_lines_ex(Vector2 center, int sides, float radius, float rotation, float line_thick, Color color) @extern("DrawPolyLinesEx");
+fn void draw_poly_lines_ex(Vector2 center, int sides, float radius, float rotation, float line_thick, Color color) @cname("DrawPolyLinesEx");
 
 // Basic shapes collision detection functions
 // Check collision between two rectangles
-fn bool check_collision_recs(Rectangle rec1, Rectangle rec2) @extern("CheckCollisionRecs");
+fn bool check_collision_recs(Rectangle rec1, Rectangle rec2) @cname("CheckCollisionRecs");
 // Check collision between two circles
-fn bool check_collision_circles(Vector2 center1, float radius1, Vector2 center2, float radius2) @extern("CheckCollisionCircles");
+fn bool check_collision_circles(Vector2 center1, float radius1, Vector2 center2, float radius2) @cname("CheckCollisionCircles");
 // Check collision between circle and rectangle
-fn bool check_collision_circle_rec(Vector2 center, float radius, Rectangle rec) @extern("CheckCollisionCircleRec");
+fn bool check_collision_circle_rec(Vector2 center, float radius, Rectangle rec) @cname("CheckCollisionCircleRec");
 // Check if point is inside rectangle
-fn bool check_collision_point_rec(Vector2 point, Rectangle rec) @extern("CheckCollisionPointRec");
+fn bool check_collision_point_rec(Vector2 point, Rectangle rec) @cname("CheckCollisionPointRec");
 // Check if point is inside circle
-fn bool check_collision_point_circle(Vector2 point, Vector2 center, float radius) @extern("CheckCollisionPointCircle");
+fn bool check_collision_point_circle(Vector2 point, Vector2 center, float radius) @cname("CheckCollisionPointCircle");
 // Check if point is inside a triangle
-fn bool check_collision_point_triangle(Vector2 point, Vector2 p1, Vector2 p2, Vector2 p3) @extern("CheckCollisionPointTriangle");
+fn bool check_collision_point_triangle(Vector2 point, Vector2 p1, Vector2 p2, Vector2 p3) @cname("CheckCollisionPointTriangle");
 // Check if point is within a polygon described by array of vertices
-fn bool check_collision_point_poly(Vector2 point, Vector2* points, int point_count) @extern("CheckCollisionPointPoly");
+fn bool check_collision_point_poly(Vector2 point, Vector2* points, int point_count) @cname("CheckCollisionPointPoly");
 
 // Check the collision between two lines defined by two points each, returns collision point by reference
-fn bool check_collision_lines(Vector2 start_pos1, Vector2 end_pos1, Vector2 start_pos2, Vector2 end_pos2, Vector2 *collision_point) @extern("CheckCollisionLines");
+fn bool check_collision_lines(Vector2 start_pos1, Vector2 end_pos1, Vector2 start_pos2, Vector2 end_pos2, Vector2 *collision_point) @cname("CheckCollisionLines");
 // Check if point belongs to line created between two points [p1] and [p2] with defined margin in pixels [threshold]
-fn bool check_collision_point_line(Vector2 point, Vector2 p1, Vector2 p2, int threshold) @extern("CheckCollisionPointLine");
+fn bool check_collision_point_line(Vector2 point, Vector2 p1, Vector2 p2, int threshold) @cname("CheckCollisionPointLine");
 // Get collision rectangle for two rectangles collision
-fn Rectangle get_collision_rec(Rectangle rec1, Rectangle rec2) @extern("GetCollisionRec");
+fn Rectangle get_collision_rec(Rectangle rec1, Rectangle rec2) @cname("GetCollisionRec");
 
 //------------------------------------------------------------------------------------
 // Texture Loading and Drawing Functions (Module: textures)
@@ -1102,230 +1102,230 @@ fn Rectangle get_collision_rec(Rectangle rec1, Rectangle rec2) @extern("GetColli
 // Image loading functions
 // NOTE: These functions do not require GPU access
 // Load image from file into CPU memory (RAM)
-fn Image load_image(char* file_name) @extern("LoadImage");
+fn Image load_image(char* file_name) @cname("LoadImage");
 // Load image from RAW file data
-fn Image load_image_raw(char* file_name, int width, int height, int format, int header_size) @extern("LoadImageRaw");
+fn Image load_image_raw(char* file_name, int width, int height, int format, int header_size) @cname("LoadImageRaw");
 // Load image sequence from file (frames appended to image.data)
-fn Image load_image_anim(char* file_name, int *frames) @extern("LoadImageAnim");
+fn Image load_image_anim(char* file_name, int *frames) @cname("LoadImageAnim");
 // Load image from memory buffer, file_type refers to extension: i.e. '.png'
-fn Image load_image_from_memory(char* file_type, char* file_data, int data_size) @extern("LoadImageFromMemory");
+fn Image load_image_from_memory(char* file_type, char* file_data, int data_size) @cname("LoadImageFromMemory");
 // Load image from GPU texture data
-fn Image load_image_from_texture(Texture2D texture) @extern("LoadImageFromTexture");
+fn Image load_image_from_texture(Texture2D texture) @cname("LoadImageFromTexture");
 // Load image from screen buffer and (screenshot)
-fn Image load_image_from_screen() @extern("LoadImageFromScreen");
+fn Image load_image_from_screen() @cname("LoadImageFromScreen");
 // Check if an image is ready
-fn bool is_image_ready(Image image) @extern("IsImageReady");
+fn bool is_image_ready(Image image) @cname("IsImageReady");
 // Unload image from CPU memory (RAM)
-fn void unload_image(Image image) @extern("UnloadImage");
+fn void unload_image(Image image) @cname("UnloadImage");
 // Export image data to file, returns true on success
-fn bool export_image(Image image, char* file_name) @extern("ExportImage");
+fn bool export_image(Image image, char* file_name) @cname("ExportImage");
 // Export image as code file defining an array of bytes, returns true on success
-fn bool export_image_as_code(Image image, char* file_name) @extern("ExportImageAsCode");
+fn bool export_image_as_code(Image image, char* file_name) @cname("ExportImageAsCode");
 
 // Image generation functions
 // Generate image: plain color
-fn Image gen_image_color(int width, int height, Color color) @extern("GenImageColor");
+fn Image gen_image_color(int width, int height, Color color) @cname("GenImageColor");
 // Generate image: vertical gradient
-fn Image gen_image_gradient_v(int width, int height, Color top, Color bottom) @extern("GenImageGradientV");
+fn Image gen_image_gradient_v(int width, int height, Color top, Color bottom) @cname("GenImageGradientV");
 // Generate image: horizontal gradient
-fn Image gen_image_gradient_h(int width, int height, Color left, Color right) @extern("GenImageGradientH");
+fn Image gen_image_gradient_h(int width, int height, Color left, Color right) @cname("GenImageGradientH");
 // Generate image: radial gradient
-fn Image gen_image_gradient_radial(int width, int height, float density, Color inner, Color outer) @extern("GenImageGradientRadial");
+fn Image gen_image_gradient_radial(int width, int height, float density, Color inner, Color outer) @cname("GenImageGradientRadial");
 // Generate image: checked
-fn Image gen_image_checked(int width, int height, int checks_x, int checks_y, Color col1, Color col2) @extern("GenImageChecked");
+fn Image gen_image_checked(int width, int height, int checks_x, int checks_y, Color col1, Color col2) @cname("GenImageChecked");
 // Generate image: white noise
-fn Image gen_image_white_noise(int width, int height, float factor) @extern("GenImageWhiteNoise");
+fn Image gen_image_white_noise(int width, int height, float factor) @cname("GenImageWhiteNoise");
 // Generate image: perlin noise
-fn Image gen_image_perlin_noise(int width, int height, int offset_x, int offset_y, float scale) @extern("GenImagePerlinNoise");
+fn Image gen_image_perlin_noise(int width, int height, int offset_x, int offset_y, float scale) @cname("GenImagePerlinNoise");
 // Generate image: cellular algorithm, bigger tile_size means bigger cells
-fn Image gen_image_cellular(int width, int height, int tile_size) @extern("GenImageCellular");
+fn Image gen_image_cellular(int width, int height, int tile_size) @cname("GenImageCellular");
 // Generate image: grayscale image from text data
-fn Image gen_image_text(int width, int height, char* text) @extern("GenImageText");
+fn Image gen_image_text(int width, int height, char* text) @cname("GenImageText");
 
 // Image manipulation functions
 // Create an image duplicate (useful for transformations)
-fn Image image_copy(Image image) @extern("ImageCopy");
+fn Image image_copy(Image image) @cname("ImageCopy");
 // Create an image from another image piece
-fn Image image_from_image(Image image, Rectangle rec) @extern("ImageFromImage");
+fn Image image_from_image(Image image, Rectangle rec) @cname("ImageFromImage");
 // Create an image from text (default font)
-fn Image image_text(char* text, int font_size, Color color) @extern("ImageText");
+fn Image image_text(char* text, int font_size, Color color) @cname("ImageText");
 // Create an image from text (custom sprite font)
-fn Image image_text_ex(Font font, char* text, float font_size, float spacing, Color tint) @extern("ImageTextEx");
+fn Image image_text_ex(Font font, char* text, float font_size, float spacing, Color tint) @cname("ImageTextEx");
 // Convert image data to desired format
-fn void image_format(Image *image, PixelFormat new_format) @extern("ImageFormat");
+fn void image_format(Image *image, PixelFormat new_format) @cname("ImageFormat");
 // Convert image to POT (power-of-two)
-fn void image_to_pot(Image *image, Color fill) @extern("ImageToPOT");
+fn void image_to_pot(Image *image, Color fill) @cname("ImageToPOT");
 // Crop an image to a defined rectangle
-fn void image_crop(Image* image, Rectangle crop) @extern("ImageCrop");
+fn void image_crop(Image* image, Rectangle crop) @cname("ImageCrop");
 // Crop image depending on alpha value
-fn void image_alpha_crop(Image* image, float threshold) @extern("ImageAlphaCrop");
+fn void image_alpha_crop(Image* image, float threshold) @cname("ImageAlphaCrop");
 // Clear alpha channel to desired color
-fn void image_alpha_clear(Image* image, Color color, float threshold) @extern("ImageAlphaClear");
+fn void image_alpha_clear(Image* image, Color color, float threshold) @cname("ImageAlphaClear");
 // Apply alpha mask to image
-fn void image_alpha_mask(Image* image, Image alpha_mask) @extern("ImageAlphaMask");
+fn void image_alpha_mask(Image* image, Image alpha_mask) @cname("ImageAlphaMask");
 // Premultiply alpha channel
-fn void image_alpha_premultiply(Image* image) @extern("ImageAlphaPremultiply");
+fn void image_alpha_premultiply(Image* image) @cname("ImageAlphaPremultiply");
 // Apply Gaussian blur using a box blur approximation
-fn void image_blur_gaussian(Image* image, int blur_size) @extern("ImageBlurGaussian");
+fn void image_blur_gaussian(Image* image, int blur_size) @cname("ImageBlurGaussian");
 
 // Resize image (Bicubic scaling algorithm)
-fn void image_resize(Image *image, int new_width, int new_height) @extern("ImageResize");
+fn void image_resize(Image *image, int new_width, int new_height) @cname("ImageResize");
 // Resize image (Nearest-Neighbor scaling algorithm)
-fn void image_resize_nn(Image *image, int new_width,int new_height) @extern("ImageResizeNN");
+fn void image_resize_nn(Image *image, int new_width,int new_height) @cname("ImageResizeNN");
 // Resize canvas and fill with color
-fn void image_resize_canvas(Image *image, int new_width, int new_height, int offsetX, int offsetY, Color fill) @extern("ImageResizeCanvas");
+fn void image_resize_canvas(Image *image, int new_width, int new_height, int offsetX, int offsetY, Color fill) @cname("ImageResizeCanvas");
 // Compute all mipmap levels for a provided image
-fn void image_mipmaps(Image *image) @extern("ImageMipmaps");
+fn void image_mipmaps(Image *image) @cname("ImageMipmaps");
 // Dither image data to 16bpp or lower (Floyd-Steinberg dithering)
-fn void image_dither(Image *image, int r_bpp, int g_bpp, int b_bpp, int a_bpp) @extern("ImageDither");
+fn void image_dither(Image *image, int r_bpp, int g_bpp, int b_bpp, int a_bpp) @cname("ImageDither");
 // Flip image vertically
-fn void image_flip_vertical(Image *image) @extern("ImageFlipVertical");
+fn void image_flip_vertical(Image *image) @cname("ImageFlipVertical");
 // Flip image horizontally
-fn void image_flip_horizontal(Image *image) @extern("ImageFlipHorizontal");
+fn void image_flip_horizontal(Image *image) @cname("ImageFlipHorizontal");
 // Rotate image clockwise 90deg
-fn void image_rotate_cw(Image *image) @extern("ImageRotateCW");
+fn void image_rotate_cw(Image *image) @cname("ImageRotateCW");
 // Rotate image counter-clockwise 90deg
-fn void image_rotate_ccw(Image *image) @extern("ImageRotateCCW");
+fn void image_rotate_ccw(Image *image) @cname("ImageRotateCCW");
 // Modify image color: tint
-fn void image_color_tint(Image *image, Color color) @extern("ImageColorTint");
+fn void image_color_tint(Image *image, Color color) @cname("ImageColorTint");
 // Modify image color: invert
-fn void image_color_invert(Image *image) @extern("ImageColorInvert");
+fn void image_color_invert(Image *image) @cname("ImageColorInvert");
 // Modify image color: grayscale
-fn void image_color_grayscale(Image *image) @extern("ImageColorGrayscale");
+fn void image_color_grayscale(Image *image) @cname("ImageColorGrayscale");
 // Modify image color: contrast (-100 to 100)
-fn void image_color_contrast(Image *image, float contrast) @extern("ImageColorContrast");
+fn void image_color_contrast(Image *image, float contrast) @cname("ImageColorContrast");
 // Modify image color: brightness (-255 to 255)
-fn void image_color_brightness(Image *image, int brightness) @extern("ImageColorBrightness");
+fn void image_color_brightness(Image *image, int brightness) @cname("ImageColorBrightness");
 // Modify image color: replace color
-fn void image_color_replace(Image *image, Color color, Color replace) @extern("ImageColorReplace");
+fn void image_color_replace(Image *image, Color color, Color replace) @cname("ImageColorReplace");
 // Load color data from image as a Color array (RGBA - 32bit)
-fn Color *load_image_colors(Image image) @extern("LoadImageColors");
+fn Color *load_image_colors(Image image) @cname("LoadImageColors");
 // Load colors palette from image as a Color array (RGBA - 32bit)
-fn Color *load_image_palette(Image image, int max_palette_size, int *color_count) @extern("LoadImagePalette");
+fn Color *load_image_palette(Image image, int max_palette_size, int *color_count) @cname("LoadImagePalette");
 // Unload color data loaded with LoadImageColors()
-fn void unload_image_colors(Color *colors) @extern("UnloadImageColors");
+fn void unload_image_colors(Color *colors) @cname("UnloadImageColors");
 // Unload colors palette loaded with LoadImagePalette()
-fn void unload_image_palette(Color *colors) @extern("UnloadImagePalette");
+fn void unload_image_palette(Color *colors) @cname("UnloadImagePalette");
 // Get image alpha border rectangle
-fn Rectangle get_image_alpha_border(Image image, float threshold) @extern("GetImageAlphaBorder");
+fn Rectangle get_image_alpha_border(Image image, float threshold) @cname("GetImageAlphaBorder");
 // Get image pixel color at (x, y) position
-fn Color get_image_color(Image image, int x, int y) @extern("GetImageColor");
+fn Color get_image_color(Image image, int x, int y) @cname("GetImageColor");
 
 // Image drawing functions
 // NOTE: Image software-rendering functions (CPU)
 // Clear image background with given color
-fn void image_clear_background(Image *dst, Color color) @extern("ImageClearBackground");
+fn void image_clear_background(Image *dst, Color color) @cname("ImageClearBackground");
 // Draw pixel within an image
-fn void image_draw_pixel(Image *dst, int posX, int posY, Color color) @extern("ImageDrawPixel");
+fn void image_draw_pixel(Image *dst, int posX, int posY, Color color) @cname("ImageDrawPixel");
 // Draw pixel within an image (Vector version)
-fn void image_draw_pixel_v(Image *dst, Vector2 position, Color color) @extern("ImageDrawPixelV");
+fn void image_draw_pixel_v(Image *dst, Vector2 position, Color color) @cname("ImageDrawPixelV");
 // Draw line within an image
-fn void image_draw_line(Image *dst, int start_pos_x, int start_pos_y, int end_pos_x, int end_pos_y, Color color) @extern("ImageDrawLine");
+fn void image_draw_line(Image *dst, int start_pos_x, int start_pos_y, int end_pos_x, int end_pos_y, Color color) @cname("ImageDrawLine");
 // Draw line within an image (Vector version)
-fn void image_draw_line_v(Image *dst, Vector2 start, Vector2 end, Color color) @extern("ImageDrawLineV");
+fn void image_draw_line_v(Image *dst, Vector2 start, Vector2 end, Color color) @cname("ImageDrawLineV");
 // Draw circle within an image
-fn void image_draw_circle(Image *dst, int centerX, int centerY, int radius, Color color) @extern("ImageDrawCircle");
+fn void image_draw_circle(Image *dst, int centerX, int centerY, int radius, Color color) @cname("ImageDrawCircle");
 // Draw circle within an image (Vector version)
-fn void image_draw_circle_v(Image *dst, Vector2 center, int radius, Color color) @extern("ImageDrawCircleV");
+fn void image_draw_circle_v(Image *dst, Vector2 center, int radius, Color color) @cname("ImageDrawCircleV");
 // Draw circle outline within an image
-fn void image_draw_circle_lines(Image *dst, int centerX, int centerY, int radius, Color color) @extern("ImageDrawCircleLines");
+fn void image_draw_circle_lines(Image *dst, int centerX, int centerY, int radius, Color color) @cname("ImageDrawCircleLines");
 // Draw circle outline within an image (Vector version)
-fn void image_draw_circle_lines_v(Image *dst, Vector2 center, int radius, Color color) @extern("ImageDrawCircleLinesV");
+fn void image_draw_circle_lines_v(Image *dst, Vector2 center, int radius, Color color) @cname("ImageDrawCircleLinesV");
 
 // Draw rectangle within an image
-fn void image_draw_rectangle(Image *dst, int posX, int posY, int width, int height, Color color) @extern("ImageDrawRectangle");
+fn void image_draw_rectangle(Image *dst, int posX, int posY, int width, int height, Color color) @cname("ImageDrawRectangle");
 // Draw rectangle within an image (Vector version)
-fn void image_draw_rectangle_v(Image *dst, Vector2 position, Vector2 size, Color color) @extern("ImageDrawRectangleV");
+fn void image_draw_rectangle_v(Image *dst, Vector2 position, Vector2 size, Color color) @cname("ImageDrawRectangleV");
 // Draw rectangle within an image
-fn void image_draw_rectangle_rec(Image *dst, Rectangle rec, Color color) @extern("ImageDrawRectangleRec");
+fn void image_draw_rectangle_rec(Image *dst, Rectangle rec, Color color) @cname("ImageDrawRectangleRec");
 // Draw rectangle lines within an image
-fn void image_draw_rectangle_lines(Image *dst, Rectangle rec, int thick, Color color) @extern("ImageDrawRectangleLines");
+fn void image_draw_rectangle_lines(Image *dst, Rectangle rec, int thick, Color color) @cname("ImageDrawRectangleLines");
 // Draw a source image within a destination image (tint applied to source)
-fn void image_draw(Image *dst, Image src, Rectangle src_rec, Rectangle dst_rec, Color tint) @extern("ImageDraw");
+fn void image_draw(Image *dst, Image src, Rectangle src_rec, Rectangle dst_rec, Color tint) @cname("ImageDraw");
 // Draw text (using default font) within an image (destination)
-fn void image_draw_text(Image *dst, char* text, int posX, int posY, int font_size, Color color) @extern("ImageDrawText");
+fn void image_draw_text(Image *dst, char* text, int posX, int posY, int font_size, Color color) @cname("ImageDrawText");
 // Draw text (custom sprite font) within an image (destination)
-fn void image_draw_text_ex(Image *dst, Font font, char* text, Vector2 position, float font_size, float spacing, Color tint) @extern("ImageDrawTextEx");
+fn void image_draw_text_ex(Image *dst, Font font, char* text, Vector2 position, float font_size, float spacing, Color tint) @cname("ImageDrawTextEx");
 
 // Texture loading functions
 // NOTE: These functions require GPU access
 // Load texture from file into GPU memory (VRAM)
-fn Texture2D load_texture(char* file_name) @extern("LoadTexture");
+fn Texture2D load_texture(char* file_name) @cname("LoadTexture");
 // Load texture from image data
-fn Texture2D load_texture_from_image(Image image) @extern("LoadTextureFromImage");
+fn Texture2D load_texture_from_image(Image image) @cname("LoadTextureFromImage");
 // Load cubemap from image, multiple image cubemap layouts supported
-fn TextureCubemap load_texture_cubemap(Image image, int layout) @extern("LoadTextureCubemap");
+fn TextureCubemap load_texture_cubemap(Image image, int layout) @cname("LoadTextureCubemap");
 // Check if a texture is ready
-fn bool is_texture_ready(Texture2D texture) @extern("IsTextureReady");
+fn bool is_texture_ready(Texture2D texture) @cname("IsTextureReady");
 // Load texture for rendering (framebuffer)
-fn RenderTexture2D load_render_texture(int width, int height) @extern("LoadRenderTexture");
+fn RenderTexture2D load_render_texture(int width, int height) @cname("LoadRenderTexture");
 // Check if a render texture is ready
-fn bool is_render_texture_ready(RenderTexture2D target) @extern("IsRenderTextureReady");
+fn bool is_render_texture_ready(RenderTexture2D target) @cname("IsRenderTextureReady");
 
 // Unload texture from GPU memory (VRAM)
-fn void unload_texture(Texture2D texture) @extern("UnloadTexture");
+fn void unload_texture(Texture2D texture) @cname("UnloadTexture");
 // Unload render texture from GPU memory (VRAM)
-fn void unload_render_texture(RenderTexture2D target) @extern("UnloadRenderTexture");
+fn void unload_render_texture(RenderTexture2D target) @cname("UnloadRenderTexture");
 // Update GPU texture with new data
-fn void update_texture(Texture2D texture, void* pixels) @extern("UpdateTexture");
+fn void update_texture(Texture2D texture, void* pixels) @cname("UpdateTexture");
 // Update GPU texture rectangle with new data
-fn void update_texture_rec(Texture2D texture, Rectangle rec, void* pixels) @extern("UpdateTextureRec");
+fn void update_texture_rec(Texture2D texture, Rectangle rec, void* pixels) @cname("UpdateTextureRec");
 
 // Texture configuration functions
 // Generate GPU mipmaps for a texture
-fn void gen_texture_mipmaps(Texture2D *texture) @extern("GenTextureMipmaps");
+fn void gen_texture_mipmaps(Texture2D *texture) @cname("GenTextureMipmaps");
 // Set texture scaling filter mode
-fn void set_texture_filter(Texture2D texture, TextureFilter filter) @extern("SetTextureFilter");
+fn void set_texture_filter(Texture2D texture, TextureFilter filter) @cname("SetTextureFilter");
 // Set texture wrapping mode
-fn void set_texture_wrap(Texture2D texture, int wrap) @extern("SetTextureWrap");
+fn void set_texture_wrap(Texture2D texture, int wrap) @cname("SetTextureWrap");
 
 // Texture drawing functions
 // Draw a Texture2D
-fn void draw_texture(Texture2D texture, int posX, int posY, Color tint) @extern("DrawTexture");
+fn void draw_texture(Texture2D texture, int posX, int posY, Color tint) @cname("DrawTexture");
 // Draw a Texture2D with position defined as Vector2
-fn void draw_texture_v(Texture2D texture, Vector2 position, Color tint) @extern("DrawTextureV");
+fn void draw_texture_v(Texture2D texture, Vector2 position, Color tint) @cname("DrawTextureV");
 // Draw a Texture2D with extended parameters
-fn void draw_texture_ex(Texture2D texture, Vector2 position, float rotation, float scale, Color tint) @extern("DrawTextureEx");
+fn void draw_texture_ex(Texture2D texture, Vector2 position, float rotation, float scale, Color tint) @cname("DrawTextureEx");
 // Draw a part of a texture defined by a rectangle
-fn void draw_texture_rec(Texture2D texture, Rectangle source, Vector2 position, Color tint) @extern("DrawTextureRec");
+fn void draw_texture_rec(Texture2D texture, Rectangle source, Vector2 position, Color tint) @cname("DrawTextureRec");
 // Draw texture quad with tiling and offset parameters
-fn void draw_texture_pro(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, float rotation, Color tint) @extern("DrawTexturePro");
+fn void draw_texture_pro(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, float rotation, Color tint) @cname("DrawTexturePro");
 // Draws a texture (or part of it) that stretches or shrinks nicely
-fn void draw_texture_npatch(Texture2D texture, NPatchInfo n_patch_info, Rectangle dest, Vector2 origin, float rotation, Color tint) @extern("DrawTextureNPatch");
+fn void draw_texture_npatch(Texture2D texture, NPatchInfo n_patch_info, Rectangle dest, Vector2 origin, float rotation, Color tint) @cname("DrawTextureNPatch");
 
 
 
 // Color/pixel related functions
 // Get color with alpha applied, alpha goes from 0.0f to 1.0f
-fn Color fade(Color color, float alpha) @extern("Fade");
+fn Color fade(Color color, float alpha) @cname("Fade");
 // Get hexadecimal value for a Color
-fn int color_to_int(Color color) @extern("ColorToInt");
+fn int color_to_int(Color color) @cname("ColorToInt");
 // Get Color normalized as float [0..1]
-fn Vector4 color_normalize(Color color) @extern("ColorNormalize");
+fn Vector4 color_normalize(Color color) @cname("ColorNormalize");
 // Get Color from normalized values [0..1]
-fn Color color_from_normalized(Vector4 normalized) @extern("ColorFromNormalized");
+fn Color color_from_normalized(Vector4 normalized) @cname("ColorFromNormalized");
 // Get HSV values for a Color, hue [0..360], saturation/value [0..1]
-fn Vector3 color_to_hsv(Color color) @extern("ColorToHSV");
+fn Vector3 color_to_hsv(Color color) @cname("ColorToHSV");
 // Get a Color from HSV values, hue [0..360], saturation/value [0..1]
-fn Color color_from_hsv(float hue, float saturation, float value) @extern("ColorFromHSV");
+fn Color color_from_hsv(float hue, float saturation, float value) @cname("ColorFromHSV");
 // Get color multiplied with another color
-fn Color color_tint(Color color, Color tint) @extern("ColorTint");
+fn Color color_tint(Color color, Color tint) @cname("ColorTint");
 // Get color with brightness correction, brightness factor goes from -1.0f to 1.0f
-fn Color color_brightness(Color color, float factor) @extern("ColorBrightness");
+fn Color color_brightness(Color color, float factor) @cname("ColorBrightness");
 // Get color with contrast correction, contrast values between -1.0f and 1.0f
-fn Color color_contrast(Color color, float contrast) @extern("ColorContrast");
+fn Color color_contrast(Color color, float contrast) @cname("ColorContrast");
 // Get color with alpha applied, alpha goes from 0.0f to 1.0f
-fn Color color_alpha(Color color, float alpha) @extern("ColorAlpha");
+fn Color color_alpha(Color color, float alpha) @cname("ColorAlpha");
 // Get src alpha-blended into dst color with tint
-fn Color color_alpha_blend(Color dst, Color src, Color tint) @extern("ColorAlphaBlend");
+fn Color color_alpha_blend(Color dst, Color src, Color tint) @cname("ColorAlphaBlend");
 // Get Color structure from hexadecimal value
-fn Color get_color(uint hex_value) @extern("GetColor");
+fn Color get_color(uint hex_value) @cname("GetColor");
 // Get Color from a source pixel pointer of certain format
-fn Color get_pixel_color(void* src_ptr, int format) @extern("GetPixelColor");
+fn Color get_pixel_color(void* src_ptr, int format) @cname("GetPixelColor");
 // Set color formatted into destination pixel pointer
-fn void set_pixel_color(void* dst_ptr, Color color, PixelFormat format) @extern("SetPixelColor");
+fn void set_pixel_color(void* dst_ptr, Color color, PixelFormat format) @cname("SetPixelColor");
 // Get pixel data size in bytes for certain format
-fn int get_pixel_data_size(int width, int height, PixelFormat format) @extern("GetPixelDataSize");
+fn int get_pixel_data_size(int width, int height, PixelFormat format) @cname("GetPixelDataSize");
 
 //------------------------------------------------------------------------------------
 // Font Loading and Text Drawing Functions (Module: text)
@@ -1333,109 +1333,109 @@ fn int get_pixel_data_size(int width, int height, PixelFormat format) @extern("G
 
 // Font loading/unloading functions
 // Get the default Font
-fn Font get_font_default() @extern("GetFontDefault");
+fn Font get_font_default() @cname("GetFontDefault");
 // Load font from file into GPU memory (VRAM)
-fn Font load_font(char* file_name) @extern("LoadFont");
+fn Font load_font(char* file_name) @cname("LoadFont");
 // Load font from file with extended parameters, use NULL for font_chars and 0 for glyph_count to load the default character set
-fn Font load_font_ex(char* file_name, int font_size, int *font_chars, int glyph_count) @extern("LoadFontEx");
+fn Font load_font_ex(char* file_name, int font_size, int *font_chars, int glyph_count) @cname("LoadFontEx");
 // Load font from Image (XNA style)
-fn Font load_font_from_image(Image image, Color key, int first_char) @extern("LoadFontFromImage");
+fn Font load_font_from_image(Image image, Color key, int first_char) @cname("LoadFontFromImage");
 // Load font from memory buffer, file_type refers to extension: i.e. '.ttf'
-fn Font load_font_from_memory(char* file_type, char* file_data, int data_size, int font_size, int *font_chars, int glyph_count) @extern("LoadFontFromMemory");
+fn Font load_font_from_memory(char* file_type, char* file_data, int data_size, int font_size, int *font_chars, int glyph_count) @cname("LoadFontFromMemory");
 // Check if a font is ready
-fn bool is_font_ready(Font font) @extern("IsFontReady");
+fn bool is_font_ready(Font font) @cname("IsFontReady");
 // Load font data for further use
-fn GlyphInfo *load_font_data(char* file_data, int data_size, int font_size, int *font_chars, int glyph_count, int type) @extern("LoadFontData");
+fn GlyphInfo *load_font_data(char* file_data, int data_size, int font_size, int *font_chars, int glyph_count, int type) @cname("LoadFontData");
 // Generate image font atlas using chars info
-fn Image gen_image_font_atlas(GlyphInfo *chars, Rectangle **recs, int glyph_count, int font_size, int padding, int pack_method) @extern("GenImageFontAtlas");
+fn Image gen_image_font_atlas(GlyphInfo *chars, Rectangle **recs, int glyph_count, int font_size, int padding, int pack_method) @cname("GenImageFontAtlas");
 // Unload font chars info data (RAM)
-fn void unload_font_data(GlyphInfo *chars, int glyph_count) @extern("UnloadFontData");
+fn void unload_font_data(GlyphInfo *chars, int glyph_count) @cname("UnloadFontData");
 // Unload font from GPU memory (VRAM)
-fn void unload_font(Font font) @extern("UnloadFont");
+fn void unload_font(Font font) @cname("UnloadFont");
 // Export font as code file, returns true on success
-fn bool export_font_as_code(Font font, char* file_name) @extern("ExportFontAsCode");
+fn bool export_font_as_code(Font font, char* file_name) @cname("ExportFontAsCode");
 
 
 // Text drawing functions
 // Draw current FPS
-fn void draw_fps(int posX, int posY) @extern("DrawFPS");
+fn void draw_fps(int posX, int posY) @cname("DrawFPS");
 // Draw text (using default font)
-fn void draw_text(char* text, int posX, int posY, int font_size, Color color) @extern("DrawText");
+fn void draw_text(char* text, int posX, int posY, int font_size, Color color) @cname("DrawText");
 // Draw text using font and additional parameters
-fn void draw_text_ex(Font font, char* text, Vector2 position, float font_size, float spacing, Color tint) @extern("DrawTextEx");
+fn void draw_text_ex(Font font, char* text, Vector2 position, float font_size, float spacing, Color tint) @cname("DrawTextEx");
 // Draw text using Font and pro parameters (rotation)
-fn void draw_text_pro(Font font, char* text, Vector2 position, Vector2 origin, float rotation, float font_size, float spacing, Color tint) @extern("DrawTextPro");
+fn void draw_text_pro(Font font, char* text, Vector2 position, Vector2 origin, float rotation, float font_size, float spacing, Color tint) @cname("DrawTextPro");
 // Draw one character (codepoint)
-fn void draw_text_codepoint(Font font, int codepoint, Vector2 position, float font_size, Color tint) @extern("DrawTextCodepoint");
+fn void draw_text_codepoint(Font font, int codepoint, Vector2 position, float font_size, Color tint) @cname("DrawTextCodepoint");
 // Draw multiple character (codepoint)
-fn void draw_text_codepoints(Font font, int *codepoints, int count, Vector2 position, float font_size, float spacing, Color tint) @extern("DrawTextCodepoints");
+fn void draw_text_codepoints(Font font, int *codepoints, int count, Vector2 position, float font_size, float spacing, Color tint) @cname("DrawTextCodepoints");
 
 // Text font info functions
 // Measure string width for default font
-fn int measure_text(char* text, int font_size) @extern("MeasureText");
+fn int measure_text(char* text, int font_size) @cname("MeasureText");
 // Measure string size for Font
-fn Vector2 measure_text_ex(Font font, char* text, float font_size, float spacing) @extern("MeasureTextEx");
+fn Vector2 measure_text_ex(Font font, char* text, float font_size, float spacing) @cname("MeasureTextEx");
 // Get glyph index position in font for a codepoint (unicode character), fallback to '?' if not found
-fn int get_glyph_index(Font font, int codepoint) @extern("GetGlyphIndex");
+fn int get_glyph_index(Font font, int codepoint) @cname("GetGlyphIndex");
 // Get glyph font info data for a codepoint (unicode character), fallback to '?' if not found
-fn GlyphInfo get_glyph_info(Font font, int codepoint) @extern("GetGlyphInfo");
+fn GlyphInfo get_glyph_info(Font font, int codepoint) @cname("GetGlyphInfo");
 // Get glyph rectangle in font atlas for a codepoint (unicode character), fallback to '?' if not found
-fn Rectangle get_glyph_atlas_rec(Font font, int codepoint) @extern("GetGlyphAtlasRec");
+fn Rectangle get_glyph_atlas_rec(Font font, int codepoint) @cname("GetGlyphAtlasRec");
 
 // Text codepoints management functions (unicode characters)
 // Load UTF-8 text encoded from codepoints array
-fn char* load_utf8(int* codepoints, int length) @extern("LoadUTF8");
+fn char* load_utf8(int* codepoints, int length) @cname("LoadUTF8");
 // Unload UTF-8 text encoded from codepoints array
-fn void unload_utf8(char* text) @extern("UnloadUTF8");
+fn void unload_utf8(char* text) @cname("UnloadUTF8");
 
 // Load all codepoints from a UTF-8 text string, codepoints count returned by parameter
-fn int *load_codepoints(char* text, int *count) @extern("LoadCodepoints");
+fn int *load_codepoints(char* text, int *count) @cname("LoadCodepoints");
 // Unload codepoints data from memory
-fn void unload_codepoints(int *codepoints) @extern("UnloadCodepoints");
+fn void unload_codepoints(int *codepoints) @cname("UnloadCodepoints");
 // Get total number of codepoints in a UTF-8 encoded string
-fn int get_codepoint_count(char* text) @extern("GetCodepointCount");
+fn int get_codepoint_count(char* text) @cname("GetCodepointCount");
 // Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
-fn int get_codepoint(char* text, int *codepoint_size) @extern("GetCodepoint");
+fn int get_codepoint(char* text, int *codepoint_size) @cname("GetCodepoint");
 // Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
-fn int get_codepoint_next(char* text, int *codepoint_size) @extern("GetCodepointNext");
+fn int get_codepoint_next(char* text, int *codepoint_size) @cname("GetCodepointNext");
 // Get previous codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
-fn int get_codepoint_previous(char* text, int* codepoint_size) @extern("GetCodepointPrevious");
+fn int get_codepoint_previous(char* text, int* codepoint_size) @cname("GetCodepointPrevious");
 // Encode one codepoint into UTF-8 byte array (array length returned as parameter)
-fn char* codepoint_to_utf8(int codepoint, int *utf8_size) @extern("CodepointToUTF8");
+fn char* codepoint_to_utf8(int codepoint, int *utf8_size) @cname("CodepointToUTF8");
 
 
 // Text strings management functions (no UTF-8 strings, only byte chars)
 // NOTE: Some strings allocate memory internally for returned strings, just be careful!
 // Copy one string to another, returns bytes copied
-fn int text_copy(char* dst, char* src) @extern("TextCopy");
+fn int text_copy(char* dst, char* src) @cname("TextCopy");
 // Check if two text string are equal
-fn bool text_is_equal(char* text1, char* text2) @extern("TextIsEqual");
+fn bool text_is_equal(char* text1, char* text2) @cname("TextIsEqual");
 // Get text length, checks for '\0' ending
-fn uint text_length(char* text) @extern("TextLength");
+fn uint text_length(char* text) @cname("TextLength");
 // Text formatting with variables (sprintf() style)
-fn char* text_format(char* text, ...) @extern("TextFormat");
+fn char* text_format(char* text, ...) @cname("TextFormat");
 // Get a piece of a text string
-fn char* text_subtext(char* text, int position, int length) @extern("TextSubtext");
+fn char* text_subtext(char* text, int position, int length) @cname("TextSubtext");
 // Replace text string (WARNING: memory must be freed!)
-fn char* text_replace(char* text, char* replace, char* by) @extern("TextReplace");
+fn char* text_replace(char* text, char* replace, char* by) @cname("TextReplace");
 // Insert text in a position (WARNING: memory must be freed!)
-fn char* text_insert(char* text, char* insert, int position) @extern("TextInsert");
+fn char* text_insert(char* text, char* insert, int position) @cname("TextInsert");
 // Join text strings with delimiter
-fn char* text_join(char* *text_list, int count, char* delimiter) @extern("TextJoin");
+fn char* text_join(char* *text_list, int count, char* delimiter) @cname("TextJoin");
 // Split text into multiple strings
-fn char* *text_split(char* text, char delimiter, int *count) @extern("TextSplit");
+fn char* *text_split(char* text, char delimiter, int *count) @cname("TextSplit");
 // Append text at specific position and move cursor!
-fn void text_append(char* text, char* append, int *position) @extern("TextAppend");
+fn void text_append(char* text, char* append, int *position) @cname("TextAppend");
 // Find first text occurrence within a string
-fn int text_find_index(char* text, char* find) @extern("TextFindIndex");
+fn int text_find_index(char* text, char* find) @cname("TextFindIndex");
 // Get upper case version of provided string
-fn char* text_to_upper(char* text) @extern("TextToUpper");
+fn char* text_to_upper(char* text) @cname("TextToUpper");
 // Get lower case version of provided string
-fn char* text_to_lower(char* text) @extern("TextToLower");
+fn char* text_to_lower(char* text) @cname("TextToLower");
 // Get Pascal case notation version of provided string
-fn char* text_to_pascal(char* text) @extern("TextToPascal");
+fn char* text_to_pascal(char* text) @cname("TextToPascal");
 // Get integer value from text (negative values not supported)
-fn int text_to_integer(char* text) @extern("TextToInteger");
+fn int text_to_integer(char* text) @cname("TextToInteger");
 
 //------------------------------------------------------------------------------------
 // Basic 3d Shapes Drawing Functions (Module: models)
@@ -1443,47 +1443,47 @@ fn int text_to_integer(char* text) @extern("TextToInteger");
 
 // Basic geometric 3D shapes drawing functions
 // Draw a line in 3D world space
-fn void draw_line_3d(Vector3 start_pos, Vector3 end_pos, Color color) @extern("DrawLine3D");
+fn void draw_line_3d(Vector3 start_pos, Vector3 end_pos, Color color) @cname("DrawLine3D");
 // Draw a point in 3D space, actually a small line
-fn void draw_point_3d(Vector3 position, Color color) @extern("DrawPoint3D");
+fn void draw_point_3d(Vector3 position, Color color) @cname("DrawPoint3D");
 // Draw a circle in 3D world space
-fn void draw_circle_3d(Vector3 center, float radius, Vector3 rotation_axis, float rotation_angle, Color color) @extern("DrawCircle3D");
+fn void draw_circle_3d(Vector3 center, float radius, Vector3 rotation_axis, float rotation_angle, Color color) @cname("DrawCircle3D");
 // Draw a color-filled triangle (vertex in counter-clockwise order!)
-fn void draw_triangle_3d(Vector3 v1, Vector3 v2, Vector3 v3, Color color) @extern("DrawTriangle3D");
+fn void draw_triangle_3d(Vector3 v1, Vector3 v2, Vector3 v3, Color color) @cname("DrawTriangle3D");
 // Draw a triangle strip defined by points
-fn void draw_triangle_strip_3d(Vector3 *points, int point_count, Color color) @extern("DrawTriangleStrip3D");
+fn void draw_triangle_strip_3d(Vector3 *points, int point_count, Color color) @cname("DrawTriangleStrip3D");
 // Draw cube
-fn void draw_cube(Vector3 position, float width, float height, float length, Color color) @extern("DrawCube");
+fn void draw_cube(Vector3 position, float width, float height, float length, Color color) @cname("DrawCube");
 // Draw cube (Vector version)
-fn void draw_cube_v(Vector3 position, Vector3 size, Color color) @extern("DrawCubeV");
+fn void draw_cube_v(Vector3 position, Vector3 size, Color color) @cname("DrawCubeV");
 // Draw cube wires
-fn void draw_cube_wires(Vector3 position, float width, float height, float length, Color color) @extern("DrawCubeWires");
+fn void draw_cube_wires(Vector3 position, float width, float height, float length, Color color) @cname("DrawCubeWires");
 // Draw cube wires (Vector version)
-fn void draw_cube_wires_v(Vector3 position, Vector3 size, Color color) @extern("DrawCubeWiresV");
+fn void draw_cube_wires_v(Vector3 position, Vector3 size, Color color) @cname("DrawCubeWiresV");
 // Draw sphere
-fn void draw_sphere(Vector3 center_pos, float radius, Color color) @extern("DrawSphere");
+fn void draw_sphere(Vector3 center_pos, float radius, Color color) @cname("DrawSphere");
 // Draw sphere with extended parameters
-fn void draw_sphere_ex(Vector3 center_pos, float radius, int rings, int slices, Color color) @extern("DrawSphereEx");
+fn void draw_sphere_ex(Vector3 center_pos, float radius, int rings, int slices, Color color) @cname("DrawSphereEx");
 // Draw sphere wires
-fn void draw_sphere_wires(Vector3 center_pos, float radius, int rings, int slices, Color color) @extern("DrawSphereWires");
+fn void draw_sphere_wires(Vector3 center_pos, float radius, int rings, int slices, Color color) @cname("DrawSphereWires");
 // Draw a cylinder/cone
-fn void draw_cylinder(Vector3 position, float radius_top, float radius_bottom, float height, int slices, Color color) @extern("DrawCylinder");
+fn void draw_cylinder(Vector3 position, float radius_top, float radius_bottom, float height, int slices, Color color) @cname("DrawCylinder");
 // Draw a cylinder with base at start_pos and top at end_pos
-fn void draw_cylinder_ex(Vector3 start_pos, Vector3 end_pos, float start_radius, float end_radius, int sides, Color color) @extern("DrawCylinderEx");
+fn void draw_cylinder_ex(Vector3 start_pos, Vector3 end_pos, float start_radius, float end_radius, int sides, Color color) @cname("DrawCylinderEx");
 // Draw a cylinder/cone wires
-fn void draw_cylinder_wires(Vector3 position, float radius_top, float radius_bottom, float height, int slices, Color color) @extern("DrawCylinderWires");
+fn void draw_cylinder_wires(Vector3 position, float radius_top, float radius_bottom, float height, int slices, Color color) @cname("DrawCylinderWires");
 // Draw a cylinder wires with base at start_pos and top at end_pos
-fn void draw_cylinder_wires_ex(Vector3 start_pos, Vector3 end_pos, float start_radius, float end_radius, int sides, Color color) @extern("DrawCylinderWiresEx");
+fn void draw_cylinder_wires_ex(Vector3 start_pos, Vector3 end_pos, float start_radius, float end_radius, int sides, Color color) @cname("DrawCylinderWiresEx");
 // Draw a capsule with the center of its sphere caps at startPos and endPos
-fn void draw_capsule(Vector3 start_pos, Vector3 end_pos, float radius, int slices, int rings, Color color) @extern("DrawCapsule");
+fn void draw_capsule(Vector3 start_pos, Vector3 end_pos, float radius, int slices, int rings, Color color) @cname("DrawCapsule");
 // Draw capsule wireframe with the center of its sphere caps at startPos and endPos
-fn void draw_capsule_wires(Vector3 start_pos, Vector3 end_pos, float radius, int slices, int rings, Color color) @extern("DrawCapsuleWires");
+fn void draw_capsule_wires(Vector3 start_pos, Vector3 end_pos, float radius, int slices, int rings, Color color) @cname("DrawCapsuleWires");
 // Draw a plane XZ
-fn void draw_plane(Vector3 center_pos, Vector2 size, Color color) @extern("DrawPlane");
+fn void draw_plane(Vector3 center_pos, Vector2 size, Color color) @cname("DrawPlane");
 // Draw a ray line
-fn void draw_ray(Ray ray, Color color) @extern("DrawRay");
+fn void draw_ray(Ray ray, Color color) @cname("DrawRay");
 // Draw a grid (centered at (0, 0, 0))
-fn void draw_grid(int slices, float spacing) @extern("DrawGrid");
+fn void draw_grid(int slices, float spacing) @cname("DrawGrid");
 
 //------------------------------------------------------------------------------------
 // Model 3d Loading and Drawing Functions (Module: models)
@@ -1491,119 +1491,119 @@ fn void draw_grid(int slices, float spacing) @extern("DrawGrid");
 
 // Model management functions
 // Load model from files (meshes and materials)
-fn Model load_model(char* file_name) @extern("LoadModel");
+fn Model load_model(char* file_name) @cname("LoadModel");
 // Load model from generated mesh (default material)
-fn Model load_model_from_mesh(Mesh mesh) @extern("LoadModelFromMesh");
+fn Model load_model_from_mesh(Mesh mesh) @cname("LoadModelFromMesh");
 // Check if a model is ready
-fn bool is_model_ready(Model model) @extern("IsModelReady");
+fn bool is_model_ready(Model model) @cname("IsModelReady");
 // Unload model (including meshes) from memory (RAM and/or VRAM)
-fn void unload_model(Model model) @extern("UnloadModel");
+fn void unload_model(Model model) @cname("UnloadModel");
 // Compute model bounding box limits (considers all meshes)
-fn BoundingBox get_model_bounding_box(Model model) @extern("GetModelBoundingBox");
+fn BoundingBox get_model_bounding_box(Model model) @cname("GetModelBoundingBox");
 
 // Model drawing functions
 // Draw a model (with texture if set)
-fn void draw_model(Model model, Vector3 position, float scale, Color tint) @extern("DrawModel");
+fn void draw_model(Model model, Vector3 position, float scale, Color tint) @cname("DrawModel");
 // Draw a model with extended parameters
-fn void draw_model_ex(Model model, Vector3 position, Vector3 rotation_axis, float rotation_angle, Vector3 scale, Color tint) @extern("DrawModelEx");
+fn void draw_model_ex(Model model, Vector3 position, Vector3 rotation_axis, float rotation_angle, Vector3 scale, Color tint) @cname("DrawModelEx");
 // Draw a model wires (with texture if set)
-fn void draw_model_wires(Model model, Vector3 position, float scale, Color tint) @extern("DrawModelWires");
+fn void draw_model_wires(Model model, Vector3 position, float scale, Color tint) @cname("DrawModelWires");
 // Draw a model wires (with texture if set) with extended parameters
-fn void draw_model_wires_ex(Model model, Vector3 position, Vector3 rotation_axis, float rotation_angle, Vector3 scale, Color tint) @extern("DrawModelWiresEx");
+fn void draw_model_wires_ex(Model model, Vector3 position, Vector3 rotation_axis, float rotation_angle, Vector3 scale, Color tint) @cname("DrawModelWiresEx");
 // Draw bounding box (wires)
-fn void draw_bounding_box(BoundingBox box, Color color) @extern("DrawBoundingBox");
+fn void draw_bounding_box(BoundingBox box, Color color) @cname("DrawBoundingBox");
 // Draw a billboard texture
-fn void draw_billboard(Camera camera, Texture2D texture, Vector3 position, float size, Color tint) @extern("DrawBillboard");
+fn void draw_billboard(Camera camera, Texture2D texture, Vector3 position, float size, Color tint) @cname("DrawBillboard");
 // Draw a billboard texture defined by source
-fn void draw_billboard_rec(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector2 size, Color tint) @extern("DrawBillboardRec");
+fn void draw_billboard_rec(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector2 size, Color tint) @cname("DrawBillboardRec");
 // Draw a billboard texture defined by source and rotation
-fn void draw_billboard_pro(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector3 up, Vector2 size, Vector2 origin, float rotation, Color tint) @extern("DrawBillboardPro");
+fn void draw_billboard_pro(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector3 up, Vector2 size, Vector2 origin, float rotation, Color tint) @cname("DrawBillboardPro");
 
 // Mesh management functions
 // Upload mesh vertex data in GPU and provide VAO/VBO ids
-fn void upload_mesh(Mesh *mesh, bool dynamic) @extern("UploadMesh");
+fn void upload_mesh(Mesh *mesh, bool dynamic) @cname("UploadMesh");
 // Update mesh vertex data in GPU for a specific buffer index
-fn void update_mesh_buffer(Mesh mesh, int index, void* data, int data_size, int offset) @extern("UpdateMeshBuffer");
+fn void update_mesh_buffer(Mesh mesh, int index, void* data, int data_size, int offset) @cname("UpdateMeshBuffer");
 // Unload mesh data from CPU and GPU
-fn void unload_mesh(Mesh mesh) @extern("UnloadMesh");
+fn void unload_mesh(Mesh mesh) @cname("UnloadMesh");
 // Draw a 3d mesh with material and transform
-fn void draw_mesh(Mesh mesh, Material material, Matrix transform) @extern("DrawMesh");
+fn void draw_mesh(Mesh mesh, Material material, Matrix transform) @cname("DrawMesh");
 // Draw multiple mesh instances with material and different transforms
-fn void draw_mesh_instanced(Mesh mesh, Material material, Matrix *transforms, int instances) @extern("DrawMeshInstanced");
+fn void draw_mesh_instanced(Mesh mesh, Material material, Matrix *transforms, int instances) @cname("DrawMeshInstanced");
 // Export mesh data to file, returns true on success
-fn bool export_mesh(Mesh mesh, char* file_name) @extern("ExportMesh");
+fn bool export_mesh(Mesh mesh, char* file_name) @cname("ExportMesh");
 // Compute mesh bounding box limits
-fn BoundingBox get_mesh_bounding_box(Mesh mesh) @extern("GetMeshBoundingBox");
+fn BoundingBox get_mesh_bounding_box(Mesh mesh) @cname("GetMeshBoundingBox");
 // Compute mesh tangents
-fn void gen_mesh_tangents(Mesh *mesh) @extern("GenMeshTangents");
+fn void gen_mesh_tangents(Mesh *mesh) @cname("GenMeshTangents");
 
 // Mesh generation functions
 // Generate polygonal mesh
-fn Mesh gen_mesh_poly(int sides, float radius) @extern("GenMeshPoly");
+fn Mesh gen_mesh_poly(int sides, float radius) @cname("GenMeshPoly");
 // Generate plane mesh (with subdivisions)
-fn Mesh gen_mesh_plane(float width, float length, int resX, int resZ) @extern("GenMeshPlane");
+fn Mesh gen_mesh_plane(float width, float length, int resX, int resZ) @cname("GenMeshPlane");
 // Generate cuboid mesh
-fn Mesh gen_mesh_cube(float width, float height, float length) @extern("GenMeshCube");
+fn Mesh gen_mesh_cube(float width, float height, float length) @cname("GenMeshCube");
 // Generate sphere mesh (standard sphere)
-fn Mesh gen_mesh_sphere(float radius, int rings, int slices) @extern("GenMeshSphere");
+fn Mesh gen_mesh_sphere(float radius, int rings, int slices) @cname("GenMeshSphere");
 // Generate half-sphere mesh (no bottom cap)
-fn Mesh gen_mesh_hemi_sphere(float radius, int rings, int slices) @extern("GenMeshHemiSphere");
+fn Mesh gen_mesh_hemi_sphere(float radius, int rings, int slices) @cname("GenMeshHemiSphere");
 // Generate cylinder mesh
-fn Mesh gen_mesh_cyliner(float radius, float height, int slices) @extern("GenMeshCylinder");
+fn Mesh gen_mesh_cyliner(float radius, float height, int slices) @cname("GenMeshCylinder");
 // Generate cone/pyramid mesh
-fn Mesh gen_mesh_cone(float radius, float height, int slices) @extern("GenMeshCone");
+fn Mesh gen_mesh_cone(float radius, float height, int slices) @cname("GenMeshCone");
 // Generate torus mesh
-fn Mesh gen_mesh_torus(float radius, float size, int rad_seg, int sides) @extern("GenMeshTorus");
+fn Mesh gen_mesh_torus(float radius, float size, int rad_seg, int sides) @cname("GenMeshTorus");
 // Generate trefoil knot mesh
-fn Mesh gen_mesh_knot(float radius, float size, int rad_seg, int sides) @extern("GenMeshKnot");
+fn Mesh gen_mesh_knot(float radius, float size, int rad_seg, int sides) @cname("GenMeshKnot");
 // Generate heightmap mesh from image data
-fn Mesh gen_mesh_heightmap(Image heightmap, Vector3 size) @extern("GenMeshHeightmap");
+fn Mesh gen_mesh_heightmap(Image heightmap, Vector3 size) @cname("GenMeshHeightmap");
 // Generate cubes-based map mesh from image data
-fn Mesh gen_mesh_cubicmap(Image cubicmap, Vector3 cube_size) @extern("GenMeshCubicmap");
+fn Mesh gen_mesh_cubicmap(Image cubicmap, Vector3 cube_size) @cname("GenMeshCubicmap");
 
 // Material loading/unloading functions
 // Load materials from model file
-fn Material *load_materials(char* file_name, int *material_count) @extern("LoadMaterials");
+fn Material *load_materials(char* file_name, int *material_count) @cname("LoadMaterials");
 // Load default material (Supports: DIFFUSE, SPECULAR, NORMAL maps)
-fn Material load_material_default() @extern("LoadMaterialDefault");
+fn Material load_material_default() @cname("LoadMaterialDefault");
 // Check if a material is ready
-fn bool is_material_ready(Material material) @extern("IsMaterialReady");
+fn bool is_material_ready(Material material) @cname("IsMaterialReady");
 // Unload material from GPU memory (VRAM)
-fn void unload_material(Material material) @extern("UnloadMaterial");
+fn void unload_material(Material material) @cname("UnloadMaterial");
 // Set texture for a material map type (MATERIAL_MAP_DIFFUSE, MATERIAL_MAP_SPECULAR...)
-fn void set_material_texture(Material *material, int map_type, Texture2D texture) @extern("SetMaterialTexture");
+fn void set_material_texture(Material *material, int map_type, Texture2D texture) @cname("SetMaterialTexture");
 // Set material for a mesh
-fn void set_model_mesh_material(Model *model, int mesh_id, int material_id) @extern("SetModelMeshMaterial");
+fn void set_model_mesh_material(Model *model, int mesh_id, int material_id) @cname("SetModelMeshMaterial");
 
 // Model animations loading/unloading functions
 // Load model animations from file
-fn ModelAnimation *load_model_animations(char* file_name, uint *anim_count) @extern("LoadModelAnimations");
+fn ModelAnimation *load_model_animations(char* file_name, uint *anim_count) @cname("LoadModelAnimations");
 // Update model animation pose
-fn void update_model_animation(Model model, ModelAnimation anim, int frame) @extern("UpdateModelAnimation");
+fn void update_model_animation(Model model, ModelAnimation anim, int frame) @cname("UpdateModelAnimation");
 // Unload animation data
-fn void unload_model_animation(ModelAnimation anim) @extern("UnloadModelAnimation");
+fn void unload_model_animation(ModelAnimation anim) @cname("UnloadModelAnimation");
 // Unload animation array data
-fn void unload_model_animations(ModelAnimation* animations, uint count) @extern("UnloadModelAnimations");
+fn void unload_model_animations(ModelAnimation* animations, uint count) @cname("UnloadModelAnimations");
 // Check model animation skeleton match
-fn bool is_model_animation_valid(Model model, ModelAnimation anim) @extern("IsModelAnimationValid");
+fn bool is_model_animation_valid(Model model, ModelAnimation anim) @cname("IsModelAnimationValid");
 
 // Collision detection functions
 // Check collision between two spheres
-fn bool check_collision_spheres(Vector3 center1, float radius1, Vector3 center2, float radius2) @extern("CheckCollisionSpheres");
+fn bool check_collision_spheres(Vector3 center1, float radius1, Vector3 center2, float radius2) @cname("CheckCollisionSpheres");
 // Check collision between two bounding boxes
-fn bool check_collision_boxes(BoundingBox box1, BoundingBox box2) @extern("CheckCollisionBoxes");
+fn bool check_collision_boxes(BoundingBox box1, BoundingBox box2) @cname("CheckCollisionBoxes");
 // Check collision between box and sphere
-fn bool check_collision_box_sphere(BoundingBox box, Vector3 center, float radius) @extern("CheckCollisionBoxSphere");
+fn bool check_collision_box_sphere(BoundingBox box, Vector3 center, float radius) @cname("CheckCollisionBoxSphere");
 // Get collision info between ray and sphere
-fn RayCollision get_ray_collision_sphere(Ray ray, Vector3 center, float radius) @extern("GetRayCollisionSphere");
+fn RayCollision get_ray_collision_sphere(Ray ray, Vector3 center, float radius) @cname("GetRayCollisionSphere");
 // Get collision info between ray and box
-fn RayCollision get_ray_collision_box(Ray ray, BoundingBox box) @extern("GetRayCollisionBox");
+fn RayCollision get_ray_collision_box(Ray ray, BoundingBox box) @cname("GetRayCollisionBox");
 // Get collision info between ray and mesh
-fn RayCollision get_ray_collision_mesh(Ray ray, Mesh mesh, Matrix transform) @extern("GetRayCollisionMesh");
+fn RayCollision get_ray_collision_mesh(Ray ray, Mesh mesh, Matrix transform) @cname("GetRayCollisionMesh");
 // Get collision info between ray and triangle
-fn RayCollision get_ray_collision_triangle(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3) @extern("GetRayCollisionTriangle");
+fn RayCollision get_ray_collision_triangle(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3) @cname("GetRayCollisionTriangle");
 // Get collision info between ray and quad
-fn RayCollision get_ray_collision_quad(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4) @extern("GetRayCollisionQuad");
+fn RayCollision get_ray_collision_quad(Ray ray, Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4) @cname("GetRayCollisionQuad");
 
 //------------------------------------------------------------------------------------
 // Audio Loading and Playing Functions (Module: audio)
@@ -1613,141 +1613,141 @@ alias AudioCallback = fn void(void* buffer_data, uint frames);
 
 // Audio device management functions
 // Initialize audio device and context
-fn void init_audio_device() @extern("InitAudioDevice");
+fn void init_audio_device() @cname("InitAudioDevice");
 // Close the audio device and context
-fn void close_audio_device() @extern("CloseAudioDevice");
+fn void close_audio_device() @cname("CloseAudioDevice");
 // Check if audio device has been initialized successfully
-fn bool is_audio_device_ready() @extern("IsAudioDeviceReady");
+fn bool is_audio_device_ready() @cname("IsAudioDeviceReady");
 // Set master volume (listener)
-fn void set_master_volume(float volume) @extern("SetMasterVolume");
+fn void set_master_volume(float volume) @cname("SetMasterVolume");
 
 // Wave/Sound loading/unloading functions
 // Load wave data from file
-fn Wave load_wave(char* file_name) @extern("LoadWave");
+fn Wave load_wave(char* file_name) @cname("LoadWave");
 // Load wave from memory buffer, file_type refers to extension: i.e. '.wav'
-fn Wave load_wave_from_memory(char* file_type, char* file_data, int data_size) @extern("LoadWaveFromMemory");
+fn Wave load_wave_from_memory(char* file_type, char* file_data, int data_size) @cname("LoadWaveFromMemory");
 // Checks if wave data is ready
-fn bool is_wave_ready(Wave wave) @extern("IsWaveReady");
+fn bool is_wave_ready(Wave wave) @cname("IsWaveReady");
 
 // Load sound from file
-fn Sound load_sound(char* file_name) @extern("LoadSound");
+fn Sound load_sound(char* file_name) @cname("LoadSound");
 // Load sound from wave data
-fn Sound load_sound_from_wave(Wave wave) @extern("LoadSoundFromWave");
+fn Sound load_sound_from_wave(Wave wave) @cname("LoadSoundFromWave");
 // Checks if a sound is ready
-fn bool is_sound_ready(Sound sound) @extern("IsSoundReady");
+fn bool is_sound_ready(Sound sound) @cname("IsSoundReady");
 
 // Update sound buffer with new data
-fn void update_sound(Sound sound, void* data, int sample_count) @extern("UpdateSound");
+fn void update_sound(Sound sound, void* data, int sample_count) @cname("UpdateSound");
 // Unload wave data
-fn void unload_wave(Wave wave) @extern("UnloadWave");
+fn void unload_wave(Wave wave) @cname("UnloadWave");
 // Unload sound
-fn void unload_sound(Sound sound) @extern("UnloadSound");
+fn void unload_sound(Sound sound) @cname("UnloadSound");
 // Export wave data to file, returns true on success
-fn bool export_wave(Wave wave, char* file_name) @extern("ExportWave");
+fn bool export_wave(Wave wave, char* file_name) @cname("ExportWave");
 // Export wave sample data to code (.h), returns true on success
-fn bool export_wave_as_code(Wave wave, char* file_name) @extern("ExportWaveAsCode");
+fn bool export_wave_as_code(Wave wave, char* file_name) @cname("ExportWaveAsCode");
 
 // Wave/Sound management functions
 // Play a sound
-fn void play_sound(Sound sound) @extern("PlaySound");
+fn void play_sound(Sound sound) @cname("PlaySound");
 // Stop playing a sound
-fn void stop_sound(Sound sound) @extern("StopSound");
+fn void stop_sound(Sound sound) @cname("StopSound");
 // Pause a sound
-fn void pause_sound(Sound sound) @extern("PauseSound");
+fn void pause_sound(Sound sound) @cname("PauseSound");
 // Resume a paused sound
-fn void resume_sound(Sound sound) @extern("ResumeSound");
+fn void resume_sound(Sound sound) @cname("ResumeSound");
 // Check if a sound is currently playing
-fn bool is_sound_playing(Sound sound) @extern("IsSoundPlaying");
+fn bool is_sound_playing(Sound sound) @cname("IsSoundPlaying");
 // Set volume for a sound (1.0 is max level)
-fn void set_sound_volume(Sound sound, float volume) @extern("SetSoundVolume");
+fn void set_sound_volume(Sound sound, float volume) @cname("SetSoundVolume");
 // Set pitch for a sound (1.0 is base level)
-fn void set_sound_pitch(Sound sound, float pitch) @extern("SetSoundPitch");
+fn void set_sound_pitch(Sound sound, float pitch) @cname("SetSoundPitch");
 // Set pan for a sound (0.5 is center)
-fn void set_sound_pan(Sound sound, float pan) @extern("SetSoundPan");
+fn void set_sound_pan(Sound sound, float pan) @cname("SetSoundPan");
 // Copy a wave to a new wave
-fn Wave wave_copy(Wave wave) @extern("WaveCopy");
+fn Wave wave_copy(Wave wave) @cname("WaveCopy");
 // Crop a wave to defined samples range
-fn void wave_crop(Wave *wave, int init_sample, int final_sample) @extern("WaveCrop");
+fn void wave_crop(Wave *wave, int init_sample, int final_sample) @cname("WaveCrop");
 // Convert wave data to desired format
-fn void wave_format(Wave *wave, int sample_rate, int sample_size, int channels) @extern("WaveFormat");
+fn void wave_format(Wave *wave, int sample_rate, int sample_size, int channels) @cname("WaveFormat");
 // Load samples data from wave as a 32bit float data array
-fn float *load_wave_samples(Wave wave) @extern("LoadWaveSamples");
+fn float *load_wave_samples(Wave wave) @cname("LoadWaveSamples");
 // Unload samples data loaded with LoadWaveSamples()
-fn void unload_wave_samples(float *samples) @extern("UnloadWaveSamples");
+fn void unload_wave_samples(float *samples) @cname("UnloadWaveSamples");
 
 // Music management functions
 // Load music stream from file
-fn Music load_music_stream(char* file_name) @extern("LoadMusicStream");
+fn Music load_music_stream(char* file_name) @cname("LoadMusicStream");
 // Load music stream from data
-fn Music load_music_stream_from_memory(char* file_type, char* data, int data_size) @extern("LoadMusicStreamFromMemory");
+fn Music load_music_stream_from_memory(char* file_type, char* data, int data_size) @cname("LoadMusicStreamFromMemory");
 // Checks if a music stream is ready
-fn bool is_music_ready(Music music) @extern("IsMusicReady");
+fn bool is_music_ready(Music music) @cname("IsMusicReady");
 // Unload music stream
-fn void unload_music_stream(Music music) @extern("UnloadMusicStream");
+fn void unload_music_stream(Music music) @cname("UnloadMusicStream");
 // Start music playing
-fn void play_music_stream(Music music) @extern("PlayMusicStream");
+fn void play_music_stream(Music music) @cname("PlayMusicStream");
 // Check if music is playing
-fn bool is_music_stream_playing(Music music) @extern("IsMusicStreamPlaying");
+fn bool is_music_stream_playing(Music music) @cname("IsMusicStreamPlaying");
 // Updates buffers for music streaming
-fn void update_music_stream(Music music) @extern("UpdateMusicStream");
+fn void update_music_stream(Music music) @cname("UpdateMusicStream");
 // Stop music playing
-fn void stop_music_stream(Music music) @extern("StopMusicStream");
+fn void stop_music_stream(Music music) @cname("StopMusicStream");
 // Pause music playing
-fn void pause_music_stream(Music music) @extern("PauseMusicStream");
+fn void pause_music_stream(Music music) @cname("PauseMusicStream");
 // Resume playing paused music
-fn void resume_music_stream(Music music) @extern("ResumeMusicStream");
+fn void resume_music_stream(Music music) @cname("ResumeMusicStream");
 // Seek music to a position (in seconds)
-fn void seek_music_stream(Music music, float position) @extern("SeekMusicStream");
+fn void seek_music_stream(Music music, float position) @cname("SeekMusicStream");
 // Set volume for music (1.0 is max level)
-fn void set_music_volume(Music music, float volume) @extern("SetMusicVolume");
+fn void set_music_volume(Music music, float volume) @cname("SetMusicVolume");
 // Set pitch for a music (1.0 is base level)
-fn void set_music_pitch(Music music, float pitch) @extern("SetMusicPitch");
+fn void set_music_pitch(Music music, float pitch) @cname("SetMusicPitch");
 // Set pan for a music (0.5 is center)
-fn void set_music_pan(Music music, float pan) @extern("SetMusicPan");
+fn void set_music_pan(Music music, float pan) @cname("SetMusicPan");
 // Get music time length (in seconds)
-fn float get_music_time_length(Music music) @extern("GetMusicTimeLength");
+fn float get_music_time_length(Music music) @cname("GetMusicTimeLength");
 // Get current music time played (in seconds)
-fn float get_music_time_played(Music music) @extern("GetMusicTimePlayed");
+fn float get_music_time_played(Music music) @cname("GetMusicTimePlayed");
 
 // AudioStream management functions
 // Load audio stream (to stream raw audio pcm data)
-fn AudioStream load_audio_stream(uint sample_rate, uint sample_size, uint channels) @extern("LoadAudioStream");
+fn AudioStream load_audio_stream(uint sample_rate, uint sample_size, uint channels) @cname("LoadAudioStream");
 // Checks if an audio stream is ready
-fn bool is_audio_stream_ready(AudioStream stream) @extern("IsAudioStreamReady");
+fn bool is_audio_stream_ready(AudioStream stream) @cname("IsAudioStreamReady");
 // Unload audio stream and free memory
-fn void unload_audio_stream(AudioStream stream) @extern("UnloadAudioStream");
+fn void unload_audio_stream(AudioStream stream) @cname("UnloadAudioStream");
 // Update audio stream buffers with data
-fn void update_audio_stream(AudioStream stream, void* data, int frame_count) @extern("UpdateAudioStream");
+fn void update_audio_stream(AudioStream stream, void* data, int frame_count) @cname("UpdateAudioStream");
 // Check if any audio stream buffers requires refill
-fn bool is_audio_stream_processed(AudioStream stream) @extern("IsAudioStreamProcessed");
+fn bool is_audio_stream_processed(AudioStream stream) @cname("IsAudioStreamProcessed");
 // Play audio stream
-fn void play_audio_stream(AudioStream stream) @extern("PlayAudioStream");
+fn void play_audio_stream(AudioStream stream) @cname("PlayAudioStream");
 // Pause audio stream
-fn void pause_audio_stream(AudioStream stream) @extern("PauseAudioStream");
+fn void pause_audio_stream(AudioStream stream) @cname("PauseAudioStream");
 // Resume audio stream
-fn void resume_audio_stream(AudioStream stream) @extern("ResumeAudioStream");
+fn void resume_audio_stream(AudioStream stream) @cname("ResumeAudioStream");
 // Check if audio stream is playing
-fn bool is_audio_stream_playing(AudioStream stream) @extern("IsAudioStreamPlaying");
+fn bool is_audio_stream_playing(AudioStream stream) @cname("IsAudioStreamPlaying");
 // Stop audio stream
-fn void stop_audio_stream(AudioStream stream) @extern("StopAudioStream");
+fn void stop_audio_stream(AudioStream stream) @cname("StopAudioStream");
 // Set volume for audio stream (1.0 is max level)
-fn void set_audio_stream_volume(AudioStream stream, float volume) @extern("SetAudioStreamVolume");
+fn void set_audio_stream_volume(AudioStream stream, float volume) @cname("SetAudioStreamVolume");
 // Set pitch for audio stream (1.0 is base level)
-fn void set_audio_stream_pitch(AudioStream stream, float pitch) @extern("SetAudioStreamPitch");
+fn void set_audio_stream_pitch(AudioStream stream, float pitch) @cname("SetAudioStreamPitch");
 // Set pan for audio stream (0.5 is centered)
-fn void set_audio_stream_pan(AudioStream stream, float pan) @extern("SetAudioStreamPan");
+fn void set_audio_stream_pan(AudioStream stream, float pan) @cname("SetAudioStreamPan");
 // Default size for new audio streams
-fn void set_audio_stream_buffer_size_default(int size) @extern("SetAudioStreamBufferSizeDefault");
+fn void set_audio_stream_buffer_size_default(int size) @cname("SetAudioStreamBufferSizeDefault");
 
 // Audio thread callback to request new data
-fn void set_audio_stream_callback(AudioStream stream, AudioCallback callback) @extern("SetAudioStreamCallback");
+fn void set_audio_stream_callback(AudioStream stream, AudioCallback callback) @cname("SetAudioStreamCallback");
 // Attach audio stream processor to stream
-fn void attach_audio_stream_processor(AudioStream stream, AudioCallback processor) @extern("AttachAudioStreamProcessor");
+fn void attach_audio_stream_processor(AudioStream stream, AudioCallback processor) @cname("AttachAudioStreamProcessor");
 // Detach audio stream processor from stream
-fn void detach_audio_stream_processor(AudioStream stream, AudioCallback processor) @extern("DetachAudioStreamProcessor");
+fn void detach_audio_stream_processor(AudioStream stream, AudioCallback processor) @cname("DetachAudioStreamProcessor");
 
-fn void attach_audio_mixed_processor(AudioCallback processor ) @extern("AttachAudioMixedProcessor"); // Attach audio stream processor to the entire audio pipeline
-fn void detach_audio_midex_processor(AudioCallback processor) @extern("DetachAudioMixedProcessor"); // Detach audio stream processor from the entire audio pipeline
+fn void attach_audio_mixed_processor(AudioCallback processor ) @cname("AttachAudioMixedProcessor"); // Attach audio stream processor to the entire audio pipeline
+fn void detach_audio_midex_processor(AudioCallback processor) @cname("DetachAudioMixedProcessor"); // Detach audio stream processor from the entire audio pipeline
 
 module raylib::config;
 

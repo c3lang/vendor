@@ -2,11 +2,11 @@ module webgpu;
 
 typedef BindGroup = void*;
 
-fn void BindGroup.setLabel(BindGroup bindGroup, ZString label) @extern("wgpuBindGroupSetLabel");
+fn void BindGroup.setLabel(BindGroup bindGroup, ZString label) @cname("wgpuBindGroupSetLabel");
 
-fn void BindGroup.reference(BindGroup bindGroup) @extern("wgpuBindGroupReference");
+fn void BindGroup.reference(BindGroup bindGroup) @cname("wgpuBindGroupReference");
 
-fn void BindGroup.release(BindGroup bindGroup) @extern("wgpuBindGroupRelease");
+fn void BindGroup.release(BindGroup bindGroup) @cname("wgpuBindGroupRelease");
 
 
 struct BindGroupDescriptor {
