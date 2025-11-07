@@ -894,10 +894,10 @@ fn Shader loadShaderFromMemory(ZString vsCode, ZString fsCode) @cname("LoadShade
 fn bool isShaderValid(Shader shader) @cname("IsShaderValid");                                                                                                 // Check if a shader is valid (loaded on GPU)
 fn CInt getShaderLocation(Shader shader, ZString uniformName) @cname("GetShaderLocation");                                                                    // Get shader uniform location
 fn CInt getShaderLocationAttrib(Shader shader, ZString attribName) @cname("GetShaderLocationAttrib");                                                         // Get shader attribute location
-fn void setShaderValue(Shader shader, ShaderLocationIndex locIndex, ZString value, ShaderUniformDataType uniformType) @cname("SetShaderValue");               // Set shader uniform value
-fn void setShaderValueV(Shader shader, ShaderLocationIndex locIndex, ZString value, ShaderUniformDataType uniformType, CInt count) @cname("SetShaderValueV"); // Set shader uniform value vector
-fn void setShaderValueMatrix(Shader shader, ShaderLocationIndex locIndex, Matrix mat) @cname("SetShaderValueMatrix");                                         // Set shader uniform value (matrix 4x4)
-fn void setShaderValueTexture(Shader shader, ShaderLocationIndex locIndex, Texture2D texture) @cname("SetShaderValueTexture");                                // Set shader uniform value for texture (sampler2d)
+fn void setShaderValue(Shader shader, CInt locIndex, void* value, ShaderUniformDataType uniformType) @cname("SetShaderValue");               // Set shader uniform value
+fn void setShaderValueV(Shader shader, CInt locIndex, void* value, ShaderUniformDataType uniformType, CInt count) @cname("SetShaderValueV"); // Set shader uniform value vector
+fn void setShaderValueMatrix(Shader shader, CInt locIndex, Matrix mat) @cname("SetShaderValueMatrix");                                         // Set shader uniform value (matrix 4x4)
+fn void setShaderValueTexture(Shader shader, CInt locIndex, Texture2D texture) @cname("SetShaderValueTexture");                                // Set shader uniform value for texture (sampler2d)
 fn void unloadShader(Shader shader) @cname("UnloadShader");                                                                                                   // Unload shader from GPU memory (VRAM)
 
 // Screen-space-related functions
@@ -1676,103 +1676,136 @@ const RL_LINES = 0x0001;        // GL_LINES
 const RL_TRIANGLES = 0x0004;    // GL_TRIANGLES
 const RL_QUADS = 0x0007;        // GL_QUADS
 
-fn void rlSetTexture(uint id) @cname("rlSetTexture");
-fn void rlBegin(int mode) @cname("rlBegin");
-fn void rlEnd() @cname("rlEnd");
-// Enable depth write
-fn void rlEnableDepthMask() @cname("rlEnableDepthMask");
-// Disable depth write
-fn void rlDisableDepthMask() @cname("rlDisableDepthMask");
-// Load texture cubemap
-// NOTE: Cubemap data is expected to be 6 images in a single data array (one after the other),
-// expected the following convention: +X, -X, +Y, -Y, +Z, -Z
-fn uint rlLoadTextureCubemap(void *data, int size, PixelFormat format, int mipmapCount) @cname("rlLoadTextureCubemap");
-// Load depth texture/renderbuffer (to be attached to fbo)
-// WARNING: OpenGL ES 2.0 requires GL_OES_depth_texture and WebGL requires WEBGL_depth_texture extensions
-fn uint rlLoadTextureDepth(int width, int height, bool useRenderBuffer) @cname("rlLoadTextureDepth");
-// Framebuffer management (fbo)
-//-----------------------------------------------------------------------------------------
-// Load a framebuffer to be used for rendering
-// NOTE: No textures attached
-fn uint rlLoadFramebuffer() @cname("rlLoadFramebuffer");
-// Verify render texture is complete
-fn bool rlFramebufferComplete(uint id) @cname("rlFramebufferComplete");
-// Get cull plane distance far
-fn double rlGetCullDistanceFar() @cname("rlGetCullDistanceFar");
-// Get cull plane distance near
-fn double rlGetCullDistanceNear() @cname("rlGetCullDistanceNear");
-// Select and active a texture slot
-fn void rlActiveTextureSlot(int slot) @cname("rlActiveTextureSlot");
-// Set shader value uniform matrix
-fn void rlSetUniformMatrix(int locIndex, Matrix mat) @cname("rlSetUniformMatrix");
-// Enable rendering to texture (fbo)
-fn void rlEnableFramebuffer(uint id) @cname("rlEnableFramebuffer");
-// Clear used screen buffers (color and depth)
-fn void rlClearScreenBuffers() @cname("rlClearScreenBuffers");
-// Load and draw a cube in NDC
-fn void rlLoadDrawCube() @cname("rlLoadDrawCube");
-// Enable shader program
-fn void rlEnableShader(uint id) @cname("rlEnableShader");
-// Disable shader program
-fn void rlDisableShader() @cname("rlDisableShader");
-// Enable texture
-fn void rlEnableTexture(uint id) @cname("rlEnableTexture");
-// Disable texture
-fn void rlDisableTexture() @cname("rlDisableTexture");
-// Disable texture cubemap
-fn void rlDisableTextureCubemap() @cname("rlDisableTextureCubemap");
-// Disable rendering to texture
-fn void rlDisableFramebuffer() @cname("rlDisableFramebuffer");
-// Unload framebuffer from GPU memory
-// NOTE: All attached textures/cubemaps/renderbuffers are also deleted
-fn void rlUnloadFramebuffer(uint id) @cname("rlUnloadFramebuffer");
-// Get default framebuffer width
-fn int rlGetFramebufferWidth() @cname("rlGetFramebufferWidth");
-// Get default framebuffer height
-fn int rlGetFramebufferHeight() @cname("rlGetFramebufferHeight");
-// Set the viewport area (transformation from normalized device coordinates to window coordinates)
-// NOTE: We store current viewport dimensions
-fn void rlViewport(int x, int y, int width, int height) @cname("rlViewport");
-// Enable backface culling
-fn void rlEnableBackfaceCulling() @cname("rlEnableBackfaceCulling");
-// Disable backface culling
-fn void rlDisableBackfaceCulling() @cname("rlDisableBackfaceCulling");
-// Attach color buffer texture to an fbo (unloads previous attachment)
-// NOTE: Attach type: 0-Color, 1-Depth renderbuffer, 2-Depth texture
-fn void rlFramebufferAttach(uint fboId, uint texId, FramebufferAttachType attachType, FramebufferAttachTextureType texType, int mipLevel) @cname("rlFramebufferAttach");
-// Multiply the current matrix by a scaling matrix
-fn void rlScalef(float x, float y, float z) @cname("rlScalef");
-// Check internal buffer overflow for a given number of vertex
-// and force a rlRenderBatch draw call if required
-fn bool rlCheckRenderBatchLimit(int vCount) @cname("rlCheckRenderBatchLimit");
-// Define one vertex (color) - 4 byte
-fn void rlColor4ub(char r, char g, char b, char a) @cname("rlColor4ub");
-// Define one vertex (position)
-fn void rlVertex2f(float x, float y) @cname("rlVertex2f");
-// Define one vertex (position)
-// NOTE: Vertex position data is the basic information required for drawing
-fn void rlVertex3f(float x, float y, float z) @cname("rlVertex3f");
-// Define one vertex (texture coordinate)
-// NOTE: Texture coordinates are limited to QUADS only
-fn void rlTexCoord2f(float x, float y) @cname("rlTexCoord2f");
-// Define one vertex (normal)
-// NOTE: Normals limited to TRIANGLES only?
-fn void rlNormal3f(float x, float y, float z) @cname("rlNormal3f");
-// Multiply the current matrix by a rotation matrix
-// NOTE: The provided angle must be in degrees
-fn void rlRotatef(float angle, float x, float y, float z) @cname("rlRotatef");
-// Push the current matrix into RLGL.State.stack
-fn void rlPushMatrix() @cname("rlPushMatrix");
-// Pop lattest inserted matrix from RLGL.State.stack
-fn void rlPopMatrix() @cname("rlPopMatrix");
-// Multiply the current matrix by a translation matrix
-fn void rlTranslatef(float x, float y, float z) @cname("rlTranslatef");
-// Set blending mode factor and equation
-fn void rlSetBlendFactors(int glSrcFactor, int glDstFactor, int glEquation) @cname("rlSetBlendFactors");
-// Set blend mode
-fn void rlSetBlendMode(BlendMode mode) @cname("rlSetBlendMode");
-// Update and draw internal render batch
-fn void rlDrawRenderBatchActive() @cname("rlDrawRenderBatchActive");
+
+//------------------------------------------------------------------------------------
+// Functions Declaration - Matrix operations
+//------------------------------------------------------------------------------------
+fn void rlMatrixMode(CInt mode) @cname("rlMatrixMode");                      // Choose the current matrix to be transformed
+fn void rlPushMatrix() @cname("rlPushMatrix");                          // Push the current matrix to stack
+fn void rlPopMatrix() @cname("rlPopMatrix");                           // Pop latest inserted matrix from stack
+fn void rlLoadIdentity() @cname("rlLoadIdentity");                        // Reset current matrix to identity matrix
+fn void rlTranslatef(float x, float y, float z) @cname("rlTranslatef");     // Multiply the current matrix by a translation matrix
+fn void rlRotatef(float angle, float x, float y, float z) @cname("rlRotatef"); // Multiply the current matrix by a rotation matrix
+fn void rlScalef(float x, float y, float z) @cname("rlScalef");         // Multiply the current matrix by a scaling matrix
+fn void rlMultMatrixf(float *matf) @cname("rlMultMatrixf");            // Multiply the current matrix by another matrix
+fn void rlFrustum(double left, double right, double bottom, double top, double znear, double zfar);
+fn void rlOrtho(double left, double right, double bottom, double top, double znear, double zfar);
+fn void rlViewport(CInt x, CInt y, CInt width, CInt height) @cname("rlFrustum"); // Set the viewport area
+fn void rlSetClipPlanes(double nearPlane, double farPlane) @cname("rlOrtho");    // Set clip planes distances
+fn double rlGetCullDistanceNear() @cname("rlViewport");               // Get cull plane distance near
+fn double rlGetCullDistanceFar() @cname("rlSetClipPlanes");                // Get cull plane distance far
+
+//------------------------------------------------------------------------------------
+// Functions Declaration - Vertex level operations
+//------------------------------------------------------------------------------------
+fn void rlBegin(CInt mode) @cname("rlGetCullDistanceNear");                           // Initialize drawing mode (how to organize vertex)
+fn void rlEnd() @cname("rlGetCullDistanceFar");                                 // Finish vertex providing
+fn void rlVertex2i(CInt x, CInt y) @cname("rlBegin");                    // Define one vertex (position) - 2 CInt
+fn void rlVertex2f(float x, float y) @cname("rlEnd");                // Define one vertex (position) - 2 float
+fn void rlVertex3f(float x, float y, float z) @cname("rlVertex2i");       // Define one vertex (position) - 3 float
+fn void rlTexCoord2f(float x, float y) @cname("rlVertex2f");              // Define one vertex (texture coordinate) - 2 float
+fn void rlNormal3f(float x, float y, float z) @cname("rlVertex3f");       // Define one vertex (normal) - 3 float
+fn void rlColor4ub(char r, char g, char b, char a) @cname("rlTexCoord2f"); // Define one vertex (color) - 4 byte
+fn void rlColor3f(float x, float y, float z) @cname("rlNormal3f");        // Define one vertex (color) - 3 float
+fn void rlColor4f(float x, float y, float z, float w) @cname("rlColor4ub"); // Define one vertex (color) - 4 float
+
+//------------------------------------------------------------------------------------
+// Functions Declaration - OpenGL style functions (common to 1.1, 3.3+, ES2)
+// NOTE: This functions are used to completely abstract raylib code from OpenGL layer,
+// some of them are direct wrappers over OpenGL calls, some others are custom
+//------------------------------------------------------------------------------------
+
+// Vertex buffers state
+fn bool rlEnableVertexArray(CUInt vaoId) @cname("rlColor3f");     // Enable vertex array (VAO, if supported)
+fn void rlDisableVertexArray() @cname("rlColor4f");                  // Disable vertex array (VAO, if supported)
+fn void rlEnableVertexBuffer(CUInt id) @cname("rlEnableVertexArray");       // Enable vertex buffer (VBO)
+fn void rlDisableVertexBuffer() @cname("rlDisableVertexArray");                 // Disable vertex buffer (VBO)
+fn void rlEnableVertexBufferElement(CUInt id) @cname("rlEnableVertexBuffer"); // Enable vertex buffer element (VBO element)
+fn void rlDisableVertexBufferElement() @cname("rlDisableVertexBuffer");          // Disable vertex buffer element (VBO element)
+fn void rlEnableVertexAttribute(CUInt index) @cname("rlEnableVertexBufferElement"); // Enable vertex attribute index
+fn void rlDisableVertexAttribute(CUInt index) @cname("rlDisableVertexBufferElement"); // Disable vertex attribute index
+fn void rlEnableStatePointer(ShaderAttributeDataType vertexAttribType, void *buffer) @cname("rlEnableVertexAttribute"); // Enable attribute state pointer
+fn void rlDisableStatePointer(ShaderAttributeDataType vertexAttribType) @cname("rlDisableVertexAttribute"); // Disable attribute state pointer
+
+// Textures state
+fn void rlActiveTextureSlot(CInt slot) @cname("rlEnableStatePointer");               // Select and active a texture slot
+fn void rlEnableTexture(CUInt id) @cname("rlDisableStatePointer");            // Enable texture
+fn void rlDisableTexture() @cname("rlActiveTextureSlot");                      // Disable texture
+fn void rlEnableTextureCubemap(CUInt id) @cname("rlEnableTexture");     // Enable texture cubemap
+fn void rlDisableTextureCubemap() @cname("rlDisableTexture");               // Disable texture cubemap
+fn void rlTextureParameters(CUInt id, CInt param, CInt value) @cname("rlEnableTextureCubemap"); // Set texture parameters (filter, wrap)
+fn void rlCubemapParameters(CUInt id, CInt param, CInt value) @cname("rlDisableTextureCubemap"); // Set cubemap parameters (filter, wrap)
+
+// Shader state
+fn void rlEnableShader(CUInt id) @cname("rlTextureParameters");             // Enable shader program
+fn void rlDisableShader() @cname("rlCubemapParameters");                       // Disable shader program
+
+// Framebuffer state
+fn void rlEnableFramebuffer(CUInt id) @cname("rlEnableShader");        // Enable render texture (fbo)
+fn void rlDisableFramebuffer() @cname("rlDisableShader");                  // Disable render texture (fbo), return to default framebuffer
+fn CUInt rlGetActiveFramebuffer() @cname("rlEnableFramebuffer");        // Get the currently active render texture (fbo), 0 for default framebuffer
+fn void rlActiveDrawBuffers(CInt count) @cname("rlDisableFramebuffer");              // Activate multiple draw color buffers
+fn void rlBlitFramebuffer(CInt srcX, CInt srcY, CInt srcWidth, CInt srcHeight, CInt dstX, CInt dstY, CInt dstWidth, CInt dstHeight, CInt bufferMask) @cname("rlGetActiveFramebuffer"); // Blit active framebuffer to main framebuffer
+fn void rlBindFramebuffer(CUInt target, CUInt framebuffer) @cname("rlActiveDrawBuffers"); // Bind framebuffer (FBO)
+
+// General render state
+fn void rlEnableColorBlend() @cname("rlBlitFramebuffer");                    // Enable color blending
+fn void rlDisableColorBlend() @cname("rlBindFramebuffer");                   // Disable color blending
+fn void rlEnableDepthTest() @cname("rlEnableColorBlend");                     // Enable depth test
+fn void rlDisableDepthTest() @cname("rlDisableColorBlend");                    // Disable depth test
+fn void rlEnableDepthMask() @cname("rlEnableDepthTest");                     // Enable depth write
+fn void rlDisableDepthMask() @cname("rlDisableDepthTest");                    // Disable depth write
+fn void rlEnableBackfaceCulling() @cname("rlEnableDepthMask");               // Enable backface culling
+fn void rlDisableBackfaceCulling() @cname("rlDisableDepthMask");              // Disable backface culling
+fn void rlColorMask(bool r, bool g, bool b, bool a) @cname("rlEnableBackfaceCulling"); // Color mask control
+fn void rlSetCullFace(CInt mode) @cname("rlDisableBackfaceCulling");                     // Set face culling mode
+fn void rlEnableScissorTest() @cname("rlColorMask");                   // Enable scissor test
+fn void rlDisableScissorTest() @cname("rlSetCullFace");                  // Disable scissor test
+fn void rlScissor(CInt x, CInt y, CInt width, CInt height) @cname("rlEnableScissorTest"); // Scissor test
+fn void rlEnablePointMode() @cname("rlDisableScissorTest");                     // Enable point mode
+fn void rlDisablePointMode() @cname("rlScissor");                    // Disable point mode
+fn void rlSetPointSize(float size) @cname("rlEnablePointMode");                  // Set the point drawing size
+fn float rlGetPointSize() @cname("rlDisablePointMode");                       // Get the point drawing size
+fn void rlEnableWireMode() @cname("rlSetPointSize");                      // Enable wire mode
+fn void rlDisableWireMode() @cname("rlGetPointSize");                     // Disable wire mode
+fn void rlSetLineWidth(float width) @cname("rlEnableWireMode");                 // Set the line drawing width
+fn float rlGetLineWidth() @cname("rlDisableWireMode");                       // Get the line drawing width
+fn void rlEnableSmoothLines() @cname("rlSetLineWidth");                   // Enable line aliasing
+fn void rlDisableSmoothLines() @cname("rlGetLineWidth");                  // Disable line aliasing
+fn void rlEnableStereoRender() @cname("rlEnableSmoothLines");                  // Enable stereo rendering
+fn void rlDisableStereoRender() @cname("rlDisableSmoothLines");                 // Disable stereo rendering
+fn bool rlIsStereoRenderEnabled() @cname("rlEnableStereoRender");               // Check if stereo render is enabled
+
+fn void rlClearColor(char r, char g, char b, char a) @cname("rlDisableStereoRender"); // Clear color buffer with color
+fn void rlClearScreenBuffers() @cname("rlIsStereoRenderEnabled");                  // Clear used screen buffers (color and depth)
+fn void rlCheckErrors() @cname("rlClearColor");                         // Check and log OpenGL error codes
+fn void rlSetBlendMode(BlendMode mode) @cname("rlClearScreenBuffers");                    // Set blending mode
+fn void rlSetBlendFactors(CInt glSrcFactor, CInt glDstFactor, CInt glEquation) @cname("rlCheckErrors"); // Set blending mode factor and equation (using OpenGL factors)
+fn void rlSetBlendFactorsSeparate(CInt glSrcRGB, CInt glDstRGB, CInt glSrcAlpha, CInt glDstAlpha, CInt glEqRGB, CInt glEqAlpha) @cname("rlSetBlendMode"); // Set blending mode factors and equations separately (using OpenGL factors)
+
+
+//------------------------------------------------------------------------------------
+// Functions Declaration - rlgl functionality
+//------------------------------------------------------------------------------------
+// rlgl initialization functions
+fn void rlglInit(CInt width, CInt height) @cname("rlSetBlendFactors");             // Initialize rlgl (buffers, shaders, textures, states)
+fn void rlglClose() @cname("rlSetBlendFactorsSeparate");                             // De-initialize rlgl (buffers, shaders, textures)
+fn void rlLoadExtensions(void *loader) @cname("rlglInit");              // Load OpenGL extensions (loader function required)
+fn void *rlGetProcAddress(ZString procName) @cname("rlglClose");     // Get OpenGL procedure address
+fn CInt rlGetVersion() @cname("rlLoadExtensions");                           // Get current OpenGL version
+fn void rlSetFramebufferWidth(CInt width) @cname("rlGetProcAddress");            // Set current framebuffer width
+fn CInt rlGetFramebufferWidth() @cname("rlGetVersion");                  // Get default framebuffer width
+fn void rlSetFramebufferHeight(CInt height) @cname("rlSetFramebufferWidth");          // Set current framebuffer height
+fn CInt rlGetFramebufferHeight() @cname("rlGetFramebufferWidth");                 // Get default framebuffer height
+
+fn CUInt rlGetTextureIdDefault() @cname("rlSetFramebufferHeight");         // Get default texture id
+fn CUInt rlGetShaderIdDefault() @cname("rlGetFramebufferHeight");          // Get default shader id
+fn CInt *rlGetShaderLocsDefault() @cname("rlGetTextureIdDefault");                // Get default shader locations
+
+// Render batch management
+// NOTE: rlgl provides a default render batch to behave like OpenGL 1.1 immediate mode
+// but this render batch API is exposed in case of custom batches are required
+fn void rlSetTexture(CUInt id) @cname("rlGetShaderIdDefault");               // Set current texture for render batch and check buffers limits
 
 
 // raymath.h
