@@ -2084,7 +2084,7 @@ fn Quaternion quaternionFromMatrix(Matrix mat) @cname("QuaternionFromMatrix");
 // Calculate quaternion based on the rotation from one vector to another
 fn Quaternion quaternionFromVector3ToVector3(Vector3 from, Vector3 to) @cname("QuaternionFromVector3ToVector3");
 // Get identity quaternion
-fn Quaternion qauaternionIdentity() @cname("QuaternionIdentity");
+fn Quaternion quaternionIdentity() @cname("QuaternionIdentity");
 // Invert provided quaternion
 fn Quaternion quaternionInvert(Quaternion q) @cname("QuaternionInvert");
 // Computes the length of a quaternion
