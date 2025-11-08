@@ -19,7 +19,7 @@
             "linked-libraries" : ["raygui"]
         },
         "windows-x64" : {
-            "linked-libraries" : ["raygui","gdi32", "winmm"],
+            "linked-libraries" : ["raygui", "gdi32", "winmm"],
             "wincrt": "none"
         },
         "wasm32" : {

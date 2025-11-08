@@ -13,76 +13,76 @@ const SCROLLBAR_RIGHT_SIDE @builtin = 1;
 // Style property
 // NOTE: Used when exporting style as code for convenience
 struct GuiStyleProp {
-  GuiControl controlId;   // Control identifier
-  GuiControlProperty propertyId;  // Property identifier
-  CInt propertyValue;          // Property value
+	GuiControl controlId;   // Control identifier
+	GuiControlProperty propertyId;  // Property identifier
+	CInt propertyValue;          // Property value
 }
 
 
 // Controls text style -NOT USED-
 // NOTE: Text style is defined by control
 struct GuiTextStyle {
-  CUInt size;
-  CInt charSpacing;
-  CInt lineSpacing;
-  CInt alignmentH;
-  CInt alignmentV;
-  CInt padding;
+	CUInt size;
+	CInt charSpacing;
+	CInt lineSpacing;
+	CInt alignmentH;
+	CInt alignmentV;
+	CInt padding;
 }
 
 
 // Gui control state
 enum GuiState {
-  STATE_NORMAL,
-  STATE_FOCUSED,
-  STATE_PRESSED,
-  STATE_DISABLED
+	STATE_NORMAL,
+	STATE_FOCUSED,
+	STATE_PRESSED,
+	STATE_DISABLED
 }
 
 // Gui control text alignment
 enum GuiTextAlignment {
-  TEXT_ALIGN_LEFT,
-  TEXT_ALIGN_CENTER,
-  TEXT_ALIGN_RIGHT
+	TEXT_ALIGN_LEFT,
+	TEXT_ALIGN_CENTER,
+	TEXT_ALIGN_RIGHT
 }
 
 // Gui control text alignment vertical
 // NOTE: Text vertical position inside the text bounds
 enum GuiTextAlignmentVertical {
-  TEXT_ALIGN_TOP,
-  TEXT_ALIGN_MIDDLE,
-  TEXT_ALIGN_BOTTOM
+	TEXT_ALIGN_TOP,
+	TEXT_ALIGN_MIDDLE,
+	TEXT_ALIGN_BOTTOM
 }
 
 // Gui control text wrap mode
 // NOTE: Useful for multiline text
 enum GuiTextWrapMode {
-  TEXT_WRAP_NONE,
-  TEXT_WRAP_CHAR,
-  TEXT_WRAP_WORD
+	TEXT_WRAP_NONE,
+	TEXT_WRAP_CHAR,
+	TEXT_WRAP_WORD
 }
 
 // Gui controls
 enum GuiControl : CUShort {
   // Default -> populates to all controls when set
-  DEFAULT,
+	DEFAULT,
 
   // Basic controls
-  LABEL,          // Used also for: LABELBUTTON
-  BUTTON,
-  TOGGLE,         // Used also for: TOGGLEGROUP
-  SLIDER,         // Used also for: SLIDERBAR, TOGGLESLIDER
-  PROGRESSBAR,
-  CHECKBOX,
-  COMBOBOX,
-  DROPDOWNBOX,
-  TEXTBOX,        // Used also for: TEXTBOXMULTI
-  VALUEBOX,
-  SPINNER,        // Uses: BUTTON, VALUEBOX
-  LISTVIEW,
-  COLORPICKER,
-  SCROLLBAR,
-  STATUSBAR
+	LABEL,          // Used also for: LABELBUTTON
+	BUTTON,
+	TOGGLE,         // Used also for: TOGGLEGROUP
+	SLIDER,         // Used also for: SLIDERBAR, TOGGLESLIDER
+	PROGRESSBAR,
+	CHECKBOX,
+	COMBOBOX,
+	DROPDOWNBOX,
+	TEXTBOX,        // Used also for: TEXTBOXMULTI
+	VALUEBOX,
+	SPINNER,        // Uses: BUTTON, VALUEBOX
+	LISTVIEW,
+	COLORPICKER,
+	SCROLLBAR,
+	STATUSBAR
 }
 
 //----------------------------------------------------------------------------------
