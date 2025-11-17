@@ -17,6 +17,15 @@ This repository contains external libraries for use with C3.
 - LibClang https://clang.llvm.org/docs/LibClang.html
 - tinyfiledialogs http://tinyfiledialogs.sourceforge.net
 
+## Installing libraries from vendor
+
+When using a project with a `project.json`, running `c3c vendor-fetch <library name>`
+will download the corresponding library into the `lib/` folder and add it into the
+`dependencies` array in `project.json`.
+
+If not using a project the same command will instead download the library into
+the current directory where it be used with `--libdir <folder>` and `--lib <libname>`.
+
 ## Guide for writing bindings
 
 Because of the hard naming rules in C3, names sometimes need to be
