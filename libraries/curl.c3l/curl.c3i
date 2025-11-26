@@ -80,7 +80,7 @@ const int CURL_HTTPPOST_LARGE       = 128;
 
 alias Curl_progress_callback = fn int(void* clientp, double dltotal, double dlnow, double ultotal, double ulnow);
 alias Curl_xferinfo_callback = fn int(void* clientp, Off_t dltotal, Off_t dlnow, Off_t ultotal, Off_t ulnow);
-alias Curl_write_callback = fn usz(char* buffer, usz size, usz nitems,void *outstream);
+alias Curl_write_callback = fn usz(char* buffer, usz size, usz nitems, void* outstream);
 alias Curl_resolver_start_callback = fn int(void* resolver_state, void* reserved, void* userdata);
 
 enum Filetype : int
@@ -846,7 +846,7 @@ enum CurlSslset : int
 struct Certinfo
 {
 	int num_of_certs;
-	Slist **certinfo;
+	Slist* *certinfo;
 }
 
 struct Tlssessioninfo
@@ -1265,9 +1265,9 @@ struct Mime_state
 
 struct Mime
 {
-	Mimepart *parent;
-	Mimepart *firstpart;
-	Mimepart *lastpart;
+	Mimepart* parent;
+	Mimepart* firstpart;
+	Mimepart* lastpart;
 	char[MIME_BOUNDARY_LEN + 1] boundary;
 	Mime_state state;
 }
@@ -1292,8 +1292,8 @@ struct Mime_encoder
 
 struct Mimepart
 {
-	Mime *parent;
-	Mimepart *nextpart;
+	Mime* parent;
+	Mimepart* nextpart;
 	Mimekind kind;
 	uint flags;
 	char* data;
@@ -1302,8 +1302,8 @@ struct Mimepart
 	Curl_free_callback freefunc;
 	void* arg;
 	File *fp;
-	Slist *curlheader;
-	Slist *userheader;
+	Slist* curlheader;
+	Slist* userheader;
 	char* mimetype;
 	char* filename;
 	char* name;
@@ -1335,18 +1335,18 @@ typedef Pushheaders_ref = void*;
 
 fn int strequal(char* s1, char* s2) @cname("curl_strequal");
 fn int strnequal(char* s1, char* s2, usz n) @cname("curl_strnequal");
-fn Mime *mime_init(Curl *easy) @cname("curl_mime_init");
-fn void mime_free(Mime *mime) @cname("curl_mime_free");
-fn Mimepart *mime_addpart(Mime *mime) @cname("curl_mime_addpart");
-fn CURLcode mime_name(Mimepart *part, char* name) @cname("curl_mime_name");
-fn CURLcode mime_filename(Mimepart *part, char* filename) @cname("curl_mime_filename");
-fn CURLcode mime_type(Mimepart *part, char* mimetype) @cname("curl_mime_type");
-fn CURLcode mime_encoder(Mimepart *part, char* encoding) @cname("curl_mime_encoder");
-fn CURLcode mime_data(Mimepart *part, char* data, usz datasize) @cname("curl_mime_data");
-fn CURLcode mime_filedata(Mimepart *part, char* filename) @cname("curl_mime_filedata");
-fn CURLcode mime_data_cb(Mimepart *part, Off_t datasize, Curl_read_callback readfunc, Curl_seek_callback seekfunc, Curl_free_callback freefunc, void* arg) @cname("curl_mime_data_cb");
-fn CURLcode mime_subparts(Mimepart *part, Mime *subparts) @cname("curl_mime_subparts");
-fn CURLcode mime_headers(Mimepart *part, Slist *headers, int take_ownership) @cname("curl_mime_headers");
+fn Mime* mime_init(Curl* easy) @cname("curl_mime_init");
+fn void mime_free(Mime* mime) @cname("curl_mime_free");
+fn Mimepart* mime_addpart(Mime* mime) @cname("curl_mime_addpart");
+fn CURLcode mime_name(Mimepart* part, char* name) @cname("curl_mime_name");
+fn CURLcode mime_filename(Mimepart* part, char* filename) @cname("curl_mime_filename");
+fn CURLcode mime_type(Mimepart* part, char* mimetype) @cname("curl_mime_type");
+fn CURLcode mime_encoder(Mimepart* part, char* encoding) @cname("curl_mime_encoder");
+fn CURLcode mime_data(Mimepart* part, char* data, usz datasize) @cname("curl_mime_data");
+fn CURLcode mime_filedata(Mimepart* part, char* filename) @cname("curl_mime_filedata");
+fn CURLcode mime_data_cb(Mimepart* part, Off_t datasize, Curl_read_callback readfunc, Curl_seek_callback seekfunc, Curl_free_callback freefunc, void* arg) @cname("curl_mime_data_cb");
+fn CURLcode mime_subparts(Mimepart* part, Mime* subparts) @cname("curl_mime_subparts");
+fn CURLcode mime_headers(Mimepart* part, Slist* headers, int take_ownership) @cname("curl_mime_headers");
 fn CurlFormCode formadd(Httppost **httppost, Httppost **last_post, ...) @cname("curl_formadd");
 fn usz formget(Httppost *form, void* arg, Curl_formget_callback append) @cname("curl_formget");
 fn void formfree(Httppost* form) @cname("curl_formfree");
@@ -1356,13 +1356,13 @@ fn char* easy_escape(Curl* handle, char* string, int length) @cname("curl_easy_e
 fn char* escape(char* string, int length) @cname("curl_escape");
 fn char* easy_unescape(Curl* handle, char* string, int length, int* outlength) @cname("curl_easy_unescape");
 fn char *unescape(char* string, int length) @cname("curl_unescape");
-fn void free(void *p) @cname("curl_free");
+fn void free(void* p) @cname("curl_free");
 fn CURLcode global_init(long flags) @cname("curl_global_init");
 fn CURLcode global_init_mem(long flags, Curl_malloc_callback m, Curl_free_callback f, Curl_realloc_callback r, Curl_strdup_callback s, Curl_calloc_callback c) @cname("curl_global_init_mem");
 fn void global_cleanup() @cname("curl_global_cleanup");
 fn CurlSslset global_sslset(Sslbackend id, char* name, Ssl_backend ***avail) @cname("curl_global_sslset");
-fn Slist *slist_append(Slist *list, char* data) @cname("curl_slist_append");
-fn void slist_free_all(Slist *list) @cname("curl_slist_free_all");
+fn Slist* slist_append(Slist* list, char* data) @cname("curl_slist_append");
+fn void slist_free_all(Slist* list) @cname("curl_slist_free_all");
 fn libc::Time_t getdate(char* p, libc::Time_t *unused) @cname("curl_getdate");
 fn void* share_init() @cname("curl_share_init");
 fn CURLSHcode share_setopt(void* share, CURLSHoption option, ...) @cname("curl_share_setopt");
@@ -1370,47 +1370,47 @@ fn CURLSHcode share_cleanup(void* share) @cname("curl_share_cleanup");
 fn Version_info_data* version_info(CURLversion) @cname("curl_version_info");
 fn char* easy_strerror(CURLcode) @cname("curl_easy_strerror");
 fn char* share_strerror(CURLSHcode) @cname("curl_share_strerror");
-fn CURLcode easy_pause(Curl *handle, int bitmask) @cname("curl_easy_pause");
+fn CURLcode easy_pause(Curl* handle, int bitmask) @cname("curl_easy_pause");
 fn Curl* easy_init() @cname("curl_easy_init");
 fn CURLcode easy_setopt(Curl* curl, CURLoption option, ...) @cname("curl_easy_setopt");
 fn CURLcode easy_perform(Curl* curl) @cname("curl_easy_perform");
-fn void easy_cleanup(Curl *curl) @cname("curl_easy_cleanup");
-fn CURLcode easy_getinfo(Curl *curl, CURLInfo info, ...) @cname("curl_easy_getinfo");
-fn Curl *easy_duphandle(Curl *curl) @cname("curl_easy_duphandle");
-fn void easy_reset(Curl *curl) @cname("curl_easy_reset");
-fn CURLcode easy_recv(Curl *curl, void* buffer, usz buflen, usz *n) @cname("curl_easy_recv");
-fn CURLcode easy_send(Curl *curl, void* buffer, usz buflen, usz *n) @cname("curl_easy_send");
-fn CURLcode easy_upkeep(Curl *curl) @cname("curl_easy_upkeep");
-fn CurlM *multi_init() @cname("curl_multi_init");
-fn CURLMcode multi_add_handle(CurlM *multi_handle, Curl *curl_handle) @cname("curl_multi_add_handle");
-fn CURLMcode multi_remove_handle(CurlM *multi_handle, Curl *curl_handle) @cname("curl_multi_remove_handle");
-fn CURLMcode multi_fdset(CurlM *multi_handle,Fd_set *read_fd_set, Fd_set *write_fd_set, Fd_set *exc_fd_set, int *max_fd) @cname("curl_multi_fdset");
-fn CURLMcode multi_wait(CurlM *multi_handle, Waitfd []extra_fds, uint extra_nfds, int timeout_ms, int *ret) @cname("curl_multi_wait");
-fn CURLMcode multi_poll(CurlM *multi_handle, Waitfd []extra_fds, uint extra_nfds, int timeout_ms, int *ret) @cname("curl_multi_poll");
-fn CURLMcode multi_wakeup(CurlM *multi_handle) @cname("curl_multi_wakeup");
-fn CURLMcode multi_perform(CurlM *multi_handle, int *running_handles) @cname("curl_multi_perform");
-fn CURLMcode multi_cleanup(CurlM *multi_handle) @cname("curl_multi_cleanup");
-fn CURLMsg *multi_info_read(CurlM *multi_handle, int *msgs_in_queue) @cname("curl_multi_info_read");
+fn void easy_cleanup(Curl* curl) @cname("curl_easy_cleanup");
+fn CURLcode easy_getinfo(Curl* curl, CURLInfo info, ...) @cname("curl_easy_getinfo");
+fn Curl* easy_duphandle(Curl* curl) @cname("curl_easy_duphandle");
+fn void easy_reset(Curl* curl) @cname("curl_easy_reset");
+fn CURLcode easy_recv(Curl* curl, void* buffer, usz buflen, usz* n) @cname("curl_easy_recv");
+fn CURLcode easy_send(Curl* curl, void* buffer, usz buflen, usz* n) @cname("curl_easy_send");
+fn CURLcode easy_upkeep(Curl* curl) @cname("curl_easy_upkeep");
+fn CurlM* multi_init() @cname("curl_multi_init");
+fn CURLMcode multi_add_handle(CurlM* multi_handle, Curl* curl_handle) @cname("curl_multi_add_handle");
+fn CURLMcode multi_remove_handle(CurlM* multi_handle, Curl* curl_handle) @cname("curl_multi_remove_handle");
+fn CURLMcode multi_fdset(CurlM* multi_handle,Fd_set *read_fd_set, Fd_set *write_fd_set, Fd_set *exc_fd_set, int* max_fd) @cname("curl_multi_fdset");
+fn CURLMcode multi_wait(CurlM* multi_handle, Waitfd* extra_fds, uint extra_nfds, int timeout_ms, int* ret) @cname("curl_multi_wait");
+fn CURLMcode multi_poll(CurlM* multi_handle, Waitfd* extra_fds, uint extra_nfds, int timeout_ms, int* ret) @cname("curl_multi_poll");
+fn CURLMcode multi_wakeup(CurlM* multi_handle) @cname("curl_multi_wakeup");
+fn CURLMcode multi_perform(CurlM* multi_handle, int* running_handles) @cname("curl_multi_perform");
+fn CURLMcode multi_cleanup(CurlM* multi_handle) @cname("curl_multi_cleanup");
+fn CURLMsg *multi_info_read(CurlM* multi_handle, int* msgs_in_queue) @cname("curl_multi_info_read");
 fn char* multi_strerror(CURLMcode) @cname("curl_multi_strerror");
-fn CURLMcode multi_socket(CurlM *multi_handle, Socket_t s, int *running_handles) @cname("curl_multi_socket");
-fn CURLMcode multi_socket_action(CurlM *multi_handle, Socket_t s, int ev_bitmask, int *running_handles) @cname("curl_multi_socket_action");
-fn CURLMcode multi_socket_all(CurlM *multi_handle, int *running_handles) @cname("curl_multi_socket_all");
-fn CURLMcode multi_timeout(CurlM *multi_handle, long *milliseconds) @cname("curl_multi_timeout");
-fn CURLMcode multi_setopt(CurlM *multi_handle, CURLMoption option, ...) @cname("curl_multi_setopt");
-fn CURLMcode multi_assign(CurlM *multi_handle, Socket_t sockfd, void *sockp) @cname("curl_multi_assign");
+fn CURLMcode multi_socket(CurlM* multi_handle, Socket_t s, int* running_handles) @cname("curl_multi_socket");
+fn CURLMcode multi_socket_action(CurlM* multi_handle, Socket_t s, int ev_bitmask, int* running_handles) @cname("curl_multi_socket_action");
+fn CURLMcode multi_socket_all(CurlM* multi_handle, int* running_handles) @cname("curl_multi_socket_all");
+fn CURLMcode multi_timeout(CurlM* multi_handle, CLong* milliseconds) @cname("curl_multi_timeout");
+fn CURLMcode multi_setopt(CurlM* multi_handle, CURLMoption option, ...) @cname("curl_multi_setopt");
+fn CURLMcode multi_assign(CurlM* multi_handle, Socket_t sockfd, void* sockp) @cname("curl_multi_assign");
 fn char* pushheader_bynum(Pushheaders_ref h, usz num) @cname("curl_pushheader_bynum");
 fn char* pushheader_byname(Pushheaders_ref h, char *name) @cname("curl_pushheader_byname");
-fn CurlU *url() @cname("curl_url");
-fn void url_cleanup(CurlU *handle) @cname("curl_url_cleanup");
-fn CurlU *url_dup(CurlU *in) @cname("curl_url_dup");
-fn CURLUcode url_get(CurlU *handle, CurlUPart what, char** part, uint flags) @cname("curl_url_get");
-fn CURLUcode url_set(CurlU *handle, CurlUPart what, char* part, uint flags) @cname("curl_url_set");
+fn CurlU* url() @cname("curl_url");
+fn void url_cleanup(CurlU* handle) @cname("curl_url_cleanup");
+fn CurlU* url_dup(CurlU* in) @cname("curl_url_dup");
+fn CURLUcode url_get(CurlU* handle, CurlUPart what, char** part, uint flags) @cname("curl_url_get");
+fn CURLUcode url_set(CurlU* handle, CurlUPart what, char* part, uint flags) @cname("curl_url_set");
 fn char* url_strerror(CURLUcode a1) @cname("curl_url_strerror");
-fn Easyoption *easy_option_by_name(char *name) @cname("curl_easy_option_by_name");
-fn Easyoption *easy_option_by_id(CURLoption id) @cname("curl_easy_option_by_id");
-fn Easyoption *easy_option_next(Easyoption *prev) @cname("curl_easy_option_next");
+fn Easyoption* easy_option_by_name(char *name) @cname("curl_easy_option_by_name");
+fn Easyoption* easy_option_by_id(CURLoption id) @cname("curl_easy_option_by_id");
+fn Easyoption* easy_option_next(Easyoption* prev) @cname("curl_easy_option_next");
 fn CURLHcode easy_header(Curl* easy, char* name, usz index, uint origin, int request, Header **hout) @cname("curl_easy_header");
 fn Header *easy_nextheader(Curl* easy, uint origin, int request, Header *prev) @cname("curl_easy_nextheader");
-fn CURLcode ws_recv(Curl *curl, void *buffer, usz buflen, usz *recv, Ws_frame **metap) @cname("curl_ws_recv");
-fn CURLcode ws_send(Curl *curl, void *buffer, usz buflen, usz *sent, Off_t framesize, uint sendflags) @cname("curl_ws_send");
-fn Ws_frame *ws_meta(Curl *curl) @cname("curl_ws_meta");
+fn CURLcode ws_recv(Curl* curl, void* buffer, usz buflen, usz* recv, Ws_frame **metap) @cname("curl_ws_recv");
+fn CURLcode ws_send(Curl* curl, void* buffer, usz buflen, usz* sent, Off_t framesize, uint sendflags) @cname("curl_ws_send");
+fn Ws_frame *ws_meta(Curl* curl) @cname("curl_ws_meta");
