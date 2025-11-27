@@ -105,8 +105,8 @@ struct RLRenderTexture
 	RLTexture depth;      // Depth buffer attachment texture
 }
 
-// RenderTexture2D, same as RenderTexture
-alias RenderTexture2D = RLRenderTexture;
+// RLRenderTexture2D, same as RenderTexture
+alias RLRenderTexture2D = RLRenderTexture;
 
 // NPatchInfo, n-patch layout info
 struct RLNPatchInfo
@@ -709,7 +709,7 @@ fn void begin_mode2d(RLCamera2D camera) @cname("BeginMode2D");                  
 fn void end_mode2d() @cname("EndMode2D");                                                      // Ends 2D mode with custom camera
 fn void begin_mode3d(RLCamera3D camera) @cname("BeginMode3D");                                   // Begin 3D mode with custom camera (3D)
 fn void end_mode3d() @cname("EndMode3D");                                                      // Ends 3D mode and returns to default 2D orthographic mode
-fn void begin_texture_mode(RenderTexture2D target) @cname("BeginTextureMode");                  // Begin drawing to render texture
+fn void begin_texture_mode(RLRenderTexture2D target) @cname("BeginTextureMode");                  // Begin drawing to render texture
 fn void end_texture_mode() @cname("EndTextureMode");                                            // Ends drawing to render texture
 fn void begin_shader_mode(RLShader shader) @cname("BeginShaderMode");                             // Begin custom shader drawing
 fn void end_shader_mode() @cname("EndShaderMode");                                              // End custom shader drawing (use default shader)
@@ -728,13 +728,13 @@ fn void unload_vr_stereo_config(RLVrStereoConfig config) @cname("UnloadVrStereoC
 // NOTE: Shader functionality is not available on OpenGL 1.1
 fn RLShader load_shader(ZString vs_file_name, ZString fs_file_name) @cname("LoadShader");                                                                            // Load shader from files and bind default locations
 fn RLShader load_shader_from_memory(ZString vs_code, ZString fs_code) @cname("LoadShaderFromMemory");                                                                // Load shader from code strings and bind default locations
-fn bool is_shader_valid(RLShader shader) @cname("IsShaderValid");                                                                                                 // Check if a shader is valid (loaded on GPU)
-fn CInt get_shader_location(RLShader shader, ZString uniform_name) @cname("GetShaderLocation");                                                                    // Get shader uniform location
-fn CInt get_shader_location_attrib(RLShader shader, ZString attrib_name) @cname("GetShaderLocationAttrib");                                                         // Get shader attribute location
-fn void set_shader_value(RLShader shader, CInt loc_index, void* value, RLShaderUniformDataType uniform_type) @cname("SetShaderValue");               // Set shader uniform value
-fn void set_shader_value_v(RLShader shader, CInt loc_index, void* value, RLShaderUniformDataType uniform_type, CInt count) @cname("SetShaderValueV"); // Set shader uniform value vector
-fn void set_shader_value_matrix(RLShader shader, CInt loc_index, RLMatrix mat) @cname("SetShaderValueMatrix");                                         // Set shader uniform value (matrix 4x4)
-fn void set_shader_value_texture(RLShader shader, CInt loc_index, RLTexture2D texture) @cname("SetShaderValueTexture");                                // Set shader uniform value for texture (sampler2d)
+fn bool RLShader.is_valid(RLShader shader) @cname("IsShaderValid");                                                                                                 // Check if a shader is valid (loaded on GPU)
+fn CInt RLShader.get_location(RLShader shader, ZString uniform_name) @cname("GetShaderLocation");                                                                    // Get shader uniform location
+fn CInt RLShader.get_location_attrib(RLShader shader, ZString attrib_name) @cname("GetShaderLocationAttrib");                                                         // Get shader attribute location
+fn void RLShader.set_value(RLShader shader, CInt loc_index, void* value, RLShaderUniformDataType uniform_type) @cname("SetShaderValue");               // Set shader uniform value
+fn void RLShader.set_value_v(RLShader shader, CInt loc_index, void* value, RLShaderUniformDataType uniform_type, CInt count) @cname("SetShaderValueV"); // Set shader uniform value vector
+fn void RLShader.set_value_matrix(RLShader shader, CInt loc_index, RLMatrix mat) @cname("SetShaderValueMatrix");                                         // Set shader uniform value (matrix 4x4)
+fn void RLShader.set_value_texture(RLShader shader, CInt loc_index, RLTexture2D texture) @cname("SetShaderValueTexture");                                // Set shader uniform value for texture (sampler2d)
 fn void unload_shader(RLShader shader) @cname("UnloadShader");                                                                                                   // Unload shader from GPU memory (VRAM)
 
 // Screen-space-related functions
@@ -1004,7 +1004,7 @@ fn RLImage load_image_anim_from_memory(ZString file_type, char* file_data, CInt 
 fn RLImage load_image_from_memory(ZString file_type, char* file_data, CInt data_size) @cname("LoadImageFromMemory");                       // Load image from memory buffer, file_type refers to extension: i.e. '.png'
 fn RLImage load_image_from_texture(RLTexture2D texture) @cname("LoadImageFromTexture");                                                   // Load image from GPU texture data
 fn RLImage load_image_from_screen() @cname("LoadImageFromScreen");                                                                      // Load image from screen buffer and (screenshot)
-fn bool is_image_valid(RLImage image) @cname("IsImageValid");                                                                          // Check if an image is valid (data and parameters)
+fn bool RLImage.is_valid(RLImage image) @cname("IsImageValid");                                                                          // Check if an image is valid (data and parameters)
 fn void unload_image(RLImage image) @cname("UnloadImage");                                                                            // Unload image from CPU memory (RAM)
 fn bool export_image(RLImage image, ZString file_name) @cname("ExportImage");                                                          // Export image data to file, returns true on success
 fn char* export_image_to_memory(RLImage image, ZString file_type, CInt *file_size) @cname("ExportImageToMemory");                         // Export image to memory buffer
@@ -1089,18 +1089,18 @@ fn void image_draw_text_ex(RLImage *dst, RLFont font, ZString text, RLVector2 po
 fn RLTexture2D load_texture(ZString file_name) @cname("LoadTexture");                                     // Load texture from file into GPU memory (VRAM)
 fn RLTexture2D load_texture_from_image(RLImage image) @cname("LoadTextureFromImage");                        // Load texture from image data
 fn RLTextureCubemap load_texture_cubemap(RLImage image, RLCubemapLayout layout) @cname("LoadTextureCubemap"); // Load cubemap from image, multiple image cubemap layouts supported
-fn RenderTexture2D load_render_texture(CInt width, CInt height) @cname("LoadRenderTexture");            // Load texture for rendering (framebuffer)
-fn bool is_texture_valid(RLTexture2D texture) @cname("IsTextureValid");                                   // Check if a texture is valid (loaded in GPU)
+fn RLRenderTexture2D load_render_texture(CInt width, CInt height) @cname("LoadRenderTexture");            // Load texture for rendering (framebuffer)
+fn bool RLTexture2D.is_valid(RLTexture2D texture) @cname("IsTextureValid");                                   // Check if a texture is valid (loaded in GPU)
 fn void unload_texture(RLTexture2D texture) @cname("UnloadTexture");                                     // Unload texture from GPU memory (VRAM)
-fn bool is_render_texture_valid(RenderTexture2D target) @cname("IsRenderTextureValid");                  // Check if a render texture is valid (loaded in GPU)
-fn void unload_render_texture(RenderTexture2D target) @cname("UnloadRenderTexture");                    // Unload render texture from GPU memory (VRAM)
-fn void update_texture(RLTexture2D texture, void *pixels) @cname("UpdateTexture");                       // Update GPU texture with new data
-fn void update_texture_rec(RLTexture2D texture, RLRectangle rec, void *pixels) @cname("UpdateTextureRec");  // Update GPU texture rectangle with new data
+fn bool RLRenderTexture2D.is_valid(RLRenderTexture2D target) @cname("IsRenderTextureValid");                  // Check if a render texture is valid (loaded in GPU)
+fn void unload_render_texture(RLRenderTexture2D target) @cname("UnloadRenderTexture");                    // Unload render texture from GPU memory (VRAM)
+fn void RLTexture2D.update(RLTexture2D texture, void *pixels) @cname("UpdateTexture");                       // Update GPU texture with new data
+fn void RLTexture2D.update_rec(RLTexture2D texture, RLRectangle rec, void *pixels) @cname("UpdateTextureRec");  // Update GPU texture rectangle with new data
 
 // RLTexture configuration functions
 fn void gen_texture_mipmaps(RLTexture2D *texture) @cname("GenTextureMipmaps");                    // Generate GPU mipmaps for a texture
-fn void set_texture_filter(RLTexture2D texture, RLTextureFilter filter) @cname("SetTextureFilter"); // Set texture scaling filter mode
-fn void set_texture_wrap(RLTexture2D texture, RLTextureWrap wrap) @cname("SetTextureWrap");         // Set texture wrapping mode
+fn void RLTexture2D.set_filter(RLTexture2D texture, RLTextureFilter filter) @cname("SetTextureFilter"); // Set texture scaling filter mode
+fn void RLTexture2D.set_wrap(RLTexture2D texture, RLTextureWrap wrap) @cname("SetTextureWrap");         // Set texture wrapping mode
 
 // RLTexture drawing functions
 fn void draw_texture(RLTexture2D texture, CInt pos_x, CInt pos_y, RLColor tint) @cname("DrawTexture");                                                              // Draw a RLTexture2D
@@ -1111,19 +1111,19 @@ fn void draw_texture_pro(RLTexture2D texture, RLRectangle source, RLRectangle de
 fn void draw_texture_n_patch(RLTexture2D texture, RLNPatchInfo n_patch_info, RLRectangle dest, RLVector2 origin, float rotation, RLColor tint) @cname("DrawTextureNPatch"); // Draws a texture (or part of it) that stretches or shrinks nicely
 
 // RLColor/pixel related functions
-fn bool color_is_equal(RLColor col1, RLColor col2) @cname("ColorIsEqual");                              // Check if two colors are equal
-fn RLColor fade(RLColor color, float alpha) @cname("Fade");                                           // Get color with alpha applied, alpha goes from 0.0f to 1.0f
-fn CInt color_to_int(RLColor color) @cname("ColorToInt");                                             // Get hexadecimal value for a RLColor (0xRRGGBBAA)
-fn RLVector4 color_normalize(RLColor color) @cname("ColorNormalize");                                  // Get RLColor normalized as float [0..1]
+fn bool RLColor.is_equal(RLColor col1, RLColor col2) @cname("ColorIsEqual");                              // Check if two colors are equal
+fn RLColor RLColor.fade(RLColor color, float alpha) @cname("Fade");                                           // Get color with alpha applied, alpha goes from 0.0f to 1.0f
+fn CInt RLColor.to_int(RLColor color) @cname("ColorToInt");                                             // Get hexadecimal value for a RLColor (0xRRGGBBAA)
+fn RLVector4 RLColor.normalize(RLColor color) @cname("ColorNormalize");                                  // Get RLColor normalized as float [0..1]
 fn RLColor color_from_normalized(RLVector4 normalized) @cname("ColorFromNormalized");                   // Get RLColor from normalized values [0..1]
-fn RLVector3 color_to_h_s_v(RLColor color) @cname("ColorToHSV");                                          // Get HSV values for a RLColor, hue [0..360], saturation/value [0..1]
+fn RLVector3 RLColor.to_h_s_v(RLColor color) @cname("ColorToHSV");                                          // Get HSV values for a RLColor, hue [0..360], saturation/value [0..1]
 fn RLColor color_from_h_s_v(float hue, float saturation, float value) @cname("ColorFromHSV");           // Get a RLColor from HSV values, hue [0..360], saturation/value [0..1]
-fn RLColor color_tint(RLColor color, RLColor tint) @cname("ColorTint");                                  // Get color multiplied with another color
-fn RLColor color_brightness(RLColor color, float factor) @cname("ColorBrightness");                    // Get color with brightness correction, brightness factor goes from -1.0f to 1.0f
-fn RLColor color_contrast(RLColor color, float contrast) @cname("ColorContrast");                      // Get color with contrast correction, contrast values between -1.0f and 1.0f
-fn RLColor color_alpha(RLColor color, float alpha) @cname("ColorAlpha");                               // Get color with alpha applied, alpha goes from 0.0f to 1.0f
-fn RLColor color_alpha_blend(RLColor dst, RLColor src, RLColor tint) @cname("ColorAlphaBlend");             // Get src alpha-blended into dst color with tint
-fn RLColor color_lerp(RLColor color1, RLColor color2, float factor) @cname("ColorLerp");                 // Get color lerp interpolation between two colors, factor [0.0f..1.0f]
+fn RLColor RLColor.tint(RLColor color, RLColor tint) @cname("ColorTint");                                  // Get color multiplied with another color
+fn RLColor RLColor.brightness(RLColor color, float factor) @cname("ColorBrightness");                    // Get color with brightness correction, brightness factor goes from -1.0f to 1.0f
+fn RLColor RLColor.contrast(RLColor color, float contrast) @cname("ColorContrast");                      // Get color with contrast correction, contrast values between -1.0f and 1.0f
+fn RLColor RLColor.alpha(RLColor color, float alpha) @cname("ColorAlpha");                               // Get color with alpha applied, alpha goes from 0.0f to 1.0f
+fn RLColor RLColor.alpha_blend(RLColor dst, RLColor src, RLColor tint) @cname("ColorAlphaBlend");             // Get src alpha-blended into dst color with tint
+fn RLColor RLColor.lerp(RLColor color1, RLColor color2, float factor) @cname("ColorLerp");                 // Get color lerp interpolation between two colors, factor [0.0f..1.0f]
 fn RLColor get_color(CUInt hex_value) @cname("GetColor");                                             // Get RLColor structure from hexadecimal value
 fn RLColor get_pixel_color(void *src_ptr, RLPixelFormat format) @cname("GetPixelColor");                 // Get RLColor from a source pixel pointer of certain format
 fn void set_pixel_color(void *dst_ptr, RLColor color, RLPixelFormat format) @cname("SetPixelColor");     // Set color formatted into destination pixel pointer
@@ -1139,7 +1139,7 @@ fn RLFont load_font(ZString file_name) @cname("LoadFont");                      
 fn RLFont load_font_ex(ZString file_name, CInt font_size, CInt *codepoints, CInt codepoint_count) @cname("LoadFontEx");                                                 // Load font from file with extended parameters, use NULL for codepoints and 0 for codepoint_count to load the default character set, font size is provided in pixels height
 fn RLFont load_font_from_image(RLImage image, RLColor key, CInt firstChar) @cname("LoadFontFromImage");                                                                   // Load font from RLImage (XNA style)
 fn RLFont load_font_from_memory(ZString file_type, char* file_data, CInt data_size, CInt font_size, CInt *codepoints, CInt codepoint_count) @cname("LoadFontFromMemory");  // Load font from memory buffer, file_type refers to extension: i.e. '.ttf'
-fn bool is_font_valid(RLFont font) @cname("IsFontValid");                                                                                                            // Check if a font is valid (font data loaded, WARNING: GPU texture not checked)
+fn bool RLFont.is_valid(RLFont font) @cname("IsFontValid");                                                                                                            // Check if a font is valid (font data loaded, WARNING: GPU texture not checked)
 fn RLGlyphInfo *load_font_data(char* file_data, CInt data_size, CInt font_size, CInt *codepoints, CInt codepoint_count, RLFontType type) @cname("LoadFontData");           // Load font data for further use
 fn RLImage gen_image_font_atlas(RLGlyphInfo *glyphs, RLRectangle **glyphRecs, CInt glyph_count, CInt font_size, CInt padding, CInt pack_method) @cname("GenImageFontAtlas"); // Generate image font atlas using chars info
 fn void unload_font_data(RLGlyphInfo *glyphs, CInt glyph_count) @cname("UnloadFontData");                                                                             // Unload font chars info data (RAM)
@@ -1229,9 +1229,9 @@ fn void draw_grid(CInt slices, float spacing) @cname("DrawGrid");               
 // RLModel management functions
 fn RLModel load_model(ZString file_name) @cname("LoadModel");                      // Load model from files (meshes and materials)
 fn RLModel load_model_from_mesh(RLMesh mesh) @cname("LoadModelFromMesh");             // Load model from generated mesh (default material)
-fn bool is_model_valid(RLModel model) @cname("IsModelValid");                      // Check if a model is valid (loaded in GPU, VAO/VBOs)
+fn bool RLModel.is_valid(RLModel model) @cname("IsModelValid");                      // Check if a model is valid (loaded in GPU, VAO/VBOs)
 fn void unload_model(RLModel model) @cname("UnloadModel");                        // Unload model (including meshes) from memory (RAM and/or VRAM)
-fn RLBoundingBox get_model_bounding_box(RLModel model) @cname("GetModelBoundingBox"); // Compute model bounding box limits (considers all meshes)
+fn RLBoundingBox RLModel.get_bounding_box(RLModel model) @cname("GetModelBoundingBox"); // Compute model bounding box limits (considers all meshes)
 
 // RLModel drawing functions
 fn void draw_model(RLModel model, RLVector3 position, float scale, RLColor tint) @cname("DrawModel");                                                                                                   // Draw a model (with texture if set)
@@ -1272,7 +1272,7 @@ fn RLMesh gen_mesh_cubicmap(RLImage cubicmap, RLVector3 cube_size) @cname("GenMe
 // RLMaterial loading/unloading functions
 fn RLMaterial *load_materials(ZString file_name, CInt *materialCount) @cname("LoadMaterials");                                // Load materials from model file
 fn RLMaterial load_material_default() @cname("LoadMaterialDefault");                                                          // Load default material (Supports: DIFFUSE, SPECULAR, NORMAL maps)
-fn bool is_material_valid(RLMaterial material) @cname("IsMaterialValid");                                                     // Check if a material is valid (shader assigned, map textures loaded in GPU)
+fn bool RLMaterial.is_valid(RLMaterial material) @cname("IsMaterialValid");                                                     // Check if a material is valid (shader assigned, map textures loaded in GPU)
 fn void unload_material(RLMaterial material) @cname("UnloadMaterial");                                                       // Unload material from GPU memory (VRAM)
 fn void set_material_texture(RLMaterial *material, RLMaterialMapIndex mapType, RLTexture2D texture) @cname("SetMaterialTexture"); // Set texture for a material map type (MATERIAL_MAP_DIFFUSE, MATERIAL_MAP_SPECULAR...)
 fn void set_model_mesh_material(RLModel *model, CInt meshId, CInt materialId) @cname("SetModelMeshMaterial");                  // Set material for a mesh
@@ -1289,16 +1289,16 @@ fn bool is_model_animation_valid(RLModel model, RLModelAnimation anim) @cname("I
 fn bool check_collision_spheres(RLVector3 center1, float radius1, RLVector3 center2, float radius2) @cname("CheckCollisionSpheres"); // Check collision between two spheres
 fn bool check_collision_boxes(RLBoundingBox box1, RLBoundingBox box2) @cname("CheckCollisionBoxes");                                 // Check collision between two bounding boxes
 fn bool check_collision_box_sphere(RLBoundingBox box, RLVector3 center, float radius) @cname("CheckCollisionBoxSphere");              // Check collision between box and sphere
-fn RLRayCollision get_ray_collision_sphere(RLRay ray, RLVector3 center, float radius) @cname("GetRayCollisionSphere");                  // Get collision info between ray and sphere
-fn RLRayCollision get_ray_collision_box(RLRay ray, RLBoundingBox box) @cname("GetRayCollisionBox");                                     // Get collision info between ray and box
-fn RLRayCollision get_ray_collision_mesh(RLRay ray, RLMesh mesh, RLMatrix transform) @cname("GetRayCollisionMesh");                       // Get collision info between ray and mesh
-fn RLRayCollision get_ray_collision_triangle(RLRay ray, RLVector3 p1, RLVector3 p2, RLVector3 p3) @cname("GetRayCollisionTriangle");        // Get collision info between ray and triangle
-fn RLRayCollision get_ray_collision_quad(RLRay ray, RLVector3 p1, RLVector3 p2, RLVector3 p3, RLVector3 p4) @cname("GetRayCollisionQuad");    // Get collision info between ray and quad
+fn RLRayCollision RLRay.get_collision_sphere(RLRay ray, RLVector3 center, float radius) @cname("GetRayCollisionSphere");                  // Get collision info between ray and sphere
+fn RLRayCollision RLRay.get_collision_box(RLRay ray, RLBoundingBox box) @cname("GetRayCollisionBox");                                     // Get collision info between ray and box
+fn RLRayCollision RLRay.get_collision_mesh(RLRay ray, RLMesh mesh, RLMatrix transform) @cname("GetRayCollisionMesh");                       // Get collision info between ray and mesh
+fn RLRayCollision RLRay.get_collision_triangle(RLRay ray, RLVector3 p1, RLVector3 p2, RLVector3 p3) @cname("GetRayCollisionTriangle");        // Get collision info between ray and triangle
+fn RLRayCollision RLRay.get_collision_quad(RLRay ray, RLVector3 p1, RLVector3 p2, RLVector3 p3, RLVector3 p4) @cname("GetRayCollisionQuad");    // Get collision info between ray and quad
 
 //------------------------------------------------------------------------------------
 // Audio Loading and Playing Functions (Module: audio)
 //------------------------------------------------------------------------------------
-alias AudioCallback = fn void(void *bufferData, CUInt frames);
+alias RLAudioCallback = fn void(void *bufferData, CUInt frames);
 
 // Audio device management functions
 fn void init_audio_device() @cname("InitAudioDevice");             // Initialize audio device and context
@@ -1310,12 +1310,12 @@ fn float get_master_volume() @cname("GetMasterVolume");            // Get master
 // Wave/Sound loading/unloading functions
 fn RLWave load_wave(ZString file_name) @cname("LoadWave");                                                    // Load wave data from file
 fn RLWave load_wave_from_memory(ZString file_type, char* file_data, CInt data_size) @cname("LoadWaveFromMemory"); // Load wave from memory buffer, file_type refers to extension: i.e. '.wav'
-fn bool is_wave_valid(RLWave wave) @cname("IsWaveValid");                                                     // Checks if wave data is valid (data loaded and parameters)
+fn bool RLWave.is_valid(RLWave wave) @cname("IsWaveValid");                                                     // Checks if wave data is valid (data loaded and parameters)
 fn RLSound load_sound(ZString file_name) @cname("LoadSound");                                                 // Load sound from file
 fn RLSound load_sound_from_wave(RLWave wave) @cname("LoadSoundFromWave");                                        // Load sound from wave data
 fn RLSound load_sound_alias(RLSound source) @cname("LoadSoundAlias");                                           // Create a new sound that shares the same sample data as the source sound, does not own the sound data
-fn bool is_sound_valid(RLSound sound) @cname("IsSoundValid");                                                 // Checks if a sound is valid (data loaded and buffers initialized)
-fn void update_sound(RLSound sound, void *data, CInt sampleCount) @cname("UpdateSound");                     // Update sound buffer with new data
+fn bool RLSound.is_valid(RLSound sound) @cname("IsSoundValid");                                                 // Checks if a sound is valid (data loaded and buffers initialized)
+fn void RLSound.update(RLSound sound, void *data, CInt sampleCount) @cname("UpdateSound");                     // Update sound buffer with new data
 fn void unload_wave(RLWave wave) @cname("UnloadWave");                                                       // Unload wave data
 fn void unload_sound(RLSound sound) @cname("UnloadSound");                                                   // Unload sound
 fn void unload_sound_alias(RLSound alias_) @cname("UnloadSoundAlias");                                        // Unload a sound alias (does not deallocate sample data)
@@ -1340,7 +1340,7 @@ fn void unload_wave_samples(float *samples) @cname("UnloadWaveSamples");        
 // Music management functions
 fn RLMusic load_music_stream(ZString file_name) @cname("LoadMusicStream");                                                // Load music stream from file
 fn RLMusic load_music_stream_from_memory(ZString file_type, char* data, CInt data_size) @cname("LoadMusicStreamFromMemory"); // Load music stream from data
-fn bool is_music_valid(RLMusic music) @cname("IsMusicValid");                                                            // Checks if a music stream is valid (context and buffers initialized)
+fn bool RLMusic.is_valid(RLMusic music) @cname("IsMusicValid");                                                            // Checks if a music stream is valid (context and buffers initialized)
 fn void unload_music_stream(RLMusic music) @cname("UnloadMusicStream");                                                  // Unload music stream
 fn void play_music_stream(RLMusic music) @cname("PlayMusicStream");                                                      // Start music playing
 fn bool is_music_stream_playing(RLMusic music) @cname("IsMusicStreamPlaying");                                            // Check if music is playing
@@ -1352,31 +1352,31 @@ fn void seek_music_stream(RLMusic music, float position) @cname("SeekMusicStream
 fn void set_music_volume(RLMusic music, float volume) @cname("SetMusicVolume");                                          // Set volume for music (1.0 is max level)
 fn void set_music_pitch(RLMusic music, float pitch) @cname("SetMusicPitch");                                             // Set pitch for a music (1.0 is base level)
 fn void set_music_pan(RLMusic music, float pan) @cname("SetMusicPan");                                                   // Set pan for a music (0.5 is center)
-fn float get_music_time_length(RLMusic music) @cname("GetMusicTimeLength");                                               // Get music time length (in seconds)
-fn float get_music_time_played(RLMusic music) @cname("GetMusicTimePlayed");                                               // Get current music time played (in seconds)
+fn float RLMusic.get_time_length(RLMusic music) @cname("GetMusicTimeLength");                                               // Get music time length (in seconds)
+fn float RLMusic.get_time_played(RLMusic music) @cname("GetMusicTimePlayed");                                               // Get current music time played (in seconds)
 
 // AudioStream management functions
 fn RLAudioStream load_audio_stream(CUInt sample_rate, CUInt sample_size, CUInt channels) @cname("LoadAudioStream"); // Load audio stream (to stream raw audio pcm data)
-fn bool is_audio_stream_valid(RLAudioStream stream) @cname("IsAudioStreamValid");                                  // Checks if an audio stream is valid (buffers initialized)
+fn bool RLAudioStream.is_valid(RLAudioStream stream) @cname("IsAudioStreamValid");                                  // Checks if an audio stream is valid (buffers initialized)
 fn void unload_audio_stream(RLAudioStream stream) @cname("UnloadAudioStream");                                    // Unload audio stream and free memory
 fn void update_audio_stream(RLAudioStream stream, void *data, CInt frameCount) @cname("UpdateAudioStream");       // Update audio stream buffers with data
-fn bool is_audio_stream_processed(RLAudioStream stream) @cname("IsAudioStreamProcessed");                          // Check if any audio stream buffers requires refill
+fn bool RLAudioStream.is_processed(RLAudioStream stream) @cname("IsAudioStreamProcessed");                          // Check if any audio stream buffers requires refill
 fn void play_audio_stream(RLAudioStream stream) @cname("PlayAudioStream");                                        // Play audio stream
 fn void pause_audio_stream(RLAudioStream stream) @cname("PauseAudioStream");                                      // Pause audio stream
 fn void resume_audio_stream(RLAudioStream stream) @cname("ResumeAudioStream");                                    // Resume audio stream
 fn bool is_audio_stream_playing(RLAudioStream stream) @cname("IsAudioStreamPlaying");                              // Check if audio stream is playing
 fn void stop_audio_stream(RLAudioStream stream) @cname("StopAudioStream");                                        // Stop audio stream
-fn void set_audio_stream_volume(RLAudioStream stream, float volume) @cname("SetAudioStreamVolume");                // Set volume for audio stream (1.0 is max level)
-fn void set_audio_stream_pitch(RLAudioStream stream, float pitch) @cname("SetAudioStreamPitch");                   // Set pitch for audio stream (1.0 is base level)
-fn void set_audio_stream_pan(RLAudioStream stream, float pan) @cname("SetAudioStreamPan");                         // Set pan for audio stream (0.5 is centered)
+fn void RLAudioStream.set_volume(RLAudioStream stream, float volume) @cname("SetAudioStreamVolume");                // Set volume for audio stream (1.0 is max level)
+fn void RLAudioStream.set_pitch(RLAudioStream stream, float pitch) @cname("SetAudioStreamPitch");                   // Set pitch for audio stream (1.0 is base level)
+fn void RLAudioStream.set_pan(RLAudioStream stream, float pan) @cname("SetAudioStreamPan");                         // Set pan for audio stream (0.5 is centered)
 fn void set_audio_stream_buffer_size_default(CInt size) @cname("SetAudioStreamBufferSizeDefault");                 // Default size for new audio streams
-fn void set_audio_stream_callback(RLAudioStream stream, AudioCallback callback) @cname("SetAudioStreamCallback");  // Audio thread callback to request new data
+fn void RLAudioStream.set_callback(RLAudioStream stream, RLAudioCallback callback) @cname("SetAudioStreamCallback");  // Audio thread callback to request new data
 
-fn void attach_audio_stream_processor(RLAudioStream stream, AudioCallback processor) @cname("AttachAudioStreamProcessor"); // Attach audio stream processor to stream, receives the samples as 'float'
-fn void detach_audio_stream_processor(RLAudioStream stream, AudioCallback processor) @cname("DetachAudioStreamProcessor"); // Detach audio stream processor from stream
+fn void attach_audio_stream_processor(RLAudioStream stream, RLAudioCallback processor) @cname("AttachAudioStreamProcessor"); // Attach audio stream processor to stream, receives the samples as 'float'
+fn void detach_audio_stream_processor(RLAudioStream stream, RLAudioCallback processor) @cname("DetachAudioStreamProcessor"); // Detach audio stream processor from stream
 
-fn void attach_audio_mixed_processor(AudioCallback processor) @cname("AttachAudioMixedProcessor"); // Attach audio stream processor to the entire audio pipeline, receives the samples as 'float'
-fn void detach_audio_mixed_processor(AudioCallback processor) @cname("DetachAudioMixedProcessor"); // Detach audio stream processor from the entire audio pipeline
+fn void attach_audio_mixed_processor(RLAudioCallback processor) @cname("AttachAudioMixedProcessor"); // Attach audio stream processor to the entire audio pipeline, receives the samples as 'float'
+fn void detach_audio_mixed_processor(RLAudioCallback processor) @cname("DetachAudioMixedProcessor"); // Detach audio stream processor from the entire audio pipeline
 
 
 //----------------------------------------------------------------------------------
@@ -1420,7 +1420,7 @@ macro void @mode3d(RLCamera3D camera ;@body)
  Setup texture mode to draw to render texture, then calls [block].
  texture mode will end after [block] has finished.
 *>
-macro void @texture_mode(RenderTexture2D texture ;@body)
+macro void @texture_mode(RLRenderTexture2D texture ;@body)
 {
 	begin_texture_mode(texture);
 	defer end_texture_mode();
