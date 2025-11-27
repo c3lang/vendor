@@ -1,24 +1,32 @@
 { 
-  "provides" : "raylib",
-  "targets" : {
-    "macos-x64" : {
-      "link-args" : [],
-      "dependencies" : [],
-      "linked-libraries" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "GLUT.framework", "IOKit.framework", "c"]
-    },
-    "macos-aarch64" : {
-      "link-args" : [],
-      "dependencies" : [],
-      "linked-libraries" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "GLUT.framework", "IOKit.framework", "c"]
-    },
-    "linux-x64" : {
-      "link-args" : [],
-      "dependencies" : [],
-      "linked-libraries" : ["raylib", "GLESv2", "glfw", "c"]
-    },
-	"windows-x64" : {
-		"linked-libraries" : ["raylib", "opengl32", "kernel32", "user32", "gdi32", "winmm", "winspool", "comdlg32", "advapi32", "shell32", "ole32", "oleaut32", "uuid", "odbc32", "odbccp32"],
-        "wincrt": "none"
+	"provides" : "raylib",
+	"targets" : {
+		"macos-x64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "GLUT.framework", "IOKit.framework"]
+		},
+		"macos-aarch64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "GLUT.framework", "IOKit.framework"]
+		},
+		"linux-x64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : ["raylib", "m"]
+		},
+		"freebsd-x64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : ["raylib", "m"]
+		},
+		"windows-x64" : {
+			"linked-libraries" : ["raylib", "gdi32", "winmm"],
+			"wincrt": "none"
+		},
+		"wasm32" : {
+			"linked-libraries" : ["raylib"]
+		}
 	}
-  }
 }
