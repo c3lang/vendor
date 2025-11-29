@@ -445,7 +445,7 @@ enum RLGamepadAxis : CInt
 }
 
 // RLMaterial map index
-enum RLMaterialMapIndex : const CInt
+enum RLMaterialMapIndex : const inline CInt
 {
 	ALBEDO = 0, // Albedo material (same as: MATERIAL_MAP_DIFFUSE)
 	METALNESS,  // Metalness material (same as: MATERIAL_MAP_SPECULAR)
@@ -1276,15 +1276,17 @@ fn RLMaterial* load_materials(ZString file_name, CInt* materialCount) @cname("Lo
 fn RLMaterial load_material_default() @cname("LoadMaterialDefault");                           // Load default material (Supports: DIFFUSE, SPECULAR, NORMAL maps)
 fn bool RLMaterial.is_valid(RLMaterial material) @cname("IsMaterialValid");                    // Check if a material is valid (shader assigned, map textures loaded in GPU)
 fn void unload_material(RLMaterial material) @cname("UnloadMaterial");                         // Unload material from GPU memory (VRAM)
-fn void set_material_texture(RLMaterial* material, RLMaterialMapIndex mapType, RLTexture2D texture) @cname("SetMaterialTexture"); // Set texture for a material map type (MATERIAL_MAP_DIFFUSE, MATERIAL_MAP_SPECULAR...)
-fn void set_model_mesh_material(RLModel* model, CInt meshId, CInt materialId) @cname("SetModelMeshMaterial");                     // Set material for a mesh
+fn void RLMaterial.set_texture(RLMaterial* material, RLMaterialMapIndex mapType, RLTexture2D texture) @cname("SetMaterialTexture"); // Set texture for a material map type (MATERIAL_MAP_DIFFUSE, MATERIAL_MAP_SPECULAR...)
+fn void RLModel.set_mesh_material(RLModel* model, CInt meshId, CInt materialId) @cname("SetModelMeshMaterial");                     // Set material for a mesh
 
 // Model animations loading/unloading functions
-fn RLModelAnimation* load_model_animations(ZString file_name, CInt* anim_count) @cname("LoadModelAnimations");              // Load model animations from file
+fn RLModelAnimation* load_model_animations_(ZString file_name, CInt* anim_count) @cname("LoadModelAnimations");              // Load model animations from file
+macro RLModelAnimation[] load_model_animations(ZString file_name) { CInt count; return load_model_animations_(file_name, &count)[:count]; }
 fn void update_model_animation(RLModel model, RLModelAnimation anim, CInt frame) @cname("UpdateModelAnimation");            // Update model animation pose (CPU)
 fn void update_model_animation_bones(RLModel model, RLModelAnimation anim, CInt frame) @cname("UpdateModelAnimationBones"); // Update model animation mesh bone matrices (GPU skinning)
 fn void unload_model_animation(RLModelAnimation anim) @cname("UnloadModelAnimation");                                       // Unload animation data
-fn void unload_model_animations(RLModelAnimation* animations, CInt anim_count) @cname("UnloadModelAnimations");             // Unload animation array data
+fn void unload_model_animations_(RLModelAnimation* animations, CInt anim_count) @cname("UnloadModelAnimations");             // Unload animation array data
+macro void unload_model_animations(RLModelAnimation[] animations) { unload_model_animations_(animations.ptr, (CInt)animations.len); }
 fn bool is_model_animation_valid(RLModel model, RLModelAnimation anim) @cname("IsModelAnimationValid");                     // Check model animation skeleton match
 
 // Collision detection functions
