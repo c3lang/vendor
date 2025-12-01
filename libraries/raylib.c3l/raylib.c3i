@@ -655,9 +655,9 @@ fn bool is_window_minimized() @cname("IsWindowMinimized");                      
 fn bool is_window_maximized() @cname("IsWindowMaximized");                            // Check if window is currently maximized
 fn bool is_window_focused() @cname("IsWindowFocused");                                // Check if window is currently focused
 fn bool is_window_resized() @cname("IsWindowResized");                                // Check if window has been resized last frame
-fn bool is_window_state(ConfigFlag flag) @cname("IsWindowState");                     // Check if one specific window flag is enabled
-fn void set_window_state(ConfigFlag flags) @cname("SetWindowState");                  // Set window configuration state using flags
-fn void clear_window_state(ConfigFlag flags) @cname("ClearWindowState");              // Clear window configuration state flags
+fn bool is_window_state(RLConfigFlag flag) @cname("IsWindowState");                     // Check if one specific window flag is enabled
+fn void set_window_state(RLConfigFlag flags) @cname("SetWindowState");                  // Set window configuration state using flags
+fn void clear_window_state(RLConfigFlag flags) @cname("ClearWindowState");              // Clear window configuration state flags
 fn void toggle_fullscreen() @cname("ToggleFullscreen");                               // Toggle window state: fullscreen/windowed, resizes monitor to match window resolution
 fn void toggle_borderless_windowed() @cname("ToggleBorderlessWindowed");              // Toggle window state: borderless windowed, resizes window to match monitor resolution
 fn void maximize_window() @cname("MaximizeWindow");                                   // Set window state: maximized, if resizable
@@ -771,7 +771,7 @@ fn void unload_random_sequence(CInt* sequence) @cname("UnloadRandomSequence");  
 
 // Misc. functions
 fn void take_screenshot(ZString file_name) @cname("TakeScreenshot"); // Takes a screenshot of current screen (filename extension defines format)
-fn void set_config_flags(ConfigFlag flags) @cname("SetConfigFlags"); // Setup init configuration flags (view FLAGS)
+fn void set_config_flags(RLConfigFlag flags) @cname("SetConfigFlags"); // Setup init configuration flags (view FLAGS)
 fn void open_u_r_l(ZString url) @cname("OpenURL");                   // Open URL with default system browser (if available)
 
 // NOTE: Following functions implemented in module [utils]
@@ -849,14 +849,14 @@ fn void play_automation_event(RLAutomationEvent event) @cname("PlayAutomationEve
 //------------------------------------------------------------------------------------
 
 // Input-related functions: keyboard
-fn bool is_key_pressed(KeyboardKey key) @cname("IsKeyPressed");              // Check if a key has been pressed once
-fn bool is_key_pressed_repeat(KeyboardKey key) @cname("IsKeyPressedRepeat"); // Check if a key has been pressed again
-fn bool is_key_down(KeyboardKey key) @cname("IsKeyDown");                    // Check if a key is being pressed
-fn bool is_key_released(KeyboardKey key) @cname("IsKeyReleased");            // Check if a key has been released once
-fn bool is_key_up(KeyboardKey key) @cname("IsKeyUp");                        // Check if a key is NOT being pressed
-fn KeyboardKey get_key_pressed() @cname("GetKeyPressed");                    // Get key pressed (keycode), call it multiple times for keys queued, returns 0 when the queue is empty
-fn CInt get_char_pressed() @cname("GetCharPressed");                         // Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty
-fn void set_exit_key(KeyboardKey key) @cname("SetExitKey");                  // Set a custom key to exit program (default is ESC)
+fn bool is_key_pressed(RLKeyboardKey key) @cname("IsKeyPressed");              // Check if a key has been pressed once
+fn bool is_key_pressed_repeat(RLKeyboardKey key) @cname("IsKeyPressedRepeat"); // Check if a key has been pressed again
+fn bool is_key_down(RLKeyboardKey key) @cname("IsKeyDown");                    // Check if a key is being pressed
+fn bool is_key_released(RLKeyboardKey key) @cname("IsKeyReleased");            // Check if a key has been released once
+fn bool is_key_up(RLKeyboardKey key) @cname("IsKeyUp");                        // Check if a key is NOT being pressed
+fn RLKeyboardKey get_key_pressed() @cname("GetKeyPressed");                    // Get key pressed (keycode), call it multiple times for keys queued, returns 0 when the queue is empty
+fn CInt get_char_pressed() @cname("GetCharPressed");                           // Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty
+fn void set_exit_key(RLKeyboardKey key) @cname("SetExitKey");                  // Set a custom key to exit program (default is ESC)
 
 // Input-related functions: gamepads
 fn bool is_gamepad_available(CInt gamepad) @cname("IsGamepadAvailable");                                    // Check if a gamepad is available
@@ -897,9 +897,9 @@ fn CInt get_touch_point_count() @cname("GetTouchPointCount");           // Get n
 //------------------------------------------------------------------------------------
 // Gestures and Touch Handling Functions (Module: rgestures)
 //------------------------------------------------------------------------------------
-fn void set_gestures_enabled(Gesture flags) @cname("SetGesturesEnabled"); // Enable a set of gestures using flags
-fn bool is_gesture_detected(Gesture gesture) @cname("IsGestureDetected"); // Check if a gesture have been detected
-fn Gesture get_gesture_detected() @cname("GetGestureDetected");           // Get latest detected gesture
+fn void set_gestures_enabled(RLGesture flags) @cname("SetGesturesEnabled"); // Enable a set of gestures using flags
+fn bool is_gesture_detected(RLGesture gesture) @cname("IsGestureDetected"); // Check if a gesture have been detected
+fn RLGesture get_gesture_detected() @cname("GetGestureDetected");           // Get latest detected gesture
 fn float get_gesture_hold_duration() @cname("GetGestureHoldDuration");    // Get gesture hold time in seconds
 fn RLVector2 get_gesture_drag_vector() @cname("GetGestureDragVector");    // Get gesture drag vector
 fn float get_gesture_drag_angle() @cname("GetGestureDragAngle");          // Get gesture drag angle
@@ -1495,7 +1495,7 @@ macro void @rl_mode(CInt mode ;@body)
 // System/Window config flags
 // NOTE: Every bit registers one state (use it with bit masks)
 // By default all flags are set to 0
-enum ConfigFlag : const uint
+enum RLConfigFlag : const uint
 {
 	VSYNC_HINT         = 0x00000040, // Set to try enabling V-Sync on GPU
 	FULLSCREEN_MODE    = 0x00000002, // Set to run program in fullscreen
@@ -1516,7 +1516,7 @@ enum ConfigFlag : const uint
 // Keyboard keys (US keyboard layout)
 // NOTE: Use GetKeyPressed() to allow redefining
 // required keys for alternative layouts
-enum KeyboardKey : const int
+enum RLKeyboardKey : const int
 {
 	NONE            = 0,   // Key: NONE; used for no key pressed
 	// Alphanumeric keys
@@ -1636,7 +1636,7 @@ enum KeyboardKey : const int
 
 // Gesture
 // NOTE: It could be used as flags to enable only some gestures
-enum Gesture : const int
+enum RLGesture : const int
 {
 	NONE        = 0,   // No gesture
 	TAP         = 1,   // Tap gesture
@@ -1652,29 +1652,34 @@ enum Gesture : const int
 }
 
 // rlgl.h
-typedef FramebufferAttachType = int;
 
-const FramebufferAttachType RL_ATTACHMENT_COLOR_CHANNEL0 = 0; // Framebuffer attachment type: color 0
-const FramebufferAttachType RL_ATTACHMENT_COLOR_CHANNEL1 = 1; // Framebuffer attachment type: color 1
-const FramebufferAttachType RL_ATTACHMENT_COLOR_CHANNEL2 = 2; // Framebuffer attachment type: color 2
-const FramebufferAttachType RL_ATTACHMENT_COLOR_CHANNEL3 = 3; // Framebuffer attachment type: color 3
-const FramebufferAttachType RL_ATTACHMENT_COLOR_CHANNEL4 = 4; // Framebuffer attachment type: color 4
-const FramebufferAttachType RL_ATTACHMENT_COLOR_CHANNEL5 = 5; // Framebuffer attachment type: color 5
-const FramebufferAttachType RL_ATTACHMENT_COLOR_CHANNEL6 = 6; // Framebuffer attachment type: color 6
-const FramebufferAttachType RL_ATTACHMENT_COLOR_CHANNEL7 = 7; // Framebuffer attachment type: color 7
-const FramebufferAttachType RL_ATTACHMENT_DEPTH = 100;        // Framebuffer attachment type: depth
-const FramebufferAttachType RL_ATTACHMENT_STENCIL = 200;      // Framebuffer attachment type: stencil
+enum RLFramebufferAttachType : const int
+{
+	COLOR_CHANNEL0 = 0, // Framebuffer attachment type: color 0
+	COLOR_CHANNEL1 = 1, // Framebuffer attachment type: color 1
+	COLOR_CHANNEL2 = 2, // Framebuffer attachment type: color 2
+	COLOR_CHANNEL3 = 3, // Framebuffer attachment type: color 3
+	COLOR_CHANNEL4 = 4, // Framebuffer attachment type: color 4
+	COLOR_CHANNEL5 = 5, // Framebuffer attachment type: color 5
+	COLOR_CHANNEL6 = 6, // Framebuffer attachment type: color 6
+	COLOR_CHANNEL7 = 7, // Framebuffer attachment type: color 7
+	DEPTH = 100,        // Framebuffer attachment type: depth
+	STENCIL = 200,      // Framebuffer attachment type: stencil
+}
 
-typedef FramebufferAttachTextureType = int;
 
-const FramebufferAttachTextureType RL_ATTACHMENT_CUBEMAP_POSITIVE_X = 0; // Framebuffer texture attachment type: cubemap, +X side
-const FramebufferAttachTextureType RL_ATTACHMENT_CUBEMAP_NEGATIVE_X = 1; // Framebuffer texture attachment type: cubemap, -X side
-const FramebufferAttachTextureType RL_ATTACHMENT_CUBEMAP_POSITIVE_Y = 2; // Framebuffer texture attachment type: cubemap, +Y side
-const FramebufferAttachTextureType RL_ATTACHMENT_CUBEMAP_NEGATIVE_Y = 3; // Framebuffer texture attachment type: cubemap, -Y side
-const FramebufferAttachTextureType RL_ATTACHMENT_CUBEMAP_POSITIVE_Z = 4; // Framebuffer texture attachment type: cubemap, +Z side
-const FramebufferAttachTextureType RL_ATTACHMENT_CUBEMAP_NEGATIVE_Z = 5; // Framebuffer texture attachment type: cubemap, -Z side
-const FramebufferAttachTextureType RL_ATTACHMENT_TEXTURE2D = 100;        // Framebuffer texture attachment type: texture2d
-const FramebufferAttachTextureType RL_ATTACHMENT_RENDERBUFFER = 200;     // Framebuffer texture attachment type: renderbuffer
+enum RLFramebufferAttachTextureType : const int
+{
+	CUBEMAP_POSITIVE_X = 0, // Framebuffer texture attachment type: cubemap, +X side
+	CUBEMAP_NEGATIVE_X = 1, // Framebuffer texture attachment type: cubemap, -X side
+	CUBEMAP_POSITIVE_Y = 2, // Framebuffer texture attachment type: cubemap, +Y side
+	CUBEMAP_NEGATIVE_Y = 3, // Framebuffer texture attachment type: cubemap, -Y side
+	CUBEMAP_POSITIVE_Z = 4, // Framebuffer texture attachment type: cubemap, +Z side
+	CUBEMAP_NEGATIVE_Z = 5, // Framebuffer texture attachment type: cubemap, -Z side
+	TEXTURE2D = 100,        // Framebuffer texture attachment type: texture2d
+	RENDERBUFFER = 200,     // Framebuffer texture attachment type: renderbuffer
+}
+
 
 const RL_LINES = 0x0001;     // GL_LINES
 const RL_TRIANGLES = 0x0004; // GL_TRIANGLES
@@ -1812,10 +1817,7 @@ fn void rl_set_texture(CUInt id) @cname("rlGetShaderIdDefault"); // Set current 
 
 
 // raymath.h
-// Add two vectors (v1 + v2)
-fn RLVector2 vector2_add(RLVector2 v1, RLVector2 v2) @cname("Vector2Add");
-// Add vector and float value
-fn RLVector2 vector2_add_value(RLVector2 v, float add) @cname("Vector2AddValue");
+
 // Calculate the signed angle from v1 to v2, relative to the origin (0, 0)
 // NOTE: Coordinate system convention: positive X right, positive Y down,
 // positive angles appear clockwise, and negative angles appear counterclockwise
