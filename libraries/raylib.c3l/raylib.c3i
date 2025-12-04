@@ -1857,8 +1857,8 @@ fn void gl_unload_shader_program(CUInt id) @cname("rlUnloadShaderProgram");     
 fn CInt gl_get_location_uniform(CUInt shader_id, char* uniform_name) @cname("rlGetLocationUniform"); // Get shader location uniform
 fn CInt gl_get_location_attrib(CUInt shader_id, char* attrib_name) @cname("rlGetLocationAttrib");   // Get shader location attribute
 fn void gl_set_uniform(CInt loc_index, void* value, CInt uniform_type, CInt count) @cname("rlSetUniform"); // Set shader value uniform
-fn void gl_set_uniform_matrix(CInt loc_index, Matrix mat) @cname("rlSetUniformMatrix");                        // Set shader value matrix
-fn void gl_set_uniform_matrices(CInt loc_index, Matrix* mat, CInt count) @cname("rlSetUniformMatrices");    // Set shader value matrices
+fn void gl_set_uniform_matrix(CInt loc_index, RLMatrix mat) @cname("rlSetUniformMatrix");                        // Set shader value RLMatrix
+fn void gl_set_uniform_matrices(CInt loc_index, RLMatrix* mat, CInt count) @cname("rlSetUniformMatrices");    // Set shader value matrices
 fn void gl_set_uniform_sampler(CInt loc_index, CUInt texture_id) @cname("rlSetUniformSampler");           // Set shader value sampler
 fn void gl_set_shader(CUInt id, CInt* locs) @cname("rlSetShader");                             // Set shader currently active (id and locations)
 
@@ -1878,16 +1878,16 @@ fn CUInt gl_get_shader_buffer_size(CUInt id) @cname("rlGetShaderBufferSize");   
 // Buffer management
 fn void gl_bind_image_texture(CUInt id, CUInt index, CInt format, bool is_readonly) @cname("rlBindImageTexture");  // Bind image texture
 
-// Matrix state management
-fn Matrix gl_get_matrix_modelview() @cname("rlGetMatrixModelview");                                  // Get internal modelview matrix
-fn Matrix gl_get_matrix_projection() @cname("rlGetMatrixProjection");                                 // Get internal projection matrix
-fn Matrix gl_get_matrix_transform() @cname("rlGetMatrixTransform");                                  // Get internal accumulated transform matrix
-fn Matrix gl_get_matrix_projection_stereo(CInt eye) @cname("rlGetMatrixProjectionStereo");                        // Get internal projection matrix for stereo render (selected eye)
-fn Matrix gl_get_matrix_view_offset_stereo(CInt eye) @cname("rlGetMatrixViewOffsetStereo");                        // Get internal view offset matrix for stereo render (selected eye)
-fn void gl_set_matrix_projection(Matrix proj) @cname("rlSetMatrixProjection");                            // Set a custom projection matrix (replaces internal projection matrix)
-fn void gl_set_matrix_modelview(Matrix view) @cname("rlSetMatrixModelview");                             // Set a custom modelview matrix (replaces internal modelview matrix)
-fn void gl_set_matrix_projection_stereo(Matrix right, Matrix left) @cname("rlSetMatrixProjectionStereo");        // Set eyes projection matrices for stereo rendering
-fn void gl_set_matrix_view_offset_stereo(Matrix right, Matrix left) @cname("rlSetMatrixViewOffsetStereo");        // Set eyes view offsets matrices for stereo rendering
+// RLMatrix state management
+fn RLMatrix gl_get_matrix_modelview() @cname("rlGetMatrixModelview");                                  // Get internal modelview matrix
+fn RLMatrix gl_get_matrix_projection() @cname("rlGetMatrixProjection");                                 // Get internal projection matrix
+fn RLMatrix gl_get_matrix_transform() @cname("rlGetMatrixTransform");                                  // Get internal accumulated transform matrix
+fn RLMatrix gl_get_matrix_projection_stereo(CInt eye) @cname("rlGetMatrixProjectionStereo");                        // Get internal projection matrix for stereo render (selected eye)
+fn RLMatrix gl_get_matrix_view_offset_stereo(CInt eye) @cname("rlGetMatrixViewOffsetStereo");                        // Get internal view offset matrix for stereo render (selected eye)
+fn void gl_set_matrix_projection(RLMatrix proj) @cname("rlSetMatrixProjection");                            // Set a custom projection matrix (replaces internal projection matrix)
+fn void gl_set_matrix_modelview(RLMatrix view) @cname("rlSetMatrixModelview");                             // Set a custom modelview matrix (replaces internal modelview matrix)
+fn void gl_set_matrix_projection_stereo(RLMatrix right, RLMatrix left) @cname("rlSetMatrixProjectionStereo");        // Set eyes projection matrices for stereo rendering
+fn void gl_set_matrix_view_offset_stereo(RLMatrix right, RLMatrix left) @cname("rlSetMatrixViewOffsetStereo");        // Set eyes view offsets matrices for stereo rendering
 
 // Quick and dirty cube/quad buffers load->draw->unload
 fn void gl_load_draw_cube() @cname("rlLoadDrawCube");     // Load and draw a cube
@@ -2092,57 +2092,57 @@ fn RLVector4 vector4_zero() @cname("Vector4Zero");
 
 // Add two matrices
 fn RLMatrix matrix_add(RLMatrix left, RLMatrix right) @cname("MatrixAdd");
-// Decompose a transformation matrix into its rotational, translational and scaling components
+// Decompose a transformation RLMatrix into its rotational, translational and scaling components
 fn void matrix_decompose(RLMatrix mat, RLVector3* translation, RLQuaternion* rotation, RLVector3* scale) @cname("MatrixDecompose");
-// Compute matrix determinant
+// Compute RLMatrix determinant
 fn float matrix_determinant(RLMatrix mat) @cname("MatrixDeterminant");
-// Get perspective projection matrix
+// Get perspective projection RLMatrix
 fn RLMatrix matrix_frustum(double left, double right, double bottom, double top, double near_plane, double far_plane) @cname("MatrixFrustum");
-// Get identity matrix
+// Get identity RLMatrix
 fn RLMatrix matrix_identity() @cname("MatrixIdentity");
-// Invert provided matrix
+// Invert provided RLMatrix
 fn  RLMatrix matrix_invert(RLMatrix mat) @cname("MatrixInvert");
-// Get camera look-at matrix (view matrix)
+// Get camera look-at RLMatrix (view RLMatrix)
 fn RLMatrix matrix_look_at(RLVector3 eye, RLVector3 target, RLVector3 up) @cname("MatrixLookAt");
-// Get two matrix multiplication
+// Get two RLMatrix multiplication
 // NOTE: When multiplying matrices... the order matters!
 fn RLMatrix matrix_multiply(RLMatrix left, RLMatrix right) @cname("MatrixMultiply");
-// Get orthographic projection matrix
+// Get orthographic projection RLMatrix
 fn RLMatrix matrix_ortho(double left, double right, double bottom, double top, double near_plane, double far_plane) @cname("MatrixOrtho");
-// Get perspective projection matrix
+// Get perspective projection RLMatrix
 // NOTE: Fovy angle must be provided in radians
 fn RLMatrix matrix_perspective(double fovY, double aspect, double near_plane, double far_plane) @cname("MatrixPerspective");
-// Create rotation matrix from axis and angle
+// Create rotation RLMatrix from axis and angle
 // NOTE: Angle should be provided in radians
 fn RLMatrix matrix_rotate(RLVector3 axis, float angle) @cname("MatrixRotate");
-// Get x-rotation matrix
+// Get x-rotation RLMatrix
 // NOTE: Angle must be provided in radians
 fn RLMatrix matrix_rotate_x(float angle) @cname("MatrixRotateX");
-// Get zyx-rotation matrix
+// Get zyx-rotation RLMatrix
 // NOTE: Angle must be provided in radians
 fn RLMatrix matrix_rotate_x_y_z(RLVector3 angle) @cname("MatrixRotateXYZ");
-// Get y-rotation matrix
+// Get y-rotation RLMatrix
 // NOTE: Angle must be provided in radians
 fn RLMatrix matrix_rotate_y(float angle) @cname("MatrixRotateY");
-// Get z-rotation matrix
+// Get z-rotation RLMatrix
 // NOTE: Angle must be provided in radians
 fn RLMatrix matrix_rotate_z(float angle) @cname("MatrixRotateZ");
-// Get zyx-rotation matrix
+// Get zyx-rotation RLMatrix
 // NOTE: Angle must be provided in radians
 fn RLMatrix matrix_rotate_z_y_x(RLVector3 angle) @cname("MatrixRotateZYX");
-// Get scaling matrix
+// Get scaling RLMatrix
 fn RLMatrix matrix_scale(float x, float y, float z) @cname("MatrixScale");
 // Subtract two matrices (left - right)
 fn RLMatrix matrix_subtract(RLMatrix left, RLMatrix right) @cname("MatrixSubtract");
 
-// Get float array of matrix data
+// Get float array of RLMatrix data
 // fn float16 matrixToFloatV(RLMatrix mat) @cname("MatrixToFloatV"); // float16 == float[<16>] ??
 
-// Get the trace of the matrix (sum of the values along the diagonal)
+// Get the trace of the RLMatrix (sum of the values along the diagonal)
 fn float matrix_trace(RLMatrix mat) @cname("MatrixTrace");
-// Get translation matrix
+// Get translation RLMatrix
 fn  RLMatrix matrix_translate(float x, float y, float z) @cname("MatrixTranslate");
-// Transposes provided matrix
+// Transposes provided RLMatrix
 fn RLMatrix matrix_transpose(RLMatrix mat) @cname("MatrixTranspose");
 
 // Add two quaternions
@@ -2162,7 +2162,7 @@ fn RLQuaternion quaternion_from_axis_angle(RLVector3 axis, float angle) @cname("
 // Get the quaternion equivalent to Euler angles
 // NOTE: Rotation order is ZYX
 fn RLQuaternion quaternion_from_euler(float pitch, float yaw, float roll) @cname("QuaternionFromEuler");
-// Get a quaternion for a given rotation matrix
+// Get a quaternion for a given rotation RLMatrix
 fn RLQuaternion quaternion_from_matrix(RLMatrix mat) @cname("QuaternionFromMatrix");
 // Calculate quaternion based on the rotation from one vector to another
 fn RLQuaternion quaternion_from_vector3_to_vector3(RLVector3 from, RLVector3 to) @cname("QuaternionFromVector3ToVector3");
@@ -2193,9 +2193,9 @@ fn void quaternion_to_axis_angle(RLQuaternion q, RLVector3* out_axis, float* out
 // Get the Euler angles equivalent to quaternion (roll, pitch, yaw)
 // NOTE: Angles are returned in a RLVector3 struct in radians
 fn RLVector3 quaternion_to_euler(RLQuaternion q) @cname("QuaternionToEuler");
-// Get a matrix for a given quaternion
+// Get a RLMatrix for a given quaternion
 fn RLMatrix quaternion_to_matrix(RLQuaternion q) @cname("QuaternionToMatrix");
-// Transform a quaternion given a transformation matrix
+// Transform a quaternion given a transformation RLMatrix
 fn RLQuaternion quaternion_transform(RLQuaternion q, RLMatrix mat) @cname("QuaternionTransform");
 
 
