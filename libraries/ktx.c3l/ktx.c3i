@@ -1,0 +1,677 @@
+module khr::ktx;
+import khr::df;
+const ANIMDATA_KEY = "KTXanimData";
+const ORIENTATION_KEY = "KTXorientation";
+const SWIZZLE_KEY = "KTXswizzle";
+const WRITER_KEY = "KTXwriter";
+const WRITER_SCPARAMS_KEY = "KTXwriterScParams";
+const ORIENTATION1_FMT = "S=%c";
+const ORIENTATION2_FMT = "S=%c,T=%c";
+const ORIENTATION3_FMT = "S=%c,T=%c,R=%c";
+const GL_UNPACK_ALIGNMENT = 4;
+enum KtxErrorCode : const CInt
+{
+	SUCCESS = 0,
+	FILE_DATA_ERROR,
+	FILE_ISPIPE,
+	FILE_OPEN_FAILED,
+	FILE_OVERFLOW,
+	FILE_READ_ERROR,
+	FILE_SEEK_ERROR,
+	FILE_UNEXPECTED_EOF,
+	FILE_WRITE_ERROR,
+	GL_ERROR,
+	INVALID_OPERATION,
+	INVALID_VALUE,
+	NOT_FOUND,
+	OUT_OF_MEMORY,
+	TRANSCODE_FAILED,
+	UNKNOWN_FILE_FORMAT,
+	UNSUPPORTED_TEXTURE_TYPE,
+	UNSUPPORTED_FEATURE,
+	LIBRARY_NOT_LINKED,
+	ERROR_MAX_ENUM = KtxErrorCode.LIBRARY_NOT_LINKED,
+}
+const char[12] IDENTIFIER_REF = { 0xAB, 0x4B, 0x54, 0x58, 0x20, 0x31, 0x31, 0xBB, 0x0D, 0x0A, 0x1A, 0x0A };
+const ENDIAN_REF = 0x04030201;
+const ENDIAN_REF_REV = 0x01020304;
+const HEADER_SIZE = 64;
+alias KtxResult = KtxErrorCode;
+alias KtxKVListEntry = void;
+alias KtxHashList = KtxKVListEntry*;
+alias KtxHashListEntry = KtxKVListEntry;
+enum KtxOrientationX : const CInt
+{
+	LEFT = 'l', RIGHT = 'r',
+}
+enum KtxOrientationY : const CInt
+{
+	UP = 'u', DOWN = 'd',
+}
+enum KtxOrientationZ : const CInt
+{
+	IN = 'i', OUT = 'o',
+}
+enum KtxClassId : const CInt
+{
+	TEXTURE1_C = 1,
+	TEXTURE2_C = 2,
+}
+struct KtxOrientation
+{
+	KtxOrientationX x;
+	KtxOrientationY y;
+	KtxOrientationZ z;
+}
+struct KtxTexture
+{
+	KtxClassId classId;
+	KtxTextureVTbl* vtbl;
+	KtxTextureVVTbl* vvtbl;
+	void* _protected;
+	bool isArray;
+	bool isCubemap;
+	bool isCompressed;
+	bool generateMipmaps;
+	uint baseWidth;
+	uint baseHeight;
+	uint baseDepth;
+	uint numDimensions;
+	uint numLevels;
+	uint numLayers;
+	uint numFaces;
+	KtxOrientation orientation;
+	KtxHashList kvDataHead;
+	uint kvDataLen;
+	char* kvData;
+	usz dataSize;
+	char* pData;
+}
+alias PFN_ktxIterCb = fn KtxErrorCode(int miplevel, int face,
+	int width, int height, int depth,
+	ulong faceLodSize,
+	void* pixels, void* userdata);
+alias PRN_ktxExDestroy = fn void(KtxTexture* this);
+alias PFN_ktExGetImageOffset = fn KtxErrorCode(KtxTexture* this, uint level,
+	uint layer,
+	uint faceSlice,
+	usz* pOffset);
+alias PFN_ktExGetDataSizeUncompressed = fn usz(KtxTexture* this);
+alias PFN_ktExGetImageSize = fn usz(KtxTexture* this, uint level);
+alias PFN_ktExIterateLevels = fn KtxErrorCode(KtxTexture* this, PFN_ktxIterCb iterCb,
+	void* userdata);
+alias PFN_ktExIterateLoadLevelFaces = fn KtxErrorCode(KtxTexture* this,
+	PFN_ktxIterCb iterCb,
+	void* userdata);
+alias PFN_ktExLoadImageData = fn KtxErrorCode(KtxTexture* this,
+	char* pBuffer,
+	usz bufSize);
+alias PFN_ktExNeedsTranscoding = fn bool(KtxTexture* this);
+alias PFN_ktExSetImageFromMemory = fn KtxErrorCode(KtxTexture* this,
+	uint level,
+	uint layer,
+	uint faceSlice,
+	ZString src,
+	usz srcSize);
+alias PFN_ktExSetImageFromStdioStream = fn KtxErrorCode(KtxTexture* this,
+	uint level,
+	uint layer,
+	uint faceSlice,
+	void* /* FILE* */ src, usz srcSize);
+alias PFN_ktExWriteToStdioStream = fn KtxErrorCode(KtxTexture* this, void* /* FILE* */ dstsstr);
+alias PFN_ktExWriteToNamedFile = fn KtxErrorCode(KtxTexture* this,
+	ZString dstname);
+alias PFN_ktExWriteToMemory = fn KtxErrorCode(KtxTexture* this,
+	char** bytes, usz* size);
+alias PFN_ktExWriteToStream = fn KtxErrorCode(KtxTexture* this,
+	KtxStream* dststr);
+struct KtxTextureVTbl
+{
+	PRN_ktxExDestroy destroy;
+	PFN_ktExGetImageOffset getImageOffset;
+	PFN_ktExGetDataSizeUncompressed getDataSizeUncompressed;
+	PFN_ktExGetImageSize getImageSize;
+	PFN_ktExIterateLevels iterateLevels;
+	PFN_ktExIterateLoadLevelFaces iterateLoadLevelFaces;
+	PFN_ktExNeedsTranscoding needsTranscoding;
+	PFN_ktExLoadImageData loadImageData;
+	PFN_ktExSetImageFromMemory setImageFromMemory;
+	PFN_ktExSetImageFromStdioStream setImageFromStdioStream;
+	PFN_ktExWriteToStdioStream writeToStdioStream;
+	PFN_ktExWriteToNamedFile writeToNamedFile;
+	PFN_ktExWriteToMemory writeToMemory;
+	PFN_ktExWriteToStream writeToStream;
+}
+alias KtxTextureVVTbl = void;
+struct KtxTexture1
+{
+	KtxClassId classId;
+	KtxTextureVTbl* vtbl;
+	KtxTextureVVTbl* vvtbl;
+	void* _protected;
+	bool isArray;
+	bool isCubemap;
+	bool isCompressed;
+	bool generateMipmaps;
+	uint baseWidth;
+	uint baseHeight;
+	uint baseDepth;
+	uint numDimensions;
+	uint numLevels;
+	uint numLayers;
+	uint numFaces;
+	KtxOrientation orientation;
+	KtxHashList kvDataHead;
+	uint kvDataLen;
+	char* kvData;
+	usz dataSize;
+	char* pData;
+	uint glFormat;
+	uint glInternalformat;
+	uint glBaseInternalformat;
+	uint glType;
+	void* _private;
+}
+enum KtxSuperCmpScheme : const CInt
+{
+	NONE = 0,
+	BASIS_LZ = 1,
+	ZSTD = 2,
+	BEGIN_RANGE = KtxSuperCmpScheme.NONE,
+	END_RANGE = KtxSuperCmpScheme.ZSTD,
+	BEGIN_VENDOR_RANGE = 0x10000,
+	END_VENDOR_RANGE = 0x1ffff,
+	BEGIN_RESERVED = 0x20000,
+}
+struct KtxTexture2
+{
+	KtxClassId classId;
+	KtxTextureVTbl* vtbl;
+	KtxTextureVVTbl* vvtbl;
+	void* _protected;
+	bool isArray;
+	bool isCubemap;
+	bool isCompressed;
+	bool generateMipmaps;
+	uint baseWidth;
+	uint baseHeight;
+	uint baseDepth;
+	uint numDimensions;
+	uint numLevels;
+	uint numLayers;
+	uint numFaces;
+	KtxOrientation orientation;
+	KtxHashList kvDataHead;
+	uint kvDataLen;
+	char* kvData;
+	usz dataSize;
+	char* pData;
+	uint vkFormat;
+	uint* pDfd;
+	KtxSuperCmpScheme supercompressionScheme;
+	bool isVideo;
+	uint duration;
+	uint timescale;
+	uint loopcount;
+	void* _private;
+}
+struct KtxTextureCreateInfo
+{
+	uint glInternalformat;
+	uint vkFormat;
+	uint* pDfd;
+	uint baseWidth;
+	uint baseHeight;
+	uint baseDepth;
+	uint numDimensions;
+	uint numLevels;
+	uint numLayers;
+	uint numFaces;
+	bool isArray;
+	bool generateMipmaps;
+}
+enum KtxTextureCreateStorageEnum : const CInt
+{
+	NO_STORAGE = 0,
+	ALLOC_STORAGE = 1,
+}
+enum KtxTextureCreateFlags : const CInt
+{
+	NO_FLAGS = 0x00,
+	LOAD_IMAGE_DATA_BIT = 0x01,
+	RAW_KVDATA_BIT = 0x02,
+	SKIP_KVDATA_BIT = 0x04,
+}
+alias KtxOff = ulong;
+enum KtxStreamType : const CInt
+{
+	FILE = 1,
+	MEMORY = 2,
+	CUSTOM = 3,
+}
+alias KtxStream_read = fn KtxErrorCode(KtxStream* str, void* dst,
+	usz count);
+alias KtxStream_skip = fn KtxErrorCode(KtxStream* str,
+	usz count);
+alias KtxStream_write = fn KtxErrorCode(KtxStream* str, void* src,
+	usz size,
+	usz count);
+alias KtxStream_getpos = fn KtxErrorCode(KtxStream* str, KtxOff* offset);
+alias KtxStream_setpos = fn KtxErrorCode(KtxStream* str, KtxOff offset);
+alias KtxStream_getsize = fn KtxErrorCode(KtxStream* str, usz* size);
+alias KtxStream_destruct = fn void(KtxStream* str);
+struct KtxStream
+{
+	KtxStream_read read;
+	KtxStream_skip skip;
+	KtxStream_write write;
+	KtxStream_getpos getpos;
+	KtxStream_setpos setpos;
+	KtxStream_getsize getsize;
+	KtxStream_destruct destruct;
+	KtxStreamType type;
+	union data
+	{
+	void* /* FILE* */ file;
+	void* mem;
+	struct custom_ptr
+	{
+	void* address;
+	void* allocatorAddress;
+	usz size;
+	}
+	}
+	KtxOff readpos;
+	bool closeOnDestruct;
+}
+fn KtxErrorCode texture_create_from_stdio_stream(void* /* FILE* */ stdioStream,
+	KtxTextureCreateFlags createFlags,
+	KtxTexture** newTex) @cname("ktxTexture_CreateFromStdioStream");
+fn KtxErrorCode texture_create_from_named_file(ZString filename,
+	KtxTextureCreateFlags createFlags,
+	KtxTexture** newTex) @cname("ktxTexture_CreateFromNamedFile");
+fn KtxErrorCode texture_create_from_memory(char* bytes, usz size,
+	KtxTextureCreateFlags createFlags,
+	KtxTexture** newTex) @cname("ktxTexture_CreateFromMemory");
+fn KtxErrorCode texture_create_from_stream(KtxStream* stream,
+	KtxTextureCreateFlags createFlags,
+	KtxTexture** newTex) @cname("ktxTexture_CreateFromStream");
+fn char* KtxTexture.get_data(&self) @cname("ktxTexture_GetData");
+fn uint KtxTexture.get_row_pitch(&self, uint level) @cname("ktxTexture_GetRowPitch");
+fn uint KtxTexture.get_element_size(&self) @cname("ktxTexture_GetElementSize");
+fn usz KtxTexture.get_data_size(&self) @cname("ktxTexture_GetDataSize");
+fn KtxErrorCode KtxTexture.gl_upload(&self, uint* pTexture, uint* pTarget,
+	uint* pGlerror) @cname("ktxtexture_GLUpload");
+fn KtxErrorCode KtxTexture.iterate_level_faces(&self, PFN_ktxIterCb iterCb,
+	void* userdata) @cname("ktxtexture_IterateLevelFaces");
+fn KtxErrorCode texture1_create(KtxTextureCreateInfo* createInfo,
+	KtxTextureCreateStorageEnum storageAllocation,
+	KtxTexture1** newTex) @cname("ktxtexture1_Create");
+fn KtxErrorCode texture1_create_from_stdio_stream(void* /* FILE* */ stdioStream,
+	KtxTextureCreateFlags createFlags,
+	KtxTexture1** newTex) @cname("ktxtexture1_CreateFromStdioStream");
+fn KtxErrorCode texture1_create_from_named_file(ZString filename,
+	KtxTextureCreateFlags createFlags,
+	KtxTexture1** newTex) @cname("ktxtexture1_CreateFromNamedFile");
+fn KtxErrorCode texture1_create_from_memory(char* bytes, usz size,
+	KtxTextureCreateFlags createFlags,
+	KtxTexture1** newTex) @cname("ktxtexture1_CreateFromMemory");
+fn KtxErrorCode texture1_create_from_stream(KtxStream* stream,
+	KtxTextureCreateFlags createFlags,
+	KtxTexture1** newTex) @cname("ktxtexture1_CreateFromStream");
+fn bool KtxTexture1.needs_transcoding(&self) @cname("ktxTexture1_NeedsTranscoding");
+fn KtxErrorCode KtxTexture1.write_ktx2_to_stdio_stream(&self, void* /* FILE* */ dstsstr) @cname("ktxTexture1_WriteKTX2ToStdioStream");
+fn KtxErrorCode KtxTexture1.write_ktx2_to_named_file(&self, ZString dstname) @cname("ktxTexture1_WriteKTX2ToNamedFile");
+fn KtxErrorCode KtxTexture1.write_ktx2_to_memory(&self,
+	char** bytes, usz* size) @cname("ktxtexture1_WriteKTX2ToMemory");
+fn KtxErrorCode KtxTexture1.write_ktx2_to_stream(&self, KtxStream *dststr) @cname("ktxTexture1_WriteKTX2ToStream");
+fn KtxErrorCode texture2_create(KtxTextureCreateInfo* createInfo,
+	KtxTextureCreateStorageEnum storageAllocation,
+	KtxTexture2** newTex) @cname("ktxtexture2_Create");
+fn KtxErrorCode texture2_create_copy(KtxTexture2* orig, KtxTexture2** newTex) @cname("ktxTexture2_CreateCopy");
+fn KtxErrorCode texture2_create_from_stdio_stream(void* /* FILE* */ stdioStream,
+	KtxTextureCreateFlags createFlags,
+	KtxTexture2** newTex) @cname("ktxtexture2_CreateFromStdioStream");
+fn KtxErrorCode texture2_create_from_named_file(ZString filename,
+	KtxTextureCreateFlags createFlags,
+	KtxTexture2** newTex) @cname("ktxtexture2_CreateFromNamedFile");
+fn KtxErrorCode texture2_create_from_memory(char* bytes, usz size,
+	KtxTextureCreateFlags createFlags,
+	KtxTexture2** newTex) @cname("ktxtexture2_CreateFromMemory");
+fn KtxErrorCode texture2_create_from_stream(KtxStream* stream,
+	KtxTextureCreateFlags createFlags,
+	KtxTexture2** newTex) @cname("ktxtexture2_CreateFromStream");
+fn KtxErrorCode KtxTexture2.compress_basis(&self, uint quality) @cname("ktxTexture2_CompressBasis");
+fn KtxErrorCode KtxTexture2.deflate_zstd(&self, uint level) @cname("ktxTexture2_DeflateZstd");
+fn void KtxTexture2.get_component_info(&self, uint* numComponents,
+	uint* componentByteLength) @cname("ktxtexture2_GetComponentInfo");
+fn uint KtxTexture2.get_num_components(&self) @cname("ktxTexture2_GetNumComponents");
+fn KhrDfTransfer KtxTexture2.get_oetf_enum(&self) @cname("ktxTexture2_GetOETF_e");
+fn uint KtxTexture2.get_oetf(&self) @cname("ktxTexture2_GetOETF");
+fn KhrDfModel KtxTexture2.get_color_model_enum(&self) @cname("ktxTexture2_GetColorModel_e");
+fn bool KtxTexture2.get_premultiplied_alpha(&self) @cname("ktxTexture2_GetPremultipliedAlpha");
+fn bool KtxTexture2.needs_transcoding(&self) @cname("ktxTexture2_NeedsTranscoding");
+enum KtxPackUastcFlags : const CInt
+{
+	LEVEL_FASTEST = 0,
+	LEVEL_FASTER = 1,
+	LEVEL_DEFAULT = 2,
+	LEVEL_SLOWER = 3,
+	LEVEL_VERYSLOW = 4,
+	MAX_LEVEL = KtxPackUastcFlags.LEVEL_VERYSLOW,
+	LEVEL_MASK = 0xF,
+	FAVOR_UASTC_ERROR = 8,
+	FAVOR_BC7_ERROR = 16,
+	ETC1_FASTER_HINTS = 64,
+	ETC1_FASTEST_HINTS = 128,
+	_ETC1_DISABLE_FLIP_AND_INDIVIDUAL = 256,
+}
+enum KtxPackAstcQualityLevel : const CInt
+{
+	FASTEST = 0,
+	FAST = 10,
+	MEDIUM = 60,
+	THOROUGH = 98,
+	EXHAUSTIVE = 100,
+	MAX = EXHAUSTIVE,
+}
+enum KtxPackAstcBlockDimension : const CInt
+{
+	DIMENSION_4X4,
+	DIMENSION_5X4,
+	DIMENSION_5X5,
+	DIMENSION_6X5,
+	DIMENSION_6X6,
+	DIMENSION_8X5,
+	DIMENSION_8X6,
+	DIMENSION_10X5,
+	DIMENSION_10X6,
+	DIMENSION_8X8,
+	DIMENSION_10X8,
+	DIMENSION_10X10,
+	DIMENSION_12X10,
+	DIMENSION_12X12,
+	DIMENSION_3X3X3,
+	DIMENSION_4X3X3,
+	DIMENSION_4X4X3,
+	DIMENSION_4X4X4,
+	DIMENSION_5X4X4,
+	DIMENSION_5X5X4,
+	DIMENSION_5X5X5,
+	DIMENSION_6X5X5,
+	DIMENSION_6X6X5,
+	DIMENSION_6X6X6,
+	DIMENSION_MAX = KtxPackAstcBlockDimension.DIMENSION_6X6X6,
+}
+enum KtxPackAstcEncoder : const CInt
+{
+	DEFAULT,
+	LDR,
+	HDR,
+	MAX = KtxPackAstcEncoder.HDR,
+}
+extern const uint ETC1S_DEFAULT_COMPRESSION_LEVEL;
+struct KtxAstcParams
+{
+	uint structSize;
+	bool verbose;
+	uint threadCount;
+	uint blockDimension;
+	uint mode;
+	uint qualityLevel;
+	bool normalMap;
+	bool perceptual;
+	char[4] inputSwizzle;
+}
+fn KtxErrorCode KtxTexture2.compress_astc_ex(&self, KtxAstcParams* params) @cname("ktxTexture2_CompressAstcEx");
+fn KtxErrorCode KtxTexture2.compress_astc(&self, uint quality) @cname("ktxTexture2_CompressAstc");
+struct KtxBasisParams
+{
+	uint structSize;
+	bool uastc;
+	bool verbose;
+	bool noSSE;
+	uint threadCount;
+	uint compressionLevel;
+	uint qualityLevel;
+	uint maxEndpoints;
+	float endpointRDOThreshold;
+	uint maxSelectors;
+	float selectorRDOThreshold;
+	char[4] inputSwizzle;
+	bool normalMap;
+	bool separateRGToRGB_A;
+	bool preSwizzle;
+	bool noEndpointRDO;
+	bool noSelectorRDO;
+	KtxPackUastcFlags uastcFlags;
+	bool uastcRDO;
+	float uastcRDOQualityScalar;
+	uint uastcRDODictSize;
+	float uastcRDOMaxSmoothBlockErrorScale;
+	float uastcRDOMaxSmoothBlockStdDev;
+	bool uastcRDODontFavorSimplerModes;
+	bool uastcRDONoMultithreading;
+}
+fn KtxErrorCode KtxTexture2.compress_basis_ex(&self, KtxBasisParams* params) @cname("ktxTexture2_CompressBasisEx");
+enum KtxTranscodeFmt : const CInt
+{
+	ETC1_RGB = 0,
+	ETC2_RGBA = 1,
+	BC1_RGB = 2,
+	BC3_RGBA = 3,
+	BC4_R = 4,
+	BC5_RG = 5,
+	BC7_RGBA = 6,
+	PVRTC1_4_RGB = 8,
+	PVRTC1_4_RGBA = 9,
+	ASTC_4X4_RGBA = 10,
+	PVRTC2_4_RGB = 18,
+	PVRTC2_4_RGBA = 19,
+	ETC2_EAC_R11 = 20,
+	ETC2_EAC_RG11 = 21,
+	RGBA32 = 13,
+	RGB565 = 14,
+	BGR565 = 15,
+	RGBA4444 = 16,
+	ETC = 22,
+	BC1_OR_3 = 23,
+	NOSELECTION = 0X7FFFFFFF,
+}
+enum KtxTranscodeFlags : const CInt
+{
+	PVRTC_DECODE_TO_NEXT_POW2 = 2,
+	TRANSCODE_ALPHA_DATA_TO_OPAQUE_FORMATS = 4,
+	HIGH_QUALITY = 32,
+}
+fn KtxErrorCode KtxTexture2.transcode_basis(&self, KtxTranscodeFmt fmt,
+	KtxTranscodeFlags transcodeFlags) @cname("ktxTexture2_TranscodeBasis");
+fn ZString error_string(KtxErrorCode error) @cname("ktxErrorString");
+fn ZString supercompression_scheme_string(KtxSuperCmpScheme scheme) @cname("ktxSupercompressionSchemeString");
+fn ZString transcode_format_string(KtxTranscodeFmt format) @cname("ktxTranscodeFormatString");
+fn KtxErrorCode hashlist_create(KtxHashList** ppHl) @cname("ktxHashList_Create");
+fn KtxErrorCode hashlist_create_copy(KtxHashList** ppHl, KtxHashList orig) @cname("ktxHashList_CreateCopy");
+fn void KtxHashList.construct(&self) @cname("ktxHashList_Construct");
+fn void KtxHashList.construct_copy(&self, KtxHashList orig) @cname("ktxHashList_ConstructCopy");
+fn void KtxHashList.destroy(&self) @cname("ktxHashList_Destroy");
+fn void KtxHashList.destruct(&self) @cname("ktxHashList_Destruct");
+fn KtxErrorCode KtxHashList.add_kv_pair(&self, ZString key,
+	uint valueLen, void* value) @cname("ktxHashList_AddKVPair");
+fn KtxErrorCode KtxHashList.delete_entry(&self, KtxHashListEntry* pEntry) @cname("ktxHashList_DeleteEntry");
+fn KtxErrorCode KtxHashList.delete_kv_pair(&self, ZString key) @cname("ktxHashList_DeleteKVPair");
+fn KtxErrorCode KtxHashList.find_entry(&self, ZString key,
+	KtxHashListEntry** ppEntry) @cname("ktxHashList_FindEntry");
+fn KtxErrorCode KtxHashList.find_value(&self, ZString key,
+	uint* pValueLen, void** pValue) @cname("ktxHashList_FindValue");
+fn KtxHashListEntry* hashlist_next(KtxHashListEntry* entry) @cname("ktxHashList_Next");
+fn KtxErrorCode KtxHashList.sort(&self) @cname("ktxHashList_Sort");
+fn KtxErrorCode KtxHashList.serialize(&self,
+	uint* kvdLen, char** kvd) @cname("ktxHashList_Serialize");
+fn KtxErrorCode KtxHashList.deserialize(&self, uint kvdLen, void* kvd) @cname("ktxHashList_Deserialize");
+fn KtxErrorCode hashlist_entry_get_key(KtxHashListEntry* this,
+	uint* pKeyLen, char** ppKey) @cname("ktxHashListEntry_GetKey");
+fn KtxErrorCode hashlist_entry_get_value(KtxHashListEntry* this,
+	uint* pValueLen, void** ppValue) @cname("ktxHashListEntry_GetValue");
+fn KtxErrorCode print_info_for_stdio_stream(void* /* FILE* */ stdioStream) @cname("ktxPrintInfoForStdioStream");
+fn KtxErrorCode print_info_for_named_file(ZString filename) @cname("ktxPrintInfoForNamedFile");
+fn KtxErrorCode print_info_for_memory(ZString bytes, usz size) @cname("ktxPrintInfoForMemory");
+macro @check(KtxErrorCode result; @body(KtxErrorCode result, String str))
+{
+	if (result != KtxErrorCode.SUCCESS)
+	{
+		$foreach $i, $name : KtxErrorCode.names:
+		if (KtxErrorCode.values[$i] == result)
+		{
+			@body(result, $name);
+			return;
+		}
+		$endforeach
+		@body(result, "UNKNOWN");
+	}
+}
+
+module khr::ktx @if($defined(vulkan::VK_VERSION));
+import vulkan;
+
+struct KtxVulkanFunctions
+{
+	PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr;
+	PFN_vkGetDeviceProcAddr vkGetDeviceProcAddr;
+	PFN_vkAllocateCommandBuffers vkAllocateCommandBuffers;
+	PFN_vkAllocateMemory vkAllocateMemory;
+	PFN_vkBeginCommandBuffer vkBeginCommandBuffer;
+	PFN_vkBindBufferMemory vkBindBufferMemory;
+	PFN_vkBindImageMemory vkBindImageMemory;
+	PFN_vkCmdBlitImage vkCmdBlitImage;
+	PFN_vkCmdCopyBufferToImage vkCmdCopyBufferToImage;
+	PFN_vkCmdPipelineBarrier vkCmdPipelineBarrier;
+	PFN_vkCreateImage vkCreateImage;
+	PFN_vkDestroyImage vkDestroyImage;
+	PFN_vkCreateBuffer vkCreateBuffer;
+	PFN_vkDestroyBuffer vkDestroyBuffer;
+	PFN_vkCreateFence vkCreateFence;
+	PFN_vkDestroyFence vkDestroyFence;
+	PFN_vkEndCommandBuffer vkEndCommandBuffer;
+	PFN_vkFreeCommandBuffers vkFreeCommandBuffers;
+	PFN_vkFreeMemory vkFreeMemory;
+	PFN_vkGetBufferMemoryRequirements vkGetBufferMemoryRequirements;
+	PFN_vkGetImageMemoryRequirements vkGetImageMemoryRequirements;
+	PFN_vkGetImageSubresourceLayout vkGetImageSubresourceLayout;
+	PFN_vkGetPhysicalDeviceImageFormatProperties vkGetPhysicalDeviceImageFormatProperties;
+	PFN_vkGetPhysicalDeviceFormatProperties vkGetPhysicalDeviceFormatProperties;
+	PFN_vkGetPhysicalDeviceMemoryProperties vkGetPhysicalDeviceMemoryProperties;
+	PFN_vkMapMemory vkMapMemory;
+	PFN_vkQueueSubmit vkQueueSubmit;
+	PFN_vkQueueWaitIdle vkQueueWaitIdle;
+	PFN_vkUnmapMemory vkUnmapMemory;
+	PFN_vkWaitForFences vkWaitForFences;
+}
+struct KtxVulkanTexture
+{
+	PFN_vkDestroyImage vkDestroyImage;
+	PFN_vkFreeMemory vkFreeMemory;
+	VkImage image;
+	VkFormat imageFormat;
+	VkImageLayout imageLayout;
+	VkDeviceMemory deviceMemory;
+	VkImageViewType viewType;
+	uint width;
+	uint height;
+	uint depth;
+	uint levelCount;
+	uint layerCount;
+	ulong allocationId;
+}
+alias KtxVulkanTextureSubAllocatorAllocMemFuncPtr = fn ulong(VkMemoryAllocateInfo* allocInfo, VkMemoryRequirements* memReq, ulong* pageCount);
+alias KtxVulkanTextureSubAllocatorBindBufferFuncPtr = fn VkResult(VkBuffer buffer, ulong allocId);
+alias KtxVulkanTextureSubAllocatorBindImageFuncPtr = fn VkResult(VkImage image, ulong allocId);
+alias KtxVulkanTextureSubAllocatorMemoryMapFuncPtr = fn VkResult(ulong allocId, ulong pageNumber, VkDeviceSize *mapLength, void** dataPtr);
+alias KtxVulkanTextureSubAllocatorMemoryUnmapFuncPtr = fn void(ulong allocId, ulong pageNumber);
+alias KtxVulkanTextureSubAllocatorFreeMemFuncPtr = fn void(ulong allocId);
+struct KtxVulkanTextureSubAllocatorCallbacks
+{
+	KtxVulkanTextureSubAllocatorAllocMemFuncPtr allocMemFuncPtr;
+	KtxVulkanTextureSubAllocatorBindBufferFuncPtr bindBufferFuncPtr;
+	KtxVulkanTextureSubAllocatorBindImageFuncPtr bindImageFuncPtr;
+	KtxVulkanTextureSubAllocatorMemoryMapFuncPtr memoryMapFuncPtr;
+	KtxVulkanTextureSubAllocatorMemoryUnmapFuncPtr memoryUnmapFuncPtr;
+	KtxVulkanTextureSubAllocatorFreeMemFuncPtr freeMemFuncPtr;
+}
+fn KtxErrorCode KtxVulkanTexture.destruct_with_suballocator(&self, VkDevice device,
+	VkAllocationCallbacks* pAllocator,
+	KtxVulkanTextureSubAllocatorCallbacks* subAllocatorCallbacks) @cname("ktxVulkanTexture_Destruct_WithSuballocator");
+fn void KtxVulkanTexture.destruct(&self, VkDevice device,
+	VkAllocationCallbacks* pAllocator) @cname("ktxVulkanTexture_Destruct");
+struct KtxVulkanDeviceInfo
+{
+	VkInstance instance; 
+	VkPhysicalDevice physicalDevice; 
+	VkDevice device; 
+	VkQueue queue; 
+	VkCommandBuffer cmdBuffer; 
+	VkCommandPool cmdPool;
+	VkAllocationCallbacks* pAllocator;
+	VkPhysicalDeviceMemoryProperties deviceMemoryProperties;
+	KtxVulkanFunctions vkFuncs;
+}
+fn KtxVulkanDeviceInfo* vulkan_device_info_create_ex(VkInstance instance, VkPhysicalDevice physicalDevice, VkDevice device,
+	VkQueue queue, VkCommandPool cmdPool,
+	VkAllocationCallbacks* pAllocator,
+	KtxVulkanFunctions* pFunctions) @cname("ktxVulkanDeviceInfo_CreateEx");
+fn KtxVulkanDeviceInfo* vulkan_device_info_create(VkPhysicalDevice physicalDevice, VkDevice device,
+	VkQueue queue, VkCommandPool cmdPool,
+	VkAllocationCallbacks* pAllocator) @cname("ktxVulkanDeviceInfo_Create");
+fn KtxErrorCode KtxVulkanDeviceInfo.construct(&self,
+	VkPhysicalDevice physicalDevice, VkDevice device,
+	VkQueue queue, VkCommandPool cmdPool,
+	VkAllocationCallbacks* pAllocator) @cname("ktxVulkanDeviceInfo_Construct");
+fn KtxErrorCode KtxVulkanDeviceInfo.construct_ex(&self,
+	VkInstance instance,
+	VkPhysicalDevice physicalDevice, VkDevice device,
+	VkQueue queue, VkCommandPool cmdPool,
+	VkAllocationCallbacks* pAllocator,
+	KtxVulkanFunctions* pFunctions) @cname("ktxVulkanDeviceInfo_ConstructEx");
+fn void KtxVulkanDeviceInfo.destruct(&self) @cname("ktxVulkanDeviceInfo_Destruct");
+fn void KtxVulkanDeviceInfo.destroy(&self) @cname("ktxVulkanDeviceInfo_Destroy");
+fn KtxErrorCode KtxTexture.vk_upload_ex_with_suballocator(&self, KtxVulkanDeviceInfo* vdi,
+	KtxVulkanTexture* vkTexture,
+	VkImageTiling tiling,
+	VkImageUsageFlags usageFlags,
+	VkImageLayout finalLayout,
+	KtxVulkanTextureSubAllocatorCallbacks* subAllocatorCallbacks) @cname("ktxTexture_VkUploadEx_WithSuballocator");
+fn KtxErrorCode KtxTexture.vk_upload_ex(&self, KtxVulkanDeviceInfo* vdi,
+	KtxVulkanTexture* vkTexture,
+	VkImageTiling tiling,
+	VkImageUsageFlags usageFlags,
+	VkImageLayout finalLayout) @cname("ktxTexture_VkUploadEx");
+fn KtxErrorCode KtxTexture.vk_upload(&self, KtxVulkanDeviceInfo* vdi,
+	KtxVulkanTexture *vkTexture) @cname("ktxTexture_VkUpload");
+fn KtxErrorCode KtxTexture1.vk_upload_ex_with_suballocator(&self, KtxVulkanDeviceInfo* vdi,
+	KtxVulkanTexture* vkTexture,
+	VkImageTiling tiling,
+	VkImageUsageFlags usageFlags,
+	VkImageLayout finalLayout,
+	KtxVulkanTextureSubAllocatorCallbacks* subAllocatorCallbacks) @cname("ktxTexture1_VkUploadEx_WithSuballocator");
+fn KtxErrorCode KtxTexture1.vk_upload_ex(&self, KtxVulkanDeviceInfo* vdi,
+	KtxVulkanTexture* vkTexture,
+	VkImageTiling tiling,
+	VkImageUsageFlags usageFlags,
+	VkImageLayout finalLayout) @cname("ktxTexture1_VkUploadEx");
+fn KtxErrorCode KtxTexture1.vk_upload(&self, KtxVulkanDeviceInfo* vdi,
+	KtxVulkanTexture *vkTexture) @cname("ktxTexture1_VkUpload");
+fn KtxErrorCode KtxTexture2.vk_upload_ex_with_suballocator(&self, KtxVulkanDeviceInfo* vdi,
+	KtxVulkanTexture* vkTexture,
+	VkImageTiling tiling,
+	VkImageUsageFlags usageFlags,
+	VkImageLayout finalLayout,
+	KtxVulkanTextureSubAllocatorCallbacks* subAllocatorCallbacks) @cname("ktxTexture2_VkUploadEx_WithSuballocator");
+fn KtxErrorCode KtxTexture2.vk_upload_ex(&self, KtxVulkanDeviceInfo* vdi,
+	KtxVulkanTexture* vkTexture,
+	VkImageTiling tiling,
+	VkImageUsageFlags usageFlags,
+	VkImageLayout finalLayout) @cname("ktxTexture2_VkUploadEx");
+fn KtxErrorCode KtxTexture2.vk_upload(&self, KtxVulkanDeviceInfo* vdi,
+	KtxVulkanTexture *vkTexture) @cname("ktxTexture2_VkUpload");
+fn VkFormat KtxTexture. get_vk_format(&self) @cname("ktxTexture_GetVkFormat");
+fn VkFormat KtxTexture1.get_vk_format(&self) @cname("ktxTexture1_GetVkFormat");
+fn VkFormat KtxTexture2.get_vk_format(&self) @cname("ktxTexture2_GetVkFormat");
