@@ -87,11 +87,45 @@ struct KtxTexture
 	usz dataSize;
 	char* pData;
 }
+macro void KtxTexture.destroy(&self) => self.vtbl.destroy(self);
+macro KtxErrorCode KtxTexture.get_image_offset(&self, uint level,
+	uint layer,
+	uint faceSlice,
+	usz* pOffset) => self.vtbl.getImageOffset(self, level, layer, faceSlice, pOffset);
+macro usz KtxTexture.get_data_size_uncompressed(&self) => self.vtbl.getDataSizeUncompressed(self);
+macro usz KtxTexture.get_image_size(&self, uint level) => self.vtbl.getImageSize(self, level);
+macro KtxErrorCode KtxTexture.iterate_levels(&self, PFN_ktxIterCb iterCb,
+	void* userdata) => self.vtbl.iterateLevels(self, iterCb, userdata);
+macro KtxErrorCode KtxTexture.iterate_load_level_faces(&self,
+	PFN_ktxIterCb iterCb,
+	void* userdata) => self.vtbl.iterateLoadLevelFaces(self, iterCb, userdata);
+macro KtxErrorCode KtxTexture.load_image_data(&self,
+	char* pBuffer,
+	usz bufSize) => self.vtbl.loadImageData(self, pBuffer, bufSize);
+macro bool KtxTexture.needs_transcoding(&self) => self.vtbl.needsTranscoding(self);
+macro KtxErrorCode KtxTexture.set_image_from_memory(&self,
+	uint level,
+	uint layer,
+	uint faceSlice,
+	ZString src,
+	usz srcSize) => self.vtbl.setImageFromMemory(self, level, layer, faceSlice, src, srcSize);
+macro KtxErrorCode KtxTexture.set_image_from_stdio_stream(&self,
+	uint level,
+	uint layer,
+	uint faceSlice,
+	void* /* FILE* */ src, usz srcSize) => self.vtbl.setImageFromStdioStream(self, level, layer, faceSlice, src, srcSize);
+macro KtxErrorCode KtxTexture.write_to_stdio_stream(&self, void* /* FILE* */ dstsstr) => self.vtbl.writeToStdioStream(self, dststr);
+macro KtxErrorCode KtxTexture.write_to_named_file(&self,
+	ZString dstname) => self.vtbl.writeToNamedFile(self, dstname);
+macro KtxErrorCode KtxTexture.write_to_memory(&self,
+	char** bytes, usz* size) => self.vtbl.writeToMemory(self, bytes, size);
+macro KtxErrorCode KtxTexture.write_to_stream(&self,
+	KtxStream* dststr) => self.vtbl.writeToStream(self, dststr);
 alias PFN_ktxIterCb = fn KtxErrorCode(int miplevel, int face,
 	int width, int height, int depth,
 	ulong faceLodSize,
 	void* pixels, void* userdata);
-alias PRN_ktxExDestroy = fn void(KtxTexture* this);
+alias PFN_ktExDestroy = fn void(KtxTexture* this);
 alias PFN_ktExGetImageOffset = fn KtxErrorCode(KtxTexture* this, uint level,
 	uint layer,
 	uint faceSlice,
@@ -127,7 +161,7 @@ alias PFN_ktExWriteToStream = fn KtxErrorCode(KtxTexture* this,
 	KtxStream* dststr);
 struct KtxTextureVTbl
 {
-	PRN_ktxExDestroy destroy;
+	PFN_ktExDestroy destroy;
 	PFN_ktExGetImageOffset getImageOffset;
 	PFN_ktExGetDataSizeUncompressed getDataSizeUncompressed;
 	PFN_ktExGetImageSize getImageSize;
@@ -172,6 +206,40 @@ struct KtxTexture1
 	uint glType;
 	void* _private;
 }
+macro void KtxTexture1.destroy(&self) => self.vtbl.destroy(self);
+macro KtxErrorCode KtxTexture1.get_image_offset(&self, uint level,
+	uint layer,
+	uint faceSlice,
+	usz* pOffset) => self.vtbl.getImageOffset(self, level, layer, faceSlice, pOffset);
+macro usz KtxTexture1.get_data_size_uncompressed(&self) => self.vtbl.getDataSizeUncompressed(self);
+macro usz KtxTexture1.get_image_size(&self, uint level) => self.vtbl.getImageSize(self, level);
+macro KtxErrorCode KtxTexture1.iterate_levels(&self, PFN_ktxIterCb iterCb,
+	void* userdata) => self.vtbl.iterateLevels(self, iterCb, userdata);
+macro KtxErrorCode KtxTexture1.iterate_load_level_faces(&self,
+	PFN_ktxIterCb iterCb,
+	void* userdata) => self.vtbl.iterateLoadLevelFaces(self, iterCb, userdata);
+macro KtxErrorCode KtxTexture1.load_image_data(&self,
+	char* pBuffer,
+	usz bufSize) => self.vtbl.loadImageData(self, pBuffer, bufSize);
+macro bool KtxTexture1.needs_transcoding(&self) => self.vtbl.needsTranscoding(self);
+macro KtxErrorCode KtxTexture1.set_image_from_memory(&self,
+	uint level,
+	uint layer,
+	uint faceSlice,
+	ZString src,
+	usz srcSize) => self.vtbl.setImageFromMemory(self, level, layer, faceSlice, src, srcSize);
+macro KtxErrorCode KtxTexture1.set_image_from_stdio_stream(&self,
+	uint level,
+	uint layer,
+	uint faceSlice,
+	void* /* FILE* */ src, usz srcSize) => self.vtbl.setImageFromStdioStream(self, level, layer, faceSlice, src, srcSize);
+macro KtxErrorCode KtxTexture1.write_to_stdio_stream(&self, void* /* FILE* */ dstsstr) => self.vtbl.writeToStdioStream(self, dststr);
+macro KtxErrorCode KtxTexture1.write_to_named_file(&self,
+	ZString dstname) => self.vtbl.writeToNamedFile(self, dstname);
+macro KtxErrorCode KtxTexture1.write_to_memory(&self,
+	char** bytes, usz* size) => self.vtbl.writeToMemory(self, bytes, size);
+macro KtxErrorCode KtxTexture1.write_to_stream(&self,
+	KtxStream* dststr) => self.vtbl.writeToStream(self, dststr);
 enum KtxSuperCmpScheme : const CInt
 {
 	NONE = 0,
@@ -215,6 +283,40 @@ struct KtxTexture2
 	uint loopcount;
 	void* _private;
 }
+macro void KtxTexture2.destroy(&self) => self.vtbl.destroy(self);
+macro KtxErrorCode KtxTexture2.get_image_offset(&self, uint level,
+	uint layer,
+	uint faceSlice,
+	usz* pOffset) => self.vtbl.getImageOffset(self, level, layer, faceSlice, pOffset);
+macro usz KtxTexture2.get_data_size_uncompressed(&self) => self.vtbl.getDataSizeUncompressed(self);
+macro usz KtxTexture2.get_image_size(&self, uint level) => self.vtbl.getImageSize(self, level);
+macro KtxErrorCode KtxTexture2.iterate_levels(&self, PFN_ktxIterCb iterCb,
+	void* userdata) => self.vtbl.iterateLevels(self, iterCb, userdata);
+macro KtxErrorCode KtxTexture2.iterate_load_level_faces(&self,
+	PFN_ktxIterCb iterCb,
+	void* userdata) => self.vtbl.iterateLoadLevelFaces(self, iterCb, userdata);
+macro KtxErrorCode KtxTexture2.load_image_data(&self,
+	char* pBuffer,
+	usz bufSize) => self.vtbl.loadImageData(self, pBuffer, bufSize);
+macro bool KtxTexture2.needs_transcoding(&self) => self.vtbl.needsTranscoding(self);
+macro KtxErrorCode KtxTexture2.set_image_from_memory(&self,
+	uint level,
+	uint layer,
+	uint faceSlice,
+	ZString src,
+	usz srcSize) => self.vtbl.setImageFromMemory(self, level, layer, faceSlice, src, srcSize);
+macro KtxErrorCode KtxTexture2.set_image_from_stdio_stream(&self,
+	uint level,
+	uint layer,
+	uint faceSlice,
+	void* /* FILE* */ src, usz srcSize) => self.vtbl.setImageFromStdioStream(self, level, layer, faceSlice, src, srcSize);
+macro KtxErrorCode KtxTexture2.write_to_stdio_stream(&self, void* /* FILE* */ dstsstr) => self.vtbl.writeToStdioStream(self, dststr);
+macro KtxErrorCode KtxTexture2.write_to_named_file(&self,
+	ZString dstname) => self.vtbl.writeToNamedFile(self, dstname);
+macro KtxErrorCode KtxTexture2.write_to_memory(&self,
+	char** bytes, usz* size) => self.vtbl.writeToMemory(self, bytes, size);
+macro KtxErrorCode KtxTexture2.write_to_stream(&self,
+	KtxStream* dststr) => self.vtbl.writeToStream(self, dststr);
 struct KtxTextureCreateInfo
 {
 	uint glInternalformat;
