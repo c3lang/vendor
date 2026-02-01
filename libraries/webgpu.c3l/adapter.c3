@@ -17,6 +17,6 @@ fn Device? Adapter.requestDevice(Adapter adapter, DeviceDescriptor* descriptor =
     if(device) {
         return device;
     } else {
-        return DEVICE_REQUEST_FAILED?;
+        return DEVICE_REQUEST_FAILED~;
     }
 }
