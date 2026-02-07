@@ -1,0 +1,18 @@
+{
+  "provides": "freetype",
+  "targets": {
+    "macos-aarch64": {
+      // Extra flags to the linker for this target:
+      "link-args": [
+        "-I/opt/homebrew/opt/freetype/include/freetype2",
+        "-L/opt/homebrew/opt/freetype/lib"
+      ],
+      // C3 libraries this target depends on:
+      "dependencies": [],
+      // The external libraries to link for this target:
+      "linked-libraries": [
+        "freetype"
+      ]
+    }
+  }
+}
