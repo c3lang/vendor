@@ -1,6 +1,6 @@
 # Vendor
 <p align="center">
-  <img src="https://img.shields.io/badge/c3-v7.9-blue">
+  <img src="https://img.shields.io/badge/c3-v0.7.9-blue">
 </p>
 
 This repository contains external libraries for use with C3.
