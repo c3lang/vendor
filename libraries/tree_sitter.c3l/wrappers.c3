@@ -8,7 +8,7 @@ faultdef INCOMPATIBLE_LANGUAGE_VERSION;
 
 fn TSParser*? new_with_language(TSLanguage* language) {
   TSParser* parser = ts::parser_new();
-  return ts::parser_set_language(parser, language) ? parser : INCOMPATIBLE_LANGUAGE_VERSION?;
+  return ts::parser_set_language(parser, language) ? parser : INCOMPATIBLE_LANGUAGE_VERSION~;
 }
 
 fn void delete(TSParser* parser) {
@@ -63,7 +63,7 @@ fn TSQuery*? new(TSLanguage* language, String query, uint* error_offset = null) 
   TSQueryError error_type;
   TSQuery* result = ts::query_new(language, query.ptr, query.len, error_offset, &error_type);
   if (!result) {
-    return fault_from_error(error_type)?;
+    return fault_from_error(error_type)~;
   }
   return result;
 }
@@ -94,7 +94,7 @@ fn TSQueryCapture? TSQueryMatch.get_capture(&match, String name, TSQuery* query)
     }
   }
 
-  return NOT_FOUND?;
+  return NOT_FOUND~;
 }
 
 // Query Capture

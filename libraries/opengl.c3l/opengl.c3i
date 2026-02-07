@@ -73,7 +73,7 @@ faultdef GL_INIT_FAILED;
 macro int? init(GLLoadFn load)
 {
 	int version = gl::load_gl_internal(load);
-	if (version == 0) return GL_INIT_FAILED?;
+	if (version == 0) return GL_INIT_FAILED~;
 	return version;
 }
 

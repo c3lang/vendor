@@ -18,6 +18,6 @@ fn Adapter? Instance.requestAdapter(Instance instance, RequestAdapterOptions* op
     if(adapter) {
         return adapter;
     } else {
-        return ADAPTER_REQUEST_FAILED?;
+        return ADAPTER_REQUEST_FAILED~;
     }
 }
