@@ -238,3 +238,13 @@ jobs:
           asset_path: packages/sqlite3.c3l
           asset_name: sqlite3.c3l
           asset_content_type: application/zip
+
+      - name: upload ktx
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: packages/ktx.c3l
+          asset_name: ktx.c3l
+          asset_content_type: application/zip

@@ -1,0 +1,133 @@
+{
+  "provides" : "ktx",
+  "targets" : {
+    "android-aarch64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : [ "ktx" ]
+    },
+    "freebsd-x64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : [ "ktx" ]
+    },
+    "linux-aarch64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : [ "ktx" ]
+    },
+    "linux-riscv32" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : [ "ktx" ]
+    },
+    "linux-riscv64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : [ "ktx" ]
+    },
+    "linux-x86" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : [ "ktx" ]
+    },
+    "linux-x64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : [ "ktx" ]
+    },
+    "macos-aarch64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : [ "ktx" ]
+    },
+    "macos-x64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : [ "ktx" ]
+    },
+    "netbsd-aarch64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : [ "ktx" ]
+    },
+    "netbsd-x64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : [ "ktx" ]
+    },
+    "openbsd-x64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : [ "ktx" ]
+    },
+    "wasm32" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : [ "ktx" ]
+    },
+    "wasm64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : [ "ktx" ]
+    },
+    "windows-aarch64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : [ "ktx" ]
+    },
+    "windows-x64" : {
+      // Extra flags to the linker for this target:
+      "link-args" : [],
+      // C3 libraries this target depends on:
+      "dependencies" : [],
+      // The external libraries to link for this target:
+      "linked-libraries" : [ "ktx" ]
+    },
+  }
+}
