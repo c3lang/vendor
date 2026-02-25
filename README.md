@@ -37,12 +37,17 @@ the current directory where it be used with `--libdir <folder>` and `--lib <libn
 Because of the hard naming rules in C3, names sometimes need to be
 rewritten to work in C3, and one also have to consider the namespacing C3 will add. Here follows a short guide on current best practices:
 
+### Two types of bindings
+
+There are two options when creating bindings:
+
+1. Create a direct binding, this tries to be as faithful as possible to the original API. This can be valuable if the user wants to follow the code written in other languages.
+2. Bindings leveraging C3 and conforming to C3 standards. This often creates a more integrated and overall better experience, but at the cost of making it harder to easily explore.
+
 ### Names in general
 
 1. Keep names predicable so that a user who knows the name in C can easily find the name in C3.
-2. Avoid changing the names to conform to some other style, even if it's the C3 standard. By keeping the original name it's much
- easier to drop in code examples and to see exactly what is the library code. Users can write 'C3-like' wrappers later, 
- but that can be added when the "raw" functions are already there.
+2. If using a direct binding: avoid changing the names to conform to some other style, even if it's the C3 standard.
 
 ### Module name
 
@@ -69,6 +74,7 @@ options:
 
 1. Use a lowercase prefix and use `@builtin`: `win32_OpenWindow(...)`.
 2. Use a module and lowercase the first letter in the function `win32::openWindow(...)`.
+3. If a C3-like binding is desired, rename it `open_window`.
 
 *Note* never combine things, `win32::win32_OpenWindow(...)` is *bad*.
 
@@ -89,7 +95,7 @@ name collision.
 
 #### Type names that are not valid C3 type names
 
-The recommended solution is to prefix them with a minimal name prefix which
+In direct bindings the recommended solution is to prefix them with a minimal name prefix which
 that ensures the rule is followed:
 
 `HANDLE` -> `Win32_HANDLE`
@@ -103,6 +109,8 @@ replaced by that name:
 size_t -> usz
 UINT32 -> uint
 ```
+
+For C3-like bindings, the best option is usually to always prefix with the name of the library, e.g. `FooVersionInfo` for `versioninfo` in a library "Foo".
 
 #### Type names that collide with existing C3 type names
 
@@ -190,86 +198,10 @@ enum Button
 
 #### C enums with gaps
 
-C enums that have gaps need to be modelled as constants. This can be done
-from simple to more complex.
-
-1. Declare them as regular constants (do this sparingly)
-2. Declare as constants with a distinct type.
-3. Declare in a sub-module with a distinct type.
-
-##### Declaring a regular constant
-
-This is simply 
-
-```c
-const GL_TEXTURE_2D = ...`
-```
-
-However, if this is plainly added as such, the
-module prefix will be required. So if a prefix
-already exists, then add `@builtin`:
-
-```c
-const GL_TEXTURE_2D @builtin = ...`
-```
-
-This allows it to be used without prefix. The
-enum is then replaced in types and functions with
-CInt / int.
-
-##### Using a distinct type
-
-In this case we first define a distinct type, 
-matching the enum name, then use constant but with
-the distinct type. This is a better experience for 
-the user and is recommended.
-
-The same recommendation regarding `@builtin`
-should be followed as in the normal const case.
-
-```
-distinct GlEnum = CInt;
-
-const GlEnum GL_TEXTURE_2D @builtin = ...;
-const GlEnum GL_LINE_LOOP @builtin = ...;
-```
-
-##### Declare in a sub-module with a distinct type.
-
-This method can be used when the enum doesn't have any good namespacing,
-so we want to introduce one.
-
-An example, with the following C definition:
-```c
-// C enum:
-typedef enum
-{
-   ANY = 0x1,
-   CANCEL = 0xAA,
-} Button;
-```
-
-We can model this as:
-```c
-// Define the distinct type
-distinct Button = CInt;
-
-// Create a specific sub module based on the enum name  
-module mylib::ui::button;
-
-// Place the constants inside
-const Button ANY = 0x1;
-const Button CANCEL = 0xAA;
-```
-
-The advantage that we can now do:
-```c
-ui::newButton(button::ANY);
-```
+C enums that have gaps should be modeled as `constdef`.
 
 ### Global and constant names
 
-Global and constant names can usually be just converted to conform in a minimal manner (e.g
-lower case the first character or convert all to upper case).
+Global and constant names can usually be just converted to conform in a minimal manner (e.g lower case the first character or convert all to upper case).
 
 If this is not desired, use the same strategies as functions.
