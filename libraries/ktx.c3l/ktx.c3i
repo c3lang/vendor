@@ -9,7 +9,7 @@ const ORIENTATION1_FMT = "S=%c";
 const ORIENTATION2_FMT = "S=%c,T=%c";
 const ORIENTATION3_FMT = "S=%c,T=%c,R=%c";
 const GL_UNPACK_ALIGNMENT = 4;
-enum KtxErrorCode : const CInt
+constdef KtxErrorCode : CInt
 {
 	SUCCESS = 0,
 	FILE_DATA_ERROR,
@@ -40,19 +40,19 @@ alias KtxResult = KtxErrorCode;
 alias KtxKVListEntry = void;
 alias KtxHashList = KtxKVListEntry*;
 alias KtxHashListEntry = KtxKVListEntry;
-enum KtxOrientationX : const CInt
+constdef KtxOrientationX : CInt
 {
 	LEFT = 'l', RIGHT = 'r',
 }
-enum KtxOrientationY : const CInt
+constdef KtxOrientationY : CInt
 {
 	UP = 'u', DOWN = 'd',
 }
-enum KtxOrientationZ : const CInt
+constdef KtxOrientationZ : CInt
 {
 	IN = 'i', OUT = 'o',
 }
-enum KtxClassId : const CInt
+constdef KtxClassId : CInt
 {
 	TEXTURE1_C = 1,
 	TEXTURE2_C = 2,
@@ -240,7 +240,7 @@ macro KtxErrorCode KtxTexture1.write_to_memory(&self,
 	char** bytes, usz* size) => self.vtbl.writeToMemory(self, bytes, size);
 macro KtxErrorCode KtxTexture1.write_to_stream(&self,
 	KtxStream* dststr) => self.vtbl.writeToStream(self, dststr);
-enum KtxSuperCmpScheme : const CInt
+constdef KtxSuperCmpScheme : CInt
 {
 	NONE = 0,
 	BASIS_LZ = 1,
@@ -332,12 +332,12 @@ struct KtxTextureCreateInfo
 	bool isArray;
 	bool generateMipmaps;
 }
-enum KtxTextureCreateStorageEnum : const CInt
+constdef KtxTextureCreateStorageEnum : CInt
 {
 	NO_STORAGE = 0,
 	ALLOC_STORAGE = 1,
 }
-enum KtxTextureCreateFlags : const CInt
+constdef KtxTextureCreateFlags : CInt
 {
 	NO_FLAGS = 0x00,
 	LOAD_IMAGE_DATA_BIT = 0x01,
@@ -345,7 +345,7 @@ enum KtxTextureCreateFlags : const CInt
 	SKIP_KVDATA_BIT = 0x04,
 }
 alias KtxOff = ulong;
-enum KtxStreamType : const CInt
+constdef KtxStreamType : CInt
 {
 	FILE = 1,
 	MEMORY = 2,
@@ -453,7 +453,7 @@ fn uint KtxTexture2.get_oetf(&self) @cname("ktxTexture2_GetOETF");
 fn KhrDfModel KtxTexture2.get_color_model_enum(&self) @cname("ktxTexture2_GetColorModel_e");
 fn bool KtxTexture2.get_premultiplied_alpha(&self) @cname("ktxTexture2_GetPremultipliedAlpha");
 fn bool KtxTexture2.needs_transcoding(&self) @cname("ktxTexture2_NeedsTranscoding");
-enum KtxPackUastcFlags : const CInt
+constdef KtxPackUastcFlags : CInt
 {
 	LEVEL_FASTEST = 0,
 	LEVEL_FASTER = 1,
@@ -468,7 +468,7 @@ enum KtxPackUastcFlags : const CInt
 	ETC1_FASTEST_HINTS = 128,
 	_ETC1_DISABLE_FLIP_AND_INDIVIDUAL = 256,
 }
-enum KtxPackAstcQualityLevel : const CInt
+constdef KtxPackAstcQualityLevel : CInt
 {
 	FASTEST = 0,
 	FAST = 10,
@@ -477,7 +477,7 @@ enum KtxPackAstcQualityLevel : const CInt
 	EXHAUSTIVE = 100,
 	MAX = EXHAUSTIVE,
 }
-enum KtxPackAstcBlockDimension : const CInt
+constdef KtxPackAstcBlockDimension : CInt
 {
 	DIMENSION_4X4,
 	DIMENSION_5X4,
@@ -505,7 +505,7 @@ enum KtxPackAstcBlockDimension : const CInt
 	DIMENSION_6X6X6,
 	DIMENSION_MAX = KtxPackAstcBlockDimension.DIMENSION_6X6X6,
 }
-enum KtxPackAstcEncoder : const CInt
+constdef KtxPackAstcEncoder : CInt
 {
 	DEFAULT,
 	LDR,
@@ -556,7 +556,7 @@ struct KtxBasisParams
 	bool uastcRDONoMultithreading;
 }
 fn KtxErrorCode KtxTexture2.compress_basis_ex(&self, KtxBasisParams* params) @cname("ktxTexture2_CompressBasisEx");
-enum KtxTranscodeFmt : const CInt
+constdef KtxTranscodeFmt : CInt
 {
 	ETC1_RGB = 0,
 	ETC2_RGBA = 1,
@@ -580,7 +580,7 @@ enum KtxTranscodeFmt : const CInt
 	BC1_OR_3 = 23,
 	NOSELECTION = 0X7FFFFFFF,
 }
-enum KtxTranscodeFlags : const CInt
+constdef KtxTranscodeFlags : CInt
 {
 	PVRTC_DECODE_TO_NEXT_POW2 = 2,
 	TRANSCODE_ALPHA_DATA_TO_OPAQUE_FORMATS = 4,
