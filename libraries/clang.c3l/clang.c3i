@@ -74,21 +74,21 @@ struct CXStringSet {
  * Retrieve the character data associated with the given string.
  */
 fn ZString getCString(
-  CXString string) 
+  CXString string)
 @cname("clang_getCString");
 
 /**
  * Free the given string.
  */
 fn void disposeString(
-  CXString string) 
+  CXString string)
 @cname("clang_disposeString");
 
 /**
  * Free the given string set.
  */
 fn void disposeStringSet(
-  CXStringSet* set) 
+  CXStringSet* set)
 @cname("clang_disposeStringSet");
 
 
@@ -107,14 +107,14 @@ typedef CXFile = inline void*;
  * Retrieve the complete file and path name of the given file.
  */
 fn CXString getFileName(
-  CXFile sfile) 
+  CXFile sfile)
 @cname("clang_getFileName");
 
 /**
  * Retrieve the last modification time of the given file.
  */
 fn Time_t getFileTime(
-  CXFile sfile) 
+  CXFile sfile)
 @cname("clang_getFileTime");
 
 /**
@@ -134,8 +134,8 @@ struct CXFileUniqueID {
  * otherwise returns 0.
  */
 fn CInt getFileUniqueID(
-  CXFile file, 
-  CXFileUniqueID* out_id) 
+  CXFile file,
+  CXFileUniqueID* out_id)
 @cname("clang_getFileUniqueID");
 
 /**
@@ -143,8 +143,8 @@ fn CInt getFileUniqueID(
  * or they are both NULL.
  */
 fn CInt isEqual_File(
-  CXFile file1, 
-  CXFile file2) 
+  CXFile file1,
+  CXFile file2)
 @cname("clang_File_isEqual");
 
 /**
@@ -153,7 +153,7 @@ fn CInt isEqual_File(
  * An empty string may be returned. Use \c clang_getFileName() in that case.
  */
 fn CXString tryGetRealPathName_File(
-  CXFile file) 
+  CXFile file)
 @cname("clang_File_tryGetRealPathName");
 
 
@@ -190,7 +190,7 @@ struct CXSourceRange {
 /**
  * Retrieve a NULL (invalid) source location.
  */
-fn CXSourceLocation getNullLocation() 
+fn CXSourceLocation getNullLocation()
 @cname("clang_getNullLocation");
 
 /**
@@ -202,15 +202,15 @@ fn CXSourceLocation getNullLocation()
  * if they refer to different locations.
  */
 fn CUInt equalLocations(
-  CXSourceLocation loc1, 
-  CXSourceLocation loc2) 
+  CXSourceLocation loc1,
+  CXSourceLocation loc2)
 @cname("clang_equalLocations");
 
 /**
  * Returns non-zero if the given source location is in a system header.
  */
 fn CInt isInSystemHeader_Location(
-  CXSourceLocation location) 
+  CXSourceLocation location)
 @cname("clang_Location_isInSystemHeader");
 
 /**
@@ -218,13 +218,13 @@ fn CInt isInSystemHeader_Location(
  * the corresponding translation unit.
  */
 fn CInt isFromMainFile_Location(
-  CXSourceLocation location) 
+  CXSourceLocation location)
 @cname("clang_Location_isFromMainFile");
 
 /**
  * Retrieve a NULL (invalid) source range.
  */
-fn CXSourceRange getNullRange() 
+fn CXSourceRange getNullRange()
 @cname("clang_getNullRange");
 
 /**
@@ -232,8 +232,8 @@ fn CXSourceRange getNullRange()
  * locations.
  */
 fn CXSourceRange getRange(
-  CXSourceLocation begin, 
-  CXSourceLocation end) 
+  CXSourceLocation begin,
+  CXSourceLocation end)
 @cname("clang_getRange");
 
 /**
@@ -242,15 +242,15 @@ fn CXSourceRange getRange(
  * \returns non-zero if the ranges are the same, zero if they differ.
  */
 fn CUInt equalRanges(
-  CXSourceRange range1, 
-  CXSourceRange range2) 
+  CXSourceRange range1,
+  CXSourceRange range2)
 @cname("clang_equalRanges");
 
 /**
  * Returns non-zero if \p range is null.
  */
 fn CInt isNull_Range(
-  CXSourceRange range) 
+  CXSourceRange range)
 @cname("clang_Range_isNull");
 
 /**
@@ -276,11 +276,11 @@ fn CInt isNull_Range(
  * buffer to which the given source location points.
  */
 fn void getExpansionLocation(
-  CXSourceLocation location, 
-  CXFile* file, 
-  CUInt* line, 
-  CUInt* column, 
-  CUInt* offset) 
+  CXSourceLocation location,
+  CXFile* file,
+  CUInt* line,
+  CUInt* column,
+  CUInt* offset)
 @cname("clang_getExpansionLocation");
 
 /**
@@ -324,10 +324,10 @@ fn void getExpansionLocation(
  * source location. For an invalid source location, zero is returned.
  */
 fn void getPresumedLocation(
-  CXSourceLocation location, 
-  CXString* filename, 
-  CUInt* line, 
-  CUInt* column) 
+  CXSourceLocation location,
+  CXString* filename,
+  CUInt* line,
+  CUInt* column)
 @cname("clang_getPresumedLocation");
 
 /**
@@ -339,11 +339,11 @@ fn void getPresumedLocation(
  * details.
  */
 fn void getInstantiationLocation(
-  CXSourceLocation location, 
-  CXFile* file, 
-  CUInt* line, 
-  CUInt* column, 
-  CUInt* offset) 
+  CXSourceLocation location,
+  CXFile* file,
+  CUInt* line,
+  CUInt* column,
+  CUInt* offset)
 @cname("clang_getInstantiationLocation");
 
 /**
@@ -369,11 +369,11 @@ fn void getInstantiationLocation(
  * buffer to which the given source location points.
  */
 fn void getSpellingLocation(
-  CXSourceLocation location, 
-  CXFile* file, 
-  CUInt* line, 
-  CUInt* column, 
-  CUInt* offset) 
+  CXSourceLocation location,
+  CXFile* file,
+  CUInt* line,
+  CUInt* column,
+  CUInt* offset)
 @cname("clang_getSpellingLocation");
 
 /**
@@ -400,11 +400,11 @@ fn void getSpellingLocation(
  * buffer to which the given source location points.
  */
 fn void getFileLocation(
-  CXSourceLocation location, 
-  CXFile* file, 
-  CUInt* line, 
-  CUInt* column, 
-  CUInt* offset) 
+  CXSourceLocation location,
+  CXFile* file,
+  CUInt* line,
+  CUInt* column,
+  CUInt* offset)
 @cname("clang_getFileLocation");
 
 /**
@@ -412,7 +412,7 @@ fn void getFileLocation(
  * source range.
  */
 fn CXSourceLocation getRangeStart(
-  CXSourceRange range) 
+  CXSourceRange range)
 @cname("clang_getRangeStart");
 
 /**
@@ -420,7 +420,7 @@ fn CXSourceLocation getRangeStart(
  * source range.
  */
 fn CXSourceLocation getRangeEnd(
-  CXSourceRange range) 
+  CXSourceRange range)
 @cname("clang_getRangeEnd");
 
 /**
@@ -439,7 +439,7 @@ struct CXSourceRangeList {
  * Destroy the given \c CXSourceRangeList.
  */
 fn void disposeSourceRangeList(
-  CXSourceRangeList* ranges) 
+  CXSourceRangeList* ranges)
 @cname("clang_disposeSourceRangeList");
 
 
@@ -500,7 +500,7 @@ typedef CXDiagnosticSet = inline void*;
  * Determine the number of diagnostics in a CXDiagnosticSet.
  */
 fn CUInt getNumDiagnosticsInSet(
-  CXDiagnosticSet diags) 
+  CXDiagnosticSet diags)
 @cname("clang_getNumDiagnosticsInSet");
 
 /**
@@ -513,8 +513,8 @@ fn CUInt getNumDiagnosticsInSet(
  * via a call to \c clang_disposeDiagnostic().
  */
 fn CXDiagnostic getDiagnosticInSet(
-  CXDiagnosticSet diags, 
-  CUInt index) 
+  CXDiagnosticSet diags,
+  CUInt index)
 @cname("clang_getDiagnosticInSet");
 
 /**
@@ -559,16 +559,16 @@ const CXLoadDiag_Error LOAD_DIAG_INVALID_FILE = 3;
  * diagnostics should be released using clang_disposeDiagnosticSet().
  */
 fn CXDiagnosticSet loadDiagnostics(
-  ZString file, 
-  CXLoadDiag_Error* error, 
-  CXString* errorString) 
+  ZString file,
+  CXLoadDiag_Error* error,
+  CXString* errorString)
 @cname("clang_loadDiagnostics");
 
 /**
  * Release a CXDiagnosticSet and all of its contained diagnostics.
  */
 fn void disposeDiagnosticSet(
-  CXDiagnosticSet diags) 
+  CXDiagnosticSet diags)
 @cname("clang_disposeDiagnosticSet");
 
 /**
@@ -578,14 +578,14 @@ fn void disposeDiagnosticSet(
  * clang_disposeDiagnosticSet.
  */
 fn CXDiagnosticSet getChildDiagnostics(
-  CXDiagnostic d) 
+  CXDiagnostic d)
 @cname("clang_getChildDiagnostics");
 
 /**
  * Destroy a diagnostic.
  */
 fn void disposeDiagnostic(
-  CXDiagnostic diagnostic) 
+  CXDiagnostic diagnostic)
 @cname("clang_disposeDiagnostic");
 
 /**
@@ -672,8 +672,8 @@ const CXDiagnosticDisplayOptions DIAGNOSTIC_DISPLAY_CATEGORY_NAME = 0x2;
  * \returns A new string containing for formatted diagnostic.
  */
 fn CXString formatDiagnostic(
-  CXDiagnostic diagnostic, 
-  CUInt options) 
+  CXDiagnostic diagnostic,
+  CUInt options)
 @cname("clang_formatDiagnostic");
 
 /**
@@ -683,14 +683,14 @@ fn CXString formatDiagnostic(
  * \returns A set of display options suitable for use with \c
  * clang_formatDiagnostic().
  */
-fn CUInt defaultDiagnosticDisplayOptions() 
+fn CUInt defaultDiagnosticDisplayOptions()
 @cname("clang_defaultDiagnosticDisplayOptions");
 
 /**
  * Determine the severity of the given diagnostic.
  */
 fn CXDiagnosticSeverity getDiagnosticSeverity(
-  CXDiagnostic d) 
+  CXDiagnostic d)
 @cname("clang_getDiagnosticSeverity");
 
 /**
@@ -700,14 +700,14 @@ fn CXDiagnosticSeverity getDiagnosticSeverity(
  * displaying the diagnostic on the command line.
  */
 fn CXSourceLocation getDiagnosticLocation(
-  CXDiagnostic d) 
+  CXDiagnostic d)
 @cname("clang_getDiagnosticLocation");
 
 /**
  * Retrieve the text of the given diagnostic.
  */
 fn CXString getDiagnosticSpelling(
-  CXDiagnostic d) 
+  CXDiagnostic d)
 @cname("clang_getDiagnosticSpelling");
 
 /**
@@ -723,8 +723,8 @@ fn CXString getDiagnosticSpelling(
  * warning, such as "-Wconversion" or "-pedantic".
  */
 fn CXString getDiagnosticOption(
-  CXDiagnostic diag, 
-  CXString* disable) 
+  CXDiagnostic diag,
+  CXString* disable)
 @cname("clang_getDiagnosticOption");
 
 /**
@@ -738,7 +738,7 @@ fn CXString getDiagnosticOption(
  * if this diagnostic is uncategorized.
  */
 fn CUInt getDiagnosticCategory(
-  CXDiagnostic d) 
+  CXDiagnostic d)
 @cname("clang_getDiagnosticCategory");
 
 /**
@@ -752,7 +752,7 @@ fn CUInt getDiagnosticCategory(
  * \returns The name of the given diagnostic category.
  */
 fn CXString getDiagnosticCategoryName(
-  CUInt category) 
+  CUInt category)
 @cname("clang_getDiagnosticCategoryName")
 @deprecated("Use clang_getDiagnosticCategoryText()");
 
@@ -762,7 +762,7 @@ fn CXString getDiagnosticCategoryName(
  * \returns The text of the given diagnostic category.
  */
 fn CXString getDiagnosticCategoryText(
-  CXDiagnostic d) 
+  CXDiagnostic d)
 @cname("clang_getDiagnosticCategoryText");
 
 /**
@@ -770,7 +770,7 @@ fn CXString getDiagnosticCategoryText(
  * diagnostic.
  */
 fn CUInt getDiagnosticNumRanges(
-  CXDiagnostic d) 
+  CXDiagnostic d)
 @cname("clang_getDiagnosticNumRanges");
 
 /**
@@ -787,8 +787,8 @@ fn CUInt getDiagnosticNumRanges(
  * \returns the requested source range.
  */
 fn CXSourceRange getDiagnosticRange(
-  CXDiagnostic diagnostic, 
-  CUInt range) 
+  CXDiagnostic diagnostic,
+  CUInt range)
 @cname("clang_getDiagnosticRange");
 
 /**
@@ -796,7 +796,7 @@ fn CXSourceRange getDiagnosticRange(
  * given diagnostic.
  */
 fn CUInt getDiagnosticNumFixIts(
-  CXDiagnostic diagnostic) 
+  CXDiagnostic diagnostic)
 @cname("clang_getDiagnosticNumFixIts");
 
 /**
@@ -825,9 +825,9 @@ fn CUInt getDiagnosticNumFixIts(
  * code indicated by the \c ReplacementRange.
  */
 fn CXString getDiagnosticFixIt(
-  CXDiagnostic diagnostic, 
-  CUInt fix_it, 
-  CXSourceRange* replacement_range) 
+  CXDiagnostic diagnostic,
+  CUInt fix_it,
+  CXSourceRange* replacement_range)
 @cname("clang_getDiagnosticFixIt");
 
 
@@ -884,15 +884,15 @@ const CXCompilationDatabase_Error COMPILATION_DATABASE_CAN_NOT_LOAD_DATA_BASE = 
  * It must be freed by \c clang_CompilationDatabase_dispose.
  */
 fn CXCompilationDatabase fromDirectory_CompilationDatabase(
-  ZString build_dir, 
-  CXCompilationDatabase_Error* error_code) 
+  ZString build_dir,
+  CXCompilationDatabase_Error* error_code)
 @cname("clang_CompilationDatabase_fromDirectory");
 
 /**
  * Free the given compilation database
  */
 fn void dispose_CompilationDatabase(
-  CXCompilationDatabase database) 
+  CXCompilationDatabase database)
 @cname("clang_CompilationDatabase_dispose");
 
 /**
@@ -900,29 +900,29 @@ fn void dispose_CompilationDatabase(
  * must be freed by \c clang_CompileCommands_dispose.
  */
 fn CXCompileCommands getCompileCommands_CompilationDatabase(
-  CXCompilationDatabase database, 
-  ZString complete_fileName) 
+  CXCompilationDatabase database,
+  ZString complete_fileName)
 @cname("clang_CompilationDatabase_getCompileCommands");
 
 /**
  * Get all the compile commands in the given compilation database.
  */
 fn CXCompileCommands getAllCompileCommands_CompilationDatabase(
-  CXCompilationDatabase database) 
+  CXCompilationDatabase database)
 @cname("clang_CompilationDatabase_getAllCompileCommands");
 
 /**
  * Free the given CompileCommands
  */
 fn void dispose_CompileCommands(
-  CXCompileCommands commands) 
+  CXCompileCommands commands)
 @cname("clang_CompileCommands_dispose");
 
 /**
  * Get the number of CompileCommand we have for a file
  */
 fn CUInt getSize_CompileCommands(
-  CXCompileCommands commands) 
+  CXCompileCommands commands)
 @cname("clang_CompileCommands_getSize");
 
 /**
@@ -931,22 +931,22 @@ fn CUInt getSize_CompileCommands(
  * Note : 0 <= i < clang_CompileCommands_getSize(CXCompileCommands)
  */
 fn CXCompileCommand getCommand_CompileCommands(
-  CXCompileCommands commands, 
-  CUInt i) 
+  CXCompileCommands commands,
+  CUInt i)
 @cname("clang_CompileCommands_getCommand");
 
 /**
  * Get the working directory where the CompileCommand was executed from
  */
 fn CXString getDirectory_CompileCommand(
-  CXCompileCommand command) 
+  CXCompileCommand command)
 @cname("clang_CompileCommand_getDirectory");
 
 /**
  * Get the filename associated with the CompileCommand.
  */
 fn CXString getFilename_CompileCommand(
-  CXCompileCommand command) 
+  CXCompileCommand command)
 @cname("clang_CompileCommand_getFilename");
 
 /**
@@ -954,7 +954,7 @@ fn CXString getFilename_CompileCommand(
  *
  */
 fn CUInt getNumArgs_CompileCommand(
-  CXCompileCommand command) 
+  CXCompileCommand command)
 @cname("clang_CompileCommand_getNumArgs");
 
 /**
@@ -964,31 +964,31 @@ fn CUInt getNumArgs_CompileCommand(
  *  - argument 0 is the compiler executable
  */
 fn CXString getArg_CompileCommand(
-  CXCompileCommand command, 
-  CUInt i) 
+  CXCompileCommand command,
+  CUInt i)
 @cname("clang_CompileCommand_getArg");
 
 /**
  * Get the number of source mappings for the compiler invocation.
  */
 fn CUInt getNumMappedSources_CompileCommand(
-  CXCompileCommand command) 
+  CXCompileCommand command)
 @cname("clang_CompileCommand_getNumMappedSources");
 
 /**
  * Get the I'th mapped source path for the compiler invocation.
  */
 fn CXString getMappedSourcePath_CompileCommand(
-  CXCompileCommand command, 
-  CUInt i) 
+  CXCompileCommand command,
+  CUInt i)
 @cname("clang_CompileCommand_getMappedSourcePath");
 
 /**
  * Get the I'th mapped source content for the compiler invocation.
  */
 fn CXString getMappedSourceContent_CompileCommand(
-  CXCompileCommand command, 
-  CUInt i) 
+  CXCompileCommand command,
+  CUInt i)
 @cname("clang_CompileCommand_getMappedSourceContent");
 
 
@@ -1002,7 +1002,7 @@ fn CXString getMappedSourceContent_CompileCommand(
  * Return the timestamp for use with Clang's
  * \c -fbuild-session-timestamp= option.
  */
-fn CULongLong getBuildSessionTimestamp() 
+fn CULongLong getBuildSessionTimestamp()
 @cname("clang_getBuildSessionTimestamp");
 
 /**
@@ -1018,7 +1018,7 @@ typedef CXVirtualFileOverlay = inline void*;
  * \param options is reserved, always pass 0.
  */
 fn CXVirtualFileOverlay createVirtualFileOverlay(
-  CUInt options) 
+  CUInt options)
 @cname("clang_VirtualFileOverlay_create");
 
 /**
@@ -1027,9 +1027,9 @@ fn CXVirtualFileOverlay createVirtualFileOverlay(
  * \returns 0 for success, non-zero to indicate an error.
  */
 fn CXErrorCode addFileMapping_VirtualFileOverlay(
-  CXVirtualFileOverlay file_overlay, 
-  ZString virtual_path, 
-  ZString real_path) 
+  CXVirtualFileOverlay file_overlay,
+  ZString virtual_path,
+  ZString real_path)
 @cname("clang_VirtualFileOverlay_addFileMapping");
 
 /**
@@ -1039,8 +1039,8 @@ fn CXErrorCode addFileMapping_VirtualFileOverlay(
  * \returns 0 for success, non-zero to indicate an error.
  */
 fn CXErrorCode setCaseSensitivity_VirtualFileOverlay(
-  CXVirtualFileOverlay file_overaly, 
-  CInt case_sensitive) 
+  CXVirtualFileOverlay file_overaly,
+  CInt case_sensitive)
 @cname("clang_VirtualFileOverlay_setCaseSensitivity");
 
 /**
@@ -1053,10 +1053,10 @@ fn CXErrorCode setCaseSensitivity_VirtualFileOverlay(
  * \returns 0 for success, non-zero to indicate an error.
  */
 fn CXErrorCode writeToBuffer_VirtualFileOverlay(
-  CXVirtualFileOverlay file_overaly, 
-  CUInt options, 
-  CChar** out_buffer_ptr, 
-  CUInt* out_buffer_size) 
+  CXVirtualFileOverlay file_overaly,
+  CUInt options,
+  CChar** out_buffer_ptr,
+  CUInt* out_buffer_size)
 @cname("clang_VirtualFileOverlay_writeToBuffer");
 
 /**
@@ -1066,14 +1066,14 @@ fn CXErrorCode writeToBuffer_VirtualFileOverlay(
  * \param buffer memory pointer to free.
  */
 fn void free(
-  void* buffer) 
+  void* buffer)
 @cname("clang_free");
 
 /**
  * Dispose a \c CXVirtualFileOverlay object.
  */
 fn void dispose_VirtualFileOverlay(
-  CXVirtualFileOverlay file_overlay) 
+  CXVirtualFileOverlay file_overlay)
 @cname("clang_VirtualFileOverlay_dispose");
 
 /**
@@ -1088,7 +1088,7 @@ typedef CXModuleMapDescriptor = inline void*;
  * \param options is reserved, always pass 0.
  */
 fn CXModuleMapDescriptor createModuleMapDescriptor(
-  CUInt options) 
+  CUInt options)
 @cname("clang_ModuleMapDescriptor_create");
 
 /**
@@ -1096,8 +1096,8 @@ fn CXModuleMapDescriptor createModuleMapDescriptor(
  * \returns 0 for success, non-zero to indicate an error.
  */
 fn CXErrorCode setFrameworkModuleName_ModuleMapDescriptor(
-  CXModuleMapDescriptor descriptor, 
-  ZString name) 
+  CXModuleMapDescriptor descriptor,
+  ZString name)
 @cname("clang_ModuleMapDescriptor_setFrameworkModuleName");
 
 /**
@@ -1105,8 +1105,8 @@ fn CXErrorCode setFrameworkModuleName_ModuleMapDescriptor(
  * \returns 0 for success, non-zero to indicate an error.
  */
 fn CXErrorCode setUmbrellaHeader_ModuleMapDescriptor(
-  CXModuleMapDescriptor descriptor, 
-  ZString name) 
+  CXModuleMapDescriptor descriptor,
+  ZString name)
 @cname("clang_ModuleMapDescriptor_setUmbrellaHeader");
 
 /**
@@ -1119,17 +1119,17 @@ fn CXErrorCode setUmbrellaHeader_ModuleMapDescriptor(
  * \returns 0 for success, non-zero to indicate an error.
  */
 fn CXErrorCode writeToBuffer_ModuleMapDescriptor(
-  CXModuleMapDescriptor descriptor, 
-  CUInt options, 
-  CChar** out_buffer_ptr, 
-  CUInt* out_buffer_size) 
+  CXModuleMapDescriptor descriptor,
+  CUInt options,
+  CChar** out_buffer_ptr,
+  CUInt* out_buffer_size)
 @cname("clang_ModuleMapDescriptor_writeToBuffer");
 
 /**
  * Dispose a \c CXModuleMapDescriptor object.
  */
 fn void dispose_ModuleMapDescriptor(
-  CXModuleMapDescriptor descriptor) 
+  CXModuleMapDescriptor descriptor)
 @cname("clang_ModuleMapDescriptor_dispose");
 
 
@@ -1153,7 +1153,7 @@ struct CXComment {
  * \c CXComment_FullComment AST node.
  */
 fn CXComment getParsedComment_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_getParsedComment");
 
 /**
@@ -1325,7 +1325,7 @@ const CXCommentParamPassDirection COMMENT_PARAM_PASS_DIRECTION_IN_OUT = 2;
  * \returns the type of the AST node.
  */
 fn CXCommentKind getKind_Comment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_Comment_getKind");
 
 /**
@@ -1334,7 +1334,7 @@ fn CXCommentKind getKind_Comment(
  * \returns number of children of the AST node.
  */
 fn CUInt getNumChildren_Comment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_Comment_getNumChildren");
 
 /**
@@ -1345,8 +1345,8 @@ fn CUInt getNumChildren_Comment(
  * \returns the specified child of the AST node.
  */
 fn CXComment getChild_Comment(
-  CXComment comment, 
-  CUInt child_idx) 
+  CXComment comment,
+  CUInt child_idx)
 @cname("clang_Comment_getChild");
 
 /**
@@ -1359,7 +1359,7 @@ fn CXComment getChild_Comment(
  * \returns non-zero if \c Comment is whitespace.
  */
 fn CUInt isWhitespace_Comment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_Comment_isWhitespace");
 
 /**
@@ -1368,7 +1368,7 @@ fn CUInt isWhitespace_Comment(
  * do not count.
  */
 fn CUInt hasTrailingNewlineInlineContentComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_InlineContentComment_hasTrailingNewline");
 
 /**
@@ -1377,7 +1377,7 @@ fn CUInt hasTrailingNewlineInlineContentComment(
  * \returns text contained in the AST node.
  */
 fn CXString getTextTextComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_TextComment_getText");
 
 /**
@@ -1386,7 +1386,7 @@ fn CXString getTextTextComment(
  * \returns name of the inline command.
  */
 fn CXString getCommandNameInlineCommandComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_InlineCommandComment_getCommandName");
 
 /**
@@ -1396,7 +1396,7 @@ fn CXString getCommandNameInlineCommandComment(
  * semantics in Doxygen.
  */
 fn CXCommentInlineCommandRenderKind getRenderKindInlineCommandComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_InlineCommandComment_getRenderKind");
 
 /**
@@ -1405,7 +1405,7 @@ fn CXCommentInlineCommandRenderKind getRenderKindInlineCommandComment(
  * \returns number of command arguments.
  */
 fn CUInt getNumArgsInlineCommandComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_InlineCommandComment_getNumArgs");
 
 /**
@@ -1416,8 +1416,8 @@ fn CUInt getNumArgsInlineCommandComment(
  * \returns text of the specified argument.
  */
 fn CXString getArgTextInlineCommandComment(
-  CXComment comment, 
-  CUInt arg_idx) 
+  CXComment comment,
+  CUInt arg_idx)
 @cname("clang_InlineCommandComment_getArgText");
 
 /**
@@ -1427,7 +1427,7 @@ fn CXString getArgTextInlineCommandComment(
  * \returns HTML tag name.
  */
 fn CXString getTagNameHTMLTagComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_HTMLTagComment_getTagName");
 
 /**
@@ -1436,7 +1436,7 @@ fn CXString getTagNameHTMLTagComment(
  * \returns non-zero if tag is self-closing (for example, &lt;br /&gt;).
  */
 fn CUInt isSelfClosingHTMLStartTagComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_HTMLStartTagComment_isSelfClosing");
 
 /**
@@ -1445,7 +1445,7 @@ fn CUInt isSelfClosingHTMLStartTagComment(
  * \returns number of attributes (name-value pairs) attached to the start tag.
  */
 fn CUInt getNumAttrsHTMLStartTag(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_HTMLStartTag_getNumAttrs");
 
 /**
@@ -1456,8 +1456,8 @@ fn CUInt getNumAttrsHTMLStartTag(
  * \returns name of the specified attribute.
  */
 fn CXString getAttrNameHTMLStartTag(
-  CXComment comment, 
-  CUInt attr_idx) 
+  CXComment comment,
+  CUInt attr_idx)
 @cname("clang_HTMLStartTag_getAttrName");
 
 /**
@@ -1468,8 +1468,8 @@ fn CXString getAttrNameHTMLStartTag(
  * \returns value of the specified attribute.
  */
 fn CXString getAttrValueHTMLStartTag(
-  CXComment comment, 
-  CUInt attr_idx) 
+  CXComment comment,
+  CUInt attr_idx)
 @cname("clang_HTMLStartTag_getAttrValue");
 
 /**
@@ -1478,7 +1478,7 @@ fn CXString getAttrValueHTMLStartTag(
  * \returns name of the block command.
  */
 fn CXString getCommandNameCXBlockCommandComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_BlockCommandComment_getCommandName");
 
 /**
@@ -1487,7 +1487,7 @@ fn CXString getCommandNameCXBlockCommandComment(
  * \returns number of word-like arguments.
  */
 fn CUInt getNumArgsBlockCommandComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_BlockCommandComment_getNumArgs");
 
 /**
@@ -1498,8 +1498,8 @@ fn CUInt getNumArgsBlockCommandComment(
  * \returns text of the specified word-like argument.
  */
 fn CXString getArgTextBlockCommandComment(
-  CXComment comment, 
-  CUInt arg_idx) 
+  CXComment comment,
+  CUInt arg_idx)
 @cname("clang_BlockCommandComment_getArgText");
 
 /**
@@ -1509,7 +1509,7 @@ fn CXString getArgTextBlockCommandComment(
  * \returns paragraph argument of the block command.
  */
 fn CXComment getParagraphBlockCommandComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_BlockCommandComment_getParagraph");
 
 /**
@@ -1518,7 +1518,7 @@ fn CXComment getParagraphBlockCommandComment(
  * \returns parameter name.
  */
 fn CXString getParamNameParamCommandComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_ParamCommandComment_getParamName");
 
 /**
@@ -1529,7 +1529,7 @@ fn CXString getParamNameParamCommandComment(
  * function will return a meaningful value.
  */
 fn CUInt isParamIndexValidParamCommandComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_ParamCommandComment_isParamIndexValid");
 
 /**
@@ -1538,7 +1538,7 @@ fn CUInt isParamIndexValidParamCommandComment(
  * \returns zero-based parameter index in function prototype.
  */
 fn CUInt getParamIndexParamCommandComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_ParamCommandComment_getParamIndex");
 
 /**
@@ -1548,7 +1548,7 @@ fn CUInt getParamIndexParamCommandComment(
  * the comment.
  */
 fn CUInt isDirectionExplicitParamCommandComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_ParamCommandComment_isDirectionExplicit");
 
 /**
@@ -1557,7 +1557,7 @@ fn CUInt isDirectionExplicitParamCommandComment(
  * \returns parameter passing direction.
  */
 fn CXCommentParamPassDirection getDirectionParamCommandComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_ParamCommandComment_getDirection");
 
 /**
@@ -1566,7 +1566,7 @@ fn CXCommentParamPassDirection getDirectionParamCommandComment(
  * \returns template parameter name.
  */
 fn CXString getParamNameTParamCommandComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_TParamCommandComment_getParamName");
 
 /**
@@ -1579,7 +1579,7 @@ fn CXString getParamNameTParamCommandComment(
  * value.
  */
 fn CUInt isParamPositionValidTParamCommandComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_TParamCommandComment_isParamPositionValid");
 
 /**
@@ -1596,7 +1596,7 @@ fn CUInt isParamPositionValidTParamCommandComment(
  * for T nesting depth is 1.
  */
 fn CUInt getDepthTParamCommandComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_TParamCommandComment_getDepth");
 
 /**
@@ -1618,8 +1618,8 @@ fn CUInt getDepthTParamCommandComment(
  * at depth 1 T's index is 0.
  */
 fn CUInt getIndexTParamCommandComment(
-  CXComment comment, 
-  CUInt depth) 
+  CXComment comment,
+  CUInt depth)
 @cname("clang_TParamCommandComment_getIndex");
 
 /**
@@ -1628,7 +1628,7 @@ fn CUInt getIndexTParamCommandComment(
  * \returns text contained in the AST node.
  */
 fn CXString getTextVerbatimBlockLineComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_VerbatimBlockLineComment_getText");
 
 /**
@@ -1637,7 +1637,7 @@ fn CXString getTextVerbatimBlockLineComment(
  * \returns text contained in the AST node.
  */
 fn CXString getTextVerbatimLineComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_VerbatimLineComment_getText");
 
 /**
@@ -1649,7 +1649,7 @@ fn CXString getTextVerbatimLineComment(
  * \returns string containing an HTML tag.
  */
 fn CXString getAsStringHTMLTagComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_HTMLTagComment_getAsString");
 
 /**
@@ -1684,7 +1684,7 @@ fn CXString getAsStringHTMLTagComment(
  * \returns string containing an HTML fragment.
  */
 fn CXString getAsHTMLFullComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_FullComment_getAsHTML");
 
 /**
@@ -1698,7 +1698,7 @@ fn CXString getAsHTMLFullComment(
  * \returns string containing an XML document.
  */
 fn CXString getAsXMLFullComment(
-  CXComment comment) 
+  CXComment comment)
 @cname("clang_FullComment_getAsXML");
 
 /**
@@ -1719,8 +1719,8 @@ typedef CXAPISet = inline void*;
  * \returns Error code indicating success or failure of the APISet creation.
  */
 fn CXErrorCode createAPISet(
-  CXTranslationUnit tu, 
-  CXAPISet* out_api) 
+  CXTranslationUnit tu,
+  CXAPISet* out_api)
 @cname("clang_createAPISet");
 
 /**
@@ -1729,7 +1729,7 @@ fn CXErrorCode createAPISet(
  * The provided \c CXAPISet can not be used after this function is called.
  */
 fn void disposeAPISet(
-  CXAPISet api) 
+  CXAPISet api)
 @cname("clang_disposeAPISet");
 
 /**
@@ -1749,8 +1749,8 @@ fn void disposeAPISet(
  * APISet.
  */
 fn CXString getSymbolGraphForUSR(
-  ZString usr, 
-  CXAPISet api) 
+  ZString usr,
+  CXAPISet api)
 @cname("clang_getSymbolGraphForUSR");
 
 /**
@@ -1769,7 +1769,7 @@ fn CXString getSymbolGraphForUSR(
  * APISet.
  */
 fn CXString getSymbolGraphForCursor(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getSymbolGraphForCursor");
 
 
@@ -1783,7 +1783,7 @@ fn CXString getSymbolGraphForCursor(
  * Installs error handler that prints error message to stderr and calls abort().
  * Replaces currently installed error handler (if any).
  */
-fn void installAbortingLLVMFatalErrorHandler() 
+fn void installAbortingLLVMFatalErrorHandler()
 @cname("clang_install_aborting_llvm_fatal_error_handler");
 
 /**
@@ -1791,7 +1791,7 @@ fn void installAbortingLLVMFatalErrorHandler()
  * If no error handler is intalled, the default strategy is to print error
  * message to stderr and call exit(1).
  */
-fn void uninstallLLVMFatalErrorHandler() 
+fn void uninstallLLVMFatalErrorHandler()
 @cname("clang_uninstall_llvm_fatal_error_handler");
 
 
@@ -1807,16 +1807,16 @@ typedef CXRewriter = void*;
  * Create CXRewriter.
  */
 fn CXRewriter create_Rewriter(
-  CXTranslationUnit tu) 
+  CXTranslationUnit tu)
 @cname("clang_CXRewriter_create");
 
 /**
  * Insert the specified string at the specified location in the original buffer.
  */
 fn void insertTextBefore_Rewriter(
-  CXRewriter rew, 
-  CXSourceLocation loc, 
-  ZString insert) 
+  CXRewriter rew,
+  CXSourceLocation loc,
+  ZString insert)
 @cname("clang_CXRewriter_insertTextBefore");
 
 /**
@@ -1824,17 +1824,17 @@ fn void insertTextBefore_Rewriter(
  * replacement.
  */
 fn void replaceText_Rewriter(
-  CXRewriter rew, 
-  CXSourceRange to_be_replaced, 
-  ZString replacement) 
+  CXRewriter rew,
+  CXSourceRange to_be_replaced,
+  ZString replacement)
 @cname("clang_CXRewriter_replaceText");
 
 /**
  * Remove the specified range.
  */
 fn void removeText_Rewriter(
-  CXRewriter rew, 
-  CXSourceRange to_be_removed) 
+  CXRewriter rew,
+  CXSourceRange to_be_removed)
 @cname("clang_CXRewriter_removeText");
 
 /**
@@ -1842,21 +1842,21 @@ fn void removeText_Rewriter(
  * Returns 1 if any files were not saved successfully, returns 0 otherwise.
  */
 fn CInt overwriteChangedFiles_Rewriter(
-  CXRewriter rew) 
+  CXRewriter rew)
 @cname("clang_CXRewriter_overwriteChangedFiles");
 
 /**
  * Write out rewritten version of the main file to stdout.
  */
 fn void writeMainFileToStdOut_Rewriter(
-  CXRewriter rew) 
+  CXRewriter rew)
 @cname("clang_CXRewriter_writeMainFileToStdOut");
 
 /**
  * Free the given CXRewriter.
  */
 fn void dispose_Rewriter(
-  CXRewriter rew) 
+  CXRewriter rew)
 @cname("clang_CXRewriter_dispose");
 
 
@@ -1909,7 +1909,7 @@ struct CXUnsavedFile {
    */
   ZString contents;
 
-  /* 
+  /*
    * The length of the unsaved contents of this buffer.
    */
   ulong length;
@@ -2056,8 +2056,8 @@ const CXCursor_ExceptionSpecificationKind CURSOR_EXCEPTION_SPECIFICATION_KIND_NO
  * (which gives the indexer the same performance benefit as the compiler).
  */
 fn CXIndex createIndex(
-  CInt excludeDeclarationsFromPCH, 
-  CInt displayDiagnostics) 
+  CInt excludeDeclarationsFromPCH,
+  CInt displayDiagnostics)
 @cname("clang_createIndex");
 
 /**
@@ -2067,7 +2067,7 @@ fn CXIndex createIndex(
  * within that index have been destroyed.
  */
 fn void disposeIndex(
-  CXIndex index) 
+  CXIndex index)
 @cname("clang_disposeIndex");
 
 typedef CXChoice = inline CInt;
@@ -2159,20 +2159,20 @@ struct CXIndexOptions {
   CChar thread_background_priority_for_editing;
 
   bitstruct : ushort {
-    /*
-     * \see clang_createIndex()
-     */
-    bool exclude_declarations_from_pch;
+	/*
+	 * \see clang_createIndex()
+	 */
+	bool exclude_declarations_from_pch;
 
-    /*
-     * \see clang_createIndex()
-     */
-    bool display_diagnostics;
+	/*
+	 * \see clang_createIndex()
+	 */
+	bool display_diagnostics;
 
-    /*
-     * Store PCH in memory. If zero, PCH are stored in temporary files.
-     */
-    bool store_preambles_in_memory;
+	/*
+	 * Store PCH in memory. If zero, PCH are stored in temporary files.
+	 */
+	bool store_preambles_in_memory;
   }
 
   /*
@@ -2238,7 +2238,7 @@ struct CXIndexOptions {
  * \sa clang_createIndex()
  */
 fn CXIndex createIndexWithOptions(
-  CXIndexOptions *options) 
+  CXIndexOptions *options)
 @cname("clang_createIndexWithOptions");
 
 /**
@@ -2261,7 +2261,7 @@ fn CXIndex createIndexWithOptions(
  */
 fn void setGlobalOptions_Index(
   CXIndex index,
-  CUInt options) 
+  CUInt options)
 @cname("clang_CXIndex_setGlobalOptions")
 @deprecated("Set CXIndexOptions::ThreadBackgroundPriorityForIndexing and/or CXIndexOptions::ThreadBackgroundPriorityForEditing and call clang_createIndexWithOptions() instead.");
 
@@ -2289,8 +2289,8 @@ fn CUInt getGlobalOptions_Index(
  * libclang invocations are not logged..
  */
 fn void setInvocationEmissionPathOption_Index(
-  CXIndex self, 
-  ZString path) 
+  CXIndex self,
+  ZString path)
 @cname("clang_CXIndex_setInvocationEmissionPathOption")
 @deprecated("Set CXIndexOptions::InvocationEmissionPath and call clang_createIndexWithOptions() instead.");
 
@@ -2300,8 +2300,8 @@ fn void setInvocationEmissionPathOption_Index(
  * \#ifndef/\#define/\#endif macro guards or with \#pragma once.
  */
 fn CUInt isFileMultipleIncludeGuarded(
-  CXTranslationUnit tu, 
-  CXFile file) 
+  CXTranslationUnit tu,
+  CXFile file)
 @cname("clang_isFileMultipleIncludeGuarded");
 
 /**
@@ -2315,8 +2315,8 @@ fn CUInt isFileMultipleIncludeGuarded(
  * or a NULL file handle if the file was not a part of this translation unit.
  */
 fn CXFile getFile(
-  CXTranslationUnit tu, 
-  ZString file_name) 
+  CXTranslationUnit tu,
+  ZString file_name)
 @cname("clang_getFile");
 
 /**
@@ -2332,9 +2332,9 @@ fn CXFile getFile(
  * \p file, or a NULL pointer when the file is not loaded.
  */
 fn ZString getFileContents(
-  CXTranslationUnit tu, 
-  CXFile file, 
-  usz *size) 
+  CXTranslationUnit tu,
+  CXFile file,
+  usz *size)
 @cname("clang_getFileContents");
 
 /**
@@ -2342,10 +2342,10 @@ fn ZString getFileContents(
  * in a particular translation unit.
  */
 fn CXSourceLocation getLocation(
-  CXTranslationUnit tu, 
-  CXFile file, 
-  CUInt line, 
-  CUInt column) 
+  CXTranslationUnit tu,
+  CXFile file,
+  CUInt line,
+  CUInt column)
 @cname("clang_getLocation");
 
 /**
@@ -2353,9 +2353,9 @@ fn CXSourceLocation getLocation(
  * in a particular translation unit.
  */
 fn CXSourceLocation getLocationForOffset(
-  CXTranslationUnit tu, 
-  CXFile file, 
-  CUInt offset) 
+  CXTranslationUnit tu,
+  CXFile file,
+  CUInt offset)
 @cname("clang_getLocationForOffset");
 
 /**
@@ -2365,8 +2365,8 @@ fn CXSourceLocation getLocationForOffset(
  * if/ifdef/ifndef directive whose condition does not evaluate to true.
  */
 fn CXSourceRangeList* getSkippedRanges(
-  CXTranslationUnit tu, 
-  CXFile file) 
+  CXTranslationUnit tu,
+  CXFile file)
 @cname("clang_getSkippedRanges");
 
 /**
@@ -2377,7 +2377,7 @@ fn CXSourceRangeList* getSkippedRanges(
  * if/ifdef/ifndef directive whose condition does not evaluate to true.
  */
 fn CXSourceRangeList* getAllSkippedRanges(
-  CXTranslationUnit tu) 
+  CXTranslationUnit tu)
 @cname("clang_getAllSkippedRanges");
 
 /**
@@ -2385,7 +2385,7 @@ fn CXSourceRangeList* getAllSkippedRanges(
  * translation unit.
  */
 fn CUInt getNumDiagnostics(
-  CXTranslationUnit unit) 
+  CXTranslationUnit unit)
 @cname("clang_getNumDiagnostics");
 
 /**
@@ -2398,8 +2398,8 @@ fn CUInt getNumDiagnostics(
  * via a call to \c clang_disposeDiagnostic().
  */
 fn CXDiagnostic getDiagnostic(
-  CXTranslationUnit unit, 
-  CUInt index) 
+  CXTranslationUnit unit,
+  CUInt index)
 @cname("clang_getDiagnostic");
 
 /**
@@ -2409,14 +2409,14 @@ fn CXDiagnostic getDiagnostic(
  * \param Unit the translation unit to query.
  */
 fn CXDiagnosticSet getDiagnosticSetFromTU(
-  CXTranslationUnit unit) 
+  CXTranslationUnit unit)
 @cname("clang_getDiagnosticSetFromTU");
 
 /**
  * Get the original translation unit source file name.
  */
 fn CXString getTranslationUnitSpelling(
-  CXTranslationUnit ct_unit) 
+  CXTranslationUnit ct_unit)
 @cname("clang_getTranslationUnitSpelling");
 
 /**
@@ -2460,12 +2460,12 @@ fn CXString getTranslationUnitSpelling(
  * guarantee their validity until the call to this function returns.
  */
 fn CXTranslationUnit createTranslationUnitFromSourceFile(
-  CXIndex c_idx, 
-  ZString source_filename, 
-  CInt num_clang_command_line_args, 
-  ZString* clang_command_line_args, 
-  CUInt num_unsaved_files, 
-  CXUnsavedFile* unsaved_files) 
+  CXIndex c_idx,
+  ZString source_filename,
+  CInt num_clang_command_line_args,
+  ZString* clang_command_line_args,
+  CUInt num_unsaved_files,
+  CXUnsavedFile* unsaved_files)
 @cname("clang_createTranslationUnitFromSourceFile");
 
 /**
@@ -2475,8 +2475,8 @@ fn CXTranslationUnit createTranslationUnitFromSourceFile(
  * error codes.
  */
 fn CXTranslationUnit createTranslationUnit(
-  CXIndex c_idx, 
-  ZString ast_filename) 
+  CXIndex c_idx,
+  ZString ast_filename)
 @cname("clang_createTranslationUnit");
 
 /**
@@ -2488,9 +2488,9 @@ fn CXTranslationUnit createTranslationUnit(
  * \returns Zero on success, otherwise returns an error code.
  */
 fn CXErrorCode createTranslationUnit2(
-  CXIndex c_idx, 
-  ZString ast_filename, 
-  CXTranslationUnit* out_tu) 
+  CXIndex c_idx,
+  ZString ast_filename,
+  CXTranslationUnit* out_tu)
 @cname("clang_createTranslationUnit2");
 
 /**
@@ -2645,7 +2645,7 @@ const CXTranslationUnit_Flags TRANSLATION_UNIT_RETAIN_EXCLUDED_CONDITIONAL_BLOCK
  * preamble) geared toward improving the performance of these routines. The
  * set of optimizations enabled may change from one version to the next.
  */
-fn CUInt defaultEditingTranslationUnitOptions() 
+fn CUInt defaultEditingTranslationUnitOptions()
 @cname("clang_defaultEditingTranslationUnitOptions");
 
 /**
@@ -2655,13 +2655,13 @@ fn CUInt defaultEditingTranslationUnitOptions()
  * error codes.
  */
 fn CXTranslationUnit parseTranslationUnit(
-  CXIndex cidx, 
-  ZString source_filename, 
-  ZString* command_line_args, 
-  CInt num_command_line_args, 
-  CXUnsavedFile* unsaved_files, 
-  CUInt num_unsaved_files, 
-  CUInt options) 
+  CXIndex cidx,
+  ZString source_filename,
+  ZString* command_line_args,
+  CInt num_command_line_args,
+  CXUnsavedFile* unsaved_files,
+  CUInt num_unsaved_files,
+  CUInt options)
 @cname("clang_parseTranslationUnit");
 
 /**
@@ -2709,13 +2709,13 @@ fn CXTranslationUnit parseTranslationUnit(
  * \returns Zero on success, otherwise returns an error code.
  */
 fn CXErrorCode parseTranslationUnit2(
-  CXIndex c_idx, 
-  ZString source_filename, 
-  ZString* command_line_args, 
-  CInt num_command_line_args, 
-  CXUnsavedFile* unsaved_files, 
-  CUInt num_unsaved_files, 
-  CUInt options, 
+  CXIndex c_idx,
+  ZString source_filename,
+  ZString* command_line_args,
+  CInt num_command_line_args,
+  CXUnsavedFile* unsaved_files,
+  CUInt num_unsaved_files,
+  CUInt options,
   CXTranslationUnit* out_TU)
 @cname("clang_parseTranslationUnit2");
 
@@ -2725,14 +2725,14 @@ fn CXErrorCode parseTranslationUnit2(
  * library paths are relative to the binary.
  */
 fn CXErrorCode parseTranslationUnit2FullArgv(
-  CXIndex c_idx, 
-  ZString source_filename, 
-  ZString* command_line_args, 
-  CInt num_command_line_args, 
-  CXUnsavedFile* unsaved_files, 
-  CUInt num_unsaved_files, 
-  CUInt options, 
-  CXTranslationUnit* out_TU) 
+  CXIndex c_idx,
+  ZString source_filename,
+  ZString* command_line_args,
+  CInt num_command_line_args,
+  CXUnsavedFile* unsaved_files,
+  CUInt num_unsaved_files,
+  CUInt options,
+  CXTranslationUnit* out_TU)
 @cname("clang_parseTranslationUnit2FullArgv");
 
 /**
@@ -2759,14 +2759,14 @@ const CXSaveTranslationUnit_Flags SAVE_TRANSLATION_UNIT_NONE = 0x0;
  * the most commonly-requested data.
  */
 fn CUInt defaultSaveOptions(
-  CXTranslationUnit tu) 
+  CXTranslationUnit tu)
 @cname("clang_defaultSaveOptions");
 
 /**
  * Describes the kind of error that occurred (if any) in a call to
  * \c clang_saveTranslationUnit().
  */
-typedef CXSaveError = inline CInt; 
+typedef CXSaveError = inline CInt;
 
 /*
  * Indicates that no error occurred while saving a translation unit.
@@ -2818,9 +2818,9 @@ const CXSaveError SAVE_ERROR_INVALID_TU = 3;
  * saved successfully, while a non-zero value indicates that a problem occurred.
  */
 fn CInt saveTranslationUnit(
-  CXTranslationUnit tu, 
-  ZString file_name, 
-  CUInt options) 
+  CXTranslationUnit tu,
+  ZString file_name,
+  CUInt options)
 @cname("clang_saveTranslationUnit");
 
 /**
@@ -2838,7 +2838,7 @@ fn CUInt suspendTranslationUnit(
  * Destroy the specified CXTranslationUnit object.
  */
 fn void disposeTranslationUnit(
-  CXTranslationUnit tu) 
+  CXTranslationUnit tu)
 @cname("clang_disposeTranslationUnit");
 
 /**
@@ -2863,7 +2863,7 @@ const CXReparse_Flags REPARSE_FLAGS_NONE = 0x0;
  * to the next.
  */
 fn CUInt defaultReparseOptions(
-  CXTranslationUnit tu) 
+  CXTranslationUnit tu)
 @cname("clang_defaultReparseOptions");
 
 /**
@@ -2906,16 +2906,16 @@ fn CUInt defaultReparseOptions(
  * routine are described by the \c CXErrorCode enum.
  */
 fn CInt reparseTranslationUnit(
-  CXTranslationUnit tu, 
-  CUInt num_unsaved_files,  
-  CXUnsavedFile *unsaved_files, 
-  CUInt options) 
+  CXTranslationUnit tu,
+  CUInt num_unsaved_files,
+  CXUnsavedFile *unsaved_files,
+  CUInt options)
 @cname("clang_reparseTranslationUnit");
 
 /**
  * Categorizes how memory is being used by a translation unit.
  */
-typedef CXTUResourceUsageKind = inline CInt; 
+typedef CXTUResourceUsageKind = inline CInt;
 
 const CXTUResourceUsageKind TU_RESOURCE_USAGE_AST = 1;
 const CXTUResourceUsageKind TU_RESOURCE_USAGE_IDENTIFIERS = 2;
@@ -2942,7 +2942,7 @@ const CXTUResourceUsageKind TU_RESOURCE_USAGE_LAST = TU_RESOURCE_USAGE_PREPROCES
  */
 fn
 ZString getTUResourceUsageName(
-  CXTUResourceUsageKind kind) 
+  CXTUResourceUsageKind kind)
 @cname("clang_getTUResourceUsageName");
 
 struct CXTUResourceUsageEntry {
@@ -2950,7 +2950,7 @@ struct CXTUResourceUsageEntry {
   CXTUResourceUsageKind kind;
 
   /* Amount of resources used.
-     The units will depend on the resource kind. */
+	 The units will depend on the resource kind. */
   CULong amount;
 }
 
@@ -2965,7 +2965,7 @@ struct CXTUResourceUsage {
   CUInt numEntries;
 
   /* An array of key-value pairs, representing the breakdown of memory
-            usage. */
+			usage. */
   CXTUResourceUsageEntry* entries;
 }
 
@@ -2974,11 +2974,11 @@ struct CXTUResourceUsage {
  *  should be released with clang_disposeCXTUResourceUsage().
  */
 fn CXTUResourceUsage getCXTUResourceUsage(
-  CXTranslationUnit tu) 
+  CXTranslationUnit tu)
 @cname("clang_getCXTUResourceUsage");
 
 fn void disposeCXTUResourceUsage(
-  CXTUResourceUsage usage) 
+  CXTUResourceUsage usage)
 @cname("clang_disposeCXTUResourceUsage");
 
 /**
@@ -2987,14 +2987,14 @@ fn void disposeCXTUResourceUsage(
  * The CXTargetInfo object cannot outlive the CXTranslationUnit object.
  */
 fn CXTargetInfo getTranslationUnitTargetInfo(
-  CXTranslationUnit ct_unit) 
+  CXTranslationUnit ct_unit)
 @cname("clang_getTranslationUnitTargetInfo");
 
 /**
  * Destroy the CXTargetInfo object.
  */
 fn void dispose_TargetInfo(
-  CXTargetInfo info) 
+  CXTargetInfo info)
 @cname("clang_TargetInfo_dispose");
 
 /**
@@ -3003,7 +3003,7 @@ fn void dispose_TargetInfo(
  * Returns the empty string in case of any error.
  */
 fn CXString getTriple_TargetInfo(
-  CXTargetInfo info) 
+  CXTargetInfo info)
 @cname("clang_TargetInfo_getTriple");
 
 /**
@@ -3012,7 +3012,7 @@ fn CXString getTriple_TargetInfo(
  * Returns -1 in case of error.
  */
 fn CInt getPointerWidth_TargetInfo(
-  CXTargetInfo info) 
+  CXTargetInfo info)
 @cname("clang_TargetInfo_getPointerWidth");
 
 /**
@@ -3034,13 +3034,13 @@ const CXCursorKind CURSOR_UNEXPOSED_DECL = 1;
 /** A C or C++ struct.
   */
 const CXCursorKind CURSOR_STRUCT_DECL = 2;
-/** A C or C++ union. 
+/** A C or C++ union.
   */
 const CXCursorKind CURSOR_UNION_DECL = 3;
-/** A C++ class. 
+/** A C++ class.
   */
 const CXCursorKind CURSOR_CLASS_DECL = 4;
-/** An enumeration. 
+/** An enumeration.
   */
 const CXCursorKind CURSOR_ENUM_DECL = 5;
 /**
@@ -3051,100 +3051,100 @@ const CXCursorKind CURSOR_FIELD_DECL = 6;
 /** An enumerator constant.
   */
 const CXCursorKind CURSOR_ENUM_CONSTANT_DECL = 7;
-/** A function. 
+/** A function.
   */
 const CXCursorKind CURSOR_FUNCTION_DECL = 8;
-/** A variable. 
+/** A variable.
   */
 const CXCursorKind CURSOR_VAR_DECL = 9;
-/** A function or method parameter. 
+/** A function or method parameter.
   */
 const CXCursorKind CURSOR_PARM_DECL = 10;
-/** An Objective-C \@interface. 
+/** An Objective-C \@interface.
   */
 const CXCursorKind CURSOR_OBJC_INTERFACE_DECL = 11;
-/** An Objective-C \@interface for a category. 
+/** An Objective-C \@interface for a category.
   */
 const CXCursorKind CURSOR_OBJC_CATEGORY_DECL = 12;
-/** An Objective-C \@protocol declaration. 
+/** An Objective-C \@protocol declaration.
   */
 const CXCursorKind CURSOR_OBJC_PROTOCOL_DECL = 13;
-/** An Objective-C \@property declaration. 
+/** An Objective-C \@property declaration.
   */
 const CXCursorKind CURSOR_OBJC_PROPERTY_DECL = 14;
-/** An Objective-C instance variable. 
+/** An Objective-C instance variable.
   */
 const CXCursorKind CURSOR_OBJC_IVAR_DECL = 15;
-/** An Objective-C instance method. 
+/** An Objective-C instance method.
   */
 const CXCursorKind CURSOR_OBJC_INSTANCE_METHOD_DECL = 16;
-/** An Objective-C class method. 
+/** An Objective-C class method.
   */
 const CXCursorKind CURSOR_OBJC_CLASS_METHOD_DECL = 17;
-/** An Objective-C \@implementation. 
+/** An Objective-C \@implementation.
   */
 const CXCursorKind CURSOR_OBJC_IMPLEMENTATION_DECL = 18;
-/** An Objective-C \@implementation for a category. 
+/** An Objective-C \@implementation for a category.
   */
 const CXCursorKind CURSOR_OBJC_CATEGORY_IMPL_DECL = 19;
-/** A typedef. 
+/** A typedef.
   */
 const CXCursorKind CURSOR_TYPEDEF_DECL = 20;
-/** A C++ class method. 
+/** A C++ class method.
   */
 const CXCursorKind CURSOR_CXX_METHOD = 21;
-/** A C++ namespace. 
+/** A C++ namespace.
   */
 const CXCursorKind CURSOR_NAMESPACE = 22;
-/** A linkage specification, e.g. 'extern "C"'. 
+/** A linkage specification, e.g. 'extern "C"'.
   */
 const CXCursorKind CURSOR_LINKAGE_SPEC = 23;
-/** A C++ constructor. 
+/** A C++ constructor.
   */
 const CXCursorKind CURSOR_CONSTRUCTOR = 24;
-/** A C++ destructor. 
+/** A C++ destructor.
   */
 const CXCursorKind CURSOR_DESTRUCTOR = 25;
-/** A C++ conversion function. 
+/** A C++ conversion function.
   */
 const CXCursorKind CURSOR_CONVERSION_FUNCTION = 26;
-/** A C++ template type parameter. 
+/** A C++ template type parameter.
   */
 const CXCursorKind CURSOR_TEMPLATE_TYPE_PARAMETER = 27;
-/** A C++ non-type template parameter. 
+/** A C++ non-type template parameter.
   */
 const CXCursorKind CURSOR_NON_TYPE_TEMPLATE_PARAMETER = 28;
-/** A C++ template template parameter. 
+/** A C++ template template parameter.
   */
 const CXCursorKind CURSOR_TEMPLATE_TEMPLATE_PARAMETER = 29;
-/** A C++ function template. 
+/** A C++ function template.
   */
 const CXCursorKind CURSOR_FUNCTION_TEMPLATE = 30;
-/** A C++ class template. 
+/** A C++ class template.
   */
 const CXCursorKind CURSOR_CLASS_TEMPLATE = 31;
-/** A C++ class template partial specialization. 
+/** A C++ class template partial specialization.
   */
 const CXCursorKind CURSOR_CLASS_TEMPLATE_PARTIAL_SPECIALIZATION = 32;
-/** A C++ namespace alias declaration. 
+/** A C++ namespace alias declaration.
   */
 const CXCursorKind CURSOR_NAMESPACEALIAS = 33;
-/** A C++ using directive. 
+/** A C++ using directive.
   */
 const CXCursorKind CURSOR_USING_DIRECTIVE = 34;
-/** A C++ using declaration. 
+/** A C++ using declaration.
   */
 const CXCursorKind CURSOR_USING_DECLARATION = 35;
-/** A C++ alias declaration 
+/** A C++ alias declaration
   */
 const CXCursorKind CURSOR_TYPE_ALIAS_DECL = 36;
-/** An Objective-C \@synthesize definition. 
+/** An Objective-C \@synthesize definition.
   */
 const CXCursorKind CURSOR_OBJC_SYNTHESIZE_DECL = 37;
-/** An Objective-C \@dynamic definition. 
+/** An Objective-C \@dynamic definition.
   */
 const CXCursorKind CURSOR_OBJC_DYNAMIC_DECL = 38;
-/** An access specifier. 
+/** An access specifier.
   */
 const CXCursorKind CURSOR_CXX_ACCESS_SPECIFIER = 39;
 
@@ -3284,16 +3284,16 @@ const CXCursorKind CURSOR_DECL_REF_EXPR = 101;
  */
 const CXCursorKind CURSOR_MEMBER_REF_EXPR = 102;
 
-/** An expression that calls a function. 
+/** An expression that calls a function.
   */
 const CXCursorKind CURSOR_CALL_EXPR = 103;
 
 /** An expression that sends a message to an Objective-C
- object or class. 
+ object or class.
   */
 const CXCursorKind CURSOR_OBJC_MESSAGE_EXPR = 104;
 
-/** An expression that represents a block literal. 
+/** An expression that represents a block literal.
   */
 const CXCursorKind CURSOR_BLOCK_EXPR = 105;
 
@@ -4140,7 +4140,7 @@ struct CXCursor {
 /**
  * Retrieve the NULL cursor, which represents no entity.
  */
-fn CXCursor getNullCursor() 
+fn CXCursor getNullCursor()
 @cname("clang_getNullCursor");
 
 /**
@@ -4150,43 +4150,43 @@ fn CXCursor getNullCursor()
  * various declarations within the given translation unit.
  */
 fn CXCursor getTranslationUnitCursor(
-  CXTranslationUnit tu) 
+  CXTranslationUnit tu)
 @cname("clang_getTranslationUnitCursor");
 
 /**
  * Determine whether two cursors are equivalent.
  */
 fn CUInt equalCursors(
-  CXCursor cursor1, 
-  CXCursor cursor2) 
+  CXCursor cursor1,
+  CXCursor cursor2)
 @cname("clang_equalCursors");
 
 /**
  * Returns non-zero if \p cursor is null.
  */
 fn CInt isNull_Cursor(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_Cursor_isNull");
 
 /**
  * Compute a hash value for the given cursor.
  */
 fn CUInt hashCursor(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_hashCursor");
 
 /**
  * Retrieve the kind of the given cursor.
  */
 fn CXCursorKind getCursorKind(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCursorKind");
 
 /**
  * Determine whether the given cursor kind represents a declaration.
  */
 fn CUInt isDeclaration(
-  CXCursorKind cursor_kind) 
+  CXCursorKind cursor_kind)
 @cname("clang_isDeclaration");
 
 /**
@@ -4198,7 +4198,7 @@ fn CUInt isDeclaration(
  * invalid, otherwise NULL.
  */
 fn CUInt isInvalidDeclaration(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_isInvalidDeclaration");
 
 /**
@@ -4210,35 +4210,35 @@ fn CUInt isInvalidDeclaration(
  * particular cursor refers to another entity.
  */
 fn CUInt isReference(
-  CXCursorKind kind) 
+  CXCursorKind kind)
 @cname("clang_isReference");
 
 /**
  * Determine whether the given cursor kind represents an expression.
  */
 fn CUInt isExpression(
-  CXCursorKind kind) 
+  CXCursorKind kind)
 @cname("clang_isExpression");
 
 /**
  * Determine whether the given cursor kind represents a statement.
  */
 fn CUInt isStatement(
-  CXCursorKind kind) 
+  CXCursorKind kind)
 @cname("clang_isStatement");
 
 /**
  * Determine whether the given cursor kind represents an attribute.
  */
 fn CUInt isAttribute(
-  CXCursorKind kind) 
+  CXCursorKind kind)
 @cname("clang_isAttribute");
 
 /**
  * Determine whether the given cursor has any attributes.
  */
 fn CUInt hasAttrs_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_hasAttrs");
 
 /**
@@ -4246,7 +4246,7 @@ fn CUInt hasAttrs_Cursor(
  * cursor.
  */
 fn CUInt isInvalid(
-  CXCursorKind kind) 
+  CXCursorKind kind)
 @cname("clang_isInvalid");
 
 /**
@@ -4254,7 +4254,7 @@ fn CUInt isInvalid(
  * unit.
  */
 fn CUInt isTranslationUnit(
-  CXCursorKind kind) 
+  CXCursorKind kind)
 @cname("clang_isTranslationUnit");
 
 /***
@@ -4262,7 +4262,7 @@ fn CUInt isTranslationUnit(
  * element, such as a preprocessor directive or macro instantiation.
  */
 fn CUInt isPreprocessing(
-  CXCursorKind kind) 
+  CXCursorKind kind)
 @cname("clang_isPreprocessing");
 
 /***
@@ -4270,7 +4270,7 @@ fn CUInt isPreprocessing(
  *  unexposed piece of the AST (e.g., CXCursor_UnexposedStmt).
  */
 fn CUInt isUnexposed(
-  CXCursorKind kind) 
+  CXCursorKind kind)
 @cname("clang_isUnexposed");
 
 /**
@@ -4279,7 +4279,7 @@ fn CUInt isUnexposed(
 typedef CXLinkageKind = inline CInt;
 
 /** This value indicates that no linkage information is available
- * for a provided CXCursor. 
+ * for a provided CXCursor.
  */
 const CXLinkageKind LINKAGE_INVALID = 0;
 /**
@@ -4287,14 +4287,14 @@ const CXLinkageKind LINKAGE_INVALID = 0;
  *  have automatic storage.  This covers normal (non-extern) local variables.
  */
 const CXLinkageKind LINKAGE_NO_LINKAGE = 1;
-/** This is the linkage for static variables and static functions. 
+/** This is the linkage for static variables and static functions.
  */
 const CXLinkageKind LINKAGE_INTERNAL = 2;
 /** This is the linkage for entities with external linkage that live
  * in C++ anonymous namespaces.
  */
 const CXLinkageKind LINKAGE_UNIQUE_EXTERNAL = 3;
-/** This is the linkage for entities with true, external linkage. 
+/** This is the linkage for entities with true, external linkage.
  */
 const CXLinkageKind LINKAGE_EXTERNAL = 4;
 
@@ -4302,22 +4302,22 @@ const CXLinkageKind LINKAGE_EXTERNAL = 4;
  * Determine the linkage of the entity referred to by a given cursor.
  */
 fn CXLinkageKind getCursorLinkage(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCursorLinkage");
 
 typedef CXVisibilityKind = inline CInt;
 
 /** This value indicates that no visibility information is available
- * for a provided CXCursor. 
+ * for a provided CXCursor.
  */
 const CXVisibilityKind VISIBILITY_INVALID = 0;
-/** Symbol not seen by the linker. 
+/** Symbol not seen by the linker.
  */
 const CXVisibilityKind VISIBILITY_HIDDEN = 1;
-/** Symbol seen by the linker but resolves to a symbol inside this object. 
+/** Symbol seen by the linker but resolves to a symbol inside this object.
  */
 const CXVisibilityKind VISIBILITY_PROTECTED = 2;
-/** Symbol seen by the linker and acts like a normal symbol. 
+/** Symbol seen by the linker and acts like a normal symbol.
  */
 const CXVisibilityKind VISIBILITY_DEFAULT = 3;
 
@@ -4333,7 +4333,7 @@ const CXVisibilityKind VISIBILITY_DEFAULT = 3;
  * \returns The visibility of the cursor.
  */
 fn CXVisibilityKind getCursorVisibility(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCursorVisibility");
 
 /**
@@ -4345,7 +4345,7 @@ fn CXVisibilityKind getCursorVisibility(
  * \returns The availability of the cursor.
  */
 fn CXAvailabilityKind getCursorAvailability(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCursorAvailability");
 
 /**
@@ -4422,20 +4422,20 @@ struct CXPlatformAvailability {
  * \c min(N, availability_size) such structures.
  */
 fn CInt getCursorPlatformAvailability(
-  CXCursor cursor, 
-  CInt* always_deprecated, 
-  CXString* deprecated_message, 
-  CInt* always_unavailable, 
-  CXString* unavailable_message, 
-  CXPlatformAvailability* availability, 
-  CInt availability_size) 
+  CXCursor cursor,
+  CInt* always_deprecated,
+  CXString* deprecated_message,
+  CInt* always_unavailable,
+  CXString* unavailable_message,
+  CXPlatformAvailability* availability,
+  CInt availability_size)
 @cname("clang_getCursorPlatformAvailability");
 
 /**
  * Free the memory associated with a \c CXPlatformAvailability structure.
  */
 fn void disposeCXPlatformAvailability(
-  CXPlatformAvailability* availability) 
+  CXPlatformAvailability* availability)
 @cname("clang_disposeCXPlatformAvailability");
 
 /**
@@ -4443,7 +4443,7 @@ fn void disposeCXPlatformAvailability(
  * cursor referring to the initializer otherwise return null cursor.
  */
 fn CXCursor getVarDeclInitializer_Cursor(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_Cursor_getVarDeclInitializer");
 
 /**
@@ -4452,7 +4452,7 @@ fn CXCursor getVarDeclInitializer_Cursor(
  * returns 0. Otherwise returns -1.
  */
 fn CInt hasVarDeclGlobalStorage_Cursor(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_Cursor_hasVarDeclGlobalStorage");
 
 /**
@@ -4461,7 +4461,7 @@ fn CInt hasVarDeclGlobalStorage_Cursor(
  * external storage returns 0. Otherwise returns -1.
  */
 fn CInt hasVarDeclExternalStorage_Cursor(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_Cursor_hasVarDeclExternalStorage");
 
 /**
@@ -4477,7 +4477,7 @@ const CXLinkageKind LANGUAGE_C_PLUS_PLUS = 3;
  * Determine the "language" of the entity referred to by a given cursor.
  */
 fn CXLanguageKind getCursorLanguage(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCursorLanguage");
 
 /**
@@ -4494,14 +4494,14 @@ const CXTLSKind TLS_STATIC = 2;
  * referred to by a cursor.
  */
 fn CXTLSKind getCursorTLSKind(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCursorTLSKind");
 
 /**
  * Returns the translation unit that a cursor originated from.
  */
 fn CXTranslationUnit getTranslationUnit_Cursor(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_Cursor_getTranslationUnit");
 
 /**
@@ -4512,14 +4512,14 @@ typedef CXCursorSet = inline void*;
 /**
  * Creates an empty CXCursorSet.
  */
-fn CXCursorSet createCXCursorSet() 
+fn CXCursorSet createCXCursorSet()
 @cname("clang_createCXCursorSet");
 
 /**
  * Disposes a CXCursorSet and releases its associated memory.
  */
 fn void disposeCXCursorSet(
-  CXCursorSet cset) 
+  CXCursorSet cset)
 @cname("clang_disposeCXCursorSet");
 
 /**
@@ -4528,8 +4528,8 @@ fn void disposeCXCursorSet(
  * \returns non-zero if the set contains the specified cursor.
  */
 fn CUInt contains_CursorSet(
-  CXCursorSet cset, 
-  CXCursor cursor) 
+  CXCursorSet cset,
+  CXCursor cursor)
 @cname("clang_CXCursorSet_contains");
 
 /**
@@ -4538,8 +4538,8 @@ fn CUInt contains_CursorSet(
  * \returns zero if the CXCursor was already in the set, and non-zero otherwise.
  */
 fn CUInt insert_CursorSet(
-  CXCursorSet cset, 
-  CXCursor cursor) 
+  CXCursorSet cset,
+  CXCursor cursor)
 @cname("clang_CXCursorSet_insert");
 
 /**
@@ -4576,7 +4576,7 @@ fn CUInt insert_CursorSet(
  * For global declarations, the semantic parent is the translation unit.
  */
 fn CXCursor getCursorSemanticParent(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCursorSemanticParent");
 
 /**
@@ -4614,7 +4614,7 @@ fn CXCursor getCursorSemanticParent(
  * the translation unit.
  */
 fn CXCursor getCursorLexicalParent(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCursorLexicalParent");
 
 /**
@@ -4661,9 +4661,9 @@ fn CXCursor getCursorLexicalParent(
  * array pointed to by \p overridden.
  */
 fn void getOverriddenCursors(
-  CXCursor cursor, 
-  CXCursor** overridden, 
-  CUInt* num_overridden) 
+  CXCursor cursor,
+  CXCursor** overridden,
+  CUInt* num_overridden)
 @cname("clang_getOverriddenCursors");
 
 /**
@@ -4671,7 +4671,7 @@ fn void getOverriddenCursors(
  * clang_getOverriddenCursors().
  */
 fn void disposeOverriddenCursors(
-  CXCursor* overridden) 
+  CXCursor* overridden)
 @cname("clang_disposeOverriddenCursors");
 
 /**
@@ -4679,7 +4679,7 @@ fn void disposeOverriddenCursors(
  * cursor.
  */
 fn CXFile getIncludedFile(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getIncludedFile");
 
 /**
@@ -4698,8 +4698,8 @@ fn CXFile getIncludedFile(
  * a NULL cursor if no such entity can be found.
  */
 fn CXCursor getCursor(
-  CXTranslationUnit tu, 
-  CXSourceLocation source_location) 
+  CXTranslationUnit tu,
+  CXSourceLocation source_location)
 @cname("clang_getCursor");
 
 /**
@@ -4713,7 +4713,7 @@ fn CXCursor getCursor(
  * source code.
  */
 fn CXSourceLocation getCursorLocation(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCursorLocation");
 
 /**
@@ -4728,7 +4728,7 @@ fn CXSourceLocation getCursorLocation(
  * entity was actually used).
  */
 fn CXSourceRange getCursorExtent(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCursorExtent");
 
 /**
@@ -4933,7 +4933,7 @@ struct CXType {
  * Retrieve the type of a CXCursor (if any).
  */
 fn CXType getCursorType(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCursorType");
 
 /**
@@ -4943,7 +4943,7 @@ fn CXType getCursorType(
  * If the type is invalid, an empty string is returned.
  */
 fn CXString getTypeSpelling(
-  CXType ct) 
+  CXType ct)
 @cname("clang_getTypeSpelling");
 
 /**
@@ -4953,7 +4953,7 @@ fn CXString getTypeSpelling(
  * returned.
  */
 fn CXType getTypedefDeclUnderlyingType(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getTypedefDeclUnderlyingType");
 
 /**
@@ -4963,7 +4963,7 @@ fn CXType getTypedefDeclUnderlyingType(
  * returned.
  */
 fn CXType getEnumDeclIntegerType(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_getEnumDeclIntegerType");
 
 /**
@@ -4975,7 +4975,7 @@ fn CXType getEnumDeclIntegerType(
  * the cursor must be verified before calling this function.
  */
 fn CLongLong getEnumConstantDeclValue(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_getEnumConstantDeclValue");
 
 /**
@@ -4987,14 +4987,14 @@ fn CLongLong getEnumConstantDeclValue(
  * the cursor must be verified before calling this function.
  */
 fn CULongLong getEnumConstantDeclUnsignedValue(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_getEnumConstantDeclUnsignedValue");
 
 /**
  * Returns non-zero if the cursor specifies a Record member that is a bit-field.
  */
 fn CUInt isBitField_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_isBitField");
 
 /**
@@ -5014,7 +5014,7 @@ fn CUInt isBitField_Cursor(
  * \endcode
  */
 fn CInt getFieldDeclBitWidth(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_getFieldDeclBitWidth");
 
 /**
@@ -5025,7 +5025,7 @@ fn CInt getFieldDeclBitWidth(
  * declarations of functions or methods. For other cursors -1 is returned.
  */
 fn CInt getNumArguments_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_getNumArguments");
 
 /**
@@ -5036,8 +5036,8 @@ fn CInt getNumArguments_Cursor(
  * invalid cursor is returned.
  */
 fn CXCursor getArgument_Cursor(
-  CXCursor c, 
-  CUInt i) 
+  CXCursor c,
+  CUInt i)
 @cname("clang_Cursor_getArgument");
 
 /**
@@ -5077,7 +5077,7 @@ const CXTemplateArgumentKind TEMPLATE_ARGUMENT_KIND_INVALID = 9;
  * The value 3 would be returned from this call.
  */
 fn CInt getNumTemplateArguments_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_getNumTemplateArguments");
 
 /**
@@ -5098,8 +5098,8 @@ fn CInt getNumTemplateArguments_Cursor(
  * respectively.
  */
 fn CXTemplateArgumentKind getTemplateArgumentKind_Cursor(
-  CXCursor c, 
-  CUInt i) 
+  CXCursor c,
+  CUInt i)
 @cname("clang_Cursor_getTemplateArgumentKind");
 
 /**
@@ -5121,8 +5121,8 @@ fn CXTemplateArgumentKind getTemplateArgumentKind_Cursor(
  * Invalid types will be returned for I == 1 or 2.
  */
 fn CXType getTemplateArgumentType_Cursor(
-  CXCursor c, 
-  CUInt i) 
+  CXCursor c,
+  CUInt i)
 @cname("clang_Cursor_getTemplateArgumentType");
 
 /**
@@ -5144,8 +5144,8 @@ fn CXType getTemplateArgumentType_Cursor(
  * For I == 0, this function's behavior is undefined.
  */
 fn CLongLong getTemplateArgumentValue_Cursor(
-  CXCursor c, 
-  CUInt i) 
+  CXCursor c,
+  CUInt i)
 @cname("clang_Cursor_getTemplateArgumentValue");
 
 /**
@@ -5167,8 +5167,8 @@ fn CLongLong getTemplateArgumentValue_Cursor(
  * For I == 0, this function's behavior is undefined.
  */
 fn CULongLong getTemplateArgumentUnsignedValue_Cursor(
-  CXCursor c, 
-  CUInt i) 
+  CXCursor c,
+  CUInt i)
 @cname("clang_Cursor_getTemplateArgumentUnsignedValue");
 
 /**
@@ -5178,8 +5178,8 @@ fn CULongLong getTemplateArgumentUnsignedValue_Cursor(
  *          zero otherwise.
  */
 fn CUInt equalTypes(
-  CXType a, 
-  CXType b) 
+  CXType a,
+  CXType b)
 @cname("clang_equalTypes");
 
 /**
@@ -5191,7 +5191,7 @@ fn CUInt equalTypes(
  * for 'CInt', the canonical type for 'T' would be 'CInt'.
  */
 fn CXType getCanonicalType(
-  CXType t) 
+  CXType t)
 @cname("clang_getCanonicalType");
 
 /**
@@ -5200,7 +5200,7 @@ fn CXType getCanonicalType(
  * different level.
  */
 fn CUInt isConstQualifiedType(
-  CXType t) 
+  CXType t)
 @cname("clang_isConstQualifiedType");
 
 /**
@@ -5208,7 +5208,7 @@ fn CUInt isConstQualifiedType(
  * function like.
  */
 fn CUInt isMacroFunctionLike_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_isMacroFunctionLike");
 
 /**
@@ -5216,7 +5216,7 @@ fn CUInt isMacroFunctionLike_Cursor(
  * builtin one.
  */
 fn CUInt isMacroBuiltin_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_isMacroBuiltin");
 
 /**
@@ -5224,7 +5224,7 @@ fn CUInt isMacroBuiltin_Cursor(
  * inline declaration.
  */
 fn CUInt isFunctionInlined_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_isFunctionInlined");
 
 /**
@@ -5233,7 +5233,7 @@ fn CUInt isFunctionInlined_Cursor(
  * a different level.
  */
 fn CUInt isVolatileQualifiedType(
-  CXType t) 
+  CXType t)
 @cname("clang_isVolatileQualifiedType");
 
 /**
@@ -5242,28 +5242,28 @@ fn CUInt isVolatileQualifiedType(
  * different level.
  */
 fn CUInt isRestrictQualifiedType(
-  CXType t) 
+  CXType t)
 @cname("clang_isRestrictQualifiedType");
 
 /**
  * Returns the address space of the given type.
  */
 fn CUInt getAddressSpace(
-  CXType t) 
+  CXType t)
 @cname("clang_getAddressSpace");
 
 /**
  * Returns the typedef name of the given type.
  */
 fn CXString getTypedefName(
-  CXType ct) 
+  CXType ct)
 @cname("clang_getTypedefName");
 
 /**
  * For pointer types, returns the type of the pointee.
  */
 fn CXType getPointeeType(
-  CXType t) 
+  CXType t)
 @cname("clang_getPointeeType");
 
 /**
@@ -5302,7 +5302,7 @@ fn CXType getPointeeType(
  * will return \c false for all of the above calls.
  */
 fn CXType getUnqualifiedType(
-  CXType ct) 
+  CXType ct)
 @cname("clang_getUnqualifiedType");
 
 /**
@@ -5315,35 +5315,35 @@ fn CXType getUnqualifiedType(
  * \c CXType_RValueReference is a reference type.
  */
 fn CXType getNonReferenceType(
-  CXType ct) 
+  CXType ct)
 @cname("clang_getNonReferenceType");
 
 /**
  * Return the cursor for the declaration of the given type.
  */
 fn CXCursor getTypeDeclaration(
-  CXType t) 
+  CXType t)
 @cname("clang_getTypeDeclaration");
 
 /**
  * Returns the Objective-C type encoding for the specified declaration.
  */
 fn CXString getDeclObjCTypeEncoding(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_getDeclObjCTypeEncoding");
 
 /**
  * Returns the Objective-C type encoding for the specified CXType.
  */
 fn CXString getObjCEncoding_Type(
-  CXType type) 
+  CXType type)
 @cname("clang_Type_getObjCEncoding");
 
 /**
  * Retrieve the spelling of a given CXTypeKind.
  */
 fn CXString getTypeKindSpelling(
-  CXTypeKind k) 
+  CXTypeKind k)
 @cname("clang_getTypeKindSpelling");
 
 /**
@@ -5352,7 +5352,7 @@ fn CXString getTypeKindSpelling(
  * If a non-function type is passed in, CXCallingConv_Invalid is returned.
  */
 fn CXCallingConv getFunctionTypeCallingConv(
-  CXType t) 
+  CXType t)
 @cname("clang_getFunctionTypeCallingConv");
 
 /**
@@ -5361,7 +5361,7 @@ fn CXCallingConv getFunctionTypeCallingConv(
  * If a non-function type is passed in, an invalid type is returned.
  */
 fn CXType getResultType(
-  CXType t) 
+  CXType t)
 @cname("clang_getResultType");
 
 /**
@@ -5371,7 +5371,7 @@ fn CXType getResultType(
  * If a non-function type is passed in, an error code of -1 is returned.
  */
 fn CInt getExceptionSpecificationType(
-  CXType t) 
+  CXType t)
 @cname("clang_getExceptionSpecificationType");
 
 /**
@@ -5381,7 +5381,7 @@ fn CInt getExceptionSpecificationType(
  * If a non-function type is passed in, -1 is returned.
  */
 fn CInt getNumArgTypes(
-  CXType t) 
+  CXType t)
 @cname("clang_getNumArgTypes");
 
 /**
@@ -5391,8 +5391,8 @@ fn CInt getNumArgTypes(
  * parameters, an invalid type is returned.
  */
 fn CXType getArgType(
-  CXType t, 
-  CUInt i) 
+  CXType t,
+  CUInt i)
 @cname("clang_getArgType");
 
 /**
@@ -5401,7 +5401,7 @@ fn CXType getArgType(
  * If the type is not an ObjC object, an invalid type is returned.
  */
 fn CXType getObjCObjectBaseType_Type(
-  CXType t) 
+  CXType t)
 @cname("clang_Type_getObjCObjectBaseType");
 
 /**
@@ -5410,7 +5410,7 @@ fn CXType getObjCObjectBaseType_Type(
  * If the type is not an ObjC object, 0 is returned.
  */
 fn CUInt getNumObjCProtocolRefs_Type(
-  CXType t) 
+  CXType t)
 @cname("clang_Type_getNumObjCProtocolRefs");
 
 /**
@@ -5420,8 +5420,8 @@ fn CUInt getNumObjCProtocolRefs_Type(
  * references, an invalid cursor is returned.
  */
 fn CXCursor getObjCProtocolDecl_Type(
-  CXType t, 
-  CUInt i) 
+  CXType t,
+  CUInt i)
 @cname("clang_Type_getObjCProtocolDecl");
 
 /**
@@ -5430,7 +5430,7 @@ fn CXCursor getObjCProtocolDecl_Type(
  * If the type is not an ObjC object, 0 is returned.
  */
 fn CUInt getNumObjCTypeArgs_Type(
-  CXType t) 
+  CXType t)
 @cname("clang_Type_getNumObjCTypeArgs");
 
 /**
@@ -5440,15 +5440,15 @@ fn CUInt getNumObjCTypeArgs_Type(
  * an invalid type is returned.
  */
 fn CXType getObjCTypeArg_Type(
-  CXType t, 
-  CUInt i) 
+  CXType t,
+  CUInt i)
 @cname("clang_Type_getObjCTypeArg");
 
 /**
  * Return 1 if the CXType is a variadic function type, and 0 otherwise.
  */
 fn CUInt isFunctionTypeVariadic(
-  CXType t) 
+  CXType t)
 @cname("clang_isFunctionTypeVariadic");
 
 /**
@@ -5457,7 +5457,7 @@ fn CUInt isFunctionTypeVariadic(
  * This only returns a valid type if the cursor refers to a function or method.
  */
 fn CXType getCursorResultType(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_getCursorResultType");
 
 /**
@@ -5468,7 +5468,7 @@ fn CXType getCursorResultType(
  * method.
  */
 fn CInt getCursorExceptionSpecificationType(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_getCursorExceptionSpecificationType");
 
 /**
@@ -5476,7 +5476,7 @@ fn CInt getCursorExceptionSpecificationType(
  *  otherwise.
  */
 fn CUInt isPODType(
-  CXType t) 
+  CXType t)
 @cname("clang_isPODType");
 
 /**
@@ -5486,7 +5486,7 @@ fn CUInt isPODType(
  * an invalid type is returned.
  */
 fn CXType getElementType(
-  CXType t) 
+  CXType t)
 @cname("clang_getElementType");
 
 /**
@@ -5496,7 +5496,7 @@ fn CXType getElementType(
  * -1 is returned.
  */
 fn CLongLong getNumElements(
-  CXType t) 
+  CXType t)
 @cname("clang_getNumElements");
 
 /**
@@ -5505,7 +5505,7 @@ fn CLongLong getNumElements(
  * If a non-array type is passed in, an invalid type is returned.
  */
 fn CXType getArrayElementType(
-  CXType t) 
+  CXType t)
 @cname("clang_getArrayElementType");
 
 /**
@@ -5514,7 +5514,7 @@ fn CXType getArrayElementType(
  * If a non-array type is passed in, -1 is returned.
  */
 fn CLongLong getArraySize(
-  CXType t) 
+  CXType t)
 @cname("clang_getArraySize");
 
 /**
@@ -5523,7 +5523,7 @@ fn CLongLong getArraySize(
  * If a non-elaborated type is passed in, an invalid type is returned.
  */
 fn CXType getNamedType_Type(
-  CXType t) 
+  CXType t)
 @cname("clang_Type_getNamedType");
 
 /**
@@ -5535,7 +5535,7 @@ fn CXType getNamedType_Type(
  * \returns non-zero if transparent and zero otherwise.
  */
 fn CUInt isTransparentTagTypedef_Type(
-  CXType t) 
+  CXType t)
 @cname("clang_Type_isTransparentTagTypedef");
 
 typedef CXTypeNullabilityKind = inline CInt;
@@ -5571,7 +5571,7 @@ const CXTypeNullabilityKind TYPE_NULLABILITY_NULLABLE_RESULT = 4;
  * Retrieve the nullability kind of a pointer type.
  */
 fn CXTypeNullabilityKind getNullability_Type(
-  CXType t) 
+  CXType t)
 @cname("clang_Type_getNullability");
 
 /**
@@ -5622,7 +5622,7 @@ const CXTypeLayoutError TYPE_LAYOUT_ERROR_UNDEDUCED = -6;
  *   CXTypeLayoutError_NotConstantSize is returned.
  */
 fn CLongLong getAlignOf_Type(
-  CXType t) 
+  CXType t)
 @cname("clang_Type_getAlignOf");
 
 /**
@@ -5631,7 +5631,7 @@ fn CLongLong getAlignOf_Type(
  * If a non-member-pointer type is passed in, an invalid type is returned.
  */
 fn CXType getClassType_Type(
-  CXType t) 
+  CXType t)
 @cname("clang_Type_getClassType");
 
 /**
@@ -5644,7 +5644,7 @@ fn CXType getClassType_Type(
  *   returned.
  */
 fn CLongLong getSizeOf_Type(
-  CXType t) 
+  CXType t)
 @cname("clang_Type_getSizeOf");
 
 /**
@@ -5661,8 +5661,8 @@ fn CLongLong getSizeOf_Type(
  *   CXTypeLayoutError_InvalidFieldName is returned.
  */
 fn CLongLong getOffsetOf_Type(
-  CXType t, 
-  ZString s) 
+  CXType t,
+  ZString s)
 @cname("clang_Type_getOffsetOf");
 
 /**
@@ -5671,14 +5671,14 @@ fn CLongLong getOffsetOf_Type(
  * If the type is not an attributed type, an invalid type is returned.
  */
 fn CXType getModifiedType_Type(
-  CXType t) 
+  CXType t)
 @cname("clang_Type_getModifiedType");
 
 /**
  * If a non-atomic type is passed in, an invalid type is returned.
  */
 fn CXType getValueType_Type(
-  CXType ct) 
+  CXType ct)
 @cname("clang_Type_getValueType");
 
 /**
@@ -5695,7 +5695,7 @@ fn CXType getValueType_Type(
  *   CXTypeLayoutError_InvalidFieldName is returned.
  */
 fn CLongLong getOffsetOfField_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_getOffsetOfField");
 
 /**
@@ -5703,7 +5703,7 @@ fn CLongLong getOffsetOfField_Cursor(
  * tag or namespace
  */
 fn CUInt isAnonymous_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_isAnonymous");
 
 /**
@@ -5711,7 +5711,7 @@ fn CUInt isAnonymous_Cursor(
  * declaration.
  */
 fn CUInt isAnonymousRecordDecl_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_isAnonymousRecordDecl");
 
 /**
@@ -5719,18 +5719,18 @@ fn CUInt isAnonymousRecordDecl_Cursor(
  * declaration.
  */
 fn CUInt isInlineNamespace_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_isInlineNamespace");
 
 typedef CXRefQualifierKind = inline CInt;
 
-/** No ref-qualifier was provided. 
+/** No ref-qualifier was provided.
   */
 const CXRefQualifierKind REF_QUALIFIER_NONE = 0;
-/** An lvalue ref-qualifier was provided (\c &). 
+/** An lvalue ref-qualifier was provided (\c &).
   */
 const CXRefQualifierKind REF_QUALIFIER_LVALUE = 1;
-/** An rvalue ref-qualifier was provided (\c &&). 
+/** An rvalue ref-qualifier was provided (\c &&).
   */
 const CXRefQualifierKind REF_QUALIFIER_RVALUE = 2;
 
@@ -5739,7 +5739,7 @@ const CXRefQualifierKind REF_QUALIFIER_RVALUE = 2;
  * specialization, or -1 if type \c T is not a template specialization.
  */
 fn CInt getNumTemplateArguments_Type(
-  CXType t) 
+  CXType t)
 @cname("clang_Type_getNumTemplateArguments");
 
 /**
@@ -5750,8 +5750,8 @@ fn CInt getNumTemplateArguments_Type(
  * template template arguments or variadic packs.
  */
 fn CXType getTemplateArgumentAsType_Type(
-  CXType t, 
-  CUInt i) 
+  CXType t,
+  CUInt i)
 @cname("clang_Type_getTemplateArgumentAsType");
 
 /**
@@ -5761,7 +5761,7 @@ fn CXType getTemplateArgumentAsType_Type(
  * or non-C++ declarations, CXRefQualifier_None is returned.
  */
 fn CXRefQualifierKind getCXXRefQualifier_Type(
-  CXType t) 
+  CXType t)
 @cname("clang_Type_getCXXRefQualifier");
 
 /**
@@ -5769,7 +5769,7 @@ fn CXRefQualifierKind getCXXRefQualifier_Type(
  *   CX_CXXBaseSpecifier is virtual.
  */
 fn CUInt isVirtualBase(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_isVirtualBase");
 
 /**
@@ -5791,7 +5791,7 @@ const CX_CXXAccessSpecifier CXX_PRIVATE = 3;
  * specifier or access specifier, the specifier itself is returned.
  */
 fn CX_CXXAccessSpecifier getCXXAccessSpecifier(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_getCXXAccessSpecifier");
 
 /**
@@ -5816,7 +5816,7 @@ const CX_StorageClass SC_REGISTER = 7;
  * CX_SC_Invalid is returned else the storage class.
  */
 fn CX_StorageClass getStorageClass_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_getStorageClass");
 
 /**
@@ -5829,7 +5829,7 @@ fn CX_StorageClass getStorageClass_Cursor(
  * is not a \c CXCursor_OverloadedDeclRef cursor, returns 0.
  */
 fn CUInt getNumOverloadedDecls(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getNumOverloadedDecls");
 
 /**
@@ -5847,8 +5847,8 @@ fn CUInt getNumOverloadedDecls(
  * returns \c clang_getNullCursor();
  */
 fn CXCursor getOverloadedDecl(
-  CXCursor cursor, 
-  CUInt index) 
+  CXCursor cursor,
+  CUInt index)
 @cname("clang_getOverloadedDecl");
 
 /**
@@ -5857,7 +5857,7 @@ fn CXCursor getOverloadedDecl(
  *
  */
 fn CXType getIBOutletCollectionType(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_getIBOutletCollectionType");
 
 /**
@@ -5896,8 +5896,8 @@ const CXChildVisitResult CHILD_VISIT_RECURSE = 2;
  * to direct clang_visitCursorChildren().
  */
 alias CXCursorVisitor = fn CXChildVisitResult(
-  CXCursor cursor, 
-  CXCursor parent, 
+  CXCursor cursor,
+  CXCursor parent,
   CXClientData client_data);
 
 /**
@@ -5923,9 +5923,9 @@ alias CXCursorVisitor = fn CXChildVisitResult(
  * prematurely by the visitor returning \c CXChildVisit_Break.
  */
 fn CUInt visitChildren(
-  CXCursor parent, 
-  CXCursorVisitor visitor, 
-  CXClientData client_data) 
+  CXCursor parent,
+  CXCursorVisitor visitor,
+  CXClientData client_data)
 @cname("clang_visitChildren");
 
 /**
@@ -5945,8 +5945,8 @@ typedef CXCursorVisitorBlock = void*;
  * identically to clang_visitChildren() in all other respects.
  */
 fn CUInt visitChildrenWithBlock(
-  CXCursor parent, 
-  CXCursorVisitorBlock block) 
+  CXCursor parent,
+  CXCursorVisitorBlock block)
 @cname("clang_visitChildrenWithBlock");
 
 /**
@@ -5959,29 +5959,29 @@ fn CUInt visitChildrenWithBlock(
  * one translation refer to an entity defined in another translation unit.
  */
 fn CXString getCursorUSR(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_getCursorUSR");
 
 /**
  * Construct a USR for a specified Objective-C class.
  */
 fn CXString constructUSR_ObjCClass(
-  ZString class_name) 
+  ZString class_name)
 @cname("clang_constructUSR_ObjCClass");
 
 /**
  * Construct a USR for a specified Objective-C category.
  */
 fn CXString constructUSR_ObjCCategory(
-  ZString class_name, 
-  ZString category_name) 
+  ZString class_name,
+  ZString category_name)
 @cname("clang_constructUSR_ObjCCategory");
 
 /**
  * Construct a USR for a specified Objective-C protocol.
  */
 fn CXString constructUSR_ObjCProtocol(
-  ZString protocol_name) 
+  ZString protocol_name)
 @cname("clang_constructUSR_ObjCProtocol");
 
 /**
@@ -5989,8 +5989,8 @@ fn CXString constructUSR_ObjCProtocol(
  *   the USR for its containing class.
  */
 fn CXString constructUSR_ObjCIvar(
-  ZString name, 
-  CXString classUSR) 
+  ZString name,
+  CXString classUSR)
 @cname("clang_constructUSR_ObjCIvar");
 
 /**
@@ -5998,9 +5998,9 @@ fn CXString constructUSR_ObjCIvar(
  *   the USR for its containing class.
  */
 fn CXString constructUSR_ObjCMethod(
-  ZString name, 
-  CUInt is_instance_method, 
-  CXString classUSR) 
+  ZString name,
+  CUInt is_instance_method,
+  CXString classUSR)
 @cname("clang_constructUSR_ObjCMethod");
 
 /**
@@ -6008,15 +6008,15 @@ fn CXString constructUSR_ObjCMethod(
  *  for its containing class.
  */
 fn CXString constructUSR_ObjCProperty(
-  ZString property, 
-  CXString classUSR) 
+  ZString property,
+  CXString classUSR)
 @cname("clang_constructUSR_ObjCProperty");
 
 /**
  * Retrieve a name for the entity referenced by this cursor.
  */
 fn CXString getCursorSpelling(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCursorSpelling");
 
 /**
@@ -6031,9 +6031,9 @@ fn CXString getCursorSpelling(
  * \param options Reserved.
  */
 fn CXSourceRange getSpellingNameRange_Cursor(
-  CXCursor cursor, 
-  CUInt piece_index, 
-  CUInt options) 
+  CXCursor cursor,
+  CUInt piece_index,
+  CUInt options)
 @cname("clang_Cursor_getSpellingNameRange");
 
 /**
@@ -6082,17 +6082,17 @@ const CXPrintingPolicyProperty PRINTING_POLICY_LAST_PROPERTY = PRINTING_POLICY_F
  * Get a property value for the given printing policy.
  */
 fn CUInt getProperty_PrintingPolicy(
-  CXPrintingPolicy policy, 
-  CXPrintingPolicyProperty property) 
+  CXPrintingPolicy policy,
+  CXPrintingPolicyProperty property)
 @cname("clang_PrintingPolicy_getProperty");
 
 /**
  * Set a property value for the given printing policy.
  */
 fn void setProperty_PrintingPolicy(
-  CXPrintingPolicy policy, 
-  CXPrintingPolicyProperty property, 
-  CUInt value) 
+  CXPrintingPolicy policy,
+  CXPrintingPolicyProperty property,
+  CUInt value)
 @cname("clang_PrintingPolicy_setProperty");
 
 /**
@@ -6102,14 +6102,14 @@ fn void setProperty_PrintingPolicy(
  * clang_PrintingPolicy_dispose.
  */
 fn CXPrintingPolicy getCursorPrintingPolicy(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCursorPrintingPolicy");
 
 /**
  * Release a printing policy.
  */
 fn void dispose_PrintingPolicy(
-  CXPrintingPolicy policy) 
+  CXPrintingPolicy policy)
 @cname("clang_PrintingPolicy_dispose");
 
 /**
@@ -6124,8 +6124,8 @@ fn void dispose_PrintingPolicy(
  * other cursors.
  */
 fn CXString getCursorPrettyPrinted(
-  CXCursor cursor, 
-  CXPrintingPolicy policy) 
+  CXCursor cursor,
+  CXPrintingPolicy policy)
 @cname("clang_getCursorPrettyPrinted");
 
 /**
@@ -6136,7 +6136,7 @@ fn CXString getCursorPrettyPrinted(
  * class template specialization.
  */
 fn CXString getCursorDisplayName(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCursorDisplayName");
 
 /** For a cursor that is a reference, retrieve a cursor representing the
@@ -6150,7 +6150,7 @@ fn CXString getCursorDisplayName(
  * Otherwise, returns the NULL cursor.
  */
 fn CXCursor getCursorReferenced(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCursorReferenced");
 
 /**
@@ -6182,7 +6182,7 @@ fn CXCursor getCursorReferenced(
  *  translation unit, returns a NULL cursor.
  */
 fn CXCursor getCursorDefinition(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCursorDefinition");
 
 /**
@@ -6190,7 +6190,7 @@ fn CXCursor getCursorDefinition(
  * is also a definition of that entity.
  */
 fn CUInt isCursorDefinition(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_isCursorDefinition");
 
 /**
@@ -6218,7 +6218,7 @@ fn CUInt isCursorDefinition(
  * \returns The canonical cursor for the entity referred to by the given cursor.
  */
 fn CXCursor getCanonicalCursor(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCanonicalCursor");
 
 /**
@@ -6233,7 +6233,7 @@ fn CXCursor getCanonicalCursor(
  * otherwise.
  */
 fn CInt getObjCSelectorIndex_Cursor(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_Cursor_getObjCSelectorIndex");
 
 /**
@@ -6248,7 +6248,7 @@ fn CInt getObjCSelectorIndex_Cursor(
  * method/message, it will return zero.
  */
 fn CInt isDynamicCall_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_isDynamicCall");
 
 /**
@@ -6256,7 +6256,7 @@ fn CInt isDynamicCall_Cursor(
  * reference, or C++ method call, returns the CXType of the receiver.
  */
 fn CXType getReceiverType_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_getReceiverType");
 
 /**
@@ -6287,8 +6287,8 @@ const CXObjCPropertyAttrKind OBJC_PROPERTY_ATTR_CLASS = 0x1000;
  * \param reserved Reserved for future use, pass 0.
  */
 fn CUInt getObjCPropertyAttributes_Cursor(
-  CXCursor c, 
-  CUInt reserved) 
+  CXCursor c,
+  CUInt reserved)
 @cname("clang_Cursor_getObjCPropertyAttributes");
 
 /**
@@ -6296,7 +6296,7 @@ fn CUInt getObjCPropertyAttributes_Cursor(
  * name of the method that implements the getter.
  */
 fn CXString getObjCPropertyGetterName_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_getObjCPropertyGetterName");
 
 /**
@@ -6304,7 +6304,7 @@ fn CXString getObjCPropertyGetterName_Cursor(
  * name of the method that implements the setter, if any.
  */
 fn CXString getObjCPropertySetterName_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_getObjCPropertySetterName");
 
 /**
@@ -6328,7 +6328,7 @@ const CXObjCPropertyAttrKind OBJC_DECL_QUALIFIER_ONEWAY = 0x20;
  * CXObjCDeclQualifierKind.
  */
 fn CUInt getObjCDeclQualifiers_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_getObjCDeclQualifiers");
 
 /**
@@ -6337,14 +6337,14 @@ fn CUInt getObjCDeclQualifiers_Cursor(
  * Returns zero if the cursor is not such a declaration or it is "\@required".
  */
 fn CUInt isObjCOptional_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_isObjCOptional");
 
 /**
  * Returns non-zero if the given cursor is a variadic function or method.
  */
 fn CUInt isVariadic_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_isVariadic");
 
 /**
@@ -6361,10 +6361,10 @@ fn CUInt isVariadic_Cursor(
  * non-zero if the 'generated_declaration' is set in the attribute.
  */
 fn CUInt isExternalSymbol_Cursor(
-  CXCursor c, 
-  CXString* language, 
-  CXString* definedIn, 
-  CUInt* isGenerated) 
+  CXCursor c,
+  CXString* language,
+  CXString* definedIn,
+  CUInt* isGenerated)
 @cname("clang_Cursor_isExternalSymbol");
 
 /**
@@ -6373,7 +6373,7 @@ fn CUInt isExternalSymbol_Cursor(
  * with whitespace in between.
  */
 fn CXSourceRange getCommentRange_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_getCommentRange");
 
 /**
@@ -6381,7 +6381,7 @@ fn CXSourceRange getCommentRange_Cursor(
  * comment text, including comment markers.
  */
 fn CXString getRawCommentText_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_getRawCommentText");
 
 /**
@@ -6390,14 +6390,14 @@ fn CXString getRawCommentText_Cursor(
  * first paragraph.
  */
 fn CXString getBriefCommentText_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_getBriefCommentText");
 
 /**
  * Retrieve the CXString representing the mangled name of the cursor.
  */
 fn CXString getMangling_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_getMangling");
 
 /**
@@ -6405,7 +6405,7 @@ fn CXString getMangling_Cursor(
  * constructor or destructor at the cursor.
  */
 fn CXStringSet* getCXXManglings_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_getCXXManglings");
 
 /**
@@ -6413,7 +6413,7 @@ fn CXStringSet* getCXXManglings_Cursor(
  * class interface or implementation at the cursor.
  */
 fn CXStringSet* getObjCManglings_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_getObjCManglings");
 
 typedef CXModule = inline void*;
@@ -6422,7 +6422,7 @@ typedef CXModule = inline void*;
  * Given a CXCursor_ModuleImportDecl cursor, return the associated module.
  */
 fn CXModule getModule_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_getModule");
 
 /**
@@ -6430,8 +6430,8 @@ fn CXModule getModule_Cursor(
  * exists.
  */
 fn CXModule getModuleForFile(
-  CXTranslationUnit tu, 
-  CXFile file) 
+  CXTranslationUnit tu,
+  CXFile file)
 @cname("clang_getModuleForFile");
 
 /**
@@ -6440,7 +6440,7 @@ fn CXModule getModuleForFile(
  * \returns the module file where the provided module object came from.
  */
 fn CXFile getASTFile_Module(
-  CXModule mod) 
+  CXModule mod)
 @cname("clang_Module_getASTFile");
 
 /**
@@ -6450,7 +6450,7 @@ fn CXFile getASTFile_Module(
  * e.g. for 'std.vector' it will return the 'std' module.
  */
 fn CXModule getParent_Module(
-  CXModule mod) 
+  CXModule mod)
 @cname("clang_Module_getParent");
 
 /**
@@ -6460,7 +6460,7 @@ fn CXModule getParent_Module(
  * will return "vector".
  */
 fn CXString getName_Module(
-  CXModule mod) 
+  CXModule mod)
 @cname("clang_Module_getName");
 
 /**
@@ -6469,7 +6469,7 @@ fn CXString getName_Module(
  * \returns the full name of the module, e.g. "std.vector".
  */
 fn CXString getFullName_Module(
-  CXModule mod) 
+  CXModule mod)
 @cname("clang_Module_getFullName");
 
 /**
@@ -6478,7 +6478,7 @@ fn CXString getFullName_Module(
  * \returns non-zero if the module is a system one.
  */
 fn CInt isSystem_Module(
-  CXModule mod) 
+  CXModule mod)
 @cname("clang_Module_isSystem");
 
 /**
@@ -6487,7 +6487,7 @@ fn CInt isSystem_Module(
  * \returns the number of top level headers associated with this module.
  */
 fn CUInt getNumTopLevelHeaders_Module(
-  CXModule mod, 
+  CXModule mod,
   CXTranslationUnit tu)
 @cname("clang_Module_getNumTopLevelHeaders");
 
@@ -6499,58 +6499,58 @@ fn CUInt getNumTopLevelHeaders_Module(
  * \returns the specified top level header associated with the module.
  */
 fn CXFile getTopLevelHeader_Module(
-  CXModule mod, 
-  CXTranslationUnit tu, 
-  CUInt index) 
+  CXModule mod,
+  CXTranslationUnit tu,
+  CUInt index)
 @cname("clang_Module_getTopLevelHeader");
 
 /**
  * Determine if a C++ constructor is a converting constructor.
  */
 fn CUInt isConvertingConstructor_CXXConstructor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_CXXConstructor_isConvertingConstructor");
 
 /**
  * Determine if a C++ constructor is a copy constructor.
  */
 fn CUInt isCopyConstructor_CXXConstructor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_CXXConstructor_isCopyConstructor");
 
 /**
  * Determine if a C++ constructor is the default constructor.
  */
 fn CUInt isDefaultConstructor_CXXConstructor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_CXXConstructor_isDefaultConstructor");
 
 /**
  * Determine if a C++ constructor is a move constructor.
  */
 fn CUInt isMoveConstructor_CXXConstructor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_CXXConstructor_isMoveConstructor");
 
 /**
  * Determine if a C++ field is declared 'mutable'.
  */
 fn CUInt isMutable_CXXField(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_CXXField_isMutable");
 
 /**
  * Determine if a C++ method is declared '= default'.
  */
 fn CUInt isDefaulted_CXXMethod(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_CXXMethod_isDefaulted");
 
 /**
  * Determine if a C++ method is declared '= delete'.
  */
 fn CUInt isDeleted_CXXMethod(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_CXXMethod_isDeleted");
 
 /**
@@ -6558,7 +6558,7 @@ fn CUInt isDeleted_CXXMethod(
  * pure virtual.
  */
 fn CUInt isPureVirtual_CXXMethod(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_CXXMethod_isPureVirtual");
 
 /**
@@ -6566,7 +6566,7 @@ fn CUInt isPureVirtual_CXXMethod(
  * declared 'static'.
  */
 fn CUInt isStatic_CXXMethod(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_CXXMethod_isStatic");
 
 /**
@@ -6575,7 +6575,7 @@ fn CUInt isStatic_CXXMethod(
  * one of the base classes.
  */
 fn CUInt isVirtual_CXXMethod(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_CXXMethod_isVirtual");
 
 /**
@@ -6602,7 +6602,7 @@ fn CUInt isVirtual_CXXMethod(
  * Is not.
  */
 fn CUInt isCopyAssignmentOperator_CXXMethod(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_CXXMethod_isCopyAssignmentOperator");
 
 /**
@@ -6629,7 +6629,7 @@ fn CUInt isCopyAssignmentOperator_CXXMethod(
  * Is not.
  */
 fn CUInt isMoveAssignmentOperator_CXXMethod(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_CXXMethod_isMoveAssignmentOperator");
 
 /**
@@ -6676,7 +6676,7 @@ fn CUInt isMoveAssignmentOperator_CXXMethod(
  * the conversion function.
  */
 fn CUInt isExplicit_CXXMethod(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_CXXMethod_isExplicit");
 
 /**
@@ -6684,7 +6684,7 @@ fn CUInt isExplicit_CXXMethod(
  * has a pure virtual member function.
  */
 fn CUInt isAbstract_CXXRecord(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_CXXRecord_isAbstract");
 
 /**
@@ -6699,7 +6699,7 @@ fn CUInt isScopedEnumDecl(
  * declared 'const'.
  */
 fn CUInt isConst_CXXMethod(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_CXXMethod_isConst");
 
 /**
@@ -6720,7 +6720,7 @@ fn CUInt isConst_CXXMethod(
  * \c CXCursor_NoDeclFound.
  */
 fn CXCursorKind getTemplateCursorKind(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_getTemplateCursorKind");
 
 /**
@@ -6752,7 +6752,7 @@ fn CXCursorKind getTemplateCursorKind(
  * from which it was instantiated. Otherwise, returns a NULL cursor.
  */
 fn CXCursor getSpecializedCursorTemplate(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_getSpecializedCursorTemplate");
 
 /**
@@ -6774,9 +6774,9 @@ fn CXCursor getSpecializedCursorTemplate(
  * name, or if the PieceIndex is out-of-range, a null-cursor will be returned.
  */
 fn CXSourceRange getCursorReferenceNameRange(
-  CXCursor c, 
-  CUInt name_flags, 
-  CUInt piece_index) 
+  CXCursor c,
+  CUInt name_flags,
+  CUInt piece_index)
 @cname("clang_getCursorReferenceNameRange");
 
 typedef CXNameRefFlags = inline CInt;
@@ -6856,15 +6856,15 @@ struct CXToken {
  * translation unit is destroyed.
  */
 fn CXToken* getToken(
-  CXTranslationUnit tu, 
-  CXSourceLocation location) 
+  CXTranslationUnit tu,
+  CXSourceLocation location)
 @cname("clang_getToken");
 
 /**
  * Determine the kind of the given token.
  */
 fn CXTokenKind getTokenKind(
-  CXToken token) 
+  CXToken token)
 @cname("clang_getTokenKind");
 
 /**
@@ -6874,16 +6874,16 @@ fn CXTokenKind getTokenKind(
  * the text of an identifier or keyword.
  */
 fn CXString getTokenSpelling(
-  CXTranslationUnit tu, 
-  CXToken token) 
+  CXTranslationUnit tu,
+  CXToken token)
 @cname("clang_getTokenSpelling");
 
 /**
  * Retrieve the source location of the given token.
  */
 fn CXSourceLocation getTokenLocation(
-  CXTranslationUnit tu, 
-  CXToken token) 
+  CXTranslationUnit tu,
+  CXToken token)
 @cname("clang_getTokenLocation");
 
 /**
@@ -6912,10 +6912,10 @@ fn CXSourceRange getTokenExtent(
  *
  */
 fn void tokenize(
-  CXTranslationUnit tu, 
-  CXSourceRange range, 
-  CXToken** tokens, 
-  CUInt* num_tokens) 
+  CXTranslationUnit tu,
+  CXSourceRange range,
+  CXToken** tokens,
+  CUInt* num_tokens)
 @cname("clang_tokenize");
 
 /**
@@ -6949,45 +6949,45 @@ fn void tokenize(
  * replaced with the cursors corresponding to each token.
  */
 fn void annotateTokens(
-  CXTranslationUnit tu, 
-  CXToken* tokens, 
-  CUInt num_tokens, 
-  CXCursor* cursors) 
+  CXTranslationUnit tu,
+  CXToken* tokens,
+  CUInt num_tokens,
+  CXCursor* cursors)
 @cname("clang_annotateTokens");
 
 /**
  * Free the given set of tokens.
  */
 fn void disposeTokens(
-  CXTranslationUnit tu, 
-  CXToken* tokens, 
-  CUInt num_tokens) 
+  CXTranslationUnit tu,
+  CXToken* tokens,
+  CUInt num_tokens)
 @cname("clang_disposeTokens");
 
 /* for debug/testing */
 fn CXString getCursorKindSpelling(
-  CXCursorKind kind) 
+  CXCursorKind kind)
 @cname("clang_getCursorKindSpelling");
 
 fn void getDefinitionSpellingAndExtent(
-  CXCursor cursor, 
-  ZString* startBuf, 
-  ZString* endBuf, 
-  CUInt* startLine, 
-  CUInt* startColumn, 
-  CUInt* endLine, 
-  CUInt* endColumn) 
+  CXCursor cursor,
+  ZString* startBuf,
+  ZString* endBuf,
+  CUInt* startLine,
+  CUInt* startColumn,
+  CUInt* endLine,
+  CUInt* endColumn)
 @cname("clang_getDefinitionSpellingAndExtent");
 
-fn void enableStackTraces() 
+fn void enableStackTraces()
 @cname("clang_enableStackTraces");
 
 alias VoidPtrCallback @private = fn void(void*);
 
 fn void executeOnThread(
-  VoidPtrCallback func, 
-  void* user_data, 
-  CUInt stack_size) 
+  VoidPtrCallback func,
+  void* user_data,
+  CUInt stack_size)
 @cname("clang_executeOnThread");
 
 /**
@@ -7209,8 +7209,8 @@ const CXCompletionChunkKind COMPLETION_CHUNK_VERTICAL_SPACE = 20;
  * \returns the kind of the chunk at the index \c chunk_number.
  */
 fn CXCompletionChunkKind getCompletionChunkKind(
-  CXCompletionString completion_string, 
-  CUInt chunk_number) 
+  CXCompletionString completion_string,
+  CUInt chunk_number)
 @cname("clang_getCompletionChunkKind");
 
 /**
@@ -7224,8 +7224,8 @@ fn CXCompletionChunkKind getCompletionChunkKind(
  * \returns the text associated with the chunk at index \c chunk_number.
  */
 fn CXString getCompletionChunkText(
-  CXCompletionString completion_string, 
-  CUInt chunk_number) 
+  CXCompletionString completion_string,
+  CUInt chunk_number)
 @cname("clang_getCompletionChunkText");
 
 /**
@@ -7240,15 +7240,15 @@ fn CXString getCompletionChunkText(
  * \c chunk_number.
  */
 fn CXCompletionString getCompletionChunkCompletionString(
-  CXCompletionString completion_string, 
-  CUInt chunk_number) 
+  CXCompletionString completion_string,
+  CUInt chunk_number)
 @cname("clang_getCompletionChunkCompletionString");
 
 /**
  * Retrieve the number of chunks in the given code-completion string.
  */
 fn CUInt getNumCompletionChunks(
-  CXCompletionString completion_string) 
+  CXCompletionString completion_string)
 @cname("clang_getNumCompletionChunks");
 
 /**
@@ -7264,7 +7264,7 @@ fn CUInt getNumCompletionChunks(
  * higher-priority (more likely) completions.
  */
 fn CUInt getCompletionPriority(
-  CXCompletionString completion_string) 
+  CXCompletionString completion_string)
 @cname("clang_getCompletionPriority");
 
 /**
@@ -7276,7 +7276,7 @@ fn CUInt getCompletionPriority(
  * \returns The availability of the completion string.
  */
 fn CXAvailabilityKind getCompletionAvailability(
-  CXCompletionString completion_string) 
+  CXCompletionString completion_string)
 @cname("clang_getCompletionAvailability");
 
 /**
@@ -7289,7 +7289,7 @@ fn CXAvailabilityKind getCompletionAvailability(
  * string.
  */
 fn CUInt getCompletionNumAnnotations(
-  CXCompletionString completion_string) 
+  CXCompletionString completion_string)
 @cname("clang_getCompletionNumAnnotations");
 
 /**
@@ -7304,8 +7304,8 @@ fn CUInt getCompletionNumAnnotations(
  * \c annotation_number, or a NULL string if that annotation is not available.
  */
 fn CXString getCompletionAnnotation(
-  CXCompletionString completion_string, 
-  CUInt annotation_number) 
+  CXCompletionString completion_string,
+  CUInt annotation_number)
 @cname("clang_getCompletionAnnotation");
 
 /**
@@ -7325,8 +7325,8 @@ fn CXString getCompletionAnnotation(
  * the completion string represents a method in the NSObject class.
  */
 fn CXString getCompletionParent(
-  CXCompletionString completion_string, 
-  CXCursorKind* kind) 
+  CXCompletionString completion_string,
+  CXCursorKind* kind)
 @cname("clang_getCompletionParent");
 
 /**
@@ -7334,7 +7334,7 @@ fn CXString getCompletionParent(
  * that corresponds to the given completion string.
  */
 fn CXString getCompletionBriefComment(
-  CXCompletionString completion_string) 
+  CXCompletionString completion_string)
 @cname("clang_getCompletionBriefComment");
 
 /**
@@ -7347,7 +7347,7 @@ fn CXString getCompletionBriefComment(
  * definition cursors, or NULL for other kinds of cursors.
  */
 fn CXCompletionString getCursorCompletionString(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCursorCompletionString");
 
 /**
@@ -7384,8 +7384,8 @@ struct CXCodeCompleteResults {
  * completion_index can be applied
  */
 fn CUInt getCompletionNumFixIts(
-  CXCodeCompleteResults* results, 
-  CUInt completion_index) 
+  CXCodeCompleteResults* results,
+  CUInt completion_index)
 @cname("clang_getCompletionNumFixIts");
 
 /**
@@ -7432,10 +7432,10 @@ fn CUInt getCompletionNumFixIts(
  * before the completion at completion_index can be applied
  */
 fn CXString getCompletionFixIt(
-  CXCodeCompleteResults* results, 
-  CUInt completion_index, 
-  CUInt fixit_index, 
-  CXSourceRange* replacement_range) 
+  CXCodeCompleteResults* results,
+  CUInt completion_index,
+  CUInt fixit_index,
+  CXSourceRange* replacement_range)
 @cname("clang_getCompletionFixIt");
 
 /**
@@ -7484,132 +7484,119 @@ const CXCodeComplete_Flags CODE_COMPLETE_INCLUDE_COMPLETION_SWITH_FIX_ITS = 0x10
  * The enumerators in this enumeration may be bitwise-OR'd together if multiple
  * contexts are occurring simultaneously.
  */
-typedef CXCompletionContext = inline CInt;
+constdef CXCompletionContext : inline CInt
+{
+	<*
+	 The context for completions is unexposed, as only Clang results
+	 should be included. (This is equivalent to having no context bits set.)
+	*>
+	UNEXPOSED = 0,
+	<*
+	 Completions for any possible type should be included in the results.
+	*>
+	ANY_TYPE = 1 << 0,
+	<*
+	 Completions for any possible value (variables, function calls, etc.)
+     should be included in the results.
+    *>
+	ANY_VALUE = 1 << 1,
+	<*
+     Completions for values that resolve to an Objective-C object should
+     be included in the results.
+    *>
+	OBJC_OBJECT_VALUE = 1 << 2,
+	<*
+	 Completions for values that resolve to an Objective-C selector
+     should be included in the results.
+    *>
+	OBJC_SELECT_OR_VALUE = 1 << 3,
+	<*
+	 Completions for values that resolve to a C++ class type should be
+	 included in the results.
+    *>
+	CXX_CLASS_TYPE_VALUE = 1 << 4,
+	<*
+	 Completions for fields of the member being accessed using the dot
+     operator should be included in the results.
+    *>
+	DOT_MEMBER_ACCESS = 1 << 5,
+	<*
+     Completions for fields of the member being accessed using the arrow
+     operator should be included in the results.
+    *>
+	ARROW_MEMBER_ACCESS = 1 << 6,
+	<*
+     Completions for properties of the Objective-C object being accessed
+     using the dot operator should be included in the results.
+    *>
+	OBJC_PROPERTY_ACCESS = 1 << 7,
+	<* Completions for enum tags should be included in the results. *>
+	ENUM_TAG = 1 << 8,
+	<* Completions for union tags should be included in the results. *>
+	UNION_TAG = 1 << 9,
+	<* Completions for struct tags should be included in the results. *>
+	STRUCT_TAG = 1 << 10,
+	<* Completions for C++ class names should be included in the results. *>
+	CLASS_TAG = 1 << 11,
+	<*
+	 Completions for C++ namespaces and namespace aliases should be
+	 included in the results.
+	*>
+	NAMESPACE = 1 << 12,
+	<*
+	  Completions for C++ nested name specifiers should be included in
+	  the results.
+	 *>
+	NESTED_NAME_SPECIFIER = 1 << 13,
+	<*
+     Completions for Objective-C interfaces (classes) should be included
+     in the results.
+    *>
+	INTERFACE = 1 << 14,
+	<*
+     Completions for Objective-C protocols should be included in
+     the results.
+    *>
+	OBJC_PROTOCOL = 1 << 15,
+	<*
+     Completions for Objective-C categories should be included in
+     the results.
+    *>
+	OBJC_CATEGORY = 1 << 16,
+	<*
+     Completions for Objective-C instance messages should be included
+     in the results.
+    *>
+	OBJC_INSTANCE_MESSAGE = 1 << 17,
+	<*
+	 Completions for Objective-C class messages should be included in
+	 the results.
+    *>
+	OBJC_CLASS_MESSAGE = 1 << 18,
+	<*
+	 Completions for Objective-C selector names should be included in
+	 the results.
+	*>
+	OBJC_SELECTOR_NAME = 1 << 19,
+	<*
+	 Completions for preprocessor macro names should be included in
+	 the results.
+	*>
+	COMPLETION_CONTEXT_MACRO_NAME = 1 << 20,
+	<* Natural language completions should be included in the results. *>
+	COMPLETION_CONTEXT_NATURAL_LANGUAGE = 1 << 21,
+	<* #include file completions should be included in the results. *>
+	COMPLETION_CONTEXT_INCLUDED_FILE = 1 << 22,
+	<* The current context is unknown, so set all contexts *>
+	COMPLETION_CONTEXT_UNKNOWN = ((1 << 23) - 1),
+}
 
-/**
- * The context for completions is unexposed, as only Clang results
- * should be included. (This is equivalent to having no context bits set.)
- */
-const CXCompletionContext COMPLETION_CONTEXT_UNEXPOSED = 0;
-/**
- * Completions for any possible type should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_ANY_TYPE = 1 << 0;
-/**
- * Completions for any possible value (variables, function calls, etc.)
- * should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_ANY_VALUE = 1 << 1;
-/**
- * Completions for values that resolve to an Objective-C object should
- * be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_OBJC_OBJECT_VALUE = 1 << 2;
-/**
- * Completions for values that resolve to an Objective-C selector
- * should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_OBJC_SELECT_OR_VALUE = 1 << 3;
-/**
- * Completions for values that resolve to a C++ class type should be
- * included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_CXX_CLASS_TYPE_VALUE = 1 << 4;
-/**
- * Completions for fields of the member being accessed using the dot
- * operator should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_DOT_MEMBER_ACCESS = 1 << 5;
-/**
- * Completions for fields of the member being accessed using the arrow
- * operator should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_ARROW_MEMBER_ACCESS = 1 << 6;
-/**
- * Completions for properties of the Objective-C object being accessed
- * using the dot operator should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_OBJC_PROPERTY_ACCESS = 1 << 7;
-/**
- * Completions for enum tags should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_ENUM_TAG = 1 << 8;
-/**
- * Completions for union tags should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_UNION_TAG = 1 << 9;
-/**
- * Completions for struct tags should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_STRUCT_TAG = 1 << 10;
-
-/**
- * Completions for C++ class names should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_CLASS_TAG = 1 << 11;
-/**
- * Completions for C++ namespaces and namespace aliases should be
- * included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_NAMESPACE = 1 << 12;
-/**
- * Completions for C++ nested name specifiers should be included in
- * the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_NESTED_NAME_SPECIFIER = 1 << 13;
-/**
- * Completions for Objective-C interfaces (classes) should be included
- * in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_OBJC_INTERFACE = 1 << 14;
-/**
- * Completions for Objective-C protocols should be included in
- * the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_OBJC_PROTOCOL = 1 << 15;
-/**
- * Completions for Objective-C categories should be included in
- * the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_OBJC_CATEGORY = 1 << 16;
-/**
- * Completions for Objective-C instance messages should be included
- * in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_OBJC_INSTANCE_MESSAGE = 1 << 17;
-/**
- * Completions for Objective-C class messages should be included in
- * the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_OBJC_CLASS_MESSAGE = 1 << 18;
-/**
- * Completions for Objective-C selector names should be included in
- * the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_OBJC_SELECTOR_NAME = 1 << 19;
-/**
- * Completions for preprocessor macro names should be included in
- * the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_MACRO_NAME = 1 << 20;
-/**
- * Natural language completions should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_NATURAL_LANGUAGE = 1 << 21;
-/**
- * #include file completions should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_INCLUDED_FILE = 1 << 22;
-/**
- * The current context is unknown, so set all contexts.
- */
-const CXCompletionContext COMPLETION_CONTEXT_UNKNOWN = ((1 << 23) - 1);
 
 /**
  * Returns a default set of code-completion options that can be
  * passed to\c clang_codeCompleteAt().
  */
-fn CUInt defaultCodeCompleteOptions() 
+fn CUInt defaultCodeCompleteOptions()
 @cname("clang_defaultCodeCompleteOptions");
 
 /**
@@ -7681,13 +7668,13 @@ fn CUInt defaultCodeCompleteOptions()
  * completion fails, returns NULL.
  */
 fn CXCodeCompleteResults* codeCompleteAt(
-  CXTranslationUnit tu, 
-  ZString complete_filename, 
-  CUInt complete_line, 
-  CUInt complete_column, 
-  CXUnsavedFile* unsaved_files, 
-  CUInt num_unsaved_files, 
-  CUInt options) 
+  CXTranslationUnit tu,
+  ZString complete_filename,
+  CUInt complete_line,
+  CUInt complete_column,
+  CXUnsavedFile* unsaved_files,
+  CUInt num_unsaved_files,
+  CUInt options)
 @cname("clang_codeCompleteAt");
 
 /**
@@ -7698,15 +7685,15 @@ fn CXCodeCompleteResults* codeCompleteAt(
  * \param NumResults The number of results in \p Results.
  */
 fn void sortCodeCompletionResults(
-  CXCompletionResult* results, 
-  CUInt num_results) 
+  CXCompletionResult* results,
+  CUInt num_results)
 @cname("clang_sortCodeCompletionResults");
 
 /**
  * Free the given set of code-completion results.
  */
 fn void disposeCodeCompleteResults(
-  CXCodeCompleteResults *results) 
+  CXCodeCompleteResults *results)
 @cname("clang_disposeCodeCompleteResults");
 
 /**
@@ -7714,7 +7701,7 @@ fn void disposeCodeCompleteResults(
  * location where code completion was performed.
  */
 fn CUInt codeCompleteGetNumDiagnostics(
-  CXCodeCompleteResults* results) 
+  CXCodeCompleteResults* results)
 @cname("clang_codeCompleteGetNumDiagnostics");
 
 /**
@@ -7727,8 +7714,8 @@ fn CUInt codeCompleteGetNumDiagnostics(
  * via a call to \c clang_disposeDiagnostic().
  */
 fn CXDiagnostic codeCompleteGetDiagnostic(
-  CXCodeCompleteResults* results, 
-  CUInt index) 
+  CXCodeCompleteResults* results,
+  CUInt index)
 @cname("clang_codeCompleteGetDiagnostic");
 
 /**
@@ -7741,7 +7728,7 @@ fn CXDiagnostic codeCompleteGetDiagnostic(
  * along with the given code completion results.
  */
 fn CULongLong codeCompleteGetContexts(
-  CXCodeCompleteResults* results) 
+  CXCodeCompleteResults* results)
 @cname("clang_codeCompleteGetContexts");
 
 /**
@@ -7761,8 +7748,8 @@ fn CULongLong codeCompleteGetContexts(
  * container
  */
 fn CXCursorKind codeCompleteGetContainerKind(
-  CXCodeCompleteResults* results, 
-  CUInt* is_incomplete) 
+  CXCodeCompleteResults* results,
+  CUInt* is_incomplete)
 @cname("clang_codeCompleteGetContainerKind");
 
 /**
@@ -7775,7 +7762,7 @@ fn CXCursorKind codeCompleteGetContainerKind(
  * \returns the USR for the container
  */
 fn CXString codeCompleteGetContainerUSR(
-  CXCodeCompleteResults* results) 
+  CXCodeCompleteResults* results)
 @cname("clang_codeCompleteGetContainerUSR");
 
 /**
@@ -7790,14 +7777,14 @@ fn CXString codeCompleteGetContainerUSR(
  * for an Objective-C message send.
  */
 fn CXString codeCompleteGetObjCSelector(
-  CXCodeCompleteResults* results) 
+  CXCodeCompleteResults* results)
 @cname("clang_codeCompleteGetObjCSelector");
 
 /**
  * Return a version string, suitable for showing to a user, but not
  *        intended to be parsed (the format is not guaranteed to be stable).
  */
-fn CXString getClangVersion() 
+fn CXString getClangVersion()
 @cname("clang_getClangVersion");
 
 /**
@@ -7807,7 +7794,7 @@ fn CXString getClangVersion()
  *        value enables crash recovery, while 0 disables it.
  */
 fn void toggleCrashRecovery(
-  CUInt is_enabled) 
+  CUInt is_enabled)
 @cname("clang_toggleCrashRecovery");
 
 /**
@@ -7834,9 +7821,9 @@ alias CXInclusionVisitor = fn void(
  *   is inspecting the inclusions in the PCH file itself).
  */
 fn void getInclusions(
-  CXTranslationUnit tu, 
-  CXInclusionVisitor visitor, 
-  CXClientData client_data) 
+  CXTranslationUnit tu,
+  CXInclusionVisitor visitor,
+  CXClientData client_data)
 @cname("clang_getInclusions");
 
 typedef CXEvalResultKind = inline CInt;
@@ -7862,14 +7849,14 @@ typedef CXEvalResult = inline void*;
  * If it's an expression, tries to evaluate the expression.
  */
 fn CXEvalResult evaluate_Cursor(
-  CXCursor c) 
+  CXCursor c)
 @cname("clang_Cursor_Evaluate");
 
 /**
  * Returns the kind of the evaluated result.
  */
 fn CXEvalResultKind getKind_EvalResult(
-  CXEvalResult e) 
+  CXEvalResult e)
 @cname("clang_EvalResult_getKind");
 
 /**
@@ -7877,7 +7864,7 @@ fn CXEvalResultKind getKind_EvalResult(
  * kind is Int.
  */
 fn CInt getAsInt_EvalResult(
-  CXEvalResult e) 
+  CXEvalResult e)
 @cname("clang_EvalResult_getAsInt");
 
 /**
@@ -7886,7 +7873,7 @@ fn CInt getAsInt_EvalResult(
  * returned with clang_EvalResult_getAsInt.
  */
 fn CLongLong getAsLongLong_EvalResult(
-  CXEvalResult e) 
+  CXEvalResult e)
 @cname("clang_EvalResult_getAsLongLong");
 
 /**
@@ -7894,7 +7881,7 @@ fn CLongLong getAsLongLong_EvalResult(
  * result resulted in an CUInt integer.
  */
 fn CUInt isUnsignedInt_EvalResult(
-  CXEvalResult e) 
+  CXEvalResult e)
 @cname("clang_EvalResult_isUnsignedInt");
 
 /**
@@ -7902,7 +7889,7 @@ fn CUInt isUnsignedInt_EvalResult(
  * the kind is Int and clang_EvalResult_isUnsignedInt is non-zero.
  */
 fn CULongLong getAsUnsigned_EvalResult(
-  CXEvalResult e) 
+  CXEvalResult e)
 @cname("clang_EvalResult_getAsUnsigned");
 
 /**
@@ -7910,7 +7897,7 @@ fn CULongLong getAsUnsigned_EvalResult(
  * kind is double.
  */
 fn double getAsDouble_EvalResult(
-  CXEvalResult e) 
+  CXEvalResult e)
 @cname("clang_EvalResult_getAsDouble");
 
 /**
@@ -7920,14 +7907,14 @@ fn double getAsDouble_EvalResult(
  * by clang_Cursor_Evaluate.
  */
 fn ZString getAsStr_EvalResult(
-  CXEvalResult e) 
+  CXEvalResult e)
 @cname("clang_EvalResult_getAsStr");
 
 /**
  * Disposes the created Eval memory.
  */
 fn void dispose_EvalResult(
-  CXEvalResult e) 
+  CXEvalResult e)
 @cname("clang_EvalResult_dispose");
 
 /**
@@ -7944,7 +7931,7 @@ typedef CXRemapping = inline void*;
  * via a call to \c clang_remap_dispose(). Can return NULL if an error occurred.
  */
 fn CXRemapping getRemappings(
-  ZString path) 
+  ZString path)
 @cname("clang_getRemappings");
 
 /**
@@ -7958,15 +7945,15 @@ fn CXRemapping getRemappings(
  * via a call to \c clang_remap_dispose(). Can return NULL if an error occurred.
  */
 fn CXRemapping getRemappingsFromFileList(
-  ZString* filePaths, 
-  CUInt numFiles) 
+  ZString* filePaths,
+  CUInt numFiles)
 @cname("clang_getRemappingsFromFileList");
 
 /**
  * Determine the number of remappings.
  */
 fn CUInt remap_getNumFiles(
-  CXRemapping remap) 
+  CXRemapping remap)
 @cname("clang_remap_getNumFiles");
 
 /**
@@ -7978,17 +7965,17 @@ fn CUInt remap_getNumFiles(
  * is associated with.
  */
 fn void remap_getFilenames(
-  CXRemapping remap, 
-  CUInt index, 
-  CXString* original, 
-  CXString* transformed) 
+  CXRemapping remap,
+  CUInt index,
+  CXString* original,
+  CXString* transformed)
 @cname("clang_remap_getFilenames");
 
 /**
  * Dispose the remapping.
  */
 fn void remap_dispose(
-  CXRemapping remap) 
+  CXRemapping remap)
 @cname("clang_remap_dispose");
 
 typedef CXVisitorResult = inline CInt;
@@ -8032,9 +8019,9 @@ const CXResult RESULT_VISIT_BREAK = 2;
  * \returns one of the CXResult enumerators.
  */
 fn CXResult findReferencesInFile(
-  CXCursor cursor, 
-  CXFile file, 
-  CXCursorAndRangeVisitor visitor) 
+  CXCursor cursor,
+  CXFile file,
+  CXCursorAndRangeVisitor visitor)
 @cname("clang_findReferencesInFile");
 
 /**
@@ -8050,23 +8037,23 @@ fn CXResult findReferencesInFile(
  * \returns one of the CXResult enumerators.
  */
 fn CXResult findIncludesInFile(
-  CXTranslationUnit tu, 
-  CXFile file, 
-  CXCursorAndRangeVisitor visitor) 
+  CXTranslationUnit tu,
+  CXFile file,
+  CXCursorAndRangeVisitor visitor)
 @cname("clang_findIncludesInFile");
 
 typedef CXCursorAndRangeVisitorBlock = inline void*;
 
 fn CXResult findReferencesInFileWithBlock(
-  CXCursor cursor, 
-  CXFile file, 
-  CXCursorAndRangeVisitorBlock visitor_block) 
+  CXCursor cursor,
+  CXFile file,
+  CXCursorAndRangeVisitorBlock visitor_block)
 @cname("clang_findReferencesInFileWithBlock");
 
 fn CXResult findIncludesInFileWithBlock(
-  CXTranslationUnit tu, 
-  CXFile file, 
-  CXCursorAndRangeVisitorBlock visitor_block) 
+  CXTranslationUnit tu,
+  CXFile file,
+  CXCursorAndRangeVisitorBlock visitor_block)
 @cname("clang_findIncludesInFileWithBlock");
 
 /**
@@ -8346,17 +8333,19 @@ const CXIdxEntityRefKind IDX_ENTITY_REF_IMPLICIT = 2;
  * Internal: this currently mirrors low 9 bits of clang::index::SymbolRole with
  * higher bits zeroed. These high bits may be exposed in the future.
  */
-typedef CXSymbolRole = inline CInt;
-const CXSymbolRole SYMBOL_ROLE_NONE = 0;
-const CXSymbolRole SYMBOL_ROLE_DECLARATION = 1 << 0;
-const CXSymbolRole SYMBOL_ROLE_DEFINITION = 1 << 1;
-const CXSymbolRole SYMBOL_ROLE_REFERENCE = 1 << 2;
-const CXSymbolRole SYMBOL_ROLE_READ = 1 << 3;
-const CXSymbolRole SYMBOL_ROLE_WRITE = 1 << 4;
-const CXSymbolRole SYMBOL_ROLE_CALL = 1 << 5;
-const CXSymbolRole SYMBOL_ROLE_DYNAMIC = 1 << 6;
-const CXSymbolRole SYMBOL_ROLE_ADDRESS_OF = 1 << 7;
-const CXSymbolRole SYMBOL_ROLE_IMPLICIT = 1 << 8;
+constdef CXSymbolRole : inline CInt
+{
+	NONE = 0,
+	DECLARATION = 1 << 0,
+	DEFINITION = 1 << 1,
+	REFERENCE = 1 << 2,
+	READ = 1 << 3,
+	WRITE = 1 << 4,
+	CALL = 1 << 5,
+	DYNAMIC = 1 << 6,
+	ADDRESS_OF = 1 << 7,
+	IMPLICIT = 1 << 8,
+}
 
 /**
  * Data for IndexerCallbacks#indexEntityReference.
@@ -8397,37 +8386,37 @@ struct CXIdxEntityRefInfo {
 module clang @private;
 
 alias _IndexerCallbackAbortQuery = fn CInt(
-  CXClientData client_data, 
+  CXClientData client_data,
   void* reserved);
 
 alias _IndexerCallbackDiagnostic = fn void(
-  CXClientData client_data, 
-  CXDiagnosticSet ds, 
+  CXClientData client_data,
+  CXDiagnosticSet ds,
   void* reserved);
 
 alias _IndexerCallbackEnteredMainFile = fn CXIdxClientFile(
-  CXClientData client_data, 
-  CXFile mainFile, 
+  CXClientData client_data,
+  CXFile mainFile,
   void* reserved);
 
 alias _IndexerCallbackIncludedFile = fn CXIdxClientFile(
-  CXClientData client_data, 
+  CXClientData client_data,
   CXIdxIncludedFileInfo* file_info);
 
 alias _IndexerCallbackImportedASTFile = fn CXIdxClientASTFile(
-  CXClientData client_data, 
+  CXClientData client_data,
   CXIdxImportedASTFileInfo* file_info);
 
 alias _IndexerCallbackStartedTU = fn CXIdxClientContainer(
-  CXClientData client_data, 
+  CXClientData client_data,
   void* reserved);
 
 alias _IndexerCallbackIndexDecl = fn void(
-  CXClientData client_data, 
+  CXClientData client_data,
   CXIdxDeclInfo* decl_info);
 
 alias _IndexerCallbackIndexEntityRef = fn void(
-  CXClientData client_data, 
+  CXClientData client_data,
   CXIdxEntityRefInfo* entity_ref_info);
 
 module clang @public;
@@ -8479,35 +8468,35 @@ struct IndexerCallbacks {
 }
 
 fn CInt index_isEntityObjCContainerKind(
-  CXIdxEntityKind entity_kind) 
+  CXIdxEntityKind entity_kind)
 @cname("clang_index_isEntityObjCContainerKind");
 
 fn CXIdxObjCContainerDeclInfo* index_getObjCContainerDeclInfo(
-  CXIdxDeclInfo* decl_info) 
+  CXIdxDeclInfo* decl_info)
 @cname("clang_index_getObjCContainerDeclInfo");
 
 fn CXIdxObjCInterfaceDeclInfo* index_getObjCInterfaceDeclInfo(
-  CXIdxDeclInfo* decl_info) 
+  CXIdxDeclInfo* decl_info)
 @cname("clang_index_getObjCInterfaceDeclInfo");
 
 fn CXIdxObjCCategoryDeclInfo* index_getObjCCategoryDeclInfo(
-  CXIdxDeclInfo* decl_info) 
+  CXIdxDeclInfo* decl_info)
 @cname("clang_index_getObjCCategoryDeclInfo");
 
 fn CXIdxObjCProtocolRefListInfo* index_getObjCProtocolRefListInfo(
-  CXIdxDeclInfo* decl_info) 
+  CXIdxDeclInfo* decl_info)
 @cname("clang_index_getObjCProtocolRefListInfo");
 
 fn CXIdxObjCPropertyDeclInfo* index_getObjCPropertyDeclInfo(
-  CXIdxDeclInfo* decl_info) 
+  CXIdxDeclInfo* decl_info)
 @cname("clang_index_getObjCPropertyDeclInfo");
 
 fn CXIdxIBOutletCollectionAttrInfo* index_getIBOutletCollectionAttrInfo(
-  CXIdxAttrInfo* attr_info) 
+  CXIdxAttrInfo* attr_info)
 @cname("clang_index_getIBOutletCollectionAttrInfo");
 
 fn CXIdxCXXClassDeclInfo* index_getCXXClassDeclInfo(
-  CXIdxDeclInfo* decl_info) 
+  CXIdxDeclInfo* decl_info)
 @cname("clang_index_getCXXClassDeclInfo");
 
 /**
@@ -8515,7 +8504,7 @@ fn CXIdxCXXClassDeclInfo* index_getCXXClassDeclInfo(
  * container.
  */
 fn CXIdxClientContainer index_getClientContainer(
-  CXIdxContainerInfo* container_info) 
+  CXIdxContainerInfo* container_info)
 @cname("clang_index_getClientContainer");
 
 /**
@@ -8523,23 +8512,23 @@ fn CXIdxClientContainer index_getClientContainer(
  * container.
  */
 fn void index_setClientContainer(
-  CXIdxContainerInfo* container_info, 
-  CXIdxClientContainer client_container) 
+  CXIdxContainerInfo* container_info,
+  CXIdxClientContainer client_container)
 @cname("clang_index_setClientContainer");
 
 /**
  * For retrieving a custom CXIdxClientEntity attached to an entity.
  */
 fn CXIdxClientEntity index_getClientEntity(
-  CXIdxEntityInfo* entity_info) 
+  CXIdxEntityInfo* entity_info)
 @cname("clang_index_getClientEntity");
 
 /**
  * For setting a custom CXIdxClientEntity attached to an entity.
  */
 fn void index_setClientEntity(
-  CXIdxEntityInfo* entity_info, 
-  CXIdxClientEntity client_entity) 
+  CXIdxEntityInfo* entity_info,
+  CXIdxClientEntity client_entity)
 @cname("clang_index_setClientEntity");
 
 /**
@@ -8555,7 +8544,7 @@ typedef CXIndexAction = inline void*;
  * \param CIdx The index object with which the index action will be associated.
  */
 fn CXIndexAction createIndexAction(
-  CXIndex cidx) 
+  CXIndex cidx)
 @cname("clang_IndexAction_create");
 
 /**
@@ -8565,7 +8554,7 @@ fn CXIndexAction createIndexAction(
  * created within that index action have been destroyed.
  */
 fn void dispose_IndexAction(
-  CXIndexAction cidx) 
+  CXIndexAction cidx)
 @cname("clang_IndexAction_dispose");
 
 typedef CXIndexOptFlags = inline CInt;
@@ -8631,18 +8620,18 @@ const CXIndexOptFlags INDEX_OPT_SKIP_PARSED_BODIES_IN_SESSION = 0x10;
  * The rest of the parameters are the same as #clang_parseTranslationUnit.
  */
 fn CInt indexSourceFile(
-  CXIndexAction index_action, 
-  CXClientData client_data, 
-  IndexerCallbacks* index_callbacks, 
-  CUInt index_callbacks_size, 
-  CUInt index_options, 
-  ZString source_filename, 
-  ZString* command_line_args, 
-  CInt num_command_line_args, 
-  CXUnsavedFile* unsaved_files, 
-  CUInt num_unsaved_files, 
-  CXTranslationUnit* out_TU, 
-  CUInt tu_options) 
+  CXIndexAction index_action,
+  CXClientData client_data,
+  IndexerCallbacks* index_callbacks,
+  CUInt index_callbacks_size,
+  CUInt index_options,
+  ZString source_filename,
+  ZString* command_line_args,
+  CInt num_command_line_args,
+  CXUnsavedFile* unsaved_files,
+  CUInt num_unsaved_files,
+  CXTranslationUnit* out_TU,
+  CUInt tu_options)
 @cname("clang_indexSourceFile");
 
 /**
@@ -8651,18 +8640,18 @@ fn CInt indexSourceFile(
  * library paths are relative to the binary.
  */
 fn CInt indexSourceFileFullArgv(
-  CXIndexAction index_action, 
-  CXClientData client_data, 
-  IndexerCallbacks* index_callbacks, 
-  CUInt index_callbacks_size, 
-  CUInt index_options, 
-  ZString source_filename, 
-  ZString* command_line_args, 
-  CInt num_command_line_args, 
-  CXUnsavedFile* unsaved_files, 
-  CUInt num_unsaved_files, 
-  CXTranslationUnit* out_TU, 
-  CUInt tu_options) 
+  CXIndexAction index_action,
+  CXClientData client_data,
+  IndexerCallbacks* index_callbacks,
+  CUInt index_callbacks_size,
+  CUInt index_options,
+  ZString source_filename,
+  ZString* command_line_args,
+  CInt num_command_line_args,
+  CXUnsavedFile* unsaved_files,
+  CUInt num_unsaved_files,
+  CXTranslationUnit* out_TU,
+  CUInt tu_options)
 @cname("clang_indexSourceFileFullArgv");
 
 /**
@@ -8682,12 +8671,12 @@ fn CInt indexSourceFileFullArgv(
  * non-zero, otherwise returns 0.
  */
 fn CInt indexTranslationUnit(
-  CXIndexAction index_action, 
-  CXClientData client_data, 
-  IndexerCallbacks* index_callbacks, 
-  CUInt index_callbacks_size, 
-  CUInt index_options, 
-  CXTranslationUnit tu) 
+  CXIndexAction index_action,
+  CXClientData client_data,
+  IndexerCallbacks* index_callbacks,
+  CUInt index_callbacks_size,
+  CUInt index_options,
+  CXTranslationUnit tu)
 @cname("clang_indexTranslationUnit");
 
 /**
@@ -8699,19 +8688,19 @@ fn CInt indexTranslationUnit(
  * retrieves the location of the argument.
  */
 fn void indexLoc_getFileLocation(
-  CXIdxLoc loc, 
-  CXIdxClientFile* indexFile, 
-  CXFile* file, 
-  CUInt* line, 
-  CUInt* column, 
-  CUInt* offset) 
+  CXIdxLoc loc,
+  CXIdxClientFile* indexFile,
+  CXFile* file,
+  CUInt* line,
+  CUInt* column,
+  CUInt* offset)
 @cname("clang_indexLoc_getFileLocation");
 
 /**
  * Retrieve the CXSourceLocation represented by the given CXIdxLoc.
  */
 fn CXSourceLocation indexLoc_getCXSourceLocation(
-  CXIdxLoc loc) 
+  CXIdxLoc loc)
 @cname("clang_indexLoc_getCXSourceLocation");
 
 /**
@@ -8726,7 +8715,7 @@ fn CXSourceLocation indexLoc_getCXSourceLocation(
  * to direct \c clang_Type_visitFields.
  */
 alias CXFieldVisitor = fn CXVisitorResult(
-  CXCursor c, 
+  CXCursor c,
   CXClientData client_data);
 
 /**
@@ -8749,9 +8738,9 @@ alias CXFieldVisitor = fn CXVisitorResult(
  * prematurely by the visitor returning \c CXFieldVisit_Break.
  */
 fn CUInt visitFields_Type(
-  CXType t, 
-  CXFieldVisitor visitor, 
-  CXClientData client_data) 
+  CXType t,
+  CXFieldVisitor visitor,
+  CXClientData client_data)
 @cname("clang_Type_visitFields");
 
 /**
@@ -8759,106 +8748,106 @@ fn CUInt visitFields_Type(
  */
 typedef CXBinaryOperatorKind = inline CInt;
 
-/** This value describes cursors which are not binary operators. 
+/** This value describes cursors which are not binary operators.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_INVALID = 0;
-/** C++ Pointer - to - member operator. 
+/** C++ Pointer - to - member operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_PTR_MEM_D = 1;
-/** C++ Pointer - to - member operator. 
+/** C++ Pointer - to - member operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_PTR_MEM_I = 2;
-/** Multiplication operator. 
+/** Multiplication operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_MUL = 3;
-/** Division operator. 
+/** Division operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_DIV = 4;
-/** Remainder operator. 
+/** Remainder operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_REM = 5;
-/** Addition operator. 
+/** Addition operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_ADD = 6;
-/** Subtraction operator. 
+/** Subtraction operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_SUB = 7;
-/** Bitwise shift left operator. 
+/** Bitwise shift left operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_SHL = 8;
-/** Bitwise shift right operator. 
+/** Bitwise shift right operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_SHR = 9;
-/** C++ three-way comparison (spaceship) operator. 
+/** C++ three-way comparison (spaceship) operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_CMP = 10;
-/** Less than operator. 
+/** Less than operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_LT = 11;
-/** Greater than operator. 
+/** Greater than operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_GT = 12;
-/** Less or equal operator. 
+/** Less or equal operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_LE = 13;
-/** Greater or equal operator. 
+/** Greater or equal operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_GE = 14;
-/** Equal operator. 
+/** Equal operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_EQ = 15;
-/** Not equal operator. 
+/** Not equal operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_NE = 16;
-/** Bitwise AND operator. 
+/** Bitwise AND operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_AND = 17;
-/** Bitwise XOR operator. 
+/** Bitwise XOR operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_XOR = 18;
-/** Bitwise OR operator. 
+/** Bitwise OR operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_OR = 19;
-/** Logical AND operator. 
+/** Logical AND operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_LAND = 20;
-/** Logical OR operator. 
+/** Logical OR operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_LOR = 21;
-/** Assignment operator. 
+/** Assignment operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_ASSIGN = 22;
-/** Multiplication assignment operator. 
+/** Multiplication assignment operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_MUL_ASSIGN = 23;
-/** Division assignment operator. 
+/** Division assignment operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_DIV_ASSIGN = 24;
-/** Remainder assignment operator. 
+/** Remainder assignment operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_REM_ASSIGN = 25;
-/** Addition assignment operator. 
+/** Addition assignment operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_ADD_ASSIGN = 26;
-/** Subtraction assignment operator. 
+/** Subtraction assignment operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_SUB_ASSIGN = 27;
-/** Bitwise shift left assignment operator. 
+/** Bitwise shift left assignment operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_SHL_ASSIGN = 28;
-/** Bitwise shift right assignment operator. 
+/** Bitwise shift right assignment operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_SHR_ASSIGN = 29;
-/** Bitwise AND assignment operator. 
+/** Bitwise AND assignment operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_AND_ASSIGN = 30;
-/** Bitwise XOR assignment operator. 
+/** Bitwise XOR assignment operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_XOR_ASSIGN = 31;
-/** Bitwise OR assignment operator. 
+/** Bitwise OR assignment operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_OR_ASSIGN = 32;
-/** Comma operator. 
+/** Comma operator.
   */
 const CXBinaryOperatorKind BINARY_OPERATOR_COMMA = 33;
 
@@ -8866,7 +8855,7 @@ const CXBinaryOperatorKind BINARY_OPERATOR_COMMA = 33;
  * Retrieve the spelling of a given CXBinaryOperatorKind.
  */
 fn CXString getBinaryOperatorKindSpelling(
-  CXBinaryOperatorKind kind) 
+  CXBinaryOperatorKind kind)
 @cname("clang_getBinaryOperatorKindSpelling");
 
 /**
@@ -8875,7 +8864,7 @@ fn CXString getBinaryOperatorKindSpelling(
  * If this cursor is not a binary operator then returns Invalid.
  */
 fn CXBinaryOperatorKind getCursorBinaryOperatorKind(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCursorBinaryOperatorKind");
 
 /**
@@ -8883,49 +8872,49 @@ fn CXBinaryOperatorKind getCursorBinaryOperatorKind(
  */
 typedef CXUnaryOperatorKind = inline CInt;
 
-/** This value describes cursors which are not unary operators. 
+/** This value describes cursors which are not unary operators.
   */
 const CXUnaryOperatorKind UNARY_OPERATOR_INVALID = 0;
-/** Postfix increment operator. 
+/** Postfix increment operator.
   */
 const CXUnaryOperatorKind UNARY_OPERATOR_POST_INC = 1;
-/** Postfix decrement operator. 
+/** Postfix decrement operator.
   */
 const CXUnaryOperatorKind UNARY_OPERATOR_POST_DEC = 2;
-/** Prefix increment operator. 
+/** Prefix increment operator.
   */
 const CXUnaryOperatorKind UNARY_OPERATOR_PRE_INC = 3;
-/** Prefix decrement operator. 
+/** Prefix decrement operator.
   */
 const CXUnaryOperatorKind UNARY_OPERATOR_PRE_DEC = 4;
-/** Address of operator. 
+/** Address of operator.
   */
 const CXUnaryOperatorKind UNARY_OPERATOR_ADDR_OF = 5;
-/** Dereference operator. 
+/** Dereference operator.
   */
 const CXUnaryOperatorKind UNARY_OPERATOR_DEREF = 6;
-/** Plus operator. 
+/** Plus operator.
   */
 const CXUnaryOperatorKind UNARY_OPERATOR_PLUS = 7;
-/** Minus operator. 
+/** Minus operator.
   */
 const CXUnaryOperatorKind UNARY_OPERATOR_MINUS = 8;
-/** Not operator. 
+/** Not operator.
   */
 const CXUnaryOperatorKind UNARY_OPERATOR_NOT = 9;
-/** LNot operator. 
+/** LNot operator.
   */
 const CXUnaryOperatorKind UNARY_OPERATOR_LNOT = 10;
-/** "__real expr" operator. 
+/** "__real expr" operator.
   */
 const CXUnaryOperatorKind UNARY_OPERATOR_REAL = 11;
-/** "__imag expr" operator. 
+/** "__imag expr" operator.
   */
 const CXUnaryOperatorKind UNARY_OPERATOR_IMAG = 12;
-/** __extension__ marker operator. 
+/** __extension__ marker operator.
   */
 const CXUnaryOperatorKind UNARY_OPERATOR_EXTENSION = 13;
-/** C++ co_await operator. 
+/** C++ co_await operator.
   */
 const CXUnaryOperatorKind UNARY_OPERATOR_CO_AWAIT = 14;
 
@@ -8933,7 +8922,7 @@ const CXUnaryOperatorKind UNARY_OPERATOR_CO_AWAIT = 14;
  * Retrieve the spelling of a given CXUnaryOperatorKind.
  */
 fn CXString getUnaryOperatorKindSpelling(
-  CXUnaryOperatorKind kind) 
+  CXUnaryOperatorKind kind)
 @cname("clang_getUnaryOperatorKindSpelling");
 
 /**
@@ -8942,7 +8931,5 @@ fn CXString getUnaryOperatorKindSpelling(
  * If this cursor is not a unary operator then returns Invalid.
  */
 fn CXUnaryOperatorKind getCursorUnaryOperatorKind(
-  CXCursor cursor) 
+  CXCursor cursor)
 @cname("clang_getCursorUnaryOperatorKind");
-
-

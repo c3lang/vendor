@@ -71,7 +71,8 @@ enum ColumnFormatCode : CInt
 	BINARY
 }
 
-enum Oid : int (int oid) {
+constdef Oid : inline int
+{
 	BOOLOID = 16,
 	BYTEAOID = 17,
 	CHAROID = 18,

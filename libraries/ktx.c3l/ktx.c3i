@@ -706,11 +706,11 @@ fn void KtxVulkanTexture.destruct(&self, VkDevice device,
 	VkAllocationCallbacks* pAllocator) @cname("ktxVulkanTexture_Destruct");
 struct KtxVulkanDeviceInfo
 {
-	VkInstance instance; 
-	VkPhysicalDevice physicalDevice; 
-	VkDevice device; 
-	VkQueue queue; 
-	VkCommandBuffer cmdBuffer; 
+	VkInstance instance;
+	VkPhysicalDevice physicalDevice;
+	VkDevice device;
+	VkQueue queue;
+	VkCommandBuffer cmdBuffer;
 	VkCommandPool cmdPool;
 	VkAllocationCallbacks* pAllocator;
 	VkPhysicalDeviceMemoryProperties deviceMemoryProperties;
