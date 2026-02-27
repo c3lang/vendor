@@ -13737,10 +13737,9 @@ fn int load_gl_internal(GLLoadFn load)
     getIntegerv = load("glGetIntegerv");
     if (getIntegerv == null) return 0;
     int major, minor;
-    getIntegerv(GL_MAJOR_VERSION, &major);
-    getIntegerv(GL_MINOR_VERSION, &minor);
+    getIntegerv((GLenum)GL_MAJOR_VERSION, &major);
+    getIntegerv((GLenum)GL_MINOR_VERSION, &minor);
     int version = (major * 10) + minor;
     load_all_gl(load, version);
     return version;
 }
-

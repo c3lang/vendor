@@ -1,6 +1,6 @@
 {
     "provides" : "raygui",
-    "dependencies": [ "raylib55" ],
+    "dependencies": [ "raylib5" ],
     "targets" : {
         "macos-x64" : {
             "link-args" : [],

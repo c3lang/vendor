@@ -221,7 +221,7 @@ macro KtxErrorCode KtxTexture1.iterate_load_level_faces(&self,
 macro KtxErrorCode KtxTexture1.load_image_data(&self,
 	char* pBuffer,
 	usz bufSize) => self.vtbl.loadImageData(self, pBuffer, bufSize);
-macro bool KtxTexture1.needs_transcoding(&self) => self.vtbl.needsTranscoding(self);
+macro bool KtxTexture1.@needs_transcoding(&self) => self.vtbl.needsTranscoding(self);
 macro KtxErrorCode KtxTexture1.set_image_from_memory(&self,
 	uint level,
 	uint layer,
@@ -298,7 +298,7 @@ macro KtxErrorCode KtxTexture2.iterate_load_level_faces(&self,
 macro KtxErrorCode KtxTexture2.load_image_data(&self,
 	char* pBuffer,
 	usz bufSize) => self.vtbl.loadImageData(self, pBuffer, bufSize);
-macro bool KtxTexture2.needs_transcoding(&self) => self.vtbl.needsTranscoding(self);
+macro bool KtxTexture2.@needs_transcoding(&self) => self.vtbl.needsTranscoding(self);
 macro KtxErrorCode KtxTexture2.set_image_from_memory(&self,
 	uint level,
 	uint layer,
@@ -706,11 +706,11 @@ fn void KtxVulkanTexture.destruct(&self, VkDevice device,
 	VkAllocationCallbacks* pAllocator) @cname("ktxVulkanTexture_Destruct");
 struct KtxVulkanDeviceInfo
 {
-	VkInstance instance; 
-	VkPhysicalDevice physicalDevice; 
-	VkDevice device; 
-	VkQueue queue; 
-	VkCommandBuffer cmdBuffer; 
+	VkInstance instance;
+	VkPhysicalDevice physicalDevice;
+	VkDevice device;
+	VkQueue queue;
+	VkCommandBuffer cmdBuffer;
 	VkCommandPool cmdPool;
 	VkAllocationCallbacks* pAllocator;
 	VkPhysicalDeviceMemoryProperties deviceMemoryProperties;
