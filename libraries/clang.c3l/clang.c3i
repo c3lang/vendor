@@ -2159,20 +2159,20 @@ struct CXIndexOptions {
   CChar thread_background_priority_for_editing;
 
   bitstruct : ushort {
-    /*
-     * \see clang_createIndex()
-     */
-    bool exclude_declarations_from_pch;
+	/*
+	 * \see clang_createIndex()
+	 */
+	bool exclude_declarations_from_pch;
 
-    /*
-     * \see clang_createIndex()
-     */
-    bool display_diagnostics;
+	/*
+	 * \see clang_createIndex()
+	 */
+	bool display_diagnostics;
 
-    /*
-     * Store PCH in memory. If zero, PCH are stored in temporary files.
-     */
-    bool store_preambles_in_memory;
+	/*
+	 * Store PCH in memory. If zero, PCH are stored in temporary files.
+	 */
+	bool store_preambles_in_memory;
   }
 
   /*
@@ -2950,7 +2950,7 @@ struct CXTUResourceUsageEntry {
   CXTUResourceUsageKind kind;
 
   /* Amount of resources used.
-     The units will depend on the resource kind. */
+	 The units will depend on the resource kind. */
   CULong amount;
 }
 
@@ -2965,7 +2965,7 @@ struct CXTUResourceUsage {
   CUInt numEntries;
 
   /* An array of key-value pairs, representing the breakdown of memory
-            usage. */
+			usage. */
   CXTUResourceUsageEntry* entries;
 }
 
@@ -7484,126 +7484,113 @@ const CXCodeComplete_Flags CODE_COMPLETE_INCLUDE_COMPLETION_SWITH_FIX_ITS = 0x10
  * The enumerators in this enumeration may be bitwise-OR'd together if multiple
  * contexts are occurring simultaneously.
  */
-typedef CXCompletionContext = inline CInt;
+constdef CXCompletionContext : inline CInt
+{
+	<*
+	 The context for completions is unexposed, as only Clang results
+	 should be included. (This is equivalent to having no context bits set.)
+	*>
+	UNEXPOSED = 0,
+	<*
+	 Completions for any possible type should be included in the results.
+	*>
+	ANY_TYPE = 1 << 0,
+	<*
+	 Completions for any possible value (variables, function calls, etc.)
+     should be included in the results.
+    *>
+	ANY_VALUE = 1 << 1,
+	<*
+     Completions for values that resolve to an Objective-C object should
+     be included in the results.
+    *>
+	OBJC_OBJECT_VALUE = 1 << 2,
+	<*
+	 Completions for values that resolve to an Objective-C selector
+     should be included in the results.
+    *>
+	OBJC_SELECT_OR_VALUE = 1 << 3,
+	<*
+	 Completions for values that resolve to a C++ class type should be
+	 included in the results.
+    *>
+	CXX_CLASS_TYPE_VALUE = 1 << 4,
+	<*
+	 Completions for fields of the member being accessed using the dot
+     operator should be included in the results.
+    *>
+	DOT_MEMBER_ACCESS = 1 << 5,
+	<*
+     Completions for fields of the member being accessed using the arrow
+     operator should be included in the results.
+    *>
+	ARROW_MEMBER_ACCESS = 1 << 6,
+	<*
+     Completions for properties of the Objective-C object being accessed
+     using the dot operator should be included in the results.
+    *>
+	OBJC_PROPERTY_ACCESS = 1 << 7,
+	<* Completions for enum tags should be included in the results. *>
+	ENUM_TAG = 1 << 8,
+	<* Completions for union tags should be included in the results. *>
+	UNION_TAG = 1 << 9,
+	<* Completions for struct tags should be included in the results. *>
+	STRUCT_TAG = 1 << 10,
+	<* Completions for C++ class names should be included in the results. *>
+	CLASS_TAG = 1 << 11,
+	<*
+	 Completions for C++ namespaces and namespace aliases should be
+	 included in the results.
+	*>
+	NAMESPACE = 1 << 12,
+	<*
+	  Completions for C++ nested name specifiers should be included in
+	  the results.
+	 *>
+	NESTED_NAME_SPECIFIER = 1 << 13,
+	<*
+     Completions for Objective-C interfaces (classes) should be included
+     in the results.
+    *>
+	INTERFACE = 1 << 14,
+	<*
+     Completions for Objective-C protocols should be included in
+     the results.
+    *>
+	OBJC_PROTOCOL = 1 << 15,
+	<*
+     Completions for Objective-C categories should be included in
+     the results.
+    *>
+	OBJC_CATEGORY = 1 << 16,
+	<*
+     Completions for Objective-C instance messages should be included
+     in the results.
+    *>
+	OBJC_INSTANCE_MESSAGE = 1 << 17,
+	<*
+	 Completions for Objective-C class messages should be included in
+	 the results.
+    *>
+	OBJC_CLASS_MESSAGE = 1 << 18,
+	<*
+	 Completions for Objective-C selector names should be included in
+	 the results.
+	*>
+	OBJC_SELECTOR_NAME = 1 << 19,
+	<*
+	 Completions for preprocessor macro names should be included in
+	 the results.
+	*>
+	COMPLETION_CONTEXT_MACRO_NAME = 1 << 20,
+	<* Natural language completions should be included in the results. *>
+	COMPLETION_CONTEXT_NATURAL_LANGUAGE = 1 << 21,
+	<* #include file completions should be included in the results. *>
+	COMPLETION_CONTEXT_INCLUDED_FILE = 1 << 22,
+	<* The current context is unknown, so set all contexts *>
+	COMPLETION_CONTEXT_UNKNOWN = ((1 << 23) - 1),
+}
 
-/**
- * The context for completions is unexposed, as only Clang results
- * should be included. (This is equivalent to having no context bits set.)
- */
-const CXCompletionContext COMPLETION_CONTEXT_UNEXPOSED = (CXCompletionContext) 0;
-/**
- * Completions for any possible type should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_ANY_TYPE = (CXCompletionContext) 1 << 0;
-/**
- * Completions for any possible value (variables, function calls, etc.)
- * should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_ANY_VALUE = (CXCompletionContext) 1 << 1;
-/**
- * Completions for values that resolve to an Objective-C object should
- * be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_OBJC_OBJECT_VALUE = (CXCompletionContext) 1 << 2;
-/**
- * Completions for values that resolve to an Objective-C selector
- * should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_OBJC_SELECT_OR_VALUE = (CXCompletionContext) 1 << 3;
-/**
- * Completions for values that resolve to a C++ class type should be
- * included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_CXX_CLASS_TYPE_VALUE = (CXCompletionContext) 1 << 4;
-/**
- * Completions for fields of the member being accessed using the dot
- * operator should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_DOT_MEMBER_ACCESS = (CXCompletionContext) 1 << 5;
-/**
- * Completions for fields of the member being accessed using the arrow
- * operator should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_ARROW_MEMBER_ACCESS = (CXCompletionContext) 1 << 6;
-/**
- * Completions for properties of the Objective-C object being accessed
- * using the dot operator should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_OBJC_PROPERTY_ACCESS = (CXCompletionContext) 1 << 7;
-/**
- * Completions for enum tags should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_ENUM_TAG = (CXCompletionContext) 1 << 8;
-/**
- * Completions for union tags should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_UNION_TAG = (CXCompletionContext) 1 << 9;
-/**
- * Completions for struct tags should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_STRUCT_TAG = (CXCompletionContext) 1 << 10;
-
-/**
- * Completions for C++ class names should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_CLASS_TAG = (CXCompletionContext) 1 << 11;
-/**
- * Completions for C++ namespaces and namespace aliases should be
- * included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_NAMESPACE = (CXCompletionContext) 1 << 12;
-/**
- * Completions for C++ nested name specifiers should be included in
- * the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_NESTED_NAME_SPECIFIER = (CXCompletionContext) 1 << 13;
-/**
- * Completions for Objective-C interfaces (classes) should be included
- * in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_OBJC_INTERFACE = (CXCompletionContext) 1 << 14;
-/**
- * Completions for Objective-C protocols should be included in
- * the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_OBJC_PROTOCOL = (CXCompletionContext) 1 << 15;
-/**
- * Completions for Objective-C categories should be included in
- * the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_OBJC_CATEGORY = (CXCompletionContext) 1 << 16;
-/**
- * Completions for Objective-C instance messages should be included
- * in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_OBJC_INSTANCE_MESSAGE = (CXCompletionContext) 1 << 17;
-/**
- * Completions for Objective-C class messages should be included in
- * the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_OBJC_CLASS_MESSAGE = (CXCompletionContext) 1 << 18;
-/**
- * Completions for Objective-C selector names should be included in
- * the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_OBJC_SELECTOR_NAME = (CXCompletionContext) 1 << 19;
-/**
- * Completions for preprocessor macro names should be included in
- * the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_MACRO_NAME = (CXCompletionContext) 1 << 20;
-/**
- * Natural language completions should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_NATURAL_LANGUAGE = (CXCompletionContext) 1 << 21;
-/**
- * #include file completions should be included in the results.
- */
-const CXCompletionContext COMPLETION_CONTEXT_INCLUDED_FILE = (CXCompletionContext) 1 << 22;
-/**
- * The current context is unknown, so set all contexts.
- */
-const CXCompletionContext COMPLETION_CONTEXT_UNKNOWN = (CXCompletionContext) ((1 << 23) - 1);
 
 /**
  * Returns a default set of code-completion options that can be
@@ -8346,17 +8333,19 @@ const CXIdxEntityRefKind IDX_ENTITY_REF_IMPLICIT = 2;
  * Internal: this currently mirrors low 9 bits of clang::index::SymbolRole with
  * higher bits zeroed. These high bits may be exposed in the future.
  */
-typedef CXSymbolRole = inline CInt;
-const CXSymbolRole SYMBOL_ROLE_NONE = (CXSymbolRole)0;
-const CXSymbolRole SYMBOL_ROLE_DECLARATION = (CXSymbolRole)1 << 0;
-const CXSymbolRole SYMBOL_ROLE_DEFINITION = (CXSymbolRole)1 << 1;
-const CXSymbolRole SYMBOL_ROLE_REFERENCE = (CXSymbolRole)1 << 2;
-const CXSymbolRole SYMBOL_ROLE_READ = (CXSymbolRole)1 << 3;
-const CXSymbolRole SYMBOL_ROLE_WRITE = (CXSymbolRole)1 << 4;
-const CXSymbolRole SYMBOL_ROLE_CALL = (CXSymbolRole)1 << 5;
-const CXSymbolRole SYMBOL_ROLE_DYNAMIC = (CXSymbolRole)1 << 6;
-const CXSymbolRole SYMBOL_ROLE_ADDRESS_OF = (CXSymbolRole)1 << 7;
-const CXSymbolRole SYMBOL_ROLE_IMPLICIT = (CXSymbolRole)1 << 8;
+constdef CXSymbolRole : inline CInt
+{
+	NONE = 0,
+	DECLARATION = 1 << 0,
+	DEFINITION = 1 << 1,
+	REFERENCE = 1 << 2,
+	READ = 1 << 3,
+	WRITE = 1 << 4,
+	CALL = 1 << 5,
+	DYNAMIC = 1 << 6,
+	ADDRESS_OF = 1 << 7,
+	IMPLICIT = 1 << 8,
+}
 
 /**
  * Data for IndexerCallbacks#indexEntityReference.
