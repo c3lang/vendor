@@ -4,20 +4,20 @@
 
 /*
 	BASIC DOC:
-	
+
 	Based on box2d 3.0
-	
+
 ==== Units ====
-	Box2D works with floating point numbers and tolerances have to be used to make Box2D perform well. 
-	These tolerances have been tuned to work well with meters-kilogram-second (MKS) units. 
-	In particular, Box2D has been tuned to work well with moving shapes between 0.1 and 10 meters. 
-	So this means objects between soup cans and buses in size should work well. 
+	Box2D works with floating point numbers and tolerances have to be used to make Box2D perform well.
+	These tolerances have been tuned to work well with meters-kilogram-second (MKS) units.
+	In particular, Box2D has been tuned to work well with moving shapes between 0.1 and 10 meters.
+	So this means objects between soup cans and buses in size should work well.
 	Static shapes may be up to 50 meters long without trouble. If you have a large world, you should split it up into multiple static bodies.
 
 	Being a 2D physics engine, it is tempting to use pixels as your units.
-	Unfortunately this will lead to a poor simulation and possibly weird behavior. 
+	Unfortunately this will lead to a poor simulation and possibly weird behavior.
 	An object of length 200 pixels would be seen by Box2D as the size of a 45 story building.
-	
+
 	******************************************************************************************
 	* ‍Caution:                                                                            *
 	* - Box2D is tuned for MKS units. Keep the size of moving objects larger than 10cm.      *
@@ -27,7 +27,7 @@
 	* - Box2D uses radians, not degrees.                                                     *
 	* - Box2D works best with world sizes less than 12 kilometers.                           *
 	******************************************************************************************
-	
+
 	Hello World Example at @ https://box2d.org/documentation/hello.html#autotoc_md21
 */
 
@@ -40,11 +40,11 @@ module vendor::box2d::b2;
 alias B2AllocCallback  = fn void*(uint size, int alignment);
 alias B2FreeCallback   = fn void(void* mem);
 alias B2AssertCallback = fn int(ZString condition, ZString fileName, int lineNumber);
- 
+
 fn void setAllocator(B2AllocCallback* allocFcn, B2FreeCallback* freeFcn) @cname("b2SetAllocator");
 fn int getByteCount()                                                    @cname("b2GetByteCount");
 fn void setAssertFcn(B2AssertCallback* assertFcn)                        @cname("b2SetAssertFcn");
- 
+
 struct B2Version @compact
 {
 	int major;
@@ -53,7 +53,7 @@ struct B2Version @compact
 }
 
 fn B2Version getVersion() @cname("b2GetVersion");
- 
+
 // Timer for profiling. This has platform specific code and may not work on every platform.
 struct B2Timer
 {
@@ -62,14 +62,14 @@ struct B2Timer
 	ulong start_usec @if(env::LINUX || env::POSIX);
 	int   dummy      @if(!env::WIN32 && !env::LINUX && !env::POSIX);
 }
- 
+
 fn B2Timer createTimer() @cname("b2CreateTimer");
 fn long getTicks(B2Timer* timer) @cname("b2GetTicks");
 fn float getMilliseconds(B2Timer* timer) @cname("b2GetMilliseconds");
 fn float getMillisecondsAndReset(B2Timer* timer) @cname("b2GetMillisecondsAndReset");
 fn void sleepMilliseconds(int milliseconds) @cname("b2SleepMilliseconds");
 fn void yield() @cname("b2Yield");
- 
+
 // Simple djb2 hash function for determinism testing
 const B2_HASH_INIT = 5381;
 
@@ -130,11 +130,11 @@ macro bool @id_equals(#id1, #id2 ) => (#id1.index1 == #id2.index1 && #id1.world0
 // end_region ID
 
 // region TYPES
- 
+
 alias B2TaskCallback        = fn void(int startIndex, int endIndex, uint workerIndex, void* taskContext);
 alias B2EnqueueTaskCallback = fn void*(B2TaskCallback* task, int itemCount, int minRange, void* taskContext, void* userContext);
 alias B2FinishTaskCallback  = fn void(void* userTask, void* userContext);
- 
+
 struct B2RayResult
 {
 	B2ShapeId shapeId;
@@ -143,7 +143,7 @@ struct B2RayResult
 	float fraction;
 	bool hit;
 }
- 
+
 /// World definition used to create a simulation world.
 /// Must be initialized using defaultWorldDef().
 struct B2WorldDef
@@ -199,7 +199,7 @@ struct B2WorldDef
 	/// Used internally to detect a valid definition. DO NOT SET.
 	int internalValue;
 }
- 
+
 enum B2BodyType
 {
 	/// zero mass, zero velocity, may be manually moved
@@ -211,7 +211,7 @@ enum B2BodyType
 	/// positive mass, velocity determined by forces, moved by solver
 	DYNAMIC
 }
- 
+
 /// A body definition holds all the data needed to construct a rigid body.
 /// You can safely re-use body definitions. Shapes are added to a body after construction.
 ///	Body definitions are temporary objects used to bundle creation parameters.
@@ -286,7 +286,7 @@ struct B2BodyDef
 	/// Used internally to detect a valid definition. DO NOT SET.
 	int internalValue;
 }
- 
+
 /// This is used to filter collision on shapes. It affects shape-vs-shape collision
 ///	and shape-versus-query collision (such as b2World_CastRay).
 struct B2Filter @compact
@@ -322,9 +322,9 @@ struct B2Filter @compact
 	/// and apply that group index to all shapes on the ragdoll.
 	int groupIndex;
 }
- 
+
 fn B2Filter defaultFilter() @cname("b2DefaultFilter");
- 
+
 /// The query filter is used to filter collisions between queries and shapes. For example,
 /// you may want a ray-cast representing a projectile to hit players and the static environment
 /// but not debris.
@@ -338,10 +338,10 @@ struct B2QueryFilter @compact
 	/// query would accept for collision.
 	uint maskBits;
 }
- 
+
 /// Use this to initialize your query filter
 fn B2QueryFilter defaultQueryFilter() @cname("b2DefaultQueryFilter");
- 
+
 enum B2ShapeType : int
 {
 	/// A circle with an offset
@@ -359,7 +359,7 @@ enum B2ShapeType : int
 	/// A smooth segment owned by a chain shape
 	SMOOTH_SEGMENT
 }
- 
+
 /// Used to create a shape.
 /// This is a temporary object used to bundle shape creation parameters. You may use
 /// the same shape definition to create multiple shapes.
@@ -408,7 +408,7 @@ struct B2ShapeDef
 	/// Used internally to detect a valid definition. DO NOT SET.
 	int internalValue;
 }
- 
+
 struct B2ChainDef
 {
 	void* userData;
@@ -420,7 +420,7 @@ struct B2ChainDef
 	bool isLoop;
 	int internalValue;
 }
- 
+
 struct B2Profile @compact
 {
 	float step;
@@ -446,7 +446,7 @@ struct B2Profile @compact
 	float broadphase;
 	float continuous;
 }
- 
+
 struct B2Counters @compact
 {
 	int staticBodyCount;
@@ -462,7 +462,7 @@ struct B2Counters @compact
 	int taskCount;
 	int[12] colorCounts;
 }
- 
+
 enum B2JointType
 {
 	DISTANCE,
@@ -473,7 +473,7 @@ enum B2JointType
 	WELD,
 	WHEEL,
 }
- 
+
 struct B2DistanceJointDef
 {
 	B2BodyId bodyIdA;
@@ -494,7 +494,7 @@ struct B2DistanceJointDef
 	void* userData;
 	int internalValue;
 }
- 
+
 struct B2MotorJointDef
 {
 	B2BodyId bodyIdA;
@@ -508,7 +508,7 @@ struct B2MotorJointDef
 	void* userData;
 	int internalValue;
 }
- 
+
 struct B2MouseJointDef
 {
 	B2BodyId bodyIdA;
@@ -521,7 +521,7 @@ struct B2MouseJointDef
 	void* userData;
 	int internalValue;
 }
- 
+
 struct B2PrismaticJointDef
 {
 	B2BodyId bodyIdA;
@@ -543,7 +543,7 @@ struct B2PrismaticJointDef
 	void* userData;
 	int internalValue;
 }
- 
+
 struct B2RevoluteJointDef
 {
 	B2BodyId bodyIdA;
@@ -565,7 +565,7 @@ struct B2RevoluteJointDef
 	void* userData;
 	int internalValue;
 }
- 
+
 struct B2WeldJointDef
 {
 	B2BodyId bodyIdA;
@@ -581,7 +581,7 @@ struct B2WeldJointDef
 	void* userData;
 	int internalValue;
 }
- 
+
 struct B2WheelJointDef
 {
 	B2BodyId bodyIdA;
@@ -602,19 +602,19 @@ struct B2WheelJointDef
 	void* userData;
 	int internalValue;
 }
- 
+
 struct B2SensorBeginTouchEvent
 {
 	B2ShapeId sensorShapeId;
 	B2ShapeId visitorShapeId;
 }
- 
+
 struct B2SensorEndTouchEvent
 {
 	B2ShapeId sensorShapeId;
 	B2ShapeId visitorShapeId;
 }
- 
+
 struct B2SensorEvents
 {
 	B2SensorBeginTouchEvent* beginEvents;
@@ -622,19 +622,19 @@ struct B2SensorEvents
 	int beginCount;
 	int endCount;
 }
- 
+
 struct B2ContactBeginTouchEvent
 {
 	B2ShapeId shapeIdA;
 	B2ShapeId shapeIdB;
 }
- 
+
 struct B2ContactEndTouchEvent
 {
 	B2ShapeId shapeIdA;
 	B2ShapeId shapeIdB;
 }
- 
+
 struct B2ContactHitEvent
 {
 	B2ShapeId shapeIdA;
@@ -643,7 +643,7 @@ struct B2ContactHitEvent
 	B2Vec2 normal;
 	float approachSpeed;
 }
- 
+
 struct B2ContactEvents
 {
 	B2ContactBeginTouchEvent* beginEvents;
@@ -653,7 +653,7 @@ struct B2ContactEvents
 	int endCount;
 	int hitCount;
 }
- 
+
 struct B2BodyMoveEvent
 {
 	B2Transform transform;
@@ -661,20 +661,20 @@ struct B2BodyMoveEvent
 	void* userData;
 	bool fellAsleep;
 }
- 
+
 struct B2BodyEvents
 {
 	B2BodyMoveEvent* moveEvents;
 	int moveCount;
 }
- 
+
 struct B2ContactData
 {
 	B2ShapeId shapeIdA;
 	B2ShapeId shapeIdB;
 	B2Manifold manifold;
 }
- 
+
 alias B2CustomFilterCallback  = fn bool(B2ShapeId shapeIdA, B2ShapeId shapeIdB, void* context);
 alias B2PreSolveCallback      = fn bool(B2ShapeId shapeIdA, B2ShapeId shapeIdB, B2Manifold* manifold, void* context);
 alias B2OverlapResultCallback = fn bool(B2ShapeId shapeId, void* context);
@@ -685,12 +685,12 @@ alias B2CastResultCallback    = fn float(B2ShapeId shapeId, B2Vec2 point, B2Vec2
 //                                  WORLD MODULE
 //=====================================================================================================
 module vendor::box2d::b2::b2world;
-
+import vendor::box2d::b2::b2math;
 fn B2WorldDef defaultDef() @cname("b2DefaultWorldDef");
 
 <*
 Create a world for rigid body simulation.
-A world contains bodies, shapes, and constraints. You make create up to 128 worlds. 
+A world contains bodies, shapes, and constraints. You make create up to 128 worlds.
 Each world is completely independent and may be simulated in parallel.
 
 Returns
@@ -740,6 +740,8 @@ fn void B2WorldId.debugDraw(B2WorldId worldId, B2DebugDraw* draw) @cname("b2Worl
 //=====================================================================================================
 module vendor::box2d::b2::b2body;
 
+import vendor::box2d::b2::b2math;
+
 // Use this to initialize your body definition.
 fn B2BodyDef defaultDef() @cname("b2DefaultBodyDef");
 
@@ -747,7 +749,7 @@ fn B2BodyDef defaultDef() @cname("b2DefaultBodyDef");
 Create a rigid body given a definition.
 No reference to the definition is retained. So you can create the definition on the stack and pass it as a pointer.
 
-ex: 
+ex:
 B2BodyDef bodyDef  = b2body::defaultDef();
 B2BodyId  myBodyId = b2body::create(myWorldId, &bodyDef);
 
@@ -826,6 +828,8 @@ fn B2AABBox B2BodyId.computeAABB(B2BodyId bodyId) @cname("b2Body_ComputeAABB");
 //=====================================================================================================
 module vendor::box2d::b2::b2shape;
 
+import vendor::box2d::b2::b2math;
+
 // Use this to initialize your shape definition.
 fn B2ShapeDef defaultDef() @cname("b2DefaultShapeDef");
 
@@ -901,9 +905,9 @@ fn bool B2ChainId.isValid(B2ChainId id) @cname("b2Chain_IsValid");
 
 
 
-// NOTE(HM) 
+// NOTE(HM)
 //	Because there's more than one type of joint and all of them, share the same data structure,
-//	I think would be hard to differentiate their functions, by turning them into methods, 
+//	I think would be hard to differentiate their functions, by turning them into methods,
 //	so I decided to keep joints as simple functions, this way their module name can be used as a differentiator.
 
 //=====================================================================================================
@@ -911,19 +915,21 @@ fn bool B2ChainId.isValid(B2ChainId id) @cname("b2Chain_IsValid");
 //=====================================================================================================
 module vendor::box2d::b2::b2joint;
 
+import vendor::box2d::b2::b2math;
+
 <*
 	NOTE(HM):
 	Even thou this is a seperate module, this functions work with all joints types...
 	So for example you can use b2joint:: with a distance joint:
-	
+
 	B2DistanceJointDef dJointDef  = b2distanceJoint::defaultDef();
 	B2JointId myDJointId          = b2distanceJoint::create(myWorldId, &dJointDef);
-	
+
 	if(b2joint::isValid(myDJointId)) {
 		// do something
 	}
 	b2joint::destroy(myDJointId);
-	
+
 	etc,
 *>
 
@@ -981,6 +987,8 @@ fn float getMotorForce(B2JointId jointId) @cname("b2DistanceJoint_GetMotorForce"
 //=====================================================================================================
 module vendor::box2d::b2::b2motorjoint;
 
+import vendor::box2d::b2::b2math;
+
 // Use this to initialize your motor joint definition.
 fn B2MotorJointDef defaultDef() @cname("b2DefaultMotorJointDef");
 
@@ -1001,6 +1009,8 @@ fn float getCorrectionFactor(B2JointId jointId) @cname("b2MotorJoint_GetCorrecti
 //                                  MOUSE JOINT MODULE
 //=====================================================================================================
 module vendor::box2d::b2::b2mousejoint;
+
+import vendor::box2d::b2::b2math;
 
 // Use this to initialize your mouse joint definition.
 fn B2MouseJointDef defaultDef() @cname("b2DefaultMouseJointDef");
@@ -1322,7 +1332,7 @@ struct B2SimplexVertex
 
 struct B2Simplex
 {
-	B2SimplexVertex v1, v2, v3; 
+	B2SimplexVertex v1, v2, v3;
 	int count;
 }
 
@@ -1404,6 +1414,8 @@ struct B2Manifold
 //=====================================================================================================
 module vendor::box2d::b2::b2collide;
 
+import vendor::box2d::b2::b2math;
+
 fn B2Manifold circles(B2Circle* circleA, B2Transform xfA, B2Circle* circleB, B2Transform xfB) @cname("b2CollideCircles");
 fn B2Manifold capsuleAndCircle(B2Capsule* capsuleA, B2Transform xfA, B2Circle* circleB, B2Transform xfB) @cname("b2CollideCapsuleAndCircle");
 fn B2Manifold segmentAndCircle(B2Segment* segmentA, B2Transform xfA, B2Circle* circleB, B2Transform xfB) @cname("b2CollideSegmentAndCircle");
@@ -1462,6 +1474,8 @@ struct B2DynamicTree
 //                                  DYNAMIC TREE MODULE
 //=====================================================================================================
 module vendor::box2d::b2::b2dyntree;
+
+import vendor::box2d::b2::b2math;
 
 fn B2DynamicTree create() @cname("b2DynamicTree_Create");
 
@@ -1532,8 +1546,8 @@ const B2Rot ROT_IDENTITY = { 1.0f, 0.0f };
 const B2Transform TRANSFORM_IDENTITY = { { 0.0f, 0.0f }, { 1.0f, 0.0f } };
 const B2Mat22 MAT22_ZERO  = { { 0.0f, 0.0f }, { 0.0f, 0.0f } };
 
-// WARNING(HM) Most math functions are not accesible, at lest on box2d 3.0 static library, 
-// function symbols (func names) are not exported in the library, this may or may not change 
+// WARNING(HM) Most math functions are not accesible, at lest on box2d 3.0 static library,
+// function symbols (func names) are not exported in the library, this may or may not change
 // in future box2d versions, for now I recomend using C3 math functions (or others) when possible.
 
 // Compute an approximate arctangent in the range [-pi, pi] This is hand coded for cross platform determinism.
@@ -1564,166 +1578,166 @@ module vendor::box2d::b2;
 
 /// These colors are used for debug draw.
 /// See https://www.rapidtables.com/web/color/index.html
-enum B2HexColor : (inline int value)
+enum B2HexColor : (int value)
 {
-	ALICE_BLUE           = 0xf0f8ff,
-	ANTIQUE_WHITE        = 0xfaebd7,
-	AQUA                 = 0x00ffff,
-	AQUAMARINE           = 0x7fffd4,
-	AZURE                = 0xf0ffff,
-	BEIGE                = 0xf5f5dc,
-	BISQUE               = 0xffe4c4,
-	BLACK                = 0x000000,
-	BLANCHED_ALMOND      = 0xffebcd,
-	BLUE                 = 0x0000ff,
-	BLUE_VIOLET          = 0x8a2be2,
-	BROWN                = 0xa52a2a,
-	BURLYWOOD            = 0xdeb887,
-	CADET_BLUE           = 0x5f9ea0,
-	CHARTREUSE           = 0x7fff00,
-	CHOCOLATE            = 0xd2691e,
-	CORAL                = 0xff7f50,
-	CORN_FLOWER_BLUE     = 0x6495ed,
-	CORN_SILK            = 0xfff8dc,
-	CRIMSON              = 0xdc143c,
-	CYAN                 = 0x00ffff,
-	DARK_BLUE            = 0x00008b,
-	DARK_CYAN            = 0x008b8b,
-	DARK_GOLDENROD       = 0xb8860b,
-	DARK_GRAY            = 0xa9a9a9,
-	DARK_GREEN           = 0x006400,
-	DARK_KHAKI           = 0xbdb76b,
-	DARK_MAGENTA         = 0x8b008b,
-	DARK_OLIVEGREEN      = 0x556b2f,
-	DARK_ORANGE          = 0xff8c00,
-	DARK_ORCHID          = 0x9932cc,
-	DARK_RED             = 0x8b0000,
-	DARK_SALMON          = 0xe9967a,
-	DARK_SEAGREEN        = 0x8fbc8f,
-	DARK_SLATEBLUE       = 0x483d8b,
-	DARK_SLATEGRAY       = 0x2f4f4f,
-	DARK_TURQUOISE       = 0x00ced1,
-	DARK_VIOLET          = 0x9400d3,
-	DEEP_PINK            = 0xff1493,
-	DEEP_SKYBLUE         = 0x00bfff,
-	DIMGRAY              = 0x696969,
-	DODGERBLUE           = 0x1e90ff,
-	FIREBRICK            = 0xb22222,
-	FLORALWHITE          = 0xfffaf0,
-	FORESTGREEN          = 0x228b22,
-	FUCHSIA              = 0xff00ff,
-	GAINSBORO            = 0xdcdcdc,
-	GHOSTWHITE           = 0xf8f8ff,
-	GOLD                 = 0xffd700,
-	GOLDENROD            = 0xdaa520,
-	GRAY                 = 0xbebebe,
-	GRAY1                = 0x1a1a1a,
-	GRAY2                = 0x333333,
-	GRAY3                = 0x4d4d4d,
-	GRAY4                = 0x666666,
-	GRAY5                = 0x7f7f7f,
-	GRAY6                = 0x999999,
-	GRAY7                = 0xb3b3b3,
-	GRAY8                = 0xcccccc,
-	GRAY9                = 0xe5e5e5,
-	GREEN                = 0x00ff00,
-	GREENYELLOW          = 0xadff2f,
-	HONEYDEW             = 0xf0fff0,
-	HOTPINK              = 0xff69b4,
-	INDIANRED            = 0xcd5c5c,
-	INDIGO               = 0x4b0082,
-	IVORY                = 0xfffff0,
-	KHAKI                = 0xf0e68c,
-	LAVENDER             = 0xe6e6fa,
-	LAVENDERBLUSH        = 0xfff0f5,
-	LAWNGREEN            = 0x7cfc00,
-	LEMONCHIFFON         = 0xfffacd,
-	LIGHTBLUE            = 0xadd8e6,
-	LIGHTCORAL           = 0xf08080,
-	LIGHTCYAN            = 0xe0ffff,
-	LIGHTGOLDENROD       = 0xeedd82,
-	LIGHTGOLDENRODYELLOW = 0xfafad2,
-	LIGHTGRAY            = 0xd3d3d3,
-	LIGHTGREEN           = 0x90ee90,
-	LIGHTPINK            = 0xffb6c1,
-	LIGHTSALMON          = 0xffa07a,
-	LIGHTSEAGREEN        = 0x20b2aa,
-	LIGHTSKYBLUE         = 0x87cefa,
-	LIGHTSLATEBLUE       = 0x8470ff,
-	LIGHTSLATEGRAY       = 0x778899,
-	LIGHTSTEELBLUE       = 0xb0c4de,
-	LIGHTYELLOW          = 0xffffe0,
-	LIME                 = 0x00ff00,
-	LIMEGREEN            = 0x32cd32,
-	LINEN                = 0xfaf0e6,
-	MAGENTA              = 0xff00ff,
-	MAROON               = 0xb03060,
-	MEDIUMAQUAMARINE     = 0x66cdaa,
-	MEDIUMBLUE           = 0x0000cd,
-	MEDIUMORCHID         = 0xba55d3,
-	MEDIUMPURPLE         = 0x9370db,
-	MEDIUMSEAGREEN       = 0x3cb371,
-	MEDIUMSLATEBLUE      = 0x7b68ee,
-	MEDIUMSPRINGGREEN    = 0x00fa9a,
-	MEDIUMTURQUOISE      = 0x48d1cc,
-	MEDIUMVIOLETRED      = 0xc71585,
-	MIDNIGHTBLUE         = 0x191970,
-	MINTCREAM            = 0xf5fffa,
-	MISTYROSE            = 0xffe4e1,
-	MOCCASIN             = 0xffe4b5,
-	NAVAJOWHITE          = 0xffdead,
-	NAVY                 = 0x000080,
-	NAVYBLUE             = 0x000080,
-	OLDLACE              = 0xfdf5e6,
-	OLIVE                = 0x808000,
-	OLIVEDRAB            = 0x6b8e23,
-	ORANGE               = 0xffa500,
-	ORANGERED            = 0xff4500,
-	ORCHID               = 0xda70d6,
-	PALEGOLDENROD        = 0xeee8aa,
-	PALEGREEN            = 0x98fb98,
-	PALETURQUOISE        = 0xafeeee,
-	PALEVIOLETRED        = 0xdb7093,
-	PAPAYAWHIP           = 0xffefd5,
-	PEACHPUFF            = 0xffdab9,
-	PERU                 = 0xcd853f,
-	PINK                 = 0xffc0cb,
-	PLUM                 = 0xdda0dd,
-	POWDERBLUE           = 0xb0e0e6,
-	PURPLE               = 0xa020f0,
-	REBECCAPURPLE        = 0x663399,
-	RED                  = 0xff0000,
-	ROSYBROWN            = 0xbc8f8f,
-	ROYALBLUE            = 0x4169e1,
-	SADDLEBROWN          = 0x8b4513,
-	SALMON               = 0xfa8072,
-	SANDYBROWN           = 0xf4a460,
-	SEAGREEN             = 0x2e8b57,
-	SEASHELL             = 0xfff5ee,
-	SIENNA               = 0xa0522d,
-	SILVER               = 0xc0c0c0,
-	SKYBLUE              = 0x87ceeb,
-	SLATEBLUE            = 0x6a5acd,
-	SLATEGRAY            = 0x708090,
-	SNOW                 = 0xfffafa,
-	SPRINGGREEN          = 0x00ff7f,
-	STEELBLUE            = 0x4682b4,
-	TAN                  = 0xd2b48c,
-	TEAL                 = 0x008080,
-	THISTLE              = 0xd8bfd8,
-	TOMATO               = 0xff6347,
-	TURQUOISE            = 0x40e0d0,
-	VIOLET               = 0xee82ee,
-	VIOLETRED            = 0xd02090,
-	WHEAT                = 0xf5deb3,
-	WHITE                = 0xffffff,
-	WHITESMOKE           = 0xf5f5f5,
-	YELLOW               = 0xffff00,
-	YELLOWGREEN          = 0x9acd32,
-	BOX2DRED             = 0xdc3132,
-	BOX2DBLUE            = 0x30aebf,
-	BOX2DGREEN           = 0x8cc924,
-	BOX2DYELLOW          = 0xffee8c
+	ALICE_BLUE           {0xf0f8ff},
+	ANTIQUE_WHITE        {0xfaebd7},
+	AQUA                 {0x00ffff},
+	AQUAMARINE           {0x7fffd4},
+	AZURE                {0xf0ffff},
+	BEIGE                {0xf5f5dc},
+	BISQUE               {0xffe4c4},
+	BLACK                {0x000000},
+	BLANCHED_ALMOND      {0xffebcd},
+	BLUE                 {0x0000ff},
+	BLUE_VIOLET          {0x8a2be2},
+	BROWN                {0xa52a2a},
+	BURLYWOOD            {0xdeb887},
+	CADET_BLUE           {0x5f9ea0},
+	CHARTREUSE           {0x7fff00},
+	CHOCOLATE            {0xd2691e},
+	CORAL                {0xff7f50},
+	CORN_FLOWER_BLUE     {0x6495ed},
+	CORN_SILK            {0xfff8dc},
+	CRIMSON              {0xdc143c},
+	CYAN                 {0x00ffff},
+	DARK_BLUE            {0x00008b},
+	DARK_CYAN            {0x008b8b},
+	DARK_GOLDENROD       {0xb8860b},
+	DARK_GRAY            {0xa9a9a9},
+	DARK_GREEN           {0x006400},
+	DARK_KHAKI           {0xbdb76b},
+	DARK_MAGENTA         {0x8b008b},
+	DARK_OLIVEGREEN      {0x556b2f},
+	DARK_ORANGE          {0xff8c00},
+	DARK_ORCHID          {0x9932cc},
+	DARK_RED             {0x8b0000},
+	DARK_SALMON          {0xe9967a},
+	DARK_SEAGREEN        {0x8fbc8f},
+	DARK_SLATEBLUE       {0x483d8b},
+	DARK_SLATEGRAY       {0x2f4f4f},
+	DARK_TURQUOISE       {0x00ced1},
+	DARK_VIOLET          {0x9400d3},
+	DEEP_PINK            {0xff1493},
+	DEEP_SKYBLUE         {0x00bfff},
+	DIMGRAY              {0x696969},
+	DODGERBLUE           {0x1e90ff},
+	FIREBRICK            {0xb22222},
+	FLORALWHITE          {0xfffaf0},
+	FORESTGREEN          {0x228b22},
+	FUCHSIA              {0xff00ff},
+	GAINSBORO            {0xdcdcdc},
+	GHOSTWHITE           {0xf8f8ff},
+	GOLD                 {0xffd700},
+	GOLDENROD            {0xdaa520},
+	GRAY                 {0xbebebe},
+	GRAY1                {0x1a1a1a},
+	GRAY2                {0x333333},
+	GRAY3                {0x4d4d4d},
+	GRAY4                {0x666666},
+	GRAY5                {0x7f7f7f},
+	GRAY6                {0x999999},
+	GRAY7                {0xb3b3b3},
+	GRAY8                {0xcccccc},
+	GRAY9                {0xe5e5e5},
+	GREEN                {0x00ff00},
+	GREENYELLOW          {0xadff2f},
+	HONEYDEW             {0xf0fff0},
+	HOTPINK              {0xff69b4},
+	INDIANRED            {0xcd5c5c},
+	INDIGO               {0x4b0082},
+	IVORY                {0xfffff0},
+	KHAKI                {0xf0e68c},
+	LAVENDER             {0xe6e6fa},
+	LAVENDERBLUSH        {0xfff0f5},
+	LAWNGREEN            {0x7cfc00},
+	LEMONCHIFFON         {0xfffacd},
+	LIGHTBLUE            {0xadd8e6},
+	LIGHTCORAL           {0xf08080},
+	LIGHTCYAN            {0xe0ffff},
+	LIGHTGOLDENROD       {0xeedd82},
+	LIGHTGOLDENRODYELLOW {0xfafad2},
+	LIGHTGRAY            {0xd3d3d3},
+	LIGHTGREEN           {0x90ee90},
+	LIGHTPINK            {0xffb6c1},
+	LIGHTSALMON          {0xffa07a},
+	LIGHTSEAGREEN        {0x20b2aa},
+	LIGHTSKYBLUE         {0x87cefa},
+	LIGHTSLATEBLUE       {0x8470ff},
+	LIGHTSLATEGRAY       {0x778899},
+	LIGHTSTEELBLUE       {0xb0c4de},
+	LIGHTYELLOW          {0xffffe0},
+	LIME                 {0x00ff00},
+	LIMEGREEN            {0x32cd32},
+	LINEN                {0xfaf0e6},
+	MAGENTA              {0xff00ff},
+	MAROON               {0xb03060},
+	MEDIUMAQUAMARINE     {0x66cdaa},
+	MEDIUMBLUE           {0x0000cd},
+	MEDIUMORCHID         {0xba55d3},
+	MEDIUMPURPLE         {0x9370db},
+	MEDIUMSEAGREEN       {0x3cb371},
+	MEDIUMSLATEBLUE      {0x7b68ee},
+	MEDIUMSPRINGGREEN    {0x00fa9a},
+	MEDIUMTURQUOISE      {0x48d1cc},
+	MEDIUMVIOLETRED      {0xc71585},
+	MIDNIGHTBLUE         {0x191970},
+	MINTCREAM            {0xf5fffa},
+	MISTYROSE            {0xffe4e1},
+	MOCCASIN             {0xffe4b5},
+	NAVAJOWHITE          {0xffdead},
+	NAVY                 {0x000080},
+	NAVYBLUE             {0x000080},
+	OLDLACE              {0xfdf5e6},
+	OLIVE                {0x808000},
+	OLIVEDRAB            {0x6b8e23},
+	ORANGE               {0xffa500},
+	ORANGERED            {0xff4500},
+	ORCHID               {0xda70d6},
+	PALEGOLDENROD        {0xeee8aa},
+	PALEGREEN            {0x98fb98},
+	PALETURQUOISE        {0xafeeee},
+	PALEVIOLETRED        {0xdb7093},
+	PAPAYAWHIP           {0xffefd5},
+	PEACHPUFF            {0xffdab9},
+	PERU                 {0xcd853f},
+	PINK                 {0xffc0cb},
+	PLUM                 {0xdda0dd},
+	POWDERBLUE           {0xb0e0e6},
+	PURPLE               {0xa020f0},
+	REBECCAPURPLE        {0x663399},
+	RED                  {0xff0000},
+	ROSYBROWN            {0xbc8f8f},
+	ROYALBLUE            {0x4169e1},
+	SADDLEBROWN          {0x8b4513},
+	SALMON               {0xfa8072},
+	SANDYBROWN           {0xf4a460},
+	SEAGREEN             {0x2e8b57},
+	SEASHELL             {0xfff5ee},
+	SIENNA               {0xa0522d},
+	SILVER               {0xc0c0c0},
+	SKYBLUE              {0x87ceeb},
+	SLATEBLUE            {0x6a5acd},
+	SLATEGRAY            {0x708090},
+	SNOW                 {0xfffafa},
+	SPRINGGREEN          {0x00ff7f},
+	STEELBLUE            {0x4682b4},
+	TAN                  {0xd2b48c},
+	TEAL                 {0x008080},
+	THISTLE              {0xd8bfd8},
+	TOMATO               {0xff6347},
+	TURQUOISE            {0x40e0d0},
+	VIOLET               {0xee82ee},
+	VIOLETRED            {0xd02090},
+	WHEAT                {0xf5deb3},
+	WHITE                {0xffffff},
+	WHITESMOKE           {0xf5f5f5},
+	YELLOW               {0xffff00},
+	YELLOWGREEN          {0x9acd32},
+	BOX2DRED             {0xdc3132},
+	BOX2DBLUE            {0x30aebf},
+	BOX2DGREEN           {0x8cc924},
+	BOX2DYELLOW          {0xffee8c}
 }
 
 alias B2DrawPolygonCallback      = fn void(B2Vec2* vertices, int vertexCount, B2HexColor color, void* context);
@@ -1750,7 +1764,7 @@ struct B2DebugDraw
 	B2DrawTransformCallback drawTransform; // Draw a transform. Choose your own length scale.
 	B2DrawPointCallback drawPoint;
 	B2DrawStringCallback drawString;
-	
+
 	/// Bounds to use if restricting drawing to a rectangular region
 	B2AABBox drawingBounds;
 

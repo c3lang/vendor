@@ -371,7 +371,7 @@ struct RLAutomationEventList
 
 // Trace log level
 // NOTE: Organized by priority level
-enum RLTraceLogLevel : const CInt
+constdef RLTraceLogLevel : CInt
 {
 	ALL = 0, // Display all logs
 	TRACE,   // Trace logging, intended for internal use only
@@ -445,7 +445,7 @@ enum RLGamepadAxis : CInt
 }
 
 // RLMaterial map index
-enum RLMaterialMapIndex : const inline CInt
+constdef RLMaterialMapIndex : CInt
 {
 	ALBEDO = 0, // Albedo material (same as: MATERIAL_MAP_DIFFUSE)
 	METALNESS,  // Metalness material (same as: MATERIAL_MAP_SPECULAR)
@@ -465,7 +465,7 @@ enum RLMaterialMapIndex : const inline CInt
 }
 
 // Shader location index
-enum RLShaderLocationIndex : const CInt
+constdef RLShaderLocationIndex : CInt
 {
 	VERTEX_POSITION = 0, // Shader location: vertex attribute: position
 	VERTEX_TEXCOORD01,   // Shader location: vertex attribute: texcoord01
@@ -527,7 +527,7 @@ enum RLShaderAttributeDataType : CInt
 
 // Pixel formats
 // NOTE: Support depends on OpenGL version and platform
-enum RLPixelFormat : const CInt
+constdef RLPixelFormat : CInt
 {
 	UNCOMPRESSED_GRAYSCALE = 1, // 8 bit per pixel (no alpha)
 	UNCOMPRESSED_GRAY_ALPHA,    // 8*2 bpp (2 channels)
@@ -1495,7 +1495,7 @@ macro void @rl_mode(CInt mode ;@body)
 // System/Window config flags
 // NOTE: Every bit registers one state (use it with bit masks)
 // By default all flags are set to 0
-enum RLConfigFlag : const uint
+constdef RLConfigFlag : uint
 {
 	VSYNC_HINT         = 0x00000040, // Set to try enabling V-Sync on GPU
 	FULLSCREEN_MODE    = 0x00000002, // Set to run program in fullscreen
@@ -1516,7 +1516,7 @@ enum RLConfigFlag : const uint
 // Keyboard keys (US keyboard layout)
 // NOTE: Use GetKeyPressed() to allow redefining
 // required keys for alternative layouts
-enum RLKeyboardKey : const int
+constdef RLKeyboardKey : int
 {
 	NONE            = 0,   // Key: NONE; used for no key pressed
 	// Alphanumeric keys
@@ -1636,7 +1636,7 @@ enum RLKeyboardKey : const int
 
 // Gesture
 // NOTE: It could be used as flags to enable only some gestures
-enum RLGesture : const int
+constdef RLGesture : int
 {
 	NONE        = 0,   // No gesture
 	TAP         = 1,   // Tap gesture
@@ -1653,7 +1653,7 @@ enum RLGesture : const int
 
 // rlgl.h
 
-enum RLFramebufferAttachType : const int
+constdef RLFramebufferAttachType : int
 {
 	COLOR_CHANNEL0 = 0, // Framebuffer attachment type: color 0
 	COLOR_CHANNEL1 = 1, // Framebuffer attachment type: color 1
@@ -1668,7 +1668,7 @@ enum RLFramebufferAttachType : const int
 }
 
 
-enum RLFramebufferAttachTextureType : const int
+constdef RLFramebufferAttachTextureType : int
 {
 	CUBEMAP_POSITIVE_X = 0, // Framebuffer texture attachment type: cubemap, +X side
 	CUBEMAP_NEGATIVE_X = 1, // Framebuffer texture attachment type: cubemap, -X side

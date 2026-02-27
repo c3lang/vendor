@@ -3,7 +3,7 @@
 
 module sqlite3;
 
-enum SqliteResult : const int
+constdef SqliteResult : int
 {
 
 	OK         =  0,   /* Successful result */
@@ -39,7 +39,7 @@ enum SqliteResult : const int
 	DONE       = 101,  /* step() has finished executing */
 }
 
-enum SqliteColumnType : const int
+constdef SqliteColumnType : int
 {
 	INTEGER  = 1,
 	FLOAT    = 2,

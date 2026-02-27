@@ -79,20 +79,20 @@ typedef VkRenderPass = uptr;
 typedef VkPipelineCache = uptr;
 typedef VkDescriptorUpdateTemplate = uptr;
 typedef VkSamplerYcbcrConversion = uptr;
-enum VkAttachmentLoadOp  : const int
+constdef VkAttachmentLoadOp  : int
 {
     VK_ATTACHMENT_LOAD_OP_LOAD = 0,
     VK_ATTACHMENT_LOAD_OP_CLEAR = 1,
     VK_ATTACHMENT_LOAD_OP_DONT_CARE = 2,
     VK_ATTACHMENT_LOAD_OP_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkAttachmentStoreOp  : const int
+constdef VkAttachmentStoreOp  : int
 {
     VK_ATTACHMENT_STORE_OP_STORE = 0,
     VK_ATTACHMENT_STORE_OP_DONT_CARE = 1,
     VK_ATTACHMENT_STORE_OP_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkBlendFactor  : const int
+constdef VkBlendFactor  : int
 {
     VK_BLEND_FACTOR_ZERO = 0,
     VK_BLEND_FACTOR_ONE = 1,
@@ -115,7 +115,7 @@ enum VkBlendFactor  : const int
     VK_BLEND_FACTOR_ONE_MINUS_SRC1_ALPHA = 18,
     VK_BLEND_FACTOR_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkBlendOp  : const int
+constdef VkBlendOp  : int
 {
     VK_BLEND_OP_ADD = 0,
     VK_BLEND_OP_SUBTRACT = 1,
@@ -124,7 +124,7 @@ enum VkBlendOp  : const int
     VK_BLEND_OP_MAX = 4,
     VK_BLEND_OP_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkBorderColor  : const int
+constdef VkBorderColor  : int
 {
     VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK = 0,
     VK_BORDER_COLOR_INT_TRANSPARENT_BLACK = 1,
@@ -134,27 +134,27 @@ enum VkBorderColor  : const int
     VK_BORDER_COLOR_INT_OPAQUE_WHITE = 5,
     VK_BORDER_COLOR_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkFramebufferCreateFlagBits  : const int
+constdef VkFramebufferCreateFlagBits  : int
 {
     VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT = 1,
     VK_FRAMEBUFFER_CREATE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkPipelineCacheHeaderVersion  : const int
+constdef VkPipelineCacheHeaderVersion  : int
 {
     VK_PIPELINE_CACHE_HEADER_VERSION_ONE = 1,
     VK_PIPELINE_CACHE_HEADER_VERSION_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkDescriptorSetLayoutCreateFlagBits  : const int
+constdef VkDescriptorSetLayoutCreateFlagBits  : int
 {
     VK_DESCRIPTOR_SET_LAYOUT_CREATE_UPDATE_AFTER_BIND_POOL_BIT = 2,
     VK_DESCRIPTOR_SET_LAYOUT_CREATE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkDeviceQueueCreateFlagBits  : const int
+constdef VkDeviceQueueCreateFlagBits  : int
 {
     VK_DEVICE_QUEUE_CREATE_PROTECTED_BIT = 1,
     VK_DEVICE_QUEUE_CREATE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkBufferCreateFlagBits  : const int
+constdef VkBufferCreateFlagBits  : int
 {
     VK_BUFFER_CREATE_SPARSE_BINDING_BIT = 1,
     VK_BUFFER_CREATE_SPARSE_RESIDENCY_BIT = 2,
@@ -163,7 +163,7 @@ enum VkBufferCreateFlagBits  : const int
     VK_BUFFER_CREATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT = 16,
     VK_BUFFER_CREATE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkBufferUsageFlagBits  : const int
+constdef VkBufferUsageFlagBits  : int
 {
     VK_BUFFER_USAGE_TRANSFER_SRC_BIT = 1,
     VK_BUFFER_USAGE_TRANSFER_DST_BIT = 2,
@@ -177,7 +177,7 @@ enum VkBufferUsageFlagBits  : const int
     VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT = 131072,
     VK_BUFFER_USAGE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkColorComponentFlagBits  : const int
+constdef VkColorComponentFlagBits  : int
 {
     VK_COLOR_COMPONENT_R_BIT = 1,
     VK_COLOR_COMPONENT_G_BIT = 2,
@@ -185,7 +185,7 @@ enum VkColorComponentFlagBits  : const int
     VK_COLOR_COMPONENT_A_BIT = 8,
     VK_COLOR_COMPONENT_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkComponentSwizzle  : const int
+constdef VkComponentSwizzle  : int
 {
     VK_COMPONENT_SWIZZLE_IDENTITY = 0,
     VK_COMPONENT_SWIZZLE_ZERO = 1,
@@ -196,37 +196,37 @@ enum VkComponentSwizzle  : const int
     VK_COMPONENT_SWIZZLE_A = 6,
     VK_COMPONENT_SWIZZLE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkCommandPoolCreateFlagBits  : const int
+constdef VkCommandPoolCreateFlagBits  : int
 {
     VK_COMMAND_POOL_CREATE_TRANSIENT_BIT = 1,
     VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT = 2,
     VK_COMMAND_POOL_CREATE_PROTECTED_BIT = 4,
     VK_COMMAND_POOL_CREATE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkCommandPoolResetFlagBits  : const int
+constdef VkCommandPoolResetFlagBits  : int
 {
     VK_COMMAND_POOL_RESET_RELEASE_RESOURCES_BIT = 1,
     VK_COMMAND_POOL_RESET_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkCommandBufferResetFlagBits  : const int
+constdef VkCommandBufferResetFlagBits  : int
 {
     VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT = 1,
     VK_COMMAND_BUFFER_RESET_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkCommandBufferLevel  : const int
+constdef VkCommandBufferLevel  : int
 {
     VK_COMMAND_BUFFER_LEVEL_PRIMARY = 0,
     VK_COMMAND_BUFFER_LEVEL_SECONDARY = 1,
     VK_COMMAND_BUFFER_LEVEL_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkCommandBufferUsageFlagBits  : const int
+constdef VkCommandBufferUsageFlagBits  : int
 {
     VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT = 1,
     VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT = 2,
     VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT = 4,
     VK_COMMAND_BUFFER_USAGE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkCompareOp  : const int
+constdef VkCompareOp  : int
 {
     VK_COMPARE_OP_NEVER = 0,
     VK_COMPARE_OP_LESS = 1,
@@ -238,7 +238,7 @@ enum VkCompareOp  : const int
     VK_COMPARE_OP_ALWAYS = 7,
     VK_COMPARE_OP_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkCullModeFlagBits  : const int
+constdef VkCullModeFlagBits  : int
 {
     VK_CULL_MODE_NONE = 0,
     VK_CULL_MODE_FRONT_BIT = 1,
@@ -246,7 +246,7 @@ enum VkCullModeFlagBits  : const int
     VK_CULL_MODE_FRONT_AND_BACK = 0x00000003,
     VK_CULL_MODE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkDescriptorType  : const int
+constdef VkDescriptorType  : int
 {
     VK_DESCRIPTOR_TYPE_SAMPLER = 0,
     VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER = 1,
@@ -261,7 +261,7 @@ enum VkDescriptorType  : const int
     VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT = 10,
     VK_DESCRIPTOR_TYPE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkDynamicState  : const int
+constdef VkDynamicState  : int
 {
     VK_DYNAMIC_STATE_VIEWPORT = 0,
     VK_DYNAMIC_STATE_SCISSOR = 1,
@@ -274,19 +274,19 @@ enum VkDynamicState  : const int
     VK_DYNAMIC_STATE_STENCIL_REFERENCE = 8,
     VK_DYNAMIC_STATE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkFenceCreateFlagBits  : const int
+constdef VkFenceCreateFlagBits  : int
 {
     VK_FENCE_CREATE_SIGNALED_BIT = 1,
     VK_FENCE_CREATE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkPolygonMode  : const int
+constdef VkPolygonMode  : int
 {
     VK_POLYGON_MODE_FILL = 0,
     VK_POLYGON_MODE_LINE = 1,
     VK_POLYGON_MODE_POINT = 2,
     VK_POLYGON_MODE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkFormat  : const int
+constdef VkFormat  : int
 {
     VK_FORMAT_UNDEFINED = 0,
     VK_FORMAT_R4G4_UNORM_PACK8 = 1,
@@ -509,7 +509,7 @@ enum VkFormat  : const int
     VK_FORMAT_G16_B16_R16_3PLANE_444_UNORM = 1000156033,
     VK_FORMAT_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkFormatFeatureFlagBits  : const int
+constdef VkFormatFeatureFlagBits  : int
 {
     VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT = 1,
     VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT = 2,
@@ -536,13 +536,13 @@ enum VkFormatFeatureFlagBits  : const int
     VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_MINMAX_BIT = 65536,
     VK_FORMAT_FEATURE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkFrontFace  : const int
+constdef VkFrontFace  : int
 {
     VK_FRONT_FACE_COUNTER_CLOCKWISE = 0,
     VK_FRONT_FACE_CLOCKWISE = 1,
     VK_FRONT_FACE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkImageAspectFlagBits  : const int
+constdef VkImageAspectFlagBits  : int
 {
     VK_IMAGE_ASPECT_COLOR_BIT = 1,
     VK_IMAGE_ASPECT_DEPTH_BIT = 2,
@@ -553,7 +553,7 @@ enum VkImageAspectFlagBits  : const int
     VK_IMAGE_ASPECT_PLANE_2_BIT = 64,
     VK_IMAGE_ASPECT_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkImageCreateFlagBits  : const int
+constdef VkImageCreateFlagBits  : int
 {
     VK_IMAGE_CREATE_SPARSE_BINDING_BIT = 1,
     VK_IMAGE_CREATE_SPARSE_RESIDENCY_BIT = 2,
@@ -569,7 +569,7 @@ enum VkImageCreateFlagBits  : const int
     VK_IMAGE_CREATE_DISJOINT_BIT = 512,
     VK_IMAGE_CREATE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkImageLayout  : const int
+constdef VkImageLayout  : int
 {
     VK_IMAGE_LAYOUT_UNDEFINED = 0,
     VK_IMAGE_LAYOUT_GENERAL = 1,
@@ -588,20 +588,20 @@ enum VkImageLayout  : const int
     VK_IMAGE_LAYOUT_STENCIL_READ_ONLY_OPTIMAL = 1000241003,
     VK_IMAGE_LAYOUT_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkImageTiling  : const int
+constdef VkImageTiling  : int
 {
     VK_IMAGE_TILING_OPTIMAL = 0,
     VK_IMAGE_TILING_LINEAR = 1,
     VK_IMAGE_TILING_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkImageType  : const int
+constdef VkImageType  : int
 {
     VK_IMAGE_TYPE_1D = 0,
     VK_IMAGE_TYPE_2D = 1,
     VK_IMAGE_TYPE_3D = 2,
     VK_IMAGE_TYPE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkImageUsageFlagBits  : const int
+constdef VkImageUsageFlagBits  : int
 {
     VK_IMAGE_USAGE_TRANSFER_SRC_BIT = 1,
     VK_IMAGE_USAGE_TRANSFER_DST_BIT = 2,
@@ -613,7 +613,7 @@ enum VkImageUsageFlagBits  : const int
     VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT = 128,
     VK_IMAGE_USAGE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkImageViewType  : const int
+constdef VkImageViewType  : int
 {
     VK_IMAGE_VIEW_TYPE_1D = 0,
     VK_IMAGE_VIEW_TYPE_2D = 1,
@@ -624,19 +624,19 @@ enum VkImageViewType  : const int
     VK_IMAGE_VIEW_TYPE_CUBE_ARRAY = 6,
     VK_IMAGE_VIEW_TYPE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkSharingMode  : const int
+constdef VkSharingMode  : int
 {
     VK_SHARING_MODE_EXCLUSIVE = 0,
     VK_SHARING_MODE_CONCURRENT = 1,
     VK_SHARING_MODE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkIndexType  : const int
+constdef VkIndexType  : int
 {
     VK_INDEX_TYPE_UINT16 = 0,
     VK_INDEX_TYPE_UINT32 = 1,
     VK_INDEX_TYPE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkLogicOp  : const int
+constdef VkLogicOp  : int
 {
     VK_LOGIC_OP_CLEAR = 0,
     VK_LOGIC_OP_AND = 1,
@@ -656,13 +656,13 @@ enum VkLogicOp  : const int
     VK_LOGIC_OP_SET = 15,
     VK_LOGIC_OP_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkMemoryHeapFlagBits  : const int
+constdef VkMemoryHeapFlagBits  : int
 {
     VK_MEMORY_HEAP_DEVICE_LOCAL_BIT = 1,
     VK_MEMORY_HEAP_MULTI_INSTANCE_BIT = 2,
     VK_MEMORY_HEAP_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkAccessFlagBits  : const int
+constdef VkAccessFlagBits  : int
 {
     VK_ACCESS_INDIRECT_COMMAND_READ_BIT = 1,
     VK_ACCESS_INDEX_READ_BIT = 2,
@@ -683,7 +683,7 @@ enum VkAccessFlagBits  : const int
     VK_ACCESS_MEMORY_WRITE_BIT = 65536,
     VK_ACCESS_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkMemoryPropertyFlagBits  : const int
+constdef VkMemoryPropertyFlagBits  : int
 {
     VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT = 1,
     VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT = 2,
@@ -693,7 +693,7 @@ enum VkMemoryPropertyFlagBits  : const int
     VK_MEMORY_PROPERTY_PROTECTED_BIT = 32,
     VK_MEMORY_PROPERTY_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkPhysicalDeviceType  : const int
+constdef VkPhysicalDeviceType  : int
 {
     VK_PHYSICAL_DEVICE_TYPE_OTHER = 0,
     VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU = 1,
@@ -702,13 +702,13 @@ enum VkPhysicalDeviceType  : const int
     VK_PHYSICAL_DEVICE_TYPE_CPU = 4,
     VK_PHYSICAL_DEVICE_TYPE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkPipelineBindPoint  : const int
+constdef VkPipelineBindPoint  : int
 {
     VK_PIPELINE_BIND_POINT_GRAPHICS = 0,
     VK_PIPELINE_BIND_POINT_COMPUTE = 1,
     VK_PIPELINE_BIND_POINT_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkPipelineCreateFlagBits  : const int
+constdef VkPipelineCreateFlagBits  : int
 {
     VK_PIPELINE_CREATE_DISABLE_OPTIMIZATION_BIT = 1,
     VK_PIPELINE_CREATE_ALLOW_DERIVATIVES_BIT = 2,
@@ -718,7 +718,7 @@ enum VkPipelineCreateFlagBits  : const int
     VK_PIPELINE_CREATE_DISPATCH_BASE = VK_PIPELINE_CREATE_DISPATCH_BASE_BIT,
     VK_PIPELINE_CREATE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkPrimitiveTopology  : const int
+constdef VkPrimitiveTopology  : int
 {
     VK_PRIMITIVE_TOPOLOGY_POINT_LIST = 0,
     VK_PRIMITIVE_TOPOLOGY_LINE_LIST = 1,
@@ -733,12 +733,12 @@ enum VkPrimitiveTopology  : const int
     VK_PRIMITIVE_TOPOLOGY_PATCH_LIST = 10,
     VK_PRIMITIVE_TOPOLOGY_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkQueryControlFlagBits  : const int
+constdef VkQueryControlFlagBits  : int
 {
     VK_QUERY_CONTROL_PRECISE_BIT = 1,
     VK_QUERY_CONTROL_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkQueryPipelineStatisticFlagBits  : const int
+constdef VkQueryPipelineStatisticFlagBits  : int
 {
     VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_VERTICES_BIT = 1,
     VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_PRIMITIVES_BIT = 2,
@@ -753,7 +753,7 @@ enum VkQueryPipelineStatisticFlagBits  : const int
     VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT = 1024,
     VK_QUERY_PIPELINE_STATISTIC_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkQueryResultFlagBits  : const int
+constdef VkQueryResultFlagBits  : int
 {
     VK_QUERY_RESULT_64_BIT = 1,
     VK_QUERY_RESULT_WAIT_BIT = 2,
@@ -761,14 +761,14 @@ enum VkQueryResultFlagBits  : const int
     VK_QUERY_RESULT_PARTIAL_BIT = 8,
     VK_QUERY_RESULT_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkQueryType  : const int
+constdef VkQueryType  : int
 {
     VK_QUERY_TYPE_OCCLUSION = 0,
     VK_QUERY_TYPE_PIPELINE_STATISTICS = 1,
     VK_QUERY_TYPE_TIMESTAMP = 2,
     VK_QUERY_TYPE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkQueueFlagBits  : const int
+constdef VkQueueFlagBits  : int
 {
     VK_QUEUE_GRAPHICS_BIT = 1,
     VK_QUEUE_COMPUTE_BIT = 2,
@@ -777,13 +777,13 @@ enum VkQueueFlagBits  : const int
     VK_QUEUE_PROTECTED_BIT = 16,
     VK_QUEUE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkSubpassContents  : const int
+constdef VkSubpassContents  : int
 {
     VK_SUBPASS_CONTENTS_INLINE = 0,
     VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS = 1,
     VK_SUBPASS_CONTENTS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkResult  : const int
+constdef VkResult  : int
 {
     VK_SUCCESS = 0,
     VK_NOT_READY = 1,
@@ -810,7 +810,7 @@ enum VkResult  : const int
     VK_ERROR_INVALID_OPAQUE_CAPTURE_ADDRESS = -1000257000,
     VK_RESULT_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkShaderStageFlagBits  : const int
+constdef VkShaderStageFlagBits  : int
 {
     VK_SHADER_STAGE_VERTEX_BIT = 1,
     VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT = 2,
@@ -822,12 +822,12 @@ enum VkShaderStageFlagBits  : const int
     VK_SHADER_STAGE_ALL = 0x7FFFFFFF,
     VK_SHADER_STAGE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkSparseMemoryBindFlagBits  : const int
+constdef VkSparseMemoryBindFlagBits  : int
 {
     VK_SPARSE_MEMORY_BIND_METADATA_BIT = 1,
     VK_SPARSE_MEMORY_BIND_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkStencilFaceFlagBits  : const int
+constdef VkStencilFaceFlagBits  : int
 {
     VK_STENCIL_FACE_FRONT_BIT = 1,
     VK_STENCIL_FACE_BACK_BIT = 2,
@@ -835,7 +835,7 @@ enum VkStencilFaceFlagBits  : const int
     VK_STENCIL_FRONT_AND_BACK = VK_STENCIL_FACE_FRONT_AND_BACK,
     VK_STENCIL_FACE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkStencilOp  : const int
+constdef VkStencilOp  : int
 {
     VK_STENCIL_OP_KEEP = 0,
     VK_STENCIL_OP_ZERO = 1,
@@ -847,7 +847,7 @@ enum VkStencilOp  : const int
     VK_STENCIL_OP_DECREMENT_AND_WRAP = 7,
     VK_STENCIL_OP_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkStructureType  : const int
+constdef VkStructureType  : int
 {
     VK_STRUCTURE_TYPE_APPLICATION_INFO = 0,
     VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO = 1,
@@ -1017,7 +1017,7 @@ enum VkStructureType  : const int
     VK_STRUCTURE_TYPE_DEVICE_MEMORY_OPAQUE_CAPTURE_ADDRESS_INFO = 1000257004,
     VK_STRUCTURE_TYPE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkSystemAllocationScope  : const int
+constdef VkSystemAllocationScope  : int
 {
     VK_SYSTEM_ALLOCATION_SCOPE_COMMAND = 0,
     VK_SYSTEM_ALLOCATION_SCOPE_OBJECT = 1,
@@ -1026,12 +1026,12 @@ enum VkSystemAllocationScope  : const int
     VK_SYSTEM_ALLOCATION_SCOPE_INSTANCE = 4,
     VK_SYSTEM_ALLOCATION_SCOPE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkInternalAllocationType  : const int
+constdef VkInternalAllocationType  : int
 {
     VK_INTERNAL_ALLOCATION_TYPE_EXECUTABLE = 0,
     VK_INTERNAL_ALLOCATION_TYPE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkSamplerAddressMode  : const int
+constdef VkSamplerAddressMode  : int
 {
     VK_SAMPLER_ADDRESS_MODE_REPEAT = 0,
     VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT = 1,
@@ -1040,25 +1040,25 @@ enum VkSamplerAddressMode  : const int
     VK_SAMPLER_ADDRESS_MODE_MIRROR_CLAMP_TO_EDGE = 4,
     VK_SAMPLER_ADDRESS_MODE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkFilter  : const int
+constdef VkFilter  : int
 {
     VK_FILTER_NEAREST = 0,
     VK_FILTER_LINEAR = 1,
     VK_FILTER_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkSamplerMipmapMode  : const int
+constdef VkSamplerMipmapMode  : int
 {
     VK_SAMPLER_MIPMAP_MODE_NEAREST = 0,
     VK_SAMPLER_MIPMAP_MODE_LINEAR = 1,
     VK_SAMPLER_MIPMAP_MODE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkVertexInputRate  : const int
+constdef VkVertexInputRate  : int
 {
     VK_VERTEX_INPUT_RATE_VERTEX = 0,
     VK_VERTEX_INPUT_RATE_INSTANCE = 1,
     VK_VERTEX_INPUT_RATE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkPipelineStageFlagBits  : const int
+constdef VkPipelineStageFlagBits  : int
 {
     VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT = 1,
     VK_PIPELINE_STAGE_DRAW_INDIRECT_BIT = 2,
@@ -1079,14 +1079,14 @@ enum VkPipelineStageFlagBits  : const int
     VK_PIPELINE_STAGE_ALL_COMMANDS_BIT = 65536,
     VK_PIPELINE_STAGE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkSparseImageFormatFlagBits  : const int
+constdef VkSparseImageFormatFlagBits  : int
 {
     VK_SPARSE_IMAGE_FORMAT_SINGLE_MIPTAIL_BIT = 1,
     VK_SPARSE_IMAGE_FORMAT_ALIGNED_MIP_SIZE_BIT = 2,
     VK_SPARSE_IMAGE_FORMAT_NONSTANDARD_BLOCK_SIZE_BIT = 4,
     VK_SPARSE_IMAGE_FORMAT_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkSampleCountFlagBits  : const int
+constdef VkSampleCountFlagBits  : int
 {
     VK_SAMPLE_COUNT_1_BIT = 1,
     VK_SAMPLE_COUNT_2_BIT = 2,
@@ -1097,25 +1097,25 @@ enum VkSampleCountFlagBits  : const int
     VK_SAMPLE_COUNT_64_BIT = 64,
     VK_SAMPLE_COUNT_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkAttachmentDescriptionFlagBits  : const int
+constdef VkAttachmentDescriptionFlagBits  : int
 {
     VK_ATTACHMENT_DESCRIPTION_MAY_ALIAS_BIT = 1,
     VK_ATTACHMENT_DESCRIPTION_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkDescriptorPoolCreateFlagBits  : const int
+constdef VkDescriptorPoolCreateFlagBits  : int
 {
     VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT = 1,
     VK_DESCRIPTOR_POOL_CREATE_UPDATE_AFTER_BIND_BIT = 2,
     VK_DESCRIPTOR_POOL_CREATE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkDependencyFlagBits  : const int
+constdef VkDependencyFlagBits  : int
 {
     VK_DEPENDENCY_BY_REGION_BIT = 1,
     VK_DEPENDENCY_DEVICE_GROUP_BIT = 4,
     VK_DEPENDENCY_VIEW_LOCAL_BIT = 2,
     VK_DEPENDENCY_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkObjectType  : const int
+constdef VkObjectType  : int
 {
     VK_OBJECT_TYPE_UNKNOWN = 0,
     VK_OBJECT_TYPE_INSTANCE = 1,
@@ -1147,18 +1147,18 @@ enum VkObjectType  : const int
     VK_OBJECT_TYPE_DESCRIPTOR_UPDATE_TEMPLATE = 1000085000,
     VK_OBJECT_TYPE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkDescriptorUpdateTemplateType  : const int
+constdef VkDescriptorUpdateTemplateType  : int
 {
     VK_DESCRIPTOR_UPDATE_TEMPLATE_TYPE_DESCRIPTOR_SET = 0,
     VK_DESCRIPTOR_UPDATE_TEMPLATE_TYPE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkPointClippingBehavior  : const int
+constdef VkPointClippingBehavior  : int
 {
     VK_POINT_CLIPPING_BEHAVIOR_ALL_CLIP_PLANES = 0,
     VK_POINT_CLIPPING_BEHAVIOR_USER_CLIP_PLANES_ONLY = 1,
     VK_POINT_CLIPPING_BEHAVIOR_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkResolveModeFlagBits  : const int
+constdef VkResolveModeFlagBits  : int
 {
     VK_RESOLVE_MODE_NONE = 0,
     VK_RESOLVE_MODE_SAMPLE_ZERO_BIT = 1,
@@ -1167,7 +1167,7 @@ enum VkResolveModeFlagBits  : const int
     VK_RESOLVE_MODE_MAX_BIT = 8,
     VK_RESOLVE_MODE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkDescriptorBindingFlagBits  : const int
+constdef VkDescriptorBindingFlagBits  : int
 {
     VK_DESCRIPTOR_BINDING_UPDATE_AFTER_BIND_BIT = 1,
     VK_DESCRIPTOR_BINDING_UPDATE_UNUSED_WHILE_PENDING_BIT = 2,
@@ -1175,18 +1175,18 @@ enum VkDescriptorBindingFlagBits  : const int
     VK_DESCRIPTOR_BINDING_VARIABLE_DESCRIPTOR_COUNT_BIT = 8,
     VK_DESCRIPTOR_BINDING_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkSemaphoreType  : const int
+constdef VkSemaphoreType  : int
 {
     VK_SEMAPHORE_TYPE_BINARY = 0,
     VK_SEMAPHORE_TYPE_TIMELINE = 1,
     VK_SEMAPHORE_TYPE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkSemaphoreWaitFlagBits  : const int
+constdef VkSemaphoreWaitFlagBits  : int
 {
     VK_SEMAPHORE_WAIT_ANY_BIT = 1,
     VK_SEMAPHORE_WAIT_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkExternalMemoryHandleTypeFlagBits  : const int
+constdef VkExternalMemoryHandleTypeFlagBits  : int
 {
     VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_FD_BIT = 1,
     VK_EXTERNAL_MEMORY_HANDLE_TYPE_OPAQUE_WIN32_BIT = 2,
@@ -1197,14 +1197,14 @@ enum VkExternalMemoryHandleTypeFlagBits  : const int
     VK_EXTERNAL_MEMORY_HANDLE_TYPE_D3D12_RESOURCE_BIT = 64,
     VK_EXTERNAL_MEMORY_HANDLE_TYPE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkExternalMemoryFeatureFlagBits  : const int
+constdef VkExternalMemoryFeatureFlagBits  : int
 {
     VK_EXTERNAL_MEMORY_FEATURE_DEDICATED_ONLY_BIT = 1,
     VK_EXTERNAL_MEMORY_FEATURE_EXPORTABLE_BIT = 2,
     VK_EXTERNAL_MEMORY_FEATURE_IMPORTABLE_BIT = 4,
     VK_EXTERNAL_MEMORY_FEATURE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkExternalSemaphoreHandleTypeFlagBits  : const int
+constdef VkExternalSemaphoreHandleTypeFlagBits  : int
 {
     VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_FD_BIT = 1,
     VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_OPAQUE_WIN32_BIT = 2,
@@ -1214,18 +1214,18 @@ enum VkExternalSemaphoreHandleTypeFlagBits  : const int
     VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_SYNC_FD_BIT = 16,
     VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkExternalSemaphoreFeatureFlagBits  : const int
+constdef VkExternalSemaphoreFeatureFlagBits  : int
 {
     VK_EXTERNAL_SEMAPHORE_FEATURE_EXPORTABLE_BIT = 1,
     VK_EXTERNAL_SEMAPHORE_FEATURE_IMPORTABLE_BIT = 2,
     VK_EXTERNAL_SEMAPHORE_FEATURE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkSemaphoreImportFlagBits  : const int
+constdef VkSemaphoreImportFlagBits  : int
 {
     VK_SEMAPHORE_IMPORT_TEMPORARY_BIT = 1,
     VK_SEMAPHORE_IMPORT_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkExternalFenceHandleTypeFlagBits  : const int
+constdef VkExternalFenceHandleTypeFlagBits  : int
 {
     VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_FD_BIT = 1,
     VK_EXTERNAL_FENCE_HANDLE_TYPE_OPAQUE_WIN32_BIT = 2,
@@ -1233,18 +1233,18 @@ enum VkExternalFenceHandleTypeFlagBits  : const int
     VK_EXTERNAL_FENCE_HANDLE_TYPE_SYNC_FD_BIT = 8,
     VK_EXTERNAL_FENCE_HANDLE_TYPE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkExternalFenceFeatureFlagBits  : const int
+constdef VkExternalFenceFeatureFlagBits  : int
 {
     VK_EXTERNAL_FENCE_FEATURE_EXPORTABLE_BIT = 1,
     VK_EXTERNAL_FENCE_FEATURE_IMPORTABLE_BIT = 2,
     VK_EXTERNAL_FENCE_FEATURE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkFenceImportFlagBits  : const int
+constdef VkFenceImportFlagBits  : int
 {
     VK_FENCE_IMPORT_TEMPORARY_BIT = 1,
     VK_FENCE_IMPORT_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkPeerMemoryFeatureFlagBits  : const int
+constdef VkPeerMemoryFeatureFlagBits  : int
 {
     VK_PEER_MEMORY_FEATURE_COPY_SRC_BIT = 1,
     VK_PEER_MEMORY_FEATURE_COPY_DST_BIT = 2,
@@ -1252,14 +1252,14 @@ enum VkPeerMemoryFeatureFlagBits  : const int
     VK_PEER_MEMORY_FEATURE_GENERIC_DST_BIT = 8,
     VK_PEER_MEMORY_FEATURE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkMemoryAllocateFlagBits  : const int
+constdef VkMemoryAllocateFlagBits  : int
 {
     VK_MEMORY_ALLOCATE_DEVICE_MASK_BIT = 1,
     VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_BIT = 2,
     VK_MEMORY_ALLOCATE_DEVICE_ADDRESS_CAPTURE_REPLAY_BIT = 4,
     VK_MEMORY_ALLOCATE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkSubgroupFeatureFlagBits  : const int
+constdef VkSubgroupFeatureFlagBits  : int
 {
     VK_SUBGROUP_FEATURE_BASIC_BIT = 1,
     VK_SUBGROUP_FEATURE_VOTE_BIT = 2,
@@ -1271,13 +1271,13 @@ enum VkSubgroupFeatureFlagBits  : const int
     VK_SUBGROUP_FEATURE_QUAD_BIT = 128,
     VK_SUBGROUP_FEATURE_FLAG_BITS_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkTessellationDomainOrigin  : const int
+constdef VkTessellationDomainOrigin  : int
 {
     VK_TESSELLATION_DOMAIN_ORIGIN_UPPER_LEFT = 0,
     VK_TESSELLATION_DOMAIN_ORIGIN_LOWER_LEFT = 1,
     VK_TESSELLATION_DOMAIN_ORIGIN_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkSamplerYcbcrModelConversion  : const int
+constdef VkSamplerYcbcrModelConversion  : int
 {
     VK_SAMPLER_YCBCR_MODEL_CONVERSION_RGB_IDENTITY = 0,
     VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_IDENTITY = 1,
@@ -1286,33 +1286,33 @@ enum VkSamplerYcbcrModelConversion  : const int
     VK_SAMPLER_YCBCR_MODEL_CONVERSION_YCBCR_2020 = 4,
     VK_SAMPLER_YCBCR_MODEL_CONVERSION_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkSamplerYcbcrRange  : const int
+constdef VkSamplerYcbcrRange  : int
 {
     VK_SAMPLER_YCBCR_RANGE_ITU_FULL = 0,
     VK_SAMPLER_YCBCR_RANGE_ITU_NARROW = 1,
     VK_SAMPLER_YCBCR_RANGE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkChromaLocation  : const int
+constdef VkChromaLocation  : int
 {
     VK_CHROMA_LOCATION_COSITED_EVEN = 0,
     VK_CHROMA_LOCATION_MIDPOINT = 1,
     VK_CHROMA_LOCATION_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkSamplerReductionMode  : const int
+constdef VkSamplerReductionMode  : int
 {
     VK_SAMPLER_REDUCTION_MODE_WEIGHTED_AVERAGE = 0,
     VK_SAMPLER_REDUCTION_MODE_MIN = 1,
     VK_SAMPLER_REDUCTION_MODE_MAX = 2,
     VK_SAMPLER_REDUCTION_MODE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkShaderFloatControlsIndependence  : const int
+constdef VkShaderFloatControlsIndependence  : int
 {
     VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_32_BIT_ONLY = 0,
     VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_ALL = 1,
     VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_NONE = 2,
     VK_SHADER_FLOAT_CONTROLS_INDEPENDENCE_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkVendorId  : const int
+constdef VkVendorId  : int
 {
     VK_VENDOR_ID_KHRONOS = 0x10000,
     VK_VENDOR_ID_VIV = 0x10001,
@@ -1324,7 +1324,7 @@ enum VkVendorId  : const int
     VK_VENDOR_ID_MOBILEYE = 0x10007,
     VK_VENDOR_ID_MAX_ENUM = 0x7FFFFFFF
 }
-enum VkDriverId  : const int
+constdef VkDriverId  : int
 {
     VK_DRIVER_ID_AMD_PROPRIETARY = 1,
     VK_DRIVER_ID_AMD_OPEN_SOURCE = 2,

@@ -1,6 +1,6 @@
 module khr::df;
 
-enum KhrDfWord : const CInt
+constdef KhrDfWord : CInt
 {
 	VENDORID = 0U,
 	DESCRIPTORTYPE = 0U,
@@ -25,7 +25,7 @@ enum KhrDfWord : const CInt
 	SAMPLESTART = 6U,
 	SAMPLEWORDS = 4U,
 }
-enum KhrDfShift : const CInt
+constdef KhrDfShift : CInt
 {
 	VENDORID = 0U,
 	DESCRIPTORTYPE = 17U,
@@ -48,7 +48,7 @@ enum KhrDfShift : const CInt
 	BYTESPLANE6 = 16U,
 	BYTESPLANE7 = 24U,
 }
-enum KhrDfMask : const CInt
+constdef KhrDfMask : CInt
 {
 	VENDORID = 0x1FFFFU,
 	DESCRIPTORTYPE = 0x7FFFU,
@@ -71,7 +71,7 @@ enum KhrDfMask : const CInt
 	BYTESPLANE6 = 0xFFU,
 	BYTESPLANE7 = 0xFFU,
 }
-enum KhrDfSampleWord : const CInt
+constdef KhrDfSampleWord : CInt
 {
 	BITOFFSET = 0U,
 	BITLENGTH = 0U,
@@ -86,7 +86,7 @@ enum KhrDfSampleWord : const CInt
 	SAMPLEUPPER = 3U,
 }
 
-enum KhrDfSampleShift : const CInt
+constdef KhrDfSampleShift : CInt
 {
 	BITOFFSET = 0U,
 	BITLENGTH = 16U,
@@ -101,7 +101,7 @@ enum KhrDfSampleShift : const CInt
 	SAMPLEUPPER = 0U,
 }
 
-enum KhrDfSampleMask : const CInt
+constdef KhrDfSampleMask : CInt
 {
 	BITOFFSET = 0xFFFFU,
 	BITLENGTH = 0xFF,
@@ -115,12 +115,12 @@ enum KhrDfSampleMask : const CInt
 	SAMPLELOWER = (int) 0xFFFFFFFFU,
 	SAMPLEUPPER = (int) 0xFFFFFFFFU,
 }
-enum KhrDfVendorId : const CInt
+constdef KhrDfVendorId : CInt
 {
 	KHRONOS = 0U,
 	MAX = 0x1FFFFU,
 }
-enum KhrDfKhrDescriptorType : const CInt
+constdef KhrDfKhrDescriptorType : CInt
 {
 	KHR_DESCRIPTORTYPE_BASICFORMAT = 0U,
 	KHR_DESCRIPTORTYPE_ADDITIONAL_PLANES = 0x6001U,
@@ -130,7 +130,7 @@ enum KhrDfKhrDescriptorType : const CInt
 	KHR_DESCRIPTORTYPE_MAX = 0x7FFFU,
 }
 
-enum KhrDfVersionNumber : const CInt
+constdef KhrDfVersionNumber : CInt
 {
 	VERSIONNUMBER_1_0 = 0U,
 	VERSIONNUMBER_1_1 = 0U,
@@ -139,7 +139,7 @@ enum KhrDfVersionNumber : const CInt
 	VERSIONNUMBER_LATEST = VERSIONNUMBER_1_3,
 	VERSIONNUMBER_MAX = 0xFFFFU
 }
-enum KhrDfModel : const CInt
+constdef KhrDfModel : CInt
 {
 	MODEL_UNSPECIFIED = 0U,
 	MODEL_RGBSDA = 1U,
@@ -178,7 +178,7 @@ enum KhrDfModel : const CInt
 	MODEL_UASTC = 166U,
 	MODEL_MAX = 0xFFU,
 }
-enum KhrDfModelChannels : const CInt
+constdef KhrDfModelChannels : CInt
 {
 	CHANNEL_UNSPECIFIED_0 = 0U,
 	CHANNEL_UNSPECIFIED_1 = 1U,
@@ -355,7 +355,7 @@ enum KhrDfModelChannels : const CInt
 	CHANNEL_COMMON_ALPHA = 15U,
 	CHANNEL_COMMON_A = 15U
 }
-enum KhrDfPrimaries : const CInt
+constdef KhrDfPrimaries : CInt
 {
 	PRIMARIES_UNSPECIFIED = 0U,
 	PRIMARIES_BT709 = 1U,
@@ -372,7 +372,7 @@ enum KhrDfPrimaries : const CInt
 	PRIMARIES_ADOBERGB = 11U,
 	PRIMARIES_MAX = 0xFFU
 }
-enum KhrDfTransfer : const CInt
+constdef KhrDfTransfer : CInt
 {
 	TRANSFER_UNSPECIFIED = 0U,
 	TRANSFER_LINEAR = 1U,
@@ -397,13 +397,13 @@ enum KhrDfTransfer : const CInt
 	TRANSFER_MAX = 0xFFU
 }
 
-enum KhrDfFlags : const CInt
+constdef KhrDfFlags : CInt
 {
 	FLAG_ALPHA_STRAIGHT = 0U,
 	FLAG_ALPHA_PREMULTIPLIED = 1U
 }
 
-enum KhrDfSampleDatatype : const CInt
+constdef KhrDfSampleDatatype : CInt
 {
 	SAMPLE_DATATYPE_LINEAR = 1U << 4U,
 	SAMPLE_DATATYPE_EXPONENT = 1U << 5U,

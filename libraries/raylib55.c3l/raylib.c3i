@@ -371,7 +371,7 @@ struct AutomationEventList
 
 // Trace log level
 // NOTE: Organized by priority level
-enum TraceLogLevel : const CInt
+constdef TraceLogLevel : CInt
 {
 	ALL = 0,        // Display all logs
 	TRACE,          // Trace logging, intended for internal use only
@@ -445,7 +445,7 @@ enum GamepadAxis : CInt
 }
 
 // Material map index
-enum MaterialMapIndex : const CInt
+constdef MaterialMapIndex : CInt
 {
 	ALBEDO = 0,        // Albedo material (same as: MATERIAL_MAP_DIFFUSE)
 	METALNESS,         // Metalness material (same as: MATERIAL_MAP_SPECULAR)
@@ -464,7 +464,7 @@ enum MaterialMapIndex : const CInt
 }
 
 // Shader location index
-enum ShaderLocationIndex : const CInt
+constdef ShaderLocationIndex : CInt
 {
 	VERTEX_POSITION = 0, // Shader location: vertex attribute: position
 	VERTEX_TEXCOORD01,   // Shader location: vertex attribute: texcoord01
@@ -525,7 +525,7 @@ enum ShaderAttributeDataType : CInt
 
 // Pixel formats
 // NOTE: Support depends on OpenGL version and platform
-enum PixelFormat : const CInt
+constdef PixelFormat : CInt
 {
 	UNCOMPRESSED_GRAYSCALE = 1, // 8 bit per pixel (no alpha)
 	UNCOMPRESSED_GRAY_ALPHA,    // 8*2 bpp (2 channels)
@@ -1491,7 +1491,7 @@ macro void @rlMode(CInt mode ;@body)
 // NOTE: Every bit registers one state (use it with bit masks)
 // By default all flags are set to 0
 
-enum ConfigFlag : const uint
+constdef ConfigFlag : uint
 {
 	VSYNC_HINT         = 0x00000040,   // Set to try enabling V-Sync on GPU
 	FULLSCREEN_MODE    = 0x00000002,   // Set to run program in fullscreen
@@ -1632,7 +1632,7 @@ const KeyboardKey KEY_VOLUME_DOWN     = 25;       // Key: Android volume down bu
 
 // Gesture
 // NOTE: It could be used as flags to enable only some gestures
-enum Gesture : const int
+constdef Gesture : int
 {
 	NONE        = 0,      // No gesture
 	TAP         = 1,        // Tap gesture
