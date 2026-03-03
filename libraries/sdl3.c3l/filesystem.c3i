@@ -46,13 +46,12 @@ enum PathType {
 }
 
 // Functions
-extern fn bool copyFile(char* oldpath, char* newpath) @extern("SDL_CopyFile");
-extern fn bool createDirectory(char* path) @extern("SDL_CreateDirectory");
-extern fn bool enumerateDirectory(char* path, EnumerateDirectoryCallback callback, void* userdata) @extern("SDL_EnumerateDirectory");
-extern fn char* getBasePath() @extern("SDL_GetBasePath");
-extern fn char* getCurrentDirectory() @extern("SDL_GetCurrentDirectory");
-extern fn bool getPathInfo(char* path, PathInfo* info) @extern("SDL_GetPathInfo");
-extern fn char* getPrefPath(char* org, char* app) @extern("SDL_GetPrefPath");
-extern fn char* getUserFolder(Folder folder) @extern("SDL_GetUserFolder");
-extern fn char** globDirectory(char* path, char* pattern, GlobFlags flags, int* count) @extern("SDL_GlobDirectory");
-
+extern fn bool copyFile(char* oldpath, char* newpath) @cname("SDL_CopyFile");
+extern fn bool createDirectory(char* path) @cname("SDL_CreateDirectory");
+extern fn bool enumerateDirectory(char* path, EnumerateDirectoryCallback callback, void* userdata) @cname("SDL_EnumerateDirectory");
+extern fn char* getBasePath() @cname("SDL_GetBasePath");
+extern fn char* getCurrentDirectory() @cname("SDL_GetCurrentDirectory");
+extern fn bool getPathInfo(char* path, PathInfo* info) @cname("SDL_GetPathInfo");
+extern fn char* getPrefPath(char* org, char* app) @cname("SDL_GetPrefPath");
+extern fn char* getUserFolder(Folder folder) @cname("SDL_GetUserFolder");
+extern fn char** globDirectory(char* path, char* pattern, GlobFlags flags, int* count) @cname("SDL_GlobDirectory");

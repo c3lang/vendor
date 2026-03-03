@@ -13,13 +13,12 @@ enum ProcessIO {
 }
 
 // Functions
-extern fn Process* createProcess(char** args, bool pipe_stdio) @extern("SDL_CreateProcess");
-extern fn Process* createProcessWithProperties(PropertiesID props) @extern("SDL_CreateProcessWithProperties");
-extern fn void destroyProcess(Process* process) @extern("SDL_DestroyProcess");
-extern fn IOStream* getProcessInput(Process* process) @extern("SDL_GetProcessInput");
-extern fn IOStream* getProcessOutput(Process* process) @extern("SDL_GetProcessOutput");
-extern fn PropertiesID getProcessProperties(Process* process) @extern("SDL_GetProcessProperties");
-extern fn bool killProcess(Process* process, bool force) @extern("SDL_KillProcess");
-extern fn void* readProcess(Process* process, usz* datasize, int* exitcode) @extern("SDL_ReadProcess");
-extern fn bool waitProcess(Process* process, bool block, int* exitcode) @extern("SDL_WaitProcess");
-
+extern fn Process* createProcess(char** args, bool pipe_stdio) @cname("SDL_CreateProcess");
+extern fn Process* createProcessWithProperties(PropertiesID props) @cname("SDL_CreateProcessWithProperties");
+extern fn void destroyProcess(Process* process) @cname("SDL_DestroyProcess");
+extern fn IOStream* getProcessInput(Process* process) @cname("SDL_GetProcessInput");
+extern fn IOStream* getProcessOutput(Process* process) @cname("SDL_GetProcessOutput");
+extern fn PropertiesID getProcessProperties(Process* process) @cname("SDL_GetProcessProperties");
+extern fn bool killProcess(Process* process, bool force) @cname("SDL_KillProcess");
+extern fn void* readProcess(Process* process, usz* datasize, int* exitcode) @cname("SDL_ReadProcess");
+extern fn bool waitProcess(Process* process, bool block, int* exitcode) @cname("SDL_WaitProcess");

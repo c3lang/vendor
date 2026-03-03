@@ -33,5 +33,5 @@ enum BlendOperation {
 }
 
 // Functions
-extern fn BlendMode composeCustomBlendMode(BlendFactor srcColorFactor, BlendFactor dstColorFactor, BlendOperation colorOperation, BlendFactor srcAlphaFactor, BlendFactor dstAlphaFactor, BlendOperation alphaOperation) @extern("SDL_ComposeCustomBlendMode");
+extern fn BlendMode composeCustomBlendMode(BlendFactor srcColorFactor, BlendFactor dstColorFactor, BlendOperation colorOperation, BlendFactor srcAlphaFactor, BlendFactor dstAlphaFactor, BlendOperation alphaOperation) @cname("SDL_ComposeCustomBlendMode");
 

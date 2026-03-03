@@ -2,5 +2,4 @@
 module sdl3;
 
 // Functions
-extern fn char* getPlatform() @extern("SDL_GetPlatform");
-
+extern fn char* getPlatform() @cname("SDL_GetPlatform");

@@ -2,7 +2,7 @@
 module sdl3;
 
 // Enums
-enum Scancode : const CInt {
+constdef Scancode : CInt {
   UNKNOWN = 0,
 
   A = 4,
@@ -303,4 +303,3 @@ enum Scancode : const CInt {
 
   COUNT = 512 /**< not a key, just marks the number of scancodes for array bounds */
 }
-

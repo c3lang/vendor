@@ -16,7 +16,7 @@ struct CameraSpec {
 }
 
 // Enums
-enum CameraPermissionState : const CInt {
+constdef CameraPermissionState : CInt {
     DENIED   = -1,
     PENDING  =  0,
     APPROVED =  1,
@@ -28,19 +28,18 @@ enum CameraPosition {
 }
 
 // Functions
-extern fn Surface* acquireCameraFrame(Camera* camera, ulong* timestampNS) @extern("SDL_AcquireCameraFrame");
-extern fn void closeCamera(Camera* camera) @extern("SDL_CloseCamera");
-extern fn char* getCameraDriver(int index) @extern("SDL_GetCameraDriver");
-extern fn bool getCameraFormat(Camera* camera, CameraSpec* spec) @extern("SDL_GetCameraFormat");
-extern fn CameraID getCameraID(Camera* camera) @extern("SDL_GetCameraID");
-extern fn char* getCameraName(CameraID instance_id) @extern("SDL_GetCameraName");
-extern fn CameraPermissionState getCameraPermissionState(Camera* camera) @extern("SDL_GetCameraPermissionState");
-extern fn CameraPosition getCameraPosition(CameraID instance_id) @extern("SDL_GetCameraPosition");
-extern fn PropertiesID getCameraProperties(Camera* camera) @extern("SDL_GetCameraProperties");
-extern fn CameraID* getCameras(int* count) @extern("SDL_GetCameras");
-extern fn CameraSpec** getCameraSupportedFormats(CameraID instance_id, int* count) @extern("SDL_GetCameraSupportedFormats");
-extern fn char* getCurrentCameraDriver() @extern("SDL_GetCurrentCameraDriver");
-extern fn int getNumCameraDrivers() @extern("SDL_GetNumCameraDrivers");
-extern fn Camera* openCamera(CameraID instance_id, CameraSpec* spec) @extern("SDL_OpenCamera");
-extern fn void releaseCameraFrame(Camera* camera, Surface* frame) @extern("SDL_ReleaseCameraFrame");
-
+extern fn Surface* acquireCameraFrame(Camera* camera, ulong* timestampNS) @cname("SDL_AcquireCameraFrame");
+extern fn void closeCamera(Camera* camera) @cname("SDL_CloseCamera");
+extern fn char* getCameraDriver(int index) @cname("SDL_GetCameraDriver");
+extern fn bool getCameraFormat(Camera* camera, CameraSpec* spec) @cname("SDL_GetCameraFormat");
+extern fn CameraID getCameraID(Camera* camera) @cname("SDL_GetCameraID");
+extern fn char* getCameraName(CameraID instance_id) @cname("SDL_GetCameraName");
+extern fn CameraPermissionState getCameraPermissionState(Camera* camera) @cname("SDL_GetCameraPermissionState");
+extern fn CameraPosition getCameraPosition(CameraID instance_id) @cname("SDL_GetCameraPosition");
+extern fn PropertiesID getCameraProperties(Camera* camera) @cname("SDL_GetCameraProperties");
+extern fn CameraID* getCameras(int* count) @cname("SDL_GetCameras");
+extern fn CameraSpec** getCameraSupportedFormats(CameraID instance_id, int* count) @cname("SDL_GetCameraSupportedFormats");
+extern fn char* getCurrentCameraDriver() @cname("SDL_GetCurrentCameraDriver");
+extern fn int getNumCameraDrivers() @cname("SDL_GetNumCameraDrivers");
+extern fn Camera* openCamera(CameraID instance_id, CameraSpec* spec) @cname("SDL_OpenCamera");
+extern fn void releaseCameraFrame(Camera* camera, Surface* frame) @cname("SDL_ReleaseCameraFrame");

@@ -55,27 +55,26 @@ enum BusType {
 }
 
 // Functions
-extern fn void ble_scan(bool active) @extern("SDL_hid_ble_scan");
-extern fn int close(Device* dev) @extern("SDL_hid_close");
-extern fn uint device_change_count() @extern("SDL_hid_device_change_count");
-extern fn DeviceInfo* enumerate(ushort vendor_id, ushort product_id) @extern("SDL_hid_enumerate");
-extern fn int exit() @extern("SDL_hid_exit");
-extern fn void free_enumeration(DeviceInfo* devs) @extern("SDL_hid_free_enumeration");
-extern fn DeviceInfo* get_device_info(Device* dev) @extern("SDL_hid_get_device_info");
-extern fn int get_feature_report(Device* dev, char* data, usz length) @extern("SDL_hid_get_feature_report");
-extern fn int get_indexed_string(Device* dev, int string_index, char* string, usz maxlen) @extern("SDL_hid_get_indexed_string");
-extern fn int get_input_report(Device* dev, char* data, usz length) @extern("SDL_hid_get_input_report");
-extern fn int get_manufacturer_string(Device* dev, char* string, usz maxlen) @extern("SDL_hid_get_manufacturer_string");
-extern fn int get_product_string(Device* dev, char* string, usz maxlen) @extern("SDL_hid_get_product_string");
-extern fn PropertiesID get_properties(Device* dev) @extern("SDL_hid_get_properties");
-extern fn int get_report_descriptor(Device* dev, char* buf, usz buf_size) @extern("SDL_hid_get_report_descriptor");
-extern fn int get_serial_number_string(Device* dev, char* string, usz maxlen) @extern("SDL_hid_get_serial_number_string");
-extern fn int init() @extern("SDL_hid_init");
-extern fn Device* open(ushort vendor_id, ushort product_id, char* serial_number) @extern("SDL_hid_open");
-extern fn Device* open_path(char* path) @extern("SDL_hid_open_path");
-extern fn int read(Device* dev, char* data, usz length) @extern("SDL_hid_read");
-extern fn int read_timeout(Device* dev, char* data, usz length, int milliseconds) @extern("SDL_hid_read_timeout");
-extern fn int send_feature_report(Device* dev, char* data, usz length) @extern("SDL_hid_send_feature_report");
-extern fn int set_nonblocking(Device* dev, int nonblock) @extern("SDL_hid_set_nonblocking");
-extern fn int write(Device* dev, char* data, usz length) @extern("SDL_hid_write");
-
+extern fn void ble_scan(bool active) @cname("SDL_hid_ble_scan");
+extern fn int close(Device* dev) @cname("SDL_hid_close");
+extern fn uint device_change_count() @cname("SDL_hid_device_change_count");
+extern fn DeviceInfo* enumerate(ushort vendor_id, ushort product_id) @cname("SDL_hid_enumerate");
+extern fn int exit() @cname("SDL_hid_exit");
+extern fn void free_enumeration(DeviceInfo* devs) @cname("SDL_hid_free_enumeration");
+extern fn DeviceInfo* get_device_info(Device* dev) @cname("SDL_hid_get_device_info");
+extern fn int get_feature_report(Device* dev, char* data, usz length) @cname("SDL_hid_get_feature_report");
+extern fn int get_indexed_string(Device* dev, int string_index, char* string, usz maxlen) @cname("SDL_hid_get_indexed_string");
+extern fn int get_input_report(Device* dev, char* data, usz length) @cname("SDL_hid_get_input_report");
+extern fn int get_manufacturer_string(Device* dev, char* string, usz maxlen) @cname("SDL_hid_get_manufacturer_string");
+extern fn int get_product_string(Device* dev, char* string, usz maxlen) @cname("SDL_hid_get_product_string");
+extern fn PropertiesID get_properties(Device* dev) @cname("SDL_hid_get_properties");
+extern fn int get_report_descriptor(Device* dev, char* buf, usz buf_size) @cname("SDL_hid_get_report_descriptor");
+extern fn int get_serial_number_string(Device* dev, char* string, usz maxlen) @cname("SDL_hid_get_serial_number_string");
+extern fn int init() @cname("SDL_hid_init");
+extern fn Device* open(ushort vendor_id, ushort product_id, char* serial_number) @cname("SDL_hid_open");
+extern fn Device* open_path(char* path) @cname("SDL_hid_open_path");
+extern fn int read(Device* dev, char* data, usz length) @cname("SDL_hid_read");
+extern fn int read_timeout(Device* dev, char* data, usz length, int milliseconds) @cname("SDL_hid_read_timeout");
+extern fn int send_feature_report(Device* dev, char* data, usz length) @cname("SDL_hid_send_feature_report");
+extern fn int set_nonblocking(Device* dev, int nonblock) @cname("SDL_hid_set_nonblocking");
+extern fn int write(Device* dev, char* data, usz length) @cname("SDL_hid_write");

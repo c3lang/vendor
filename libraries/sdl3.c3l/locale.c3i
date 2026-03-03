@@ -8,5 +8,4 @@ struct Locale {
 }
 
 // Functions
-extern fn Locale** getPreferredLocales(int* count);
-
+extern fn Locale** getPreferredLocales(int* count) @cname("SDL_GetPreferredLocales");

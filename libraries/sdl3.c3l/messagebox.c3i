@@ -48,6 +48,5 @@ enum MessageBoxColorType {
 }
 
 // Functions
-extern fn bool showMessageBox(MessageBoxData* messageboxdata, int* buttonid) @extern("SDL_ShowMessageBox");
-extern fn bool showSimpleMessageBox(MessageBoxFlags flags, char* title, char* message, Window* window) @extern("SDL_ShowSimpleMessageBox");
-
+extern fn bool showMessageBox(MessageBoxData* messageboxdata, int* buttonid) @cname("SDL_ShowMessageBox");
+extern fn bool showSimpleMessageBox(MessageBoxFlags flags, char* title, char* message, Window* window) @cname("SDL_ShowSimpleMessageBox");

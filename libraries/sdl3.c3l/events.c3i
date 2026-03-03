@@ -552,7 +552,7 @@ enum EventAction {
     PEEKEVENT, /**< Check but don't remove events from the queue front. */
     GETEVENT,  /**< Retrieve/remove events from the front of the queue. */
 }
-enum EventType : const CInt {
+constdef EventType : CInt {
   FIRST                       = 0x000,
 
   // Application events
@@ -709,24 +709,23 @@ enum EventType : const CInt {
 }
 
 // Functions
-extern fn bool addEventWatch(EventFilter filter, void* userdata) @extern("SDL_AddEventWatch");
-extern fn bool eventEnabled(uint type) @extern("SDL_EventEnabled");
-extern fn void filterEvents(EventFilter filter, void* userdata) @extern("SDL_FilterEvents");
-extern fn void flushEvent(uint type) @extern("SDL_FlushEvent");
-extern fn void flushEvents(uint minType, uint maxType) @extern("SDL_FlushEvents");
-extern fn int getEventDescription(Event* event, char* buf, int buflen) @extern("SDL_GetEventDescription");
-extern fn bool getEventFilter(EventFilter* filter, void** userdata) @extern("SDL_GetEventFilter");
-extern fn Window* getWindowFromEvent(Event* event) @extern("SDL_GetWindowFromEvent");
-extern fn bool hasEvent(uint type) @extern("SDL_HasEvent");
-extern fn bool hasEvents(uint minType, uint maxType) @extern("SDL_HasEvents");
-extern fn int peepEvents(Event* events, int numevents, EventAction action, uint minType, uint maxType) @extern("SDL_PeepEvents");
-extern fn bool pollEvent(Event* event) @extern("SDL_PollEvent");
-extern fn void pumpEvents() @extern("SDL_PumpEvents");
-extern fn bool pushEvent(Event* event) @extern("SDL_PushEvent");
-extern fn uint registerEvents(int numevents) @extern("SDL_RegisterEvents");
-extern fn void removeEventWatch(EventFilter filter, void* userdata) @extern("SDL_RemoveEventWatch");
-extern fn void setEventEnabled(uint type, bool enabled) @extern("SDL_SetEventEnabled");
-extern fn void setEventFilter(EventFilter filter, void* userdata) @extern("SDL_SetEventFilter");
-extern fn bool waitEvent(Event* event) @extern("SDL_WaitEvent");
-extern fn bool waitEventTimeout(Event* event, int timeoutMS) @extern("SDL_WaitEventTimeout");
-
+extern fn bool addEventWatch(EventFilter filter, void* userdata) @cname("SDL_AddEventWatch");
+extern fn bool eventEnabled(uint type) @cname("SDL_EventEnabled");
+extern fn void filterEvents(EventFilter filter, void* userdata) @cname("SDL_FilterEvents");
+extern fn void flushEvent(uint type) @cname("SDL_FlushEvent");
+extern fn void flushEvents(uint minType, uint maxType) @cname("SDL_FlushEvents");
+extern fn int getEventDescription(Event* event, char* buf, int buflen) @cname("SDL_GetEventDescription");
+extern fn bool getEventFilter(EventFilter* filter, void** userdata) @cname("SDL_GetEventFilter");
+extern fn Window* getWindowFromEvent(Event* event) @cname("SDL_GetWindowFromEvent");
+extern fn bool hasEvent(uint type) @cname("SDL_HasEvent");
+extern fn bool hasEvents(uint minType, uint maxType) @cname("SDL_HasEvents");
+extern fn int peepEvents(Event* events, int numevents, EventAction action, uint minType, uint maxType) @cname("SDL_PeepEvents");
+extern fn bool pollEvent(Event* event) @cname("SDL_PollEvent");
+extern fn void pumpEvents() @cname("SDL_PumpEvents");
+extern fn bool pushEvent(Event* event) @cname("SDL_PushEvent");
+extern fn uint registerEvents(int numevents) @cname("SDL_RegisterEvents");
+extern fn void removeEventWatch(EventFilter filter, void* userdata) @cname("SDL_RemoveEventWatch");
+extern fn void setEventEnabled(uint type, bool enabled) @cname("SDL_SetEventEnabled");
+extern fn void setEventFilter(EventFilter filter, void* userdata) @cname("SDL_SetEventFilter");
+extern fn bool waitEvent(Event* event) @cname("SDL_WaitEvent");
+extern fn bool waitEventTimeout(Event* event, int timeoutMS) @cname("SDL_WaitEventTimeout");

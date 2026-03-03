@@ -11,4 +11,3 @@ alias FreeFunc = fn void(void* mem);
 alias FunctionPointer = fn void*();
 alias MallocFunc = fn void*(usz size);
 alias ReallocFunc = fn void*(void* mem, usz size);
-

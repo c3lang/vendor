@@ -22,13 +22,12 @@ enum TimeFormat {
 }
 
 // Functions
-extern fn bool dateTimeToTime(DateTime* dt, Time* ticks) @extern("SDL_DateTimeToTime");
-extern fn bool getCurrentTime(Time* ticks) @extern("SDL_GetCurrentTime");
-extern fn bool getDateTimeLocalePreferences(DateFormat* dateFormat, TimeFormat* timeFormat) @extern("SDL_GetDateTimeLocalePreferences");
-extern fn int getDayOfWeek(int year, int month, int day) @extern("SDL_GetDayOfWeek");
-extern fn int getDayOfYear(int year, int month, int day) @extern("SDL_GetDayOfYear");
-extern fn int getDaysInMonth(int year, int month) @extern("SDL_GetDaysInMonth");
-extern fn Time timeFromWindows(uint dwLowDateTime, uint dwHighDateTime) @extern("SDL_TimeFromWindows");
-extern fn bool timeToDateTime(Time ticks, DateTime* dt, bool localTime) @extern("SDL_TimeToDateTime");
-extern fn void timeToWindows(Time ticks, uint* dwLowDateTime, uint* dwHighDateTime) @extern("SDL_TimeToWindows");
-
+extern fn bool dateTimeToTime(DateTime* dt, Time* ticks) @cname("SDL_DateTimeToTime");
+extern fn bool getCurrentTime(Time* ticks) @cname("SDL_GetCurrentTime");
+extern fn bool getDateTimeLocalePreferences(DateFormat* dateFormat, TimeFormat* timeFormat) @cname("SDL_GetDateTimeLocalePreferences");
+extern fn int getDayOfWeek(int year, int month, int day) @cname("SDL_GetDayOfWeek");
+extern fn int getDayOfYear(int year, int month, int day) @cname("SDL_GetDayOfYear");
+extern fn int getDaysInMonth(int year, int month) @cname("SDL_GetDaysInMonth");
+extern fn Time timeFromWindows(uint dwLowDateTime, uint dwHighDateTime) @cname("SDL_TimeFromWindows");
+extern fn bool timeToDateTime(Time ticks, DateTime* dt, bool localTime) @cname("SDL_TimeToDateTime");
+extern fn void timeToWindows(Time ticks, uint* dwLowDateTime, uint* dwHighDateTime) @cname("SDL_TimeToWindows");

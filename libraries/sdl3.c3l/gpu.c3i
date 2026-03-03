@@ -670,145 +670,144 @@ enum GPUVertexInputRate {
 }
 
 // Functions
-extern fn GPUCommandBuffer* acquireGPUCommandBuffer(GPUDevice* device) @extern("SDL_AcquireGPUCommandBuffer");
-extern fn bool acquireGPUSwapchainTexture(GPUCommandBuffer* command_buffer, Window* window, GPUTexture** swapchain_texture, uint* swapchain_texture_width, uint* swapchain_texture_height) @extern("SDL_AcquireGPUSwapchainTexture");
+extern fn GPUCommandBuffer* acquireGPUCommandBuffer(GPUDevice* device) @cname("SDL_AcquireGPUCommandBuffer");
+extern fn bool acquireGPUSwapchainTexture(GPUCommandBuffer* command_buffer, Window* window, GPUTexture** swapchain_texture, uint* swapchain_texture_width, uint* swapchain_texture_height) @cname("SDL_AcquireGPUSwapchainTexture");
 extern fn GPUComputePass* beginGPUComputePass(
   GPUCommandBuffer* command_buffer,
   GPUStorageTextureReadWriteBinding* storage_texture_bindings, uint num_storage_texture_bindings,
-  GPUStorageBufferReadWriteBinding*  storage_buffer_bindings,  uint num_storage_buffer_bindings) @extern("SDL_BeginGPUComputePass");
-extern fn GPUCopyPass* beginGPUCopyPass(GPUCommandBuffer* command_buffer) @extern("SDL_BeginGPUCopyPass");
+  GPUStorageBufferReadWriteBinding*  storage_buffer_bindings,  uint num_storage_buffer_bindings) @cname("SDL_BeginGPUComputePass");
+extern fn GPUCopyPass* beginGPUCopyPass(GPUCommandBuffer* command_buffer) @cname("SDL_BeginGPUCopyPass");
 extern fn GPURenderPass* beginGPURenderPass(
   GPUCommandBuffer* command_buffer,
   GPUColorTargetInfo* color_target_infos, uint num_color_targets,
-  GPUDepthStencilTargetInfo* depth_stencil_target_info) @extern("SDL_BeginGPURenderPass");
-extern fn void bindGPUComputePipeline(GPUComputePass* compute_pass, GPUComputePipeline* compute_pipeline) @extern("SDL_BindGPUComputePipeline");
+  GPUDepthStencilTargetInfo* depth_stencil_target_info) @cname("SDL_BeginGPURenderPass");
+extern fn void bindGPUComputePipeline(GPUComputePass* compute_pass, GPUComputePipeline* compute_pipeline) @cname("SDL_BindGPUComputePipeline");
 extern fn void bindGPUComputeSamplers(
   GPUComputePass* compute_pass, uint first_slot,
-  GPUTextureSamplerBinding* texture_sampler_bindings, uint num_bindings) @extern("SDL_BindGPUComputeSamplers");
+  GPUTextureSamplerBinding* texture_sampler_bindings, uint num_bindings) @cname("SDL_BindGPUComputeSamplers");
 extern fn void bindGPUComputeStorageBuffers(
   GPUComputePass* compute_pass, uint first_slot,
-  GPUBuffer** storage_buffers, uint num_bindings) @extern("SDL_BindGPUComputeStorageBuffers");
+  GPUBuffer** storage_buffers, uint num_bindings) @cname("SDL_BindGPUComputeStorageBuffers");
 extern fn void bindGPUComputeStorageTextures(
   GPUComputePass* compute_pass, uint first_slot,
-  GPUTexture** storage_textures, uint num_bindings) @extern("SDL_BindGPUComputeStorageTextures");
+  GPUTexture** storage_textures, uint num_bindings) @cname("SDL_BindGPUComputeStorageTextures");
 extern fn void bindGPUFragmentSamplers(
   GPURenderPass* render_pass, uint first_slot,
-  GPUTextureSamplerBinding* texture_sampler_bindings, uint num_bindings) @extern("SDL_BindGPUFragmentSamplers");
+  GPUTextureSamplerBinding* texture_sampler_bindings, uint num_bindings) @cname("SDL_BindGPUFragmentSamplers");
 extern fn void bindGPUFragmentStorageBuffers(
   GPURenderPass* render_pass, uint first_slot,
-  GPUBuffer** storage_buffers, uint num_bindings) @extern("SDL_BindGPUFragmentStorageBuffers");
+  GPUBuffer** storage_buffers, uint num_bindings) @cname("SDL_BindGPUFragmentStorageBuffers");
 extern fn void bindGPUFragmentStorageTextures(
   GPURenderPass* render_pass, uint first_slot,
-  GPUTexture** storage_textures, uint num_bindings) @extern("SDL_BindGPUFragmentStorageTextures");
+  GPUTexture** storage_textures, uint num_bindings) @cname("SDL_BindGPUFragmentStorageTextures");
 extern fn void bindGPUGraphicsPipeline(
   GPURenderPass *render_pass,
-  GPUGraphicsPipeline* graphics_pipeline) @extern("SDL_BindGPUGraphicsPipeline");
+  GPUGraphicsPipeline* graphics_pipeline) @cname("SDL_BindGPUGraphicsPipeline");
 extern fn void bindGPUIndexBuffer(
   GPURenderPass* render_pass,
-  GPUBufferBinding* binding, GPUIndexElementSize index_element_size) @extern("SDL_BindGPUIndexBuffer");
+  GPUBufferBinding* binding, GPUIndexElementSize index_element_size) @cname("SDL_BindGPUIndexBuffer");
 extern fn void bindGPUVertexBuffers(
   GPURenderPass* render_pass, uint first_slot,
-  GPUBufferBinding* bindings, uint num_bindings) @extern("SDL_BindGPUVertexBuffers");
+  GPUBufferBinding* bindings, uint num_bindings) @cname("SDL_BindGPUVertexBuffers");
 extern fn void bindGPUVertexSamplers(
   GPURenderPass* render_pass, uint first_slot,
-  GPUTextureSamplerBinding* texture_sampler_bindings, uint num_bindings) @extern("SDL_BindGPUVertexSamplers");
+  GPUTextureSamplerBinding* texture_sampler_bindings, uint num_bindings) @cname("SDL_BindGPUVertexSamplers");
 extern fn void bindGPUVertexStorageBuffers(
   GPURenderPass* render_pass, uint first_slot,
-  GPUBuffer** storage_buffers, uint num_bindings) @extern("SDL_BindGPUVertexStorageBuffers");
+  GPUBuffer** storage_buffers, uint num_bindings) @cname("SDL_BindGPUVertexStorageBuffers");
 extern fn void bindGPUVertexStorageTextures(
   GPURenderPass* render_pass, uint first_slot,
-  GPUTexture** storage_textures, uint num_bindings) @extern("SDL_BindGPUVertexStorageTextures");
+  GPUTexture** storage_textures, uint num_bindings) @cname("SDL_BindGPUVertexStorageTextures");
 extern fn void blitGPUTexture(
   GPUCommandBuffer* command_buffer,
-  GPUBlitInfo* info) @extern("SDL_BlitGPUTexture");
+  GPUBlitInfo* info) @cname("SDL_BlitGPUTexture");
 extern fn uint calculateGPUTextureFormatSize(
   GPUTextureFormat format,
   uint width, uint height,
-  uint depth_or_layer_count) @extern("SDL_CalculateGPUTextureFormatSize");
-extern fn bool cancelGPUCommandBuffer(GPUCommandBuffer* command_buffer) @extern("SDL_CancelGPUCommandBuffer");
-extern fn bool claimWindowForGPUDevice(GPUDevice* device, Window* window) @extern("SDL_ClaimWindowForGPUDevice");
+  uint depth_or_layer_count) @cname("SDL_CalculateGPUTextureFormatSize");
+extern fn bool cancelGPUCommandBuffer(GPUCommandBuffer* command_buffer) @cname("SDL_CancelGPUCommandBuffer");
+extern fn bool claimWindowForGPUDevice(GPUDevice* device, Window* window) @cname("SDL_ClaimWindowForGPUDevice");
 extern fn void copyGPUBufferToBuffer(
   GPUCopyPass* copy_pass,
   GPUBufferLocation* source,
   GPUBufferLocation* destination,
-  uint size, bool cycle) @extern("SDL_CopyGPUBufferToBuffer");
+  uint size, bool cycle) @cname("SDL_CopyGPUBufferToBuffer");
 extern fn void copyGPUTextureToTexture(
   GPUCopyPass* copy_pass,
   GPUTextureLocation* source,
   GPUTextureLocation* destination,
   uint w, uint h, uint d,
-  bool cycle) @extern("SDL_CopyGPUTextureToTexture");
-extern fn GPUBuffer* createGPUBuffer(GPUDevice* device, GPUBufferCreateInfo* createinfo) @extern("SDL_CreateGPUBuffer");
-extern fn GPUComputePipeline* createGPUComputePipeline(GPUDevice* device, GPUComputePipelineCreateInfo* createinfo) @extern("SDL_CreateGPUComputePipeline");
-extern fn GPUDevice* createGPUDevice(GPUShaderFormat format_flags, bool debug_mode, char* name) @extern("SDL_CreateGPUDevice");
-extern fn GPUDevice* createGPUDeviceWithProperties(PropertiesID props) @extern("SDL_CreateGPUDeviceWithProperties");
-extern fn GPUGraphicsPipeline* createGPUGraphicsPipeline(GPUDevice* device, GPUGraphicsPipelineCreateInfo* createinfo) @extern("SDL_CreateGPUGraphicsPipeline");
-extern fn GPUSampler* createGPUSampler(GPUDevice* device, GPUSamplerCreateInfo* createinfo) @extern("SDL_CreateGPUSampler");
-extern fn GPUShader* createGPUShader(GPUDevice* device, GPUShaderCreateInfo* createinfo) @extern("SDL_CreateGPUShader");
-extern fn GPUTexture* createGPUTexture(GPUDevice* device, GPUTextureCreateInfo* createinfo) @extern("SDL_CreateGPUTexture");
-extern fn GPUTransferBuffer* createGPUTransferBuffer(GPUDevice* device, GPUTransferBufferCreateInfo* createinfo) @extern("SDL_CreateGPUTransferBuffer");
-extern fn void destroyGPUDevice(GPUDevice* device) @extern("SDL_DestroyGPUDevice");
-extern fn void dispatchGPUCompute(GPUComputePass* compute_pass, uint groupcount_x, uint groupcount_y, uint groupcount_z) @extern("SDL_DispatchGPUCompute");
-extern fn void dispatchGPUComputeIndirect(GPUComputePass* compute_pass, GPUBuffer* buffer, uint offset) @extern("SDL_DispatchGPUComputeIndirect");
-extern fn void downloadFromGPUBuffer(GPUCopyPass* copy_pass, GPUBufferRegion* source, GPUTransferBufferLocation* destination) @extern("SDL_DownloadFromGPUBuffer");
-extern fn void downloadFromGPUTexture(GPUCopyPass* copy_pass, GPUTextureRegion* source, GPUTextureTransferInfo* destination) @extern("SDL_DownloadFromGPUTexture");
-extern fn void drawGPUIndexedPrimitives(GPURenderPass* render_pass, uint num_indices, uint num_instances, uint first_index, int vertex_offset, uint first_instance) @extern("SDL_DrawGPUIndexedPrimitives");
-extern fn void drawGPUIndexedPrimitivesIndirect(GPURenderPass* render_pass, GPUBuffer* buffer, uint offset, uint draw_count) @extern("SDL_DrawGPUIndexedPrimitivesIndirect");
-extern fn void rawGPUPrimitives(GPURenderPass* render_pass, uint num_vertices, uint num_instances, uint first_vertex, uint first_instance) @extern("SDL_DrawGPUPrimitives");
-extern fn void drawGPUPrimitivesIndirect(GPURenderPass* render_pass, GPUBuffer* buffer, uint offset, uint draw_count) @extern("SDL_DrawGPUPrimitivesIndirect");
-extern fn void endGPUComputePass(GPUComputePass* compute_pass) @extern("SDL_EndGPUComputePass");
-extern fn void endGPUCopyPass(GPUCopyPass* copy_pass) @extern("SDL_EndGPUCopyPass");
-extern fn void endGPURenderPass(GPURenderPass* render_pass) @extern("SDL_EndGPURenderPass");
-extern fn void resumeGPUGDK(GPUDevice* device) @extern("SDL_GDKResumeGPU");
-extern fn void suspendGPUGDK(GPUDevice* device) @extern("SDL_GDKSuspendGPU");
-extern fn void generateMipmapsForGPUTexture(GPUCommandBuffer* command_buffer, GPUTexture* texture) @extern("SDL_GenerateMipmapsForGPUTexture");
-extern fn char* getGPUDeviceDriver(GPUDevice* device) @extern("SDL_GetGPUDeviceDriver");
-extern fn PropertiesID getGPUDeviceProperties(GPUDevice* device) @extern("SDL_GetGPUDeviceProperties");
-extern fn char* getGPUDriver(int index) @extern("SDL_GetGPUDriver");
-extern fn GPUShaderFormat getGPUShaderFormats(GPUDevice* device) @extern("SDL_GetGPUShaderFormats");
-extern fn GPUTextureFormat getGPUSwapchainTextureFormat(GPUDevice* device, Window* window) @extern("SDL_GetGPUSwapchainTextureFormat");
-extern fn GPUTextureFormat getGPUTextureFormatFromPixelFormat(PixelFormat format) @extern("SDL_GetGPUTextureFormatFromPixelFormat");
-extern fn int getNumGPUDrivers() @extern("SDL_GetNumGPUDrivers");
-extern fn PixelFormat getPixelFormatFromGPUTextureFormat(GPUTextureFormat format) @extern("SDL_GetPixelFormatFromGPUTextureFormat");
-extern fn bool supportsPropertiesGPU(PropertiesID props) @extern("GPUSupportsProperties");
-extern fn bool supportsShaderFormatsGPU(GPUShaderFormat format_flags, char* name) @extern("SDL_GPUSupportsProperties");
-extern fn uint textureFormatTexelBlockSizeGPU(GPUTextureFormat format) @extern("SDL_GPUTextureFormatTexelBlockSizeGPU");
-extern fn bool textureSupportsFormatGPU(GPUDevice* device, GPUTextureFormat format, GPUTextureType type, GPUTextureUsageFlags usage) @extern("SDL_GPUTextureSupportsFormat");
-extern fn bool textureSupportsSampleCountGPU(GPUDevice *device, GPUTextureFormat format, GPUSampleCount sample_count) @extern("SDL_GPUTextureSupportsSampleCount");
-extern fn void insertGPUDebugLabel(GPUCommandBuffer *command_buffer, char* text) @extern("SDL_InsertGPUDebugLabel");
-extern fn void* mapGPUTransferBuffer(GPUDevice* device, GPUTransferBuffer* transfer_buffer, bool cycle) @extern("SDL_MapGPUTransferBuffer");
-extern fn void popGPUDebugGroup(GPUCommandBuffer* command_buffer) @extern("SDL_PopGPUDebugGroup");
-extern fn void pushGPUComputeUniformData(GPUCommandBuffer* command_buffer, uint slot_index, void* data, uint length) @extern("SDL_PushGPUComputeUniformData");
-extern fn void pushGPUDebugGroup(GPUCommandBuffer* command_buffer, char* name) @extern("SDL_PushGPUDebugGroup");
-extern fn void pushGPUFragmentUniformData(GPUCommandBuffer* command_buffer, uint slot_index, void* data, uint length) @extern("SDL_PushGPUFragmentUniformData");
-extern fn void pushGPUVertexUniformData(GPUCommandBuffer* command_buffer, uint slot_index, void* data, uint length) @extern("SDL_PushGPUVertexUniformData");
-extern fn bool queryGPUFence(GPUDevice* device, GPUFence* fence) @extern("SDL_QueryGPUFence");
-extern fn void releaseGPUBuffer(GPUDevice* device, GPUBuffer* buffer) @extern("SDL_ReleaseGPUBuffer");
-extern fn void releaseGPUComputePipeline(GPUDevice* device, GPUComputePipeline* compute_pipeline) @extern("SDL_ReleaseGPUComputePipeline");
-extern fn void releaseGPUFence(GPUDevice* device, GPUFence* fence) @extern("SDL_ReleaseGPUFence");
-extern fn void releaseGPUGraphicsPipeline(GPUDevice* device, GPUGraphicsPipeline* graphics_pipeline) @extern("SDL_ReleaseGPUGraphicsPipeline");
-extern fn void releaseGPUSampler(GPUDevice* device, GPUSampler* sampler) @extern("SDL_ReleaseGPUSampler");
-extern fn void releaseGPUShader(GPUDevice* device, GPUShader* shader) @extern("SDL_ReleaseGPUShader");
-extern fn void releaseGPUTexture(GPUDevice* device, GPUTexture* texture) @extern("SDL_ReleaseGPUTexture");
-extern fn void releaseGPUTransferBuffer(GPUDevice* device, GPUTransferBuffer* transfer_buffer) @extern("SDL_ReleaseGPUTransferBuffer");
-extern fn void releaseWindowFromGPUDevice(GPUDevice* device, Window* window) @extern("SDL_ReleaseWindowFromGPUDevice");
-extern fn bool setGPUAllowedFramesInFlight(GPUDevice* device, uint allowed_frames_in_flight) @extern("SDL_SetGPUAllowedFramesInFlight");
-extern fn void setGPUBlendConstants(GPURenderPass* render_pass, FColor blend_constants) @extern("SDL_SetGPUBlendConstants");
-extern fn void setGPUBufferName(GPUDevice* device, GPUBuffer* buffer, char* text) @extern("SDL_SetGPUBufferName");
-extern fn void setGPUScissor(GPURenderPass* render_pass, Rect* scissor) @extern("SDL_SetGPUScissor");
-extern fn void setGPUStencilReference(GPURenderPass* render_pass, char reference) @extern("SDL_SetGPUStencilReference");
-extern fn bool setGPUSwapchainParameters(GPUDevice* device, Window* window, GPUSwapchainComposition swapchain_composition, GPUPresentMode present_mode) @extern("SDL_SetGPUSwapchainParameters");
-extern fn void setGPUTextureName(GPUDevice* device, GPUTexture* texture, char* text) @extern("SDL_SetGPUTextureName");
-extern fn void setGPUViewport(GPURenderPass* render_pass, GPUViewport* viewport) @extern("SDL_SetGPUViewport");
-extern fn bool submitGPUCommandBuffer(GPUCommandBuffer* command_buffer) @extern("SDL_SubmitGPUCommandBuffer");
-extern fn GPUFence* submitGPUCommandBufferAndAcquireFence(GPUCommandBuffer* command_buffer) @extern("SDL_SubmitGPUCommandBufferAndAcquireFence");
-extern fn void unmapGPUTransferBuffer(GPUDevice* device, GPUTransferBuffer* transfer_buffer) @extern("SDL_UnmapGPUTransferBuffer");
-extern fn void uploadToGPUBuffer(GPUCopyPass* copy_pass, GPUTransferBufferLocation* source, GPUBufferRegion* destination, bool cycle) @extern("SDL_UploadToGPUBuffer");
-extern fn void uploadToGPUTexture(GPUCopyPass* copy_pass, GPUTextureTransferInfo* source, GPUTextureRegion* destination, bool cycle) @extern("SDL_UploadToGPUTexture");
-extern fn bool waitAndAcquireGPUSwapchainTexture(GPUCommandBuffer* command_buffer, Window* window, GPUTexture** swapchain_texture, uint* swapchain_texture_width, uint* swapchain_texture_height) @extern("SDL_WaitAndAcquireGPUSwapchainTexture");
-extern fn bool waitForGPUFences(GPUDevice* device, bool wait_all, GPUFence** fences, uint num_fences) @extern("SDL_WaitForGPUFences");
-extern fn bool waitForGPUIdle(GPUDevice* device) @extern("SDL_WaitForGPUIdle");
-extern fn bool waitForGPUSwapchain(GPUDevice* device, Window* window) @extern("SDL_WaitForGPUSwapchain");
-extern fn bool windowSupportsGPUPresentMode(GPUDevice* device, Window* window, GPUPresentMode present_mode) @extern("SDL_WindowSupportsGPUPresentMode");
-extern fn bool windowSupportsGPUSwapchainComposition(GPUDevice* device, Window* window, GPUSwapchainComposition swapchain_composition) @extern("SDL_WindowSupportsGPUSwapchainComposition");
-
+  bool cycle) @cname("SDL_CopyGPUTextureToTexture");
+extern fn GPUBuffer* createGPUBuffer(GPUDevice* device, GPUBufferCreateInfo* createinfo) @cname("SDL_CreateGPUBuffer");
+extern fn GPUComputePipeline* createGPUComputePipeline(GPUDevice* device, GPUComputePipelineCreateInfo* createinfo) @cname("SDL_CreateGPUComputePipeline");
+extern fn GPUDevice* createGPUDevice(GPUShaderFormat format_flags, bool debug_mode, char* name) @cname("SDL_CreateGPUDevice");
+extern fn GPUDevice* createGPUDeviceWithProperties(PropertiesID props) @cname("SDL_CreateGPUDeviceWithProperties");
+extern fn GPUGraphicsPipeline* createGPUGraphicsPipeline(GPUDevice* device, GPUGraphicsPipelineCreateInfo* createinfo) @cname("SDL_CreateGPUGraphicsPipeline");
+extern fn GPUSampler* createGPUSampler(GPUDevice* device, GPUSamplerCreateInfo* createinfo) @cname("SDL_CreateGPUSampler");
+extern fn GPUShader* createGPUShader(GPUDevice* device, GPUShaderCreateInfo* createinfo) @cname("SDL_CreateGPUShader");
+extern fn GPUTexture* createGPUTexture(GPUDevice* device, GPUTextureCreateInfo* createinfo) @cname("SDL_CreateGPUTexture");
+extern fn GPUTransferBuffer* createGPUTransferBuffer(GPUDevice* device, GPUTransferBufferCreateInfo* createinfo) @cname("SDL_CreateGPUTransferBuffer");
+extern fn void destroyGPUDevice(GPUDevice* device) @cname("SDL_DestroyGPUDevice");
+extern fn void dispatchGPUCompute(GPUComputePass* compute_pass, uint groupcount_x, uint groupcount_y, uint groupcount_z) @cname("SDL_DispatchGPUCompute");
+extern fn void dispatchGPUComputeIndirect(GPUComputePass* compute_pass, GPUBuffer* buffer, uint offset) @cname("SDL_DispatchGPUComputeIndirect");
+extern fn void downloadFromGPUBuffer(GPUCopyPass* copy_pass, GPUBufferRegion* source, GPUTransferBufferLocation* destination) @cname("SDL_DownloadFromGPUBuffer");
+extern fn void downloadFromGPUTexture(GPUCopyPass* copy_pass, GPUTextureRegion* source, GPUTextureTransferInfo* destination) @cname("SDL_DownloadFromGPUTexture");
+extern fn void drawGPUIndexedPrimitives(GPURenderPass* render_pass, uint num_indices, uint num_instances, uint first_index, int vertex_offset, uint first_instance) @cname("SDL_DrawGPUIndexedPrimitives");
+extern fn void drawGPUIndexedPrimitivesIndirect(GPURenderPass* render_pass, GPUBuffer* buffer, uint offset, uint draw_count) @cname("SDL_DrawGPUIndexedPrimitivesIndirect");
+extern fn void rawGPUPrimitives(GPURenderPass* render_pass, uint num_vertices, uint num_instances, uint first_vertex, uint first_instance) @cname("SDL_DrawGPUPrimitives");
+extern fn void drawGPUPrimitivesIndirect(GPURenderPass* render_pass, GPUBuffer* buffer, uint offset, uint draw_count) @cname("SDL_DrawGPUPrimitivesIndirect");
+extern fn void endGPUComputePass(GPUComputePass* compute_pass) @cname("SDL_EndGPUComputePass");
+extern fn void endGPUCopyPass(GPUCopyPass* copy_pass) @cname("SDL_EndGPUCopyPass");
+extern fn void endGPURenderPass(GPURenderPass* render_pass) @cname("SDL_EndGPURenderPass");
+extern fn void resumeGPUGDK(GPUDevice* device) @cname("SDL_GDKResumeGPU");
+extern fn void suspendGPUGDK(GPUDevice* device) @cname("SDL_GDKSuspendGPU");
+extern fn void generateMipmapsForGPUTexture(GPUCommandBuffer* command_buffer, GPUTexture* texture) @cname("SDL_GenerateMipmapsForGPUTexture");
+extern fn char* getGPUDeviceDriver(GPUDevice* device) @cname("SDL_GetGPUDeviceDriver");
+extern fn PropertiesID getGPUDeviceProperties(GPUDevice* device) @cname("SDL_GetGPUDeviceProperties");
+extern fn char* getGPUDriver(int index) @cname("SDL_GetGPUDriver");
+extern fn GPUShaderFormat getGPUShaderFormats(GPUDevice* device) @cname("SDL_GetGPUShaderFormats");
+extern fn GPUTextureFormat getGPUSwapchainTextureFormat(GPUDevice* device, Window* window) @cname("SDL_GetGPUSwapchainTextureFormat");
+extern fn GPUTextureFormat getGPUTextureFormatFromPixelFormat(PixelFormat format) @cname("SDL_GetGPUTextureFormatFromPixelFormat");
+extern fn int getNumGPUDrivers() @cname("SDL_GetNumGPUDrivers");
+extern fn PixelFormat getPixelFormatFromGPUTextureFormat(GPUTextureFormat format) @cname("SDL_GetPixelFormatFromGPUTextureFormat");
+extern fn bool supportsPropertiesGPU(PropertiesID props) @cname("GPUSupportsProperties");
+extern fn bool supportsShaderFormatsGPU(GPUShaderFormat format_flags, char* name) @cname("SDL_GPUSupportsProperties");
+extern fn uint textureFormatTexelBlockSizeGPU(GPUTextureFormat format) @cname("SDL_GPUTextureFormatTexelBlockSizeGPU");
+extern fn bool textureSupportsFormatGPU(GPUDevice* device, GPUTextureFormat format, GPUTextureType type, GPUTextureUsageFlags usage) @cname("SDL_GPUTextureSupportsFormat");
+extern fn bool textureSupportsSampleCountGPU(GPUDevice *device, GPUTextureFormat format, GPUSampleCount sample_count) @cname("SDL_GPUTextureSupportsSampleCount");
+extern fn void insertGPUDebugLabel(GPUCommandBuffer *command_buffer, char* text) @cname("SDL_InsertGPUDebugLabel");
+extern fn void* mapGPUTransferBuffer(GPUDevice* device, GPUTransferBuffer* transfer_buffer, bool cycle) @cname("SDL_MapGPUTransferBuffer");
+extern fn void popGPUDebugGroup(GPUCommandBuffer* command_buffer) @cname("SDL_PopGPUDebugGroup");
+extern fn void pushGPUComputeUniformData(GPUCommandBuffer* command_buffer, uint slot_index, void* data, uint length) @cname("SDL_PushGPUComputeUniformData");
+extern fn void pushGPUDebugGroup(GPUCommandBuffer* command_buffer, char* name) @cname("SDL_PushGPUDebugGroup");
+extern fn void pushGPUFragmentUniformData(GPUCommandBuffer* command_buffer, uint slot_index, void* data, uint length) @cname("SDL_PushGPUFragmentUniformData");
+extern fn void pushGPUVertexUniformData(GPUCommandBuffer* command_buffer, uint slot_index, void* data, uint length) @cname("SDL_PushGPUVertexUniformData");
+extern fn bool queryGPUFence(GPUDevice* device, GPUFence* fence) @cname("SDL_QueryGPUFence");
+extern fn void releaseGPUBuffer(GPUDevice* device, GPUBuffer* buffer) @cname("SDL_ReleaseGPUBuffer");
+extern fn void releaseGPUComputePipeline(GPUDevice* device, GPUComputePipeline* compute_pipeline) @cname("SDL_ReleaseGPUComputePipeline");
+extern fn void releaseGPUFence(GPUDevice* device, GPUFence* fence) @cname("SDL_ReleaseGPUFence");
+extern fn void releaseGPUGraphicsPipeline(GPUDevice* device, GPUGraphicsPipeline* graphics_pipeline) @cname("SDL_ReleaseGPUGraphicsPipeline");
+extern fn void releaseGPUSampler(GPUDevice* device, GPUSampler* sampler) @cname("SDL_ReleaseGPUSampler");
+extern fn void releaseGPUShader(GPUDevice* device, GPUShader* shader) @cname("SDL_ReleaseGPUShader");
+extern fn void releaseGPUTexture(GPUDevice* device, GPUTexture* texture) @cname("SDL_ReleaseGPUTexture");
+extern fn void releaseGPUTransferBuffer(GPUDevice* device, GPUTransferBuffer* transfer_buffer) @cname("SDL_ReleaseGPUTransferBuffer");
+extern fn void releaseWindowFromGPUDevice(GPUDevice* device, Window* window) @cname("SDL_ReleaseWindowFromGPUDevice");
+extern fn bool setGPUAllowedFramesInFlight(GPUDevice* device, uint allowed_frames_in_flight) @cname("SDL_SetGPUAllowedFramesInFlight");
+extern fn void setGPUBlendConstants(GPURenderPass* render_pass, FColor blend_constants) @cname("SDL_SetGPUBlendConstants");
+extern fn void setGPUBufferName(GPUDevice* device, GPUBuffer* buffer, char* text) @cname("SDL_SetGPUBufferName");
+extern fn void setGPUScissor(GPURenderPass* render_pass, Rect* scissor) @cname("SDL_SetGPUScissor");
+extern fn void setGPUStencilReference(GPURenderPass* render_pass, char reference) @cname("SDL_SetGPUStencilReference");
+extern fn bool setGPUSwapchainParameters(GPUDevice* device, Window* window, GPUSwapchainComposition swapchain_composition, GPUPresentMode present_mode) @cname("SDL_SetGPUSwapchainParameters");
+extern fn void setGPUTextureName(GPUDevice* device, GPUTexture* texture, char* text) @cname("SDL_SetGPUTextureName");
+extern fn void setGPUViewport(GPURenderPass* render_pass, GPUViewport* viewport) @cname("SDL_SetGPUViewport");
+extern fn bool submitGPUCommandBuffer(GPUCommandBuffer* command_buffer) @cname("SDL_SubmitGPUCommandBuffer");
+extern fn GPUFence* submitGPUCommandBufferAndAcquireFence(GPUCommandBuffer* command_buffer) @cname("SDL_SubmitGPUCommandBufferAndAcquireFence");
+extern fn void unmapGPUTransferBuffer(GPUDevice* device, GPUTransferBuffer* transfer_buffer) @cname("SDL_UnmapGPUTransferBuffer");
+extern fn void uploadToGPUBuffer(GPUCopyPass* copy_pass, GPUTransferBufferLocation* source, GPUBufferRegion* destination, bool cycle) @cname("SDL_UploadToGPUBuffer");
+extern fn void uploadToGPUTexture(GPUCopyPass* copy_pass, GPUTextureTransferInfo* source, GPUTextureRegion* destination, bool cycle) @cname("SDL_UploadToGPUTexture");
+extern fn bool waitAndAcquireGPUSwapchainTexture(GPUCommandBuffer* command_buffer, Window* window, GPUTexture** swapchain_texture, uint* swapchain_texture_width, uint* swapchain_texture_height) @cname("SDL_WaitAndAcquireGPUSwapchainTexture");
+extern fn bool waitForGPUFences(GPUDevice* device, bool wait_all, GPUFence** fences, uint num_fences) @cname("SDL_WaitForGPUFences");
+extern fn bool waitForGPUIdle(GPUDevice* device) @cname("SDL_WaitForGPUIdle");
+extern fn bool waitForGPUSwapchain(GPUDevice* device, Window* window) @cname("SDL_WaitForGPUSwapchain");
+extern fn bool windowSupportsGPUPresentMode(GPUDevice* device, Window* window, GPUPresentMode present_mode) @cname("SDL_WindowSupportsGPUPresentMode");
+extern fn bool windowSupportsGPUSwapchainComposition(GPUDevice* device, Window* window, GPUSwapchainComposition swapchain_composition) @cname("SDL_WindowSupportsGPUSwapchainComposition");

@@ -23,16 +23,15 @@ enum ThreadState {
 }
 
 // Functions
-extern fn void cleanupTLS() @extern("SDL_CleanupTLS");
-extern fn Thread* createThread(ThreadFunction func, char* name, void* data) @extern("SDL_CreateThread");
-extern fn Thread* createThreadWithProperties(PropertiesID props) @extern("SDL_CreateThreadWithProperties");
-extern fn void detachThread(Thread* thread) @extern("SDL_DetachThread");
-extern fn ThreadID getCurrentThreadID() @extern("SDL_GetCurrentThreadID");
-extern fn ThreadID getThreadID(Thread* thread) @extern("SDL_GetThreadID");
-extern fn char* getThreadName(Thread* thread) @extern("SDL_GetThreadName");
-extern fn ThreadState getThreadState(Thread* thread) @extern("SDL_GetThreadState");
-extern fn void* getTLS(TLsID* id) @extern("SDL_GetTLS");
-extern fn bool setCurrentThreadPriority(ThreadPriority priority) @extern("SDL_SetCurrentThreadPriority");
-extern fn bool setTLS(TLsID* id, void* value, TLSDestructorCallback destructor) @extern("SDL_SetTLS");
-extern fn void waitThread(Thread* thread, int* status) @extern("SDL_WaitThread");
-
+extern fn void cleanupTLS() @cname("SDL_CleanupTLS");
+extern fn Thread* createThread(ThreadFunction func, char* name, void* data) @cname("SDL_CreateThread");
+extern fn Thread* createThreadWithProperties(PropertiesID props) @cname("SDL_CreateThreadWithProperties");
+extern fn void detachThread(Thread* thread) @cname("SDL_DetachThread");
+extern fn ThreadID getCurrentThreadID() @cname("SDL_GetCurrentThreadID");
+extern fn ThreadID getThreadID(Thread* thread) @cname("SDL_GetThreadID");
+extern fn char* getThreadName(Thread* thread) @cname("SDL_GetThreadName");
+extern fn ThreadState getThreadState(Thread* thread) @cname("SDL_GetThreadState");
+extern fn void* getTLS(TLsID* id) @cname("SDL_GetTLS");
+extern fn bool setCurrentThreadPriority(ThreadPriority priority) @cname("SDL_SetCurrentThreadPriority");
+extern fn bool setTLS(TLsID* id, void* value, TLSDestructorCallback destructor) @cname("SDL_SetTLS");
+extern fn void waitThread(Thread* thread, int* status) @cname("SDL_WaitThread");

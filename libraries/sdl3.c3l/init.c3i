@@ -28,14 +28,13 @@ enum AppResult {
 }
 
 // Functions
-extern fn char* getAppMetadataProperty(char* name) @extern("SDL_GetAppMetadataProperty");
-extern fn bool init(InitFlags flags) @extern("SDL_Init");
-extern fn bool initSubSystem(InitFlags flags) @extern("SDL_InitSubSystem");
-extern fn bool isMainThread() @extern("SDL_IsMainThread");
-extern fn void quit() @extern("SDL_Quit");
-extern fn void quitSubSystem(InitFlags flags) @extern("SDL_QuitSubSystem");
-extern fn bool runOnMainThread(MainThreadCallback callback, void* userdata, bool wait_complete) @extern("SDL_RunOnMainThread");
-extern fn bool setAppMetadata(char* appname, char* appversion, char* appidentifier) @extern("SDL_SetAppMetadata");
-extern fn bool setAppMetadataProperty(char* name, char* value) @extern("SDL_SetAppMetadataProperty");
-extern fn InitFlags wasInit(InitFlags flags) @extern("SDL_WasInit");
-
+extern fn char* getAppMetadataProperty(char* name) @cname("SDL_GetAppMetadataProperty");
+extern fn bool init(InitFlags flags) @cname("SDL_Init");
+extern fn bool initSubSystem(InitFlags flags) @cname("SDL_InitSubSystem");
+extern fn bool isMainThread() @cname("SDL_IsMainThread");
+extern fn void quit() @cname("SDL_Quit");
+extern fn void quitSubSystem(InitFlags flags) @cname("SDL_QuitSubSystem");
+extern fn bool runOnMainThread(MainThreadCallback callback, void* userdata, bool wait_complete) @cname("SDL_RunOnMainThread");
+extern fn bool setAppMetadata(char* appname, char* appversion, char* appidentifier) @cname("SDL_SetAppMetadata");
+extern fn bool setAppMetadataProperty(char* name, char* value) @cname("SDL_SetAppMetadataProperty");
+extern fn InitFlags wasInit(InitFlags flags) @cname("SDL_WasInit");

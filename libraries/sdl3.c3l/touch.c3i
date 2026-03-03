@@ -14,7 +14,7 @@ struct Finger {
 }
 
 // Enums
-enum TouchDeviceType : const CInt {
+constdef TouchDeviceType : CInt {
   INVALID = -1,
   DIRECT  =  0,           /**< touch screen with window-relative coordinates */
   INDIRECT_ABSOLUTE = 1,  /**< trackpad with absolute device coordinates */
@@ -22,9 +22,7 @@ enum TouchDeviceType : const CInt {
 }
 
 // Functions
-extern fn char* getTouchDeviceName(TouchID touchID) @extern("SDL_GetTouchDeviceName");
-extern fn TouchID* getTouchDevices(int* count) @extern("SDL_GetTouchDevices");
-extern fn TouchDeviceType getTouchDeviceType(TouchID touchID) @extern("SDL_GetTouchDeviceType");
-extern fn Finger** getTouchFingers(TouchID touchID, int* count) @extern("SDL_GetTouchFingers");
-
-
+extern fn char* getTouchDeviceName(TouchID touchID) @cname("SDL_GetTouchDeviceName");
+extern fn TouchID* getTouchDevices(int* count) @cname("SDL_GetTouchDevices");
+extern fn TouchDeviceType getTouchDeviceType(TouchID touchID) @cname("SDL_GetTouchDeviceType");
+extern fn Finger** getTouchFingers(TouchID touchID, int* count) @cname("SDL_GetTouchFingers");

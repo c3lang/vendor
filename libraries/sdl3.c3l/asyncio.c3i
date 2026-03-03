@@ -30,15 +30,14 @@ enum AsyncIOTaskType {
 }
 
 // Functions
-extern fn AsyncIO* asyncIOFromFile(char* file, char* mode) @extern("SDL_AsyncIOFromFile");
-extern fn bool closeAsyncIO(AsyncIO* asyncio, bool flush, AsyncIOQueue* queue, void* userdata) @extern("SDL_CloseAsyncIO");
-extern fn AsyncIOQueue* createAsyncIOQueue() @extern("SDL_AsyncIOQueue");
-extern fn void destroyAsyncIOQueue(AsyncIOQueue* queue) @extern("SDL_DestroyAsyncIOQueue");
-extern fn bool getAsyncIOResult(AsyncIOQueue* queue, AsyncIOOutcome* outcome) @extern("SDL_GetAsyncIOResult");
-extern fn long getAsyncIOSize(AsyncIO* asyncio) @extern("SDL_GetAsyncIOSize");
-extern fn bool loadFileAsync(char* file, AsyncIOQueue* queue, void* userdata) @extern("SDL_LoadFileAsync");
-extern fn bool readAsyncIO(AsyncIO* asyncio, void* ptr, ulong offset, ulong size, AsyncIOQueue* queue, void* userdata) @extern("SDL_ReadAsyncIO");
-extern fn void signalAsyncIOQueue(AsyncIOQueue* queue) @extern("SDL_SignalAsyncIOQueue");
-extern fn bool waitAsyncIOResult(AsyncIOQueue* queue, AsyncIOOutcome* outcome, int timeoutMS) @extern("SDL_WaitAsyncIOResult");
-extern fn bool writeAsyncIO(AsyncIO* asyncio, void* ptr, ulong offset, ulong size, AsyncIOQueue* queue, void* userdata) @extern("SDL_WriteAsyncIO");
-
+extern fn AsyncIO* asyncIOFromFile(char* file, char* mode) @cname("SDL_AsyncIOFromFile");
+extern fn bool closeAsyncIO(AsyncIO* asyncio, bool flush, AsyncIOQueue* queue, void* userdata) @cname("SDL_CloseAsyncIO");
+extern fn AsyncIOQueue* createAsyncIOQueue() @cname("SDL_AsyncIOQueue");
+extern fn void destroyAsyncIOQueue(AsyncIOQueue* queue) @cname("SDL_DestroyAsyncIOQueue");
+extern fn bool getAsyncIOResult(AsyncIOQueue* queue, AsyncIOOutcome* outcome) @cname("SDL_GetAsyncIOResult");
+extern fn long getAsyncIOSize(AsyncIO* asyncio) @cname("SDL_GetAsyncIOSize");
+extern fn bool loadFileAsync(char* file, AsyncIOQueue* queue, void* userdata) @cname("SDL_LoadFileAsync");
+extern fn bool readAsyncIO(AsyncIO* asyncio, void* ptr, ulong offset, ulong size, AsyncIOQueue* queue, void* userdata) @cname("SDL_ReadAsyncIO");
+extern fn void signalAsyncIOQueue(AsyncIOQueue* queue) @cname("SDL_SignalAsyncIOQueue");
+extern fn bool waitAsyncIOResult(AsyncIOQueue* queue, AsyncIOOutcome* outcome, int timeoutMS) @cname("SDL_WaitAsyncIOResult");
+extern fn bool writeAsyncIO(AsyncIO* asyncio, void* ptr, ulong offset, ulong size, AsyncIOQueue* queue, void* userdata) @cname("SDL_WriteAsyncIO");

@@ -24,28 +24,27 @@ enum SDL_TextInputType {
 }
 
 // Functions
-extern fn bool clearComposition(Window* window) @extern("SDL_ClearComposition");
-extern fn Window* getKeyboardFocus() @extern("SDL_GetKeyboardFocus");
-extern fn char* getKeyboardNameForID(KeyboardID instance_id) @extern("SDL_GetKeyboardNameForID");
-extern fn KeyboardID* getKeyboards(int* count) @extern("SDL_GetKeyboards");
-extern fn bool* getKeyboardState(int* numkeys) @extern("SDL_GetKeyboardState");
-extern fn Keycode getKeyFromName(char* name) @extern("SDL_GetKeyFromName");
-extern fn Keycode getKeyFromScancode(Scancode scancode, Keymod modstate, bool key_event) @extern("SDL_GetKeyFromScancode");
-extern fn char* getKeyName(Keycode key) @extern("SDL_GetKeyName");
-extern fn Keymod getModState() @extern("SDL_GetModState");
-extern fn Scancode getScancodeFromKey(Keycode key, Keymod* modstate) @extern("SDL_GetScancodeFromKey");
-extern fn Scancode getScancodeFromName(char* name) @extern("SDL_GetScancodeFromName");
-extern fn char* getScancodeName(Scancode scancode) @extern("SDL_GetScancodeName");
-extern fn bool getTextInputArea(Window* window, Rect* rect, int* cursor) @extern("SDL_GetTextInputArea");
-extern fn bool hasKeyboard() @extern("SDL_HasKeyboard");
-extern fn bool hasScreenKeyboardSupport() @extern("SDL_HasScreenKeyboardSupport");
-extern fn void resetKeyboard() @extern("SDL_ResetKeyboard");
-extern fn bool screenKeyboardShown(Window* window) @extern("SDL_ScreenKeyboardShown");
-extern fn void setModState(Keymod modstate) @extern("SDL_SetModState");
-extern fn bool setScancodeName(Scancode scancode, char* name) @extern("SDL_SetScancodeName");
-extern fn bool setTextInputArea(Window* window, Rect* rect, int cursor) @extern("SDL_SetTextInputArea");
-extern fn bool startTextInput(Window* window) @extern("SDL_StartTextInput");
-extern fn bool startTextInputWithProperties(Window* window, PropertiesID props) @extern("SDL_StartTextInputWithProperties");
-extern fn bool stopTextInput(Window* window) @extern("SDL_StopTextInput");
-extern fn bool textInputActive(Window* window) @extern("SDL_TextInputActive");
-
+extern fn bool clearComposition(Window* window) @cname("SDL_ClearComposition");
+extern fn Window* getKeyboardFocus() @cname("SDL_GetKeyboardFocus");
+extern fn char* getKeyboardNameForID(KeyboardID instance_id) @cname("SDL_GetKeyboardNameForID");
+extern fn KeyboardID* getKeyboards(int* count) @cname("SDL_GetKeyboards");
+extern fn bool* getKeyboardState(int* numkeys) @cname("SDL_GetKeyboardState");
+extern fn Keycode getKeyFromName(char* name) @cname("SDL_GetKeyFromName");
+extern fn Keycode getKeyFromScancode(Scancode scancode, Keymod modstate, bool key_event) @cname("SDL_GetKeyFromScancode");
+extern fn char* getKeyName(Keycode key) @cname("SDL_GetKeyName");
+extern fn Keymod getModState() @cname("SDL_GetModState");
+extern fn Scancode getScancodeFromKey(Keycode key, Keymod* modstate) @cname("SDL_GetScancodeFromKey");
+extern fn Scancode getScancodeFromName(char* name) @cname("SDL_GetScancodeFromName");
+extern fn char* getScancodeName(Scancode scancode) @cname("SDL_GetScancodeName");
+extern fn bool getTextInputArea(Window* window, Rect* rect, int* cursor) @cname("SDL_GetTextInputArea");
+extern fn bool hasKeyboard() @cname("SDL_HasKeyboard");
+extern fn bool hasScreenKeyboardSupport() @cname("SDL_HasScreenKeyboardSupport");
+extern fn void resetKeyboard() @cname("SDL_ResetKeyboard");
+extern fn bool screenKeyboardShown(Window* window) @cname("SDL_ScreenKeyboardShown");
+extern fn void setModState(Keymod modstate) @cname("SDL_SetModState");
+extern fn bool setScancodeName(Scancode scancode, char* name) @cname("SDL_SetScancodeName");
+extern fn bool setTextInputArea(Window* window, Rect* rect, int cursor) @cname("SDL_SetTextInputArea");
+extern fn bool startTextInput(Window* window) @cname("SDL_StartTextInput");
+extern fn bool startTextInputWithProperties(Window* window, PropertiesID props) @cname("SDL_StartTextInputWithProperties");
+extern fn bool stopTextInput(Window* window) @cname("SDL_StopTextInput");
+extern fn bool textInputActive(Window* window) @cname("SDL_TextInputActive");

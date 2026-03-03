@@ -59,28 +59,27 @@ enum SystemCursor {
 }
 
 // Functions
-extern fn bool captureMouse(bool enabled) @extern("SDL_CaptureMouse");
-extern fn Cursor* createAnimatedCursor(CursorFrameInfo* frames, int frame_count, int hot_x, int hot_y) @extern("SDL_CreateAnimatedCursor");
-extern fn Cursor* createColorCursor(Surface* surface, int hot_x, int hot_y) @extern("SDL_CreateColorCursor");
-extern fn Cursor* createCursor(char* data, char* mask, int w, int h, int hot_x, int hot_y) @extern("SDL_CreateCursor");
-extern fn Cursor* createSystemCursor(SystemCursor id) @extern("SDL_CreateSystemCursor");
-extern fn bool cursorVisible() @extern("SDL_CursorVisible");
-extern fn void destroyCursor(Cursor* cursor) @extern("SDL_DestroyCursor");
-extern fn Cursor* getCursor() @extern("SDL_GetCursor");
-extern fn Cursor* getDefaultCursor() @extern("SDL_GetDefaultCursor");
-extern fn MouseButtonFlags getGlobalMouseState(float* x, float* y) @extern("SDL_GetGlobalMouseState");
-extern fn MouseID* getMice(int* count) @extern("SDL_GetMice");
-extern fn Window* getMouseFocus() @extern("SDL_GetMouseFocus");
-extern fn char* getMouseNameForID(MouseID instance_id) @extern("SDL_GetMouseNameForID");
-extern fn MouseButtonFlags getMouseState(float* x, float* y) @extern("SDL_GetMouseState");
-extern fn MouseButtonFlags getRelativeMouseState(float* x, float* y) @extern("SDL_GetRelativeMouseState");
-extern fn bool getWindowRelativeMouseMode(Window* window) @extern("SDL_GetWindowRelativeMouseMode");
-extern fn bool hasMouse() @extern("SDL_HasMouse");
-extern fn bool hideCursor() @extern("SDL_HideCursor");
-extern fn bool setCursor(Cursor* cursor) @extern("SDL_SetCursor");
-extern fn bool setRelativeMouseTransform(MouseMotionTransformCallback callback, void* userdata) @extern("SDL_SetRelativeMouseTransform");
-extern fn bool setWindowRelativeMouseMode(Window* window, bool enabled) @extern("SDL_SetWindowRelativeMouseMode");
-extern fn bool showCursor() @extern("SDL_ShowCursor");
-extern fn bool warpMouseGlobal(float x, float y) @extern("SDL_WarpMouseGlobal");
-extern fn void warpMouseInWindow(Window* window, float x, float y) @extern("SDL_WarpMouseInWindow");
-
+extern fn bool captureMouse(bool enabled) @cname("SDL_CaptureMouse");
+extern fn Cursor* createAnimatedCursor(CursorFrameInfo* frames, int frame_count, int hot_x, int hot_y) @cname("SDL_CreateAnimatedCursor");
+extern fn Cursor* createColorCursor(Surface* surface, int hot_x, int hot_y) @cname("SDL_CreateColorCursor");
+extern fn Cursor* createCursor(char* data, char* mask, int w, int h, int hot_x, int hot_y) @cname("SDL_CreateCursor");
+extern fn Cursor* createSystemCursor(SystemCursor id) @cname("SDL_CreateSystemCursor");
+extern fn bool cursorVisible() @cname("SDL_CursorVisible");
+extern fn void destroyCursor(Cursor* cursor) @cname("SDL_DestroyCursor");
+extern fn Cursor* getCursor() @cname("SDL_GetCursor");
+extern fn Cursor* getDefaultCursor() @cname("SDL_GetDefaultCursor");
+extern fn MouseButtonFlags getGlobalMouseState(float* x, float* y) @cname("SDL_GetGlobalMouseState");
+extern fn MouseID* getMice(int* count) @cname("SDL_GetMice");
+extern fn Window* getMouseFocus() @cname("SDL_GetMouseFocus");
+extern fn char* getMouseNameForID(MouseID instance_id) @cname("SDL_GetMouseNameForID");
+extern fn MouseButtonFlags getMouseState(float* x, float* y) @cname("SDL_GetMouseState");
+extern fn MouseButtonFlags getRelativeMouseState(float* x, float* y) @cname("SDL_GetRelativeMouseState");
+extern fn bool getWindowRelativeMouseMode(Window* window) @cname("SDL_GetWindowRelativeMouseMode");
+extern fn bool hasMouse() @cname("SDL_HasMouse");
+extern fn bool hideCursor() @cname("SDL_HideCursor");
+extern fn bool setCursor(Cursor* cursor) @cname("SDL_SetCursor");
+extern fn bool setRelativeMouseTransform(MouseMotionTransformCallback callback, void* userdata) @cname("SDL_SetRelativeMouseTransform");
+extern fn bool setWindowRelativeMouseMode(Window* window, bool enabled) @cname("SDL_SetWindowRelativeMouseMode");
+extern fn bool showCursor() @cname("SDL_ShowCursor");
+extern fn bool warpMouseGlobal(float x, float y) @cname("SDL_WarpMouseGlobal");
+extern fn void warpMouseInWindow(Window* window, float x, float y) @cname("SDL_WarpMouseInWindow");

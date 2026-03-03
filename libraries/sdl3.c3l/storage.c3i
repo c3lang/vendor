@@ -34,23 +34,23 @@ struct StorageInterface {
 }
 
 // Functions
-extern fn bool closeStorage(Storage *storage) @extern("SDL_CloseStorage");
-extern fn bool copyStorageFile(Storage* storage, char* oldpath, char* newpath) @extern("SDL_CopyStorageFile");
-extern fn bool createStorageDirectory(Storage* storage, char* path) @extern("SDL_CreateStorageDirectory");
-extern fn bool enumerateStorageDirectory(Storage* storage, char* path, EnumerateDirectoryCallback callback, void* userdata) @extern("SDL_EnumerateStorageDirectory");
-extern fn bool getStorageFileSize(Storage* storage, char* path, ulong* length) @extern("SDL_GetStorageFileSize");
-extern fn bool getStoragePathInfo(Storage* storage, char* path, PathInfo* info) @extern("SDL_GetStoragePathInfo");
-extern fn ulong getStorageSpaceRemaining(Storage* storage) @extern("SDL_GetStorageSpaceRemaining");
-extern fn char** globStorageDirectory(Storage* storage, char* path, char* pattern, GlobFlags flags, int* count) @extern("SDL_GlobStorageDirectory");
-extern fn Storage* openFileStorage(char* path) @extern("SDL_OpenFileStorage");
-extern fn Storage* openStorage(StorageInterface* iface, void* userdata) @extern("SDL_OpenStorage");
-extern fn Storage* openTitleStorage(char* override, PropertiesID props) @extern("SDL_OpenTitleStorage");
-extern fn Storage* openUserStorage(char* org, char* app, PropertiesID props) @extern("SDL_OpenUserStorage");
-extern fn bool readStorageFile(Storage* storage, char* path, void* destination, ulong length) @extern("SDL_ReadStorageFile");
-extern fn bool removeStoragePath(Storage* storage, char* path) @extern("SDL_RemoveStoragePath");
-extern fn bool renameStoragePath(Storage* storage, char* oldpath, char* newpath) @extern("SDL_RenameStoragePath");
-extern fn bool storageReady(Storage *storage) @extern("SDL_StorageReady");
-extern fn bool writeStorageFile(Storage* storage, char* path, void* source, ulong length) @extern("SDL_WriteStorageFile");
+extern fn bool closeStorage(Storage *storage) @cname("SDL_CloseStorage");
+extern fn bool copyStorageFile(Storage* storage, char* oldpath, char* newpath) @cname("SDL_CopyStorageFile");
+extern fn bool createStorageDirectory(Storage* storage, char* path) @cname("SDL_CreateStorageDirectory");
+extern fn bool enumerateStorageDirectory(Storage* storage, char* path, EnumerateDirectoryCallback callback, void* userdata) @cname("SDL_EnumerateStorageDirectory");
+extern fn bool getStorageFileSize(Storage* storage, char* path, ulong* length) @cname("SDL_GetStorageFileSize");
+extern fn bool getStoragePathInfo(Storage* storage, char* path, PathInfo* info) @cname("SDL_GetStoragePathInfo");
+extern fn ulong getStorageSpaceRemaining(Storage* storage) @cname("SDL_GetStorageSpaceRemaining");
+extern fn char** globStorageDirectory(Storage* storage, char* path, char* pattern, GlobFlags flags, int* count) @cname("SDL_GlobStorageDirectory");
+extern fn Storage* openFileStorage(char* path) @cname("SDL_OpenFileStorage");
+extern fn Storage* openStorage(StorageInterface* iface, void* userdata) @cname("SDL_OpenStorage");
+extern fn Storage* openTitleStorage(char* override, PropertiesID props) @cname("SDL_OpenTitleStorage");
+extern fn Storage* openUserStorage(char* org, char* app, PropertiesID props) @cname("SDL_OpenUserStorage");
+extern fn bool readStorageFile(Storage* storage, char* path, void* destination, ulong length) @cname("SDL_ReadStorageFile");
+extern fn bool removeStoragePath(Storage* storage, char* path) @cname("SDL_RemoveStoragePath");
+extern fn bool renameStoragePath(Storage* storage, char* oldpath, char* newpath) @cname("SDL_RenameStoragePath");
+extern fn bool storageReady(Storage *storage) @cname("SDL_StorageReady");
+extern fn bool writeStorageFile(Storage* storage, char* path, void* source, ulong length) @cname("SDL_WriteStorageFile");
 
 
 module sdl3::storage;
@@ -67,4 +67,3 @@ alias Remove = fn bool(void* userdata, char* path);
 alias Rename = fn bool(void* userdata, char* oldPath, char* newPath);
 alias Copy = fn bool(void* userdata, char* oldPath, char* newPath);
 alias SpaceRemaining = fn ulong(void* userdata);
-

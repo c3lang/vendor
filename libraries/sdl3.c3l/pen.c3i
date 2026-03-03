@@ -27,7 +27,7 @@ enum PenAxis {
   TANGENTIAL_PRESSURE,    /**< Pressure from squeezing the pen ("barrel pressure"). */
   COUNT,      /**< Total known pen axis types in this version of SDL. This number may grow in future releases! */
 }
-enum PenDeviceType : const CInt {
+constdef PenDeviceType : CInt {
   INVALID  = -1, /**< Not a valid pen device. */
   UNKNOWN  =  0, /**< Don't know specifics of this pen. */
   DIRECT   =  1, /**< Pen touches display. */
@@ -35,5 +35,4 @@ enum PenDeviceType : const CInt {
 }
 
 // Functions
-extern fn PenDeviceType getPenDeviceType(PenID instance_id) @extern("SDL_GetPenDeviceType");
-
+extern fn PenDeviceType getPenDeviceType(PenID instance_id) @cname("SDL_GetPenDeviceType");

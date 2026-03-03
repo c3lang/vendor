@@ -2,5 +2,4 @@
 module sdl3;
 
 // Functions
-extern fn bool openURL(char* url) @extern("SDL_OpenURL");
-
+extern fn bool openURL(char* url) @cname("SDL_OpenURL");
