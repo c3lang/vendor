@@ -128,6 +128,16 @@ jobs:
           asset_path: packages/sdl2.c3l
           asset_name: sdl2.c3l
           asset_content_type: application/zip
+      
+      - name: upload sdl3
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: packages/sdl3.c3l
+          asset_name: sdl3.c3l
+          asset_content_type: application/zip
 
       - name: upload tigr
         uses: actions/upload-release-asset@v1
