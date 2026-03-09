@@ -24,4 +24,4 @@ list:
 		exit 0; \
 	fi; \
 	echo "Compiling $@"; \
-	$(C3C) -C compile $(TARGET_ARG) --libdir "$(LIBDIR)" --lib "$@" $$files
+	$(C3C) -C compile $(TARGET_ARG) --libdir "$(LIBDIR)" --lib "$@" $$files || exit 1
