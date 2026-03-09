@@ -10,8 +10,7 @@ jobs:
   update-packages:
     runs-on: macos-latest
     steps:
-      - &checkout
-        uses: actions/checkout@v4
+      - uses: &checkout actions/checkout@v4
         
       - name: Prepare
         run: brew install ruby
@@ -24,6 +23,7 @@ jobs:
         with:
           name: packages
           path: temp/*.c3l
+          if-no-files-found: error
 
   release:
     runs-on: ubuntu-latest
@@ -31,7 +31,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     
     steps:
-      - *checkout
+      - uses: *checkout
       
       - name: Download packages
         uses: actions/download-artifact@v4
@@ -73,3 +73,4 @@ jobs:
           tag_name: latest
           name: Latest
           files: packages/*.c3l
+          overwrite_files: true
