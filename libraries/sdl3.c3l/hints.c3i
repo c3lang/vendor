@@ -1,0 +1,22 @@
+
+module sdl3;
+
+// Types
+alias HintCallback = fn void(void* userdata, char* name, char* oldValue, char* newValue);
+
+// Enums
+enum HintPriority {
+  DEFAULT,
+  NORMAL,
+  OVERRIDE
+}
+
+// Functions
+extern fn bool addHintCallback(char* name, HintCallback callback, void* userdata) @cname("SDL_AddHintCallback");
+extern fn char* getHint(char* name) @cname("SDL_GetHint");
+extern fn bool getHintBoolean(char* name, bool default_value) @cname("SDL_GetHintBoolean");
+extern fn void removeHintCallback(char* name, HintCallback callback, void* userdata) @cname("SDL_RemoveHintCallback");
+extern fn bool resetHint(char* name) @cname("SDL_ResetHint");
+extern fn void resetHints() @cname("SDL_ResetHints");
+extern fn bool setHint(char* name, char* value) @cname("SDL_SetHint");
+extern fn bool setHintWithPriority(char* name, char* value, HintPriority priority) @cname("SDL_SetHintWithPriority");
