@@ -148,7 +148,7 @@ enum SystemTheme {
 // Functions
 extern fn Window* createPopupWindow(Window* parent, int offset_x, int offset_y, int w, int h, WindowFlags flags) @cname("SDL_CreatePopupWindow");
 extern fn Window* createWindow(char* title, int w, int h, WindowFlags flags) @cname("SDL_CreateWindow");
-extern fn Window* createWindowWithProperties(PropertiesID props) @cname("SDL_CreateWidnowWithProperties");
+extern fn Window* createWindowWithProperties(PropertiesID props) @cname("SDL_CreateWindowWithProperties");
 extern fn void destroyWindow(Window* window) @cname("SDL_DestroyWindow");
 extern fn bool destroyWindowSurface(Window* window) @cname("SDL_DestroyWindowSurface");
 extern fn bool disableScreenSaver() @cname("SDL_DisableScreenSaver");
@@ -198,8 +198,8 @@ extern fn Window* getWindowParent(Window* window) @cname("SDL_GetWindowParent");
 extern fn float getWindowPixelDensity(Window* window) @cname("SDL_GetWindowPixelDensity");
 extern fn PixelFormat getWindowPixelFormat(Window* window) @cname("SDL_GetWindowPixelFormat");
 extern fn bool getWindowPosition(Window* window, int* x, int* y) @cname("SDL_GetWindowPosition");
-extern fn ProgressState getProgressState(Window* window) @cname("SDL_GetWindowProgressState");
-extern fn float getProgressValue(Window* window) @cname("SDL_GetWindowProgressValue");
+extern fn ProgressState getWindowProgressState(Window* window) @cname("SDL_GetWindowProgressState");
+extern fn float getWindowProgressValue(Window* window) @cname("SDL_GetWindowProgressValue");
 extern fn PropertiesID getWindowProperties(Window* window) @cname("SDL_GetWindowProperties");
 extern fn Window** getWindows(int* count) @cname("SDL_GetWindows");
 extern fn bool getWindowSafeArea(Window* window, Rect* rect) @cname("SDL_GetWindowSafeArea");
@@ -218,7 +218,7 @@ extern fn bool setWindowAlwaysOnTop(Window* window, bool on_top) @cname("SDL_Set
 extern fn bool setWindowAspectRatio(Window* window, float min_aspect, float max_aspect) @cname("SDL_SetWindowAspectRatio");
 extern fn bool setWindowBordered(Window* window, bool bordered) @cname("SDL_SetWindowBordered");
 extern fn bool setWindowFillDocument(Window* window, bool fill) @cname("SDL_SetWindowFillDocument");
-extern fn bool setFocusable(Window* window, bool focusable) @cname("SDL_SetWindowFocusable");
+extern fn bool setWindowFocusable(Window* window, bool focusable) @cname("SDL_SetWindowFocusable");
 extern fn bool setWindowFullscreen(Window* window, bool fullscreen) @cname("SDL_SetWindowFullscreen");
 extern fn bool setWindowFullscreenMode(Window* window, DisplayMode* mode) @cname("SDL_SetWindowFullscreenMode");
 extern fn bool setWindowHitTest(Window* window, HitTest callback, void* callback_data) @cname("SDL_SetWindowHitTest");
@@ -232,9 +232,9 @@ extern fn bool setWindowMouseRect(Window* window, Rect* rect) @cname("SDL_SetWin
 extern fn bool setWindowOpacity(Window* window, float opacity) @cname("SDL_SetWindowOpacity");
 extern fn bool setWindowParent(Window* window, Window* parent) @cname("SDL_SetWindowParent");
 extern fn bool setWindowPosition(Window* window, int x, int y) @cname("SDL_SetWindowPosition");
-extern fn bool setProgressState(Window* window, ProgressState state) @cname("SDL_SetWindowProgressState");
-extern fn bool setProgressValue(Window* window, float value) @cname("SDL_SetWindowProgressValue");
-extern fn bool setWindowResizeable(Window* window, bool resizable) @cname("SDL_SetWindowResizable");
+extern fn bool setWindowProgressState(Window* window, ProgressState state) @cname("SDL_SetWindowProgressState");
+extern fn bool setWindowProgressValue(Window* window, float value) @cname("SDL_SetWindowProgressValue");
+extern fn bool setWindowResizable(Window* window, bool resizable) @cname("SDL_SetWindowResizable");
 extern fn bool setWindowShape(Window* window, Surface* shape) @cname("SDL_SetWindowShape");
 extern fn bool setWindowSize(Window* window, int w, int h) @cname("SDL_SetWindowSize");
 extern fn bool setWindowSurfaceVSync(Window* window, int vsync) @cname("SDL_SetWindowSurfaceVSync");

@@ -49,7 +49,7 @@ extern fn void destroyAudioStream(AudioStream* stream) @cname("SDL_DestroyAudioS
 extern fn bool flushAudioStream(AudioStream* stream) @cname("SDL_FlushAudioStream");
 extern fn int* getAudioDeviceChannelMap(AudioDeviceID devid, int* count) @cname("SDL_GetAudioDeviceChannelMap");
 extern fn bool getAudioDeviceFormat(AudioDeviceID devid, AudioSpec* spec, int* sample_frames) @cname("SDL_GetAudioDeviceFormat");
-extern fn float getAudiDeviceGain(AudioDeviceID devid) @cname("SDL_GetAudioDeviceGain");
+extern fn float getAudioDeviceGain(AudioDeviceID devid) @cname("SDL_GetAudioDeviceGain");
 extern fn char* getAudioDeviceName(AudioDeviceID devid) @cname("SDL_GetAudioDeviceName");
 extern fn char* getAudioDriver(int index) @cname("SDL_GetAudioDriver");
 extern fn char* getAudioFormatName(AudioFormat format) @cname("SDL_GetAudioFormatName");

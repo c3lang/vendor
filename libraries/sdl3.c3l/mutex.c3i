@@ -40,7 +40,7 @@ extern fn void setInitialized(InitState* state, bool initialized) @cname("SDL_Se
 extern fn bool shouldInit(InitState* state) @cname("SDL_ShouldInit");
 extern fn bool shouldQuit(InitState* state) @cname("SDL_ShouldQuit");
 extern fn void signalCondition(Condition* cond) @cname("SDL_SignalCondition");
-extern fn void signalSemaphore(Semaphore* sem) @cname("SDL_SignalCondition");
+extern fn void signalSemaphore(Semaphore* sem) @cname("SDL_SignalSemaphore");
 extern fn bool tryLockMutex(Mutex* mutex) @cname("SDL_TryLockMutex");
 extern fn bool tryLockRWLockForReading(RWLock* rwlock) @cname("SDL_TryLockRWLockForReading");
 extern fn bool tryLockRWLockForWriting(RWLock* rwlock) @cname("SDL_TryLockRWLockForWriting");

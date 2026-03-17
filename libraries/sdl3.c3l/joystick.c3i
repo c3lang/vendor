@@ -127,7 +127,7 @@ extern fn bool sendJoystickEffect(Joystick* joystick, void* data, int size) @cna
 extern fn bool sendJoystickVirtualSensorData(Joystick* joystick, SensorType type, ulong sensor_timestamp, float* data, int num_values) @cname("SDL_SendJoystickVirtualSensorData");
 extern fn void setJoystickEventsEnabled(bool enabled) @cname("SDL_SetJoystickEventsEnabled");
 extern fn bool setJoystickLED(Joystick* joystick, char red, char green, char blue) @cname("SDL_SetJoystickLED");
-extern fn bool setJoystickPlayerIndex(Joystick* joystick, int player_index);
+extern fn bool setJoystickPlayerIndex(Joystick* joystick, int player_index) @cname("SDL_SetJoystickPlayerIndex");
 extern fn bool setJoystickVirtualAxis(Joystick* joystick, int axis, short value) @cname("SDL_SetJoystickVirtualAxis");
 extern fn bool setJoystickVirtualBall(Joystick* joystick, int ball, short xrel, short yrel) @cname("SDL_SetJoystickVirtualBall");
 extern fn bool setJoystickVirtualButton(Joystick* joystick, int button, bool down) @cname("SDL_SetJoystickVirtualButton");
