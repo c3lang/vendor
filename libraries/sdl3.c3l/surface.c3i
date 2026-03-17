@@ -39,7 +39,7 @@ constdef ScaleMode : CInt {
 extern fn bool addSurfaceAlternateImage(Surface* surface, Surface* image) @cname("SDL_AddSurfaceAlternateImage");
 extern fn bool blitSurface(Surface* src, Rect* srcrect, Surface* dst, Rect* dstrect) @cname("SDL_BlitSurface");
 extern fn bool blitSurface9Grid(Surface* src, Rect* srcrect, int left_width, int right_width, int top_height, int bottom_height, float scale, ScaleMode scaleMode, Surface* dst, Rect* dstrect) @cname("SDL_BlitSurface9Grid");
-extern fn bool blitSurfaceScaled(Surface* src, Rect* srcrect, Surface* dst, Rect* dstrect, ScaleMode scaleMode) @cname("SDL_BlitSurface");
+extern fn bool blitSurfaceScaled(Surface* src, Rect* srcrect, Surface* dst, Rect* dstrect, ScaleMode scaleMode) @cname("SDL_BlitSurfaceScaled");
 extern fn bool blitSurfaceTiled(Surface* src, Rect* srcrect, Surface* dst, Rect* dstrect) @cname("SDL_BlitSurfaceTiled");
 extern fn bool blitSurfaceTiledWithScale(Surface* src, Rect* srcrect, float scale, ScaleMode scaleMode, Surface* dst, Rect* dstrect) @cname("SDL_BlitSurfaceTiledWithScale");
 extern fn bool blitSurfaceUnchecked(Surface* src, Rect* srcrect, Surface* dst, Rect* dstrect) @cname("SDL_BlitSurfaceUnchecked");
@@ -60,7 +60,7 @@ extern fn bool flipSurface(Surface* surface, FlipMode flip) @cname("SDL_FlipSurf
 extern fn bool getSurfaceAlphaMod(Surface* surface, char* alpha) @cname("SDL_GetSurfaceAlphaMod");
 extern fn bool getSurfaceBlendMode(Surface* surface, BlendMode* blendMode) @cname("SDL_GetSurfaceBlendMode");
 extern fn bool getSurfaceClipRect(Surface* surface, Rect* rect) @cname("SDL_GetSurfaceClipRect");
-extern fn bool getSurfaceColorKey(Surface* surface, uint* key);
+extern fn bool getSurfaceColorKey(Surface* surface, uint* key) @cname("SDL_GetSurfaceColorKey");
 extern fn bool getSurfaceColorMod(Surface* surface, char* r, char* g, char* b) @cname("SDL_GetSurfaceColorMod");
 extern fn Colorspace getSurfaceColorspace(Surface* surface) @cname("SDL_GetSurfaceColorspace");
 extern fn Surface** getSurfaceImages(Surface* surface, int* count) @cname("SDL_GetSurfaceImages");

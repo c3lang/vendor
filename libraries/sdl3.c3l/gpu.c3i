@@ -754,7 +754,7 @@ extern fn void downloadFromGPUBuffer(GPUCopyPass* copy_pass, GPUBufferRegion* so
 extern fn void downloadFromGPUTexture(GPUCopyPass* copy_pass, GPUTextureRegion* source, GPUTextureTransferInfo* destination) @cname("SDL_DownloadFromGPUTexture");
 extern fn void drawGPUIndexedPrimitives(GPURenderPass* render_pass, uint num_indices, uint num_instances, uint first_index, int vertex_offset, uint first_instance) @cname("SDL_DrawGPUIndexedPrimitives");
 extern fn void drawGPUIndexedPrimitivesIndirect(GPURenderPass* render_pass, GPUBuffer* buffer, uint offset, uint draw_count) @cname("SDL_DrawGPUIndexedPrimitivesIndirect");
-extern fn void rawGPUPrimitives(GPURenderPass* render_pass, uint num_vertices, uint num_instances, uint first_vertex, uint first_instance) @cname("SDL_DrawGPUPrimitives");
+extern fn void drawGPUPrimitives(GPURenderPass* render_pass, uint num_vertices, uint num_instances, uint first_vertex, uint first_instance) @cname("SDL_DrawGPUPrimitives");
 extern fn void drawGPUPrimitivesIndirect(GPURenderPass* render_pass, GPUBuffer* buffer, uint offset, uint draw_count) @cname("SDL_DrawGPUPrimitivesIndirect");
 extern fn void endGPUComputePass(GPUComputePass* compute_pass) @cname("SDL_EndGPUComputePass");
 extern fn void endGPUCopyPass(GPUCopyPass* copy_pass) @cname("SDL_EndGPUCopyPass");
@@ -770,8 +770,8 @@ extern fn GPUTextureFormat getGPUSwapchainTextureFormat(GPUDevice* device, Windo
 extern fn GPUTextureFormat getGPUTextureFormatFromPixelFormat(PixelFormat format) @cname("SDL_GetGPUTextureFormatFromPixelFormat");
 extern fn int getNumGPUDrivers() @cname("SDL_GetNumGPUDrivers");
 extern fn PixelFormat getPixelFormatFromGPUTextureFormat(GPUTextureFormat format) @cname("SDL_GetPixelFormatFromGPUTextureFormat");
-extern fn bool supportsPropertiesGPU(PropertiesID props) @cname("GPUSupportsProperties");
-extern fn bool supportsShaderFormatsGPU(GPUShaderFormat format_flags, char* name) @cname("SDL_GPUSupportsProperties");
+extern fn bool supportsPropertiesGPU(PropertiesID props) @cname("SDL_GPUSupportsProperties");
+extern fn bool supportsShaderFormatsGPU(GPUShaderFormat format_flags, char* name) @cname("SDL_GPUSupportsShaderFormats");
 extern fn uint textureFormatTexelBlockSizeGPU(GPUTextureFormat format) @cname("SDL_GPUTextureFormatTexelBlockSizeGPU");
 extern fn bool textureSupportsFormatGPU(GPUDevice* device, GPUTextureFormat format, GPUTextureType type, GPUTextureUsageFlags usage) @cname("SDL_GPUTextureSupportsFormat");
 extern fn bool textureSupportsSampleCountGPU(GPUDevice *device, GPUTextureFormat format, GPUSampleCount sample_count) @cname("SDL_GPUTextureSupportsSampleCount");
