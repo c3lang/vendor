@@ -31,8 +31,8 @@ extern fn PropertyType getPropertyType(PropertiesID props, char* name) @cname("S
 extern fn char* getStringProperty(PropertiesID props, char* name, char* default_value) @cname("SDL_GetStringProperty");
 extern fn bool hasProperty(PropertiesID props, char* name) @cname("SDL_HasProperty");
 extern fn bool lockProperties(PropertiesID props) @cname("SDL_LockProperties");
-extern fn bool getBooleanProperty(PropertiesID props, char* name, bool value) @cname("SDL_GetBooleanProperty");
-extern fn bool getFloatProperty(PropertiesID props, char* name, float value) @cname("SDL_GetFloatProperty");
+extern fn bool setBooleanProperty(PropertiesID props, char* name, bool value) @cname("SDL_SetBooleanProperty");
+extern fn bool setFloatProperty(PropertiesID props, char* name, float value) @cname("SDL_SetFloatProperty");
 extern fn bool setNumberProperty(PropertiesID props, char* name, long value) @cname("SDL_SetNumberProperty");
 extern fn bool setPointerProperty(PropertiesID props, char* name, void* value) @cname("SDL_SetPointerProperty");
 extern fn bool setPointerPropertyWithCleanup(PropertiesID props, char* name, void* value, CleanupPropertyCallback cleanup, void* userdata) @cname("SDL_SetPointerPropertyWithCleanup");
