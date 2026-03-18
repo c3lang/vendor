@@ -2,7 +2,7 @@
 module sdl3;
 
 // Types
-alias Process = void;
+typedef Process = void;
 
 // Enums
 enum ProcessIO {

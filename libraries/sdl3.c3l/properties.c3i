@@ -4,7 +4,7 @@ module sdl3;
 // Types
 alias CleanupPropertyCallback = fn void(void* userdata, void* value);
 alias EnumeratePropertiesCallback = fn void(void* userdata, PropertiesID props, char* name);
-alias PropertiesID = uint;
+typedef PropertiesID = uint;
 
 // Enums
 enum PropertyType {

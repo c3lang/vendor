@@ -2,7 +2,7 @@
 module sdl3;
 
 // Types
-alias Gamepad = void;
+typedef Gamepad = void;
 
 // Structs
 struct GamepadBinding {

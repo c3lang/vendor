@@ -2,8 +2,8 @@
 module sdl3;
 
 // Types
-alias Joystick = void;
-alias JoystickID = uint;
+typedef Joystick = void;
+typedef JoystickID = uint;
 
 alias Update = fn void(void* userdata);
 alias SetPlayerIndex = fn void(void* userdata, int player_index);

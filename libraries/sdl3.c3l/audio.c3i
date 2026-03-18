@@ -2,9 +2,9 @@
 module sdl3;
 
 // Types
-alias AudioDeviceID = uint;
+typedef AudioDeviceID = uint;
 alias AudioPostmixCallback = fn void(void* userdata, AudioSpec* spec, float* buffer, int buflen);
-alias AudioStream = void;
+typedef AudioStream = void;
 alias AudioStreamCallback = fn void(void* userdata, AudioStream* stream, int additional_amount, int total_amount);
 alias AudioStreamDataCompleteCallback = fn void(void* userdata, void* buf, int buflen);
 

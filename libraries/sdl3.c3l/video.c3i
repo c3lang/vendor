@@ -2,19 +2,19 @@
 module sdl3;
 
 // Types
-alias DisplayID = uint;
-alias DisplayModeData = void;
-alias EGLAttrib = int*;
+typedef DisplayID = uint;
+typedef DisplayModeData = void;
+typedef EGLAttrib = int*;
 alias EGLAttribArrayCallback = fn EGLAttrib(void* userdata);
-alias EGLConfig = void*;
-alias EGLDisplay = void*;
-alias EGLint = int;
+typedef EGLConfig = void*;
+typedef EGLDisplay = void*;
+typedef EGLint = int;
 alias EGLIntArrayCallback = fn EGLint(void *userdata, EGLDisplay display, EGLConfig config);
-alias EGLSurface = void*;
-alias GLContext = void;
+typedef EGLSurface = void*;
+typedef GLContext = void*;
 alias HitTest = fn HitTestResult(Window *win, Point* area, void* data);
-alias Window = void;
-alias WindowID = uint;
+typedef Window = void;
+typedef WindowID = uint;
 
 // Bitstructs
 bitstruct GLContextFlag : uint {
@@ -250,14 +250,14 @@ extern fn bool windowHasSurface(Window* window) @cname("SDL_WindowHasSurface");
 module sdl3::sdlgl;
 
 // Types
-alias Profile = uint;
+typedef Profile = uint;
 const Profile CONTEXT_PROFILE_CORE          = 0x0001;
 const Profile CONTEXT_PROFILE_COMPATIBILITY = 0x0002;
 const Profile CONTEXT_PROFILE_ES            = 0x0004;
 
 // Functions
-extern fn GLContext* createContext(Window* window) @cname("SDL_GL_CreateContext");
-extern fn bool destroyContext(GLContext* context) @cname("SDL_GL_DestroyContext");
+extern fn GLContext createContext(Window* window) @cname("SDL_GL_CreateContext");
+extern fn bool destroyContext(GLContext context) @cname("SDL_GL_DestroyContext");
 extern fn bool extensionSupported(char* extension) @cname("SDL_GL_ExtensionSupported");
 extern fn bool getAttribute(GLAttr attr, int* value) @cname("SDL_GL_GetAttribute");
 extern fn GLContext getCurrentContext() @cname("SDL_GL_GetCurrentContext");
@@ -265,7 +265,7 @@ extern fn Window* getCurrentWindow() @cname("SDL_GL_GetCurrentWindow");
 extern fn FunctionPointer getProcAddress(char* proc) @cname("SDL_GL_GetProcAddress");
 extern fn bool getSwapInterval(int* interval) @cname("SDL_GL_GetSwapInterval");
 extern fn bool loadLibrary(char* path) @cname("SDL_GL_LoadLibrary");
-extern fn bool makeCurrent(Window* window, GLContext* context) @cname("SDL_GL_MakeCurrent");
+extern fn bool makeCurrent(Window* window, GLContext context) @cname("SDL_GL_MakeCurrent");
 extern fn void resetAttributes() @cname("SDL_GL_ResetAttributes");
 extern fn bool setAttribute(GLAttr attr, int value) @cname("SDL_GL_SetAttribute");
 extern fn bool setSwapInterval(int interval) @cname("SDL_GL_SetSwapInterval");

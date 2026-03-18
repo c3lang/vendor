@@ -2,8 +2,8 @@
 module sdl3;
 
 // Types
-alias Sensor = void;
-alias SensorID = uint;
+typedef Sensor = void;
+typedef SensorID = uint;
 
 // Enums
 constdef SensorType : CInt {

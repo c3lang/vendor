@@ -2,8 +2,8 @@
 module sdl3;
 
 // Types
-alias GPURenderState = void;
-alias Renderer = void;
+typedef GPURenderState = void;
+typedef Renderer = void;
 
 // Structs
 struct GPURenderStateCreateInfo {

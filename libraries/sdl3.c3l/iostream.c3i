@@ -2,7 +2,7 @@
 module sdl3;
 
 // Type
-alias IOStream = void;
+typedef IOStream = void;
 
 // Struct
 struct IOStreamInterface {
