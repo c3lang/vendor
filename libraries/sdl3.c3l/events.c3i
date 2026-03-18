@@ -329,7 +329,7 @@ struct MouseMotionEvent {
   EventType type;
   
   uint reserved;
-  uint timestamp;     /**< In nanoseconds, populated using SDL_GetTicksNS() */
+  ulong timestamp;     /**< In nanoseconds, populated using SDL_GetTicksNS() */
   
   WindowID windowID;  /**< The window with mouse focus, if any */
   MouseID which;      /**< The mouse instance id in relative mode, SDL_TOUCH_MOUSEID for touch events, or 0 */
