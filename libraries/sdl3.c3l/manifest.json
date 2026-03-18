@@ -36,6 +36,11 @@
       "dependencies" : [],
       "linked-libraries" : [ "SDL3" ]
     },
+    "ios-aarch64" : {
+      "link-args" : [],
+      "dependencies" : [],
+      "linked-libraries" : [ "SDL3" ]
+    },
     "macos-aarch64" : {
       "link-args" : [],
       "dependencies" : [],
