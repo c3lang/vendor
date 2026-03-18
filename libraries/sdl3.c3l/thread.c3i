@@ -2,9 +2,9 @@
 module sdl3;
 
 // Types
-alias Thread = void;
-alias ThreadID = ulong;
-alias TLsID = AtomicInt;
+typedef Thread = void;
+typedef ThreadID = ulong;
+typedef TLsID = AtomicInt;
 alias ThreadFunction = fn int(void* data);
 alias TLSDestructorCallback = fn void(void* data);
 

@@ -2,11 +2,11 @@
 module sdl3;
 
 // Types
-alias Haptic = void;
-alias HapticDirectionType = char;
-alias HapticEffectID = int;
-alias HapticEffectType = ushort;
-alias HapticID = uint;
+typedef Haptic = void;
+typedef HapticDirectionType = char;
+typedef HapticEffectID = int;
+typedef HapticEffectType = ushort;
+typedef HapticID = uint;
 
 // Structs
 struct HapticCondition {

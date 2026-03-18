@@ -2,9 +2,9 @@
 module sdl3;
 
 // Types
-alias Tray = void;
-alias TrayEntry = void;
-alias TrayMenu = void;
+typedef Tray = void;
+typedef TrayEntry = void;
+typedef TrayMenu = void;
 alias TrayCallback = fn void(void* userdata, TrayEntry* entry);
 alias TrayClickCallback = fn bool(void* userdata, Tray* tray);
 

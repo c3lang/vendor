@@ -2,10 +2,10 @@
 module sdl3;
 
 // Types
-alias Keycode = uint;
+typedef Keycode = uint;
 
-const Keycode KEY_EXTENDED_MASK          = (1 << 29);
-const Keycode KEY_SCANCODE_MASK          = (1 << 30);
+const Keycode KEY_EXTENDED_MASK          = (Keycode)(1 << 29);
+const Keycode KEY_SCANCODE_MASK          = (Keycode)(1 << 30);
 const Keycode KEY_UNKNOWN                = 0x00000000; /**< 0 */
 const Keycode KEY_RETURN                 = 0x0000000d; /**< '\r' */
 const Keycode KEY_ESCAPE                 = 0x0000001b; /**< '\x1B' */
@@ -263,7 +263,7 @@ const Keycode KEY_RMETA                  = 0x20000005; /**< Extended key Right M
 const Keycode KEY_LHYPER                 = 0x20000006; /**< Extended key Left Hyper */
 const Keycode KEY_RHYPER                 = 0x20000007; /**< Extended key Right Hyper */
 
-alias Keymod = uint;
+typedef Keymod = uint;
 
 const Keymod KMOD_NONE   = 0x0000; /**< no modifier is applicable. */
 const Keymod KMOD_LSHIFT = 0x0001; /**< the left Shift key is down. */

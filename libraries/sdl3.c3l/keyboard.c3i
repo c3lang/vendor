@@ -2,7 +2,7 @@
 module sdl3;
 
 // Types
-alias KeyboardID = uint;
+typedef KeyboardID = uint;
 
 // Enums
 enum Capitalization {

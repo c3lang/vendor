@@ -2,7 +2,7 @@
 module sdl3;
 
 // Types
-alias PenID = int;
+typedef PenID = int;
 
 // Bitstructs
 bitstruct PenInputFlags : uint {

@@ -2,11 +2,11 @@
 module sdl3;
 
 // Types
-alias Cursor = void;
-alias MouseID = uint;
+typedef Cursor = void;
+typedef MouseID = uint;
 alias MouseMotionTransformCallback = fn void(void* userdata, ulong timestamp, Window* window, MouseID mouseID, float* x, float* y);
 
-alias MouseButtonFlags = uint;
+typedef MouseButtonFlags = uint;
 
 const MouseButtonFlags BUTTON_LEFT = 1;
 const MouseButtonFlags BUTTON_MIDDLE = 2;
@@ -15,7 +15,7 @@ const MouseButtonFlags BUTTON_X1 = 4;
 const MouseButtonFlags BUTTON_X2 = 5;
 
 macro MouseButtonFlags @buttonMask(#a) {
-  return 1u << ((#a) - 1);
+  return (MouseButtonFlags)(1u << ((uint)(#a) - 1));
 }
 const BUTTON_LMASK   = @buttonMask(BUTTON_LEFT);
 const BUTTON_MMASK   = @buttonMask(BUTTON_MIDDLE);

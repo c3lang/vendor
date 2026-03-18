@@ -2,10 +2,10 @@
 module sdl3;
 
 // Types
-alias Condition = void;
-alias Mutex = void;
-alias RWLock = void;
-alias Semaphore = void;
+typedef Condition = void;
+typedef Mutex = void;
+typedef RWLock = void;
+typedef Semaphore = void;
 
 // Structs
 struct InitState {

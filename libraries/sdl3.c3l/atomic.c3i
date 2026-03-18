@@ -2,7 +2,7 @@
 module sdl3;
 
 // Types
-alias SpinLock = int;
+typedef SpinLock = int;
 
 // Structs
 struct AtomicInt { int value; }

@@ -2,8 +2,8 @@
 module sdl3;
 
 // Types
-alias Environment = void;
-alias Time = ulong;
+typedef Environment = void;
+typedef Time = ulong;
 alias CallocFunc = fn void*(usz nmemb, usz size);
 alias CompareCallback = fn int(void* a, void* b);
 alias CompareCallback_r = fn int(void* a, void* b);

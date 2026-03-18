@@ -2,8 +2,8 @@
 module sdl3;
 
 // Types
-alias AsyncIO = void;
-alias AsyncIOQueue = void;
+typedef AsyncIO = void;
+typedef AsyncIOQueue = void;
 
 // Structs
 struct AsyncIOOutcome {

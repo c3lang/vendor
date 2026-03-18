@@ -2,7 +2,7 @@
 module sdl3;
 
 // Types
-alias SharedObject = void;
+typedef SharedObject = void;
 
 // Functions
 extern fn FunctionPointer loadFunction(SharedObject* handle, char* name) @cname("SDL_LoadFunction");

@@ -2,8 +2,8 @@
 module sdl3;
 
 // Type
-alias FingerID = ulong;
-alias TouchID = ulong;
+typedef FingerID = ulong;
+typedef TouchID = ulong;
 
 // Struct
 struct Finger {

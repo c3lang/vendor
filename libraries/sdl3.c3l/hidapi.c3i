@@ -2,7 +2,7 @@
 module sdl3::hid;
 
 // Types
-alias Device = void;
+typedef Device = void;
 
 // Structs
 struct DeviceInfo {

@@ -2,8 +2,8 @@
 module sdl3;
 
 // Types
-alias Camera = void;
-alias CameraID = uint;
+typedef Camera = void;
+typedef CameraID = uint;
 
 // Structs
 struct CameraSpec {

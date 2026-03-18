@@ -2,19 +2,19 @@
 module sdl3;
 
 // Types
-alias GPUBuffer = void;
-alias GPUCommandBuffer = void;
-alias GPUComputePass = void;
-alias GPUComputePipeline = void;
-alias GPUCopyPass = void;
-alias GPUDevice = void;
-alias GPUFence = void;
-alias GPUGraphicsPipeline = void;
-alias GPURenderPass = void;
-alias GPUSampler = void;
-alias GPUShader = void;
-alias GPUTexture = void;
-alias GPUTransferBuffer = void;
+typedef GPUBuffer = void;
+typedef GPUCommandBuffer = void;
+typedef GPUComputePass = void;
+typedef GPUComputePipeline = void;
+typedef GPUCopyPass = void;
+typedef GPUDevice = void;
+typedef GPUFence = void;
+typedef GPUGraphicsPipeline = void;
+typedef GPURenderPass = void;
+typedef GPUSampler = void;
+typedef GPUShader = void;
+typedef GPUTexture = void;
+typedef GPUTransferBuffer = void;
 
 // Bitstructs
 bitstruct GPUBufferUsageFlags : uint {

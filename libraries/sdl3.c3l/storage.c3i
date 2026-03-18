@@ -2,7 +2,7 @@
 module sdl3;
 
 // Types
-alias Storage = void;
+typedef Storage = void;
 
 // Structs
 struct StorageInterface {

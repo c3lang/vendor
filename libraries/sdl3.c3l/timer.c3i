@@ -2,7 +2,7 @@
 module sdl3;
 
 // Types
-alias TimerID = uint;
+typedef TimerID = uint;
 alias NSTimerCallback = fn ulong(void* userdata, TimerID timerID, ulong interval);
 alias TimerCallback = fn uint(void* usedata, TimerID timerID, uint interval);
 
