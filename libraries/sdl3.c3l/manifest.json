@@ -39,7 +39,7 @@
     "ios-aarch64" : {
       "link-args" : [],
       "dependencies" : [],
-      "linked-libraries" : []
+      "linked-libraries" : [ "SDL3" ]
     },
     "macos-aarch64" : {
       "link-args" : [],

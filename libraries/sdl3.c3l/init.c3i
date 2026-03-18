@@ -32,6 +32,7 @@ extern fn char* getAppMetadataProperty(char* name) @cname("SDL_GetAppMetadataPro
 extern fn bool init(InitFlags flags) @cname("SDL_Init");
 extern fn bool initSubSystem(InitFlags flags) @cname("SDL_InitSubSystem");
 extern fn bool isMainThread() @cname("SDL_IsMainThread");
+extern fn void setMainReady() @cname("SDL_SetMainReady");
 extern fn void quit() @cname("SDL_Quit");
 extern fn void quitSubSystem(InitFlags flags) @cname("SDL_QuitSubSystem");
 extern fn bool runOnMainThread(MainThreadCallback callback, void* userdata, bool wait_complete) @cname("SDL_RunOnMainThread");
