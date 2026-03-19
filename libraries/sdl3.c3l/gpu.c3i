@@ -2,22 +2,22 @@
 module sdl3;
 
 // Types
-typedef GPUBuffer = void;
-typedef GPUCommandBuffer = void;
-typedef GPUComputePass = void;
-typedef GPUComputePipeline = void;
-typedef GPUCopyPass = void;
-typedef GPUDevice = void;
-typedef GPUFence = void;
-typedef GPUGraphicsPipeline = void;
-typedef GPURenderPass = void;
-typedef GPUSampler = void;
-typedef GPUShader = void;
-typedef GPUTexture = void;
-typedef GPUTransferBuffer = void;
+typedef SdlGPUBuffer = void;
+typedef SdlGPUCommandBuffer = void;
+typedef SdlGPUComputePass = void;
+typedef SdlGPUComputePipeline = void;
+typedef SdlGPUCopyPass = void;
+typedef SdlGPUDevice = void;
+typedef SdlGPUFence = void;
+typedef SdlGPUGraphicsPipeline = void;
+typedef SdlGPURenderPass = void;
+typedef SdlGPUSampler = void;
+typedef SdlGPUShader = void;
+typedef SdlGPUTexture = void;
+typedef SdlGPUTransferBuffer = void;
 
 // Bitstructs
-bitstruct GPUBufferUsageFlags : uint {
+bitstruct SdlGPUBufferUsageFlags : uint {
   bool vertex;
   bool index;
   bool indirect;
@@ -25,13 +25,13 @@ bitstruct GPUBufferUsageFlags : uint {
   bool computeStorageRead;
   bool computeStorageWrite;
 }
-bitstruct GPUColorComponentFlags : char {
+bitstruct SdlGPUColorComponentFlags : char {
   bool r;
   bool g;
   bool b;
   bool a;
 }
-bitstruct GPUShaderFormat : uint {
+bitstruct SdlGPUShaderFormat : uint {
   bool private;
   bool spirv;
   bool dxbc;
@@ -39,7 +39,7 @@ bitstruct GPUShaderFormat : uint {
   bool msl;
   bool metallib;
 }
-bitstruct GPUTextureUsageFlags : uint {
+bitstruct SdlGPUTextureUsageFlags : uint {
   bool sampler;
   bool colorTarget;
   bool depthStencilTarget;
@@ -50,18 +50,18 @@ bitstruct GPUTextureUsageFlags : uint {
 }
 
 // Structs
-struct GPUBlitInfo {
-  GPUBlitRegion source;       /**< The source region for the blit. */
-  GPUBlitRegion destination;  /**< The destination region for the blit. */
-  GPULoadOp load_op;          /**< What is done with the contents of the destination before the blit. */
-  FColor clear_color;         /**< The color to clear the destination region to before the blit. Ignored if load_op is not SDL_GPU_LOADOP_CLEAR. */
-  FlipMode flip_mode;         /**< The flip mode for the source region. */
-  GPUFilter filter;           /**< The filter mode used when blitting. */
+struct SdlGPUBlitInfo {
+  SdlGPUBlitRegion source;       /**< The source region for the blit. */
+  SdlGPUBlitRegion destination;  /**< The destination region for the blit. */
+  SdlGPULoadOp load_op;          /**< What is done with the contents of the destination before the blit. */
+  SdlFColor clear_color;         /**< The color to clear the destination region to before the blit. Ignored if load_op is not SDL_GPU_LOADOP_CLEAR. */
+  SdlFlipMode flip_mode;         /**< The flip mode for the source region. */
+  SdlGPUFilter filter;           /**< The filter mode used when blitting. */
   bool cycle;                 /**< true cycles the destination texture if it is already bound. */
   char padding1, padding2, padding3;
 }
-struct GPUBlitRegion {
-  GPUTexture *texture;        /**< The texture. */
+struct SdlGPUBlitRegion {
+  SdlGPUTexture *texture;        /**< The texture. */
   uint mip_level;             /**< The mip level index of the region. */
   uint layer_or_depth_plane;  /**< The layer index or depth plane of the region. This value is treated as a layer index on 2D array and cube textures, and as a depth plane on 3D textures. */
   uint x;                     /**< The left offset of the region. */
@@ -69,60 +69,60 @@ struct GPUBlitRegion {
   uint w;                     /**< The width of the region. */
   uint h;                     /**< The height of the region. */
 }
-struct GPUBufferBinding {
-  GPUBuffer* buffer;  /**< The buffer to bind. Must have been created with SDL_GPU_BUFFERUSAGE_VERTEX for SDL_BindGPUVertexBuffers, or SDL_GPU_BUFFERUSAGE_INDEX for SDL_BindGPUIndexBuffer. */
+struct SdlGPUBufferBinding {
+  SdlGPUBuffer* buffer;  /**< The buffer to bind. Must have been created with SDL_GPU_BUFFERUSAGE_VERTEX for SDL_BindGPUVertexBuffers, or SDL_GPU_BUFFERUSAGE_INDEX for SDL_BindGPUIndexBuffer. */
   uint offset;        /**< The starting byte of the data to bind in the buffer. */
 }
-struct GPUBufferCreateInfo {
-  GPUBufferUsageFlags usage;  /**< How the buffer is intended to be used by the client. */
+struct SdlGPUBufferCreateInfo {
+  SdlGPUBufferUsageFlags usage;  /**< How the buffer is intended to be used by the client. */
   uint size;                  /**< The size in bytes of the buffer. */
 
-  PropertiesID props;         /**< A properties ID for extensions. Should be 0 if no extensions are needed. */
+  SdlPropertiesID props;         /**< A properties ID for extensions. Should be 0 if no extensions are needed. */
 }
-struct GPUBufferLocation {
-  GPUBuffer *buffer;  /**< The buffer. */
+struct SdlGPUBufferLocation {
+  SdlGPUBuffer *buffer;  /**< The buffer. */
   uint offset;        /**< The starting byte within the buffer. */
 }
-struct GPUBufferRegion {
-  GPUBuffer *buffer;  /**< The buffer. */
+struct SdlGPUBufferRegion {
+  SdlGPUBuffer *buffer;  /**< The buffer. */
   uint offset;        /**< The starting byte within the buffer. */
   uint size;          /**< The size in bytes of the region. */
 }
-struct GPUColorTargetBlendState {
-  GPUBlendFactor src_color_blendfactor;     /**< The value to be multiplied by the source RGB value. */
-  GPUBlendFactor dst_color_blendfactor;     /**< The value to be multiplied by the destination RGB value. */
-  GPUBlendOp color_blend_op;                /**< The blend operation for the RGB components. */
-  GPUBlendFactor src_alpha_blendfactor;     /**< The value to be multiplied by the source alpha. */
-  GPUBlendFactor dst_alpha_blendfactor;     /**< The value to be multiplied by the destination alpha. */
-  GPUBlendOp alpha_blend_op;                /**< The blend operation for the alpha component. */
-  GPUColorComponentFlags color_write_mask;  /**< A bitmask specifying which of the RGBA components are enabled for writing. Writes to all channels if enable_color_write_mask is false. */
+struct SdlGPUColorTargetBlendState {
+  SdlGPUBlendFactor src_color_blendfactor;     /**< The value to be multiplied by the source RGB value. */
+  SdlGPUBlendFactor dst_color_blendfactor;     /**< The value to be multiplied by the destination RGB value. */
+  SdlGPUBlendOp color_blend_op;                /**< The blend operation for the RGB components. */
+  SdlGPUBlendFactor src_alpha_blendfactor;     /**< The value to be multiplied by the source alpha. */
+  SdlGPUBlendFactor dst_alpha_blendfactor;     /**< The value to be multiplied by the destination alpha. */
+  SdlGPUBlendOp alpha_blend_op;                /**< The blend operation for the alpha component. */
+  SdlGPUColorComponentFlags color_write_mask;  /**< A bitmask specifying which of the RGBA components are enabled for writing. Writes to all channels if enable_color_write_mask is false. */
   bool enable_blend;                        /**< Whether blending is enabled for the color target. */
   bool enable_color_write_mask;             /**< Whether the color write mask is enabled. */
   char padding1, padding2;
 }
-struct GPUColorTargetDescription {
-  GPUTextureFormat format;               /**< The pixel format of the texture to be used as a color target. */
-  GPUColorTargetBlendState blend_state;  /**< The blend state to be used for the color target. */
+struct SdlGPUColorTargetDescription {
+  SdlGPUTextureFormat format;               /**< The pixel format of the texture to be used as a color target. */
+  SdlGPUColorTargetBlendState blend_state;  /**< The blend state to be used for the color target. */
 }
-struct GPUColorTargetInfo {
-  GPUTexture *texture;         /**< The texture that will be used as a color target by a render pass. */
+struct SdlGPUColorTargetInfo {
+  SdlGPUTexture *texture;         /**< The texture that will be used as a color target by a render pass. */
   uint mip_level;              /**< The mip level to use as a color target. */
   uint layer_or_depth_plane;   /**< The layer index or depth plane to use as a color target. This value is treated as a layer index on 2D array and cube textures, and as a depth plane on 3D textures. */
-  FColor clear_color;          /**< The color to clear the color target to at the start of the render pass. Ignored if SDL_GPU_LOADOP_CLEAR is not used. */
-  GPULoadOp load_op;           /**< What is done with the contents of the color target at the beginning of the render pass. */
-  GPUStoreOp store_op;         /**< What is done with the results of the render pass. */
-  GPUTexture *resolve_texture; /**< The texture that will receive the results of a multisample resolve operation. Ignored if a RESOLVE* store_op is not used. */
+  SdlFColor clear_color;          /**< The color to clear the color target to at the start of the render pass. Ignored if SDL_GPU_LOADOP_CLEAR is not used. */
+  SdlGPULoadOp load_op;           /**< What is done with the contents of the color target at the beginning of the render pass. */
+  SdlGPUStoreOp store_op;         /**< What is done with the results of the render pass. */
+  SdlGPUTexture *resolve_texture; /**< The texture that will receive the results of a multisample resolve operation. Ignored if a RESOLVE* store_op is not used. */
   uint resolve_mip_level;      /**< The mip level of the resolve texture to use for the resolve operation. Ignored if a RESOLVE* store_op is not used. */
   uint resolve_layer;          /**< The layer index of the resolve texture to use for the resolve operation. Ignored if a RESOLVE* store_op is not used. */
   bool cycle;                  /**< true cycles the texture if the texture is bound and load_op is not LOAD */
   bool cycle_resolve_texture;  /**< true cycles the resolve texture if the resolve texture is bound. Ignored if a RESOLVE* store_op is not used. */
   char padding1, padding2;
 }
-struct GPUComputePipelineCreateInfo {
+struct SdlGPUComputePipelineCreateInfo {
   usz code_size;                        /**< The size in bytes of the compute shader code pointed to. */
   char* code;                           /**< A pointer to compute shader code. */
   char* entrypoint;                     /**< A pointer to a null-terminated UTF-8 string specifying the entry point function name for the shader. */
-  GPUShaderFormat format;               /**< The format of the compute shader code. */
+  SdlGPUShaderFormat format;               /**< The format of the compute shader code. */
   uint num_samplers;                    /**< The number of samplers defined in the shader. */
   uint num_readonly_storage_textures;   /**< The number of readonly storage textures defined in the shader. */
   uint num_readonly_storage_buffers;    /**< The number of readonly storage buffers defined in the shader. */
@@ -133,12 +133,12 @@ struct GPUComputePipelineCreateInfo {
   uint threadcount_y;                   /**< The number of threads in the Y dimension. This should match the value in the shader. */
   uint threadcount_z;                   /**< The number of threads in the Z dimension. This should match the value in the shader. */
 
-  PropertiesID props;                   /**< A properties ID for extensions. Should be 0 if no extensions are needed. */
+  SdlPropertiesID props;                   /**< A properties ID for extensions. Should be 0 if no extensions are needed. */
 }
-struct GPUDepthStencilState {
-  GPUCompareOp compare_op;                /**< The comparison operator used for depth testing. */
-  GPUStencilOpState back_stencil_state;   /**< The stencil op state for back-facing triangles. */
-  GPUStencilOpState front_stencil_state;  /**< The stencil op state for front-facing triangles. */
+struct SdlGPUDepthStencilState {
+  SdlGPUCompareOp compare_op;                /**< The comparison operator used for depth testing. */
+  SdlGPUStencilOpState back_stencil_state;   /**< The stencil op state for back-facing triangles. */
+  SdlGPUStencilOpState front_stencil_state;  /**< The stencil op state for front-facing triangles. */
   char compare_mask;                      /**< Selects the bits of the stencil values participating in the stencil test. */
   char write_mask;                        /**< Selects the bits of the stencil values updated by the stencil test. */
   bool enable_depth_test;                 /**< true enables the depth test. */
@@ -146,66 +146,66 @@ struct GPUDepthStencilState {
   bool enable_stencil_test;               /**< true enables the stencil test. */
   char padding1, padding2, padding3;
 }
-struct GPUDepthStencilTargetInfo {
-  GPUTexture *texture;               /**< The texture that will be used as the depth stencil target by the render pass. */
+struct SdlGPUDepthStencilTargetInfo {
+  SdlGPUTexture *texture;               /**< The texture that will be used as the depth stencil target by the render pass. */
   float clear_depth;                 /**< The value to clear the depth component to at the beginning of the render pass. Ignored if SDL_GPU_LOADOP_CLEAR is not used. */
-  GPULoadOp load_op;                 /**< What is done with the depth contents at the beginning of the render pass. */
-  GPUStoreOp store_op;               /**< What is done with the depth results of the render pass. */
-  GPULoadOp stencil_load_op;         /**< What is done with the stencil contents at the beginning of the render pass. */
-  GPUStoreOp stencil_store_op;       /**< What is done with the stencil results of the render pass. */
+  SdlGPULoadOp load_op;                 /**< What is done with the depth contents at the beginning of the render pass. */
+  SdlGPUStoreOp store_op;               /**< What is done with the depth results of the render pass. */
+  SdlGPULoadOp stencil_load_op;         /**< What is done with the stencil contents at the beginning of the render pass. */
+  SdlGPUStoreOp stencil_store_op;       /**< What is done with the stencil results of the render pass. */
   bool cycle;                        /**< true cycles the texture if the texture is bound and any load ops are not LOAD */
   char clear_stencil;                /**< The value to clear the stencil component to at the beginning of the render pass. Ignored if SDL_GPU_LOADOP_CLEAR is not used. */
   char mip_level;                    /**< The mip level to use as the depth stencil target. */
   char layer;                        /**< The layer index to use as the depth stencil target. */
 }
-struct GPUGraphicsPipelineCreateInfo {
-  GPUShader* vertex_shader;                   /**< The vertex shader used by the graphics pipeline. */
-  GPUShader* fragment_shader;                 /**< The fragment shader used by the graphics pipeline. */
-  GPUVertexInputState vertex_input_state;     /**< The vertex layout of the graphics pipeline. */
-  GPUPrimitiveType primitive_type;            /**< The primitive topology of the graphics pipeline. */
-  GPURasterizerState rasterizer_state;        /**< The rasterizer state of the graphics pipeline. */
-  GPUMultisampleState multisample_state;      /**< The multisample state of the graphics pipeline. */
-  GPUDepthStencilState depth_stencil_state;   /**< The depth-stencil state of the graphics pipeline. */
-  GPUGraphicsPipelineTargetInfo target_info;  /**< Formats and blend modes for the render targets of the graphics pipeline. */
+struct SdlGPUGraphicsPipelineCreateInfo {
+  SdlGPUShader* vertex_shader;                   /**< The vertex shader used by the graphics pipeline. */
+  SdlGPUShader* fragment_shader;                 /**< The fragment shader used by the graphics pipeline. */
+  SdlGPUVertexInputState vertex_input_state;     /**< The vertex layout of the graphics pipeline. */
+  SdlGPUPrimitiveType primitive_type;            /**< The primitive topology of the graphics pipeline. */
+  SdlGPURasterizerState rasterizer_state;        /**< The rasterizer state of the graphics pipeline. */
+  SdlGPUMultisampleState multisample_state;      /**< The multisample state of the graphics pipeline. */
+  SdlGPUDepthStencilState depth_stencil_state;   /**< The depth-stencil state of the graphics pipeline. */
+  SdlGPUGraphicsPipelineTargetInfo target_info;  /**< Formats and blend modes for the render targets of the graphics pipeline. */
 
-  PropertiesID props;                         /**< A properties ID for extensions. Should be 0 if no extensions are needed. */
+  SdlPropertiesID props;                         /**< A properties ID for extensions. Should be 0 if no extensions are needed. */
 }
-struct GPUGraphicsPipelineTargetInfo {
-  GPUColorTargetDescription *color_target_descriptions;  /**< A pointer to an array of color target descriptions. */
+struct SdlGPUGraphicsPipelineTargetInfo {
+  SdlGPUColorTargetDescription *color_target_descriptions;  /**< A pointer to an array of color target descriptions. */
   uint num_color_targets;                                /**< The number of color target descriptions in the above array. */
-  GPUTextureFormat depth_stencil_format;                 /**< The pixel format of the depth-stencil target. Ignored if has_depth_stencil_target is false. */
+  SdlGPUTextureFormat depth_stencil_format;                 /**< The pixel format of the depth-stencil target. Ignored if has_depth_stencil_target is false. */
   bool has_depth_stencil_target;                         /**< true specifies that the pipeline uses a depth-stencil target. */
   char padding1, padding2, padding3;
 }
-struct GPUIndexedIndirectDrawCommand {
+struct SdlGPUIndexedIndirectDrawCommand {
   uint num_indices;    /**< The number of indices to draw per instance. */
   uint num_instances;  /**< The number of instances to draw. */
   uint first_index;    /**< The base index within the index buffer. */
   uint vertex_offset;  /**< The value added to the vertex index before indexing into the vertex buffer. */
   uint first_instance; /**< The ID of the first instance to draw. */
 }
-struct GPUIndirectDispatchCommand {
+struct SdlGPUIndirectDispatchCommand {
   uint groupcount_x;  /**< The number of local workgroups to dispatch in the X dimension. */
   uint groupcount_y;  /**< The number of local workgroups to dispatch in the Y dimension. */
   uint groupcount_z;  /**< The number of local workgroups to dispatch in the Z dimension. */
 }
-struct GPUIndirectDrawCommand {
+struct SdlGPUIndirectDrawCommand {
   uint num_vertices;   /**< The number of vertices to draw. */
   uint num_instances;  /**< The number of instances to draw. */
   uint first_vertex;   /**< The index of the first vertex to draw. */
   uint first_instance; /**< The ID of the first instance to draw. */
 }
-struct GPUMultisampleState {
-  GPUSampleCount sample_count;      /**< The number of samples to be used in rasterization. */
+struct SdlGPUMultisampleState {
+  SdlGPUSampleCount sample_count;      /**< The number of samples to be used in rasterization. */
   uint sample_mask;                 /**< Reserved for future use. Must be set to 0. */
   bool enable_mask;                 /**< Reserved for future use. Must be set to false. */
   bool enable_alpha_to_coverage;    /**< true enables the alpha-to-coverage feature. */
   char padding2, padding3;
 }
-struct GPURasterizerState {
-  GPUFillMode fill_mode;             /**< Whether polygons will be filled in or drawn as lines. */
-  GPUCullMode cull_mode;             /**< The facing direction in which triangles will be culled. */
-  GPUFrontFace front_face;            /**< The vertex winding that will cause a triangle to be determined as front-facing. */
+struct SdlGPURasterizerState {
+  SdlGPUFillMode fill_mode;             /**< Whether polygons will be filled in or drawn as lines. */
+  SdlGPUCullMode cull_mode;             /**< The facing direction in which triangles will be culled. */
+  SdlGPUFrontFace front_face;            /**< The vertex winding that will cause a triangle to be determined as front-facing. */
   float depth_bias_constant_factor;  /**< A scalar factor controlling the depth value added to each fragment. */
   float depth_bias_clamp;            /**< The maximum depth bias of a fragment. */
   float depth_bias_slope_factor;     /**< A scalar factor applied to a fragment's slope in depth calculations. */
@@ -213,77 +213,77 @@ struct GPURasterizerState {
   bool enable_depth_clip;            /**< true to enable depth clip, false to enable depth clamp. */
   char padding1, padding2;
 }
-struct GPUSamplerCreateInfo {
-  GPUFilter min_filter;                  /**< The minification filter to apply to lookups. */
-  GPUFilter mag_filter;                  /**< The magnification filter to apply to lookups. */
-  GPUSamplerMipmapMode mipmap_mode;      /**< The mipmap filter to apply to lookups. */
-  GPUSamplerAddressMode address_mode_u;  /**< The addressing mode for U coordinates outside [0, 1). */
-  GPUSamplerAddressMode address_mode_v;  /**< The addressing mode for V coordinates outside [0, 1). */
-  GPUSamplerAddressMode address_mode_w;  /**< The addressing mode for W coordinates outside [0, 1). */
+struct SdlGPUSamplerCreateInfo {
+  SdlGPUFilter min_filter;                  /**< The minification filter to apply to lookups. */
+  SdlGPUFilter mag_filter;                  /**< The magnification filter to apply to lookups. */
+  SdlGPUSamplerMipmapMode mipmap_mode;      /**< The mipmap filter to apply to lookups. */
+  SdlGPUSamplerAddressMode address_mode_u;  /**< The addressing mode for U coordinates outside [0, 1). */
+  SdlGPUSamplerAddressMode address_mode_v;  /**< The addressing mode for V coordinates outside [0, 1). */
+  SdlGPUSamplerAddressMode address_mode_w;  /**< The addressing mode for W coordinates outside [0, 1). */
   float mip_lod_bias;                    /**< The bias to be added to mipmap LOD calculation. */
   float max_anisotropy;                  /**< The anisotropy value clamp used by the sampler. If enable_anisotropy is false, this is ignored. */
-  GPUCompareOp compare_op;               /**< The comparison operator to apply to fetched data before filtering. */
+  SdlGPUCompareOp compare_op;               /**< The comparison operator to apply to fetched data before filtering. */
   float min_lod;                         /**< Clamps the minimum of the computed LOD value. */
   float max_lod;                         /**< Clamps the maximum of the computed LOD value. */
   bool enable_anisotropy;                /**< true to enable anisotropic filtering. */
   bool enable_compare;                   /**< true to enable comparison against a reference value during lookups. */
   char padding1, padding2;
 
-  PropertiesID props;                    /**< A properties ID for extensions. Should be 0 if no extensions are needed. */
+  SdlPropertiesID props;                    /**< A properties ID for extensions. Should be 0 if no extensions are needed. */
 }
-struct GPUShaderCreateInfo {
+struct SdlGPUShaderCreateInfo {
   usz code_size;              /**< The size in bytes of the code pointed to. */
   char* code;                 /**< A pointer to shader code. */
   char* entrypoint;           /**< A pointer to a null-terminated UTF-8 string specifying the entry point function name for the shader. */
-  GPUShaderFormat format;     /**< The format of the shader code. */
-  GPUShaderStage stage;       /**< The stage the shader program corresponds to. */
+  SdlGPUShaderFormat format;     /**< The format of the shader code. */
+  SdlGPUShaderStage stage;       /**< The stage the shader program corresponds to. */
   uint num_samplers;          /**< The number of samplers defined in the shader. */
   uint num_storage_textures;  /**< The number of storage textures defined in the shader. */
   uint num_storage_buffers;   /**< The number of storage buffers defined in the shader. */
   uint num_uniform_buffers;   /**< The number of uniform buffers defined in the shader. */
 
-  PropertiesID props;         /**< A properties ID for extensions. Should be 0 if no extensions are needed. */
+  SdlPropertiesID props;         /**< A properties ID for extensions. Should be 0 if no extensions are needed. */
 }
-struct GPUStencilOpState {
-  GPUStencilOp fail_op;        /**< The action performed on samples that fail the stencil test. */
-  GPUStencilOp pass_op;        /**< The action performed on samples that pass the depth and stencil tests. */
-  GPUStencilOp depth_fail_op;  /**< The action performed on samples that pass the stencil test and fail the depth test. */
-  GPUCompareOp compare_op;     /**< The comparison operator used in the stencil test. */
+struct SdlGPUStencilOpState {
+  SdlGPUStencilOp fail_op;        /**< The action performed on samples that fail the stencil test. */
+  SdlGPUStencilOp pass_op;        /**< The action performed on samples that pass the depth and stencil tests. */
+  SdlGPUStencilOp depth_fail_op;  /**< The action performed on samples that pass the stencil test and fail the depth test. */
+  SdlGPUCompareOp compare_op;     /**< The comparison operator used in the stencil test. */
 }
-struct GPUStorageBufferReadWriteBinding {
-  GPUBuffer *buffer;  /**< The buffer to bind. Must have been created with SDL_GPU_BUFFERUSAGE_COMPUTE_STORAGE_WRITE. */
+struct SdlGPUStorageBufferReadWriteBinding {
+  SdlGPUBuffer *buffer;  /**< The buffer to bind. Must have been created with SDL_GPU_BUFFERUSAGE_COMPUTE_STORAGE_WRITE. */
   bool cycle;         /**< true cycles the buffer if it is already bound. */
   char padding1, padding2, padding3;
 }
-struct GPUStorageTextureReadWriteBinding {
-  GPUTexture *texture;  /**< The texture to bind. Must have been created with SDL_GPU_TEXTUREUSAGE_COMPUTE_STORAGE_WRITE or SDL_GPU_TEXTUREUSAGE_COMPUTE_STORAGE_SIMULTANEOUS_READ_WRITE. */
+struct SdlGPUStorageTextureReadWriteBinding {
+  SdlGPUTexture *texture;  /**< The texture to bind. Must have been created with SDL_GPU_TEXTUREUSAGE_COMPUTE_STORAGE_WRITE or SDL_GPU_TEXTUREUSAGE_COMPUTE_STORAGE_SIMULTANEOUS_READ_WRITE. */
   uint mip_level;       /**< The mip level index to bind. */
   uint layer;           /**< The layer index to bind. */
   bool cycle;           /**< true cycles the texture if it is already bound. */
   char padding1, padding2, padding3;
 }
-struct GPUTextureCreateInfo {
-  GPUTextureType type;          /**< The base dimensionality of the texture. */
-  GPUTextureFormat format;      /**< The pixel format of the texture. */
-  GPUTextureUsageFlags usage;   /**< How the texture is intended to be used by the client. */
+struct SdlGPUTextureCreateInfo {
+  SdlGPUTextureType type;          /**< The base dimensionality of the texture. */
+  SdlGPUTextureFormat format;      /**< The pixel format of the texture. */
+  SdlGPUTextureUsageFlags usage;   /**< How the texture is intended to be used by the client. */
   uint width;                   /**< The width of the texture. */
   uint height;                  /**< The height of the texture. */
   uint layer_count_or_depth;    /**< The layer count or depth of the texture. This value is treated as a layer count on 2D array textures, and as a depth value on 3D textures. */
   uint num_levels;              /**< The number of mip levels in the texture. */
-  GPUSampleCount sample_count;  /**< The number of samples per texel. Only applies if the texture is used as a render target. */
+  SdlGPUSampleCount sample_count;  /**< The number of samples per texel. Only applies if the texture is used as a render target. */
 
-  PropertiesID props;           /**< A properties ID for extensions. Should be 0 if no extensions are needed. */
+  SdlPropertiesID props;           /**< A properties ID for extensions. Should be 0 if no extensions are needed. */
 }
-struct GPUTextureLocation {
-  GPUTexture* texture;    /**< The texture used in the copy operation. */
+struct SdlGPUTextureLocation {
+  SdlGPUTexture* texture;    /**< The texture used in the copy operation. */
   uint mip_level;         /**< The mip level index of the location. */
   uint layer;             /**< The layer index of the location. */
   uint x;                 /**< The left offset of the location. */
   uint y;                 /**< The top offset of the location. */
   uint z;                 /**< The front offset of the location. */
 }
-struct GPUTextureRegion {
-  GPUTexture* texture;  /**< The texture used in the copy operation. */
+struct SdlGPUTextureRegion {
+  SdlGPUTexture* texture;  /**< The texture used in the copy operation. */
   uint mip_level;         /**< The mip level index to transfer. */
   uint layer;             /**< The layer index to transfer. */
   uint x;                 /**< The left offset of the region. */
@@ -293,45 +293,45 @@ struct GPUTextureRegion {
   uint h;                 /**< The height of the region. */
   uint d;                 /**< The depth of the region. */
 }
-struct GPUTextureSamplerBinding {
-  GPUTexture* texture;  /**< The texture to bind. Must have been created with SDL_GPU_TEXTUREUSAGE_SAMPLER. */
-  GPUSampler* sampler;  /**< The sampler to bind. */
+struct SdlGPUTextureSamplerBinding {
+  SdlGPUTexture* texture;  /**< The texture to bind. Must have been created with SDL_GPU_TEXTUREUSAGE_SAMPLER. */
+  SdlGPUSampler* sampler;  /**< The sampler to bind. */
 }
-struct GPUTextureTransferInfo {
-  GPUTransferBuffer* transfer_buffer;  /**< The transfer buffer used in the transfer operation. */
+struct SdlGPUTextureTransferInfo {
+  SdlGPUTransferBuffer* transfer_buffer;  /**< The transfer buffer used in the transfer operation. */
   uint offset;                           /**< The starting byte of the image data in the transfer buffer. */
   uint pixels_per_row;                   /**< The number of pixels from one row to the next. */
   uint rows_per_layer;                   /**< The number of rows from one layer/depth-slice to the next. */
 }
-struct GPUTransferBufferCreateInfo {
-  GPUTransferBufferUsage usage;  /**< How the transfer buffer is intended to be used by the client. */
+struct SdlGPUTransferBufferCreateInfo {
+  SdlGPUTransferBufferUsage usage;  /**< How the transfer buffer is intended to be used by the client. */
   uint size;                     /**< The size in bytes of the transfer buffer. */
 
-  PropertiesID props;            /**< A properties ID for extensions. Should be 0 if no extensions are needed. */
+  SdlPropertiesID props;            /**< A properties ID for extensions. Should be 0 if no extensions are needed. */
 }
-struct GPUTransferBufferLocation {
-  GPUTransferBuffer* transfer_buffer;  /**< The transfer buffer used in the transfer operation. */
+struct SdlGPUTransferBufferLocation {
+  SdlGPUTransferBuffer* transfer_buffer;  /**< The transfer buffer used in the transfer operation. */
   uint offset;                           /**< The starting byte of the buffer data in the transfer buffer. */
 }
-struct GPUVertexAttribute {
+struct SdlGPUVertexAttribute {
   uint location;                  /**< The shader input location index. */
   uint buffer_slot;               /**< The binding slot of the associated vertex buffer. */
-  GPUVertexElementFormat format;  /**< The size and type of the attribute data. */
+  SdlGPUVertexElementFormat format;  /**< The size and type of the attribute data. */
   uint offset;                    /**< The byte offset of this attribute relative to the start of the vertex element. */
 }
-struct GPUVertexBufferDescription {
+struct SdlGPUVertexBufferDescription {
   uint slot;                      /**< The binding slot of the vertex buffer. */
   uint pitch;                     /**< The size of a single element + the offset between elements. */
-  GPUVertexInputRate input_rate;  /**< Whether attribute addressing is a function of the vertex index or instance index. */
+  SdlGPUVertexInputRate input_rate;  /**< Whether attribute addressing is a function of the vertex index or instance index. */
   uint instance_step_rate;        /**< Reserved for future use. Must be set to 0. */
 }
-struct GPUVertexInputState {
-  GPUVertexBufferDescription *vertex_buffer_descriptions; /**< A pointer to an array of vertex buffer descriptions. */
+struct SdlGPUVertexInputState {
+  SdlGPUVertexBufferDescription *vertex_buffer_descriptions; /**< A pointer to an array of vertex buffer descriptions. */
   uint num_vertex_buffers;                                /**< The number of vertex buffer descriptions in the above array. */
-  GPUVertexAttribute *vertex_attributes;                  /**< A pointer to an array of vertex attribute descriptions. */
+  SdlGPUVertexAttribute *vertex_attributes;                  /**< A pointer to an array of vertex attribute descriptions. */
   uint num_vertex_attributes;                             /**< The number of vertex attribute descriptions in the above array. */
 }
-struct GPUViewport {
+struct SdlGPUViewport {
   float x;          /**< The left offset of the viewport. */
   float y;          /**< The top offset of the viewport. */
   float w;          /**< The width of the viewport. */
@@ -339,7 +339,7 @@ struct GPUViewport {
   float min_depth;  /**< The minimum depth of the viewport. */
   float max_depth;  /**< The maximum depth of the viewport. */
 }
-struct GPUVulkanOptions {
+struct SdlGPUVulkanOptions {
   uint vulkan_api_version;                  /**< The Vulkan API version to request for the instance. Use Vulkan's VK_MAKE_VERSION or VK_MAKE_API_VERSION. */
   void* feature_list;                       /**< Pointer to the first element of a chain of Vulkan feature structs. (Requires API version 1.1 or higher.)*/
   void* vulkan_10_physical_device_features; /**< Pointer to a VkPhysicalDeviceFeatures struct to enable additional Vulkan 1.0 features. */
@@ -350,7 +350,7 @@ struct GPUVulkanOptions {
 }
 
 // Enums
-enum GPUBlendFactor {
+enum SdlGPUBlendFactor {
   INVALID,
   ZERO,                      /**< 0 */
   ONE,                       /**< 1 */
@@ -366,7 +366,7 @@ enum GPUBlendFactor {
   ONE_MINUS_CONSTANT_COLOR,  /**< 1 - blend constant */
   SRC_ALPHA_SATURATE,        /**< min(source alpha, 1 - destination alpha) */
 }
-enum GPUBlendOp {
+enum SdlGPUBlendOp {
   INVALID,
   ADD,               /**< (source * source_factor) + (destination * destination_factor) */
   SUBTRACT,          /**< (source * source_factor) - (destination * destination_factor) */
@@ -374,7 +374,7 @@ enum GPUBlendOp {
   MIN,               /**< min(source, destination) */
   MAX,               /**< max(source, destination) */
 }
-enum GPUCompareOp {
+enum SdlGPUCompareOp {
   INVALID,
   NEVER,             /**< The comparison always evaluates false. */
   LESS,              /**< The comparison evaluates reference < test. */
@@ -385,7 +385,7 @@ enum GPUCompareOp {
   GREATER_OR_EQUAL,  /**< The comparison evaluates reference >= test. */
   ALWAYS,            /**< The comparison always evaluates true. */
 }
-enum GPUCubeMapFace {
+enum SdlGPUCubeMapFace {
   POSITIVEX,
   NEGATIVEX,
   POSITIVEY,
@@ -393,64 +393,64 @@ enum GPUCubeMapFace {
   POSITIVEZ,
   NEGATIVEZ,
 }
-enum GPUCullMode {
+enum SdlGPUCullMode {
   NONE,   /**< No triangles are culled. */
   FRONT,  /**< Front-facing triangles are culled. */
   BACK,   /**< Back-facing triangles are culled. */
 }
-enum GPUFillMode {
+enum SdlGPUFillMode {
   FILL,  /**< Polygons will be rendered via rasterization. */
   LINE,  /**< Polygon edges will be drawn as line segments. */
 }
-enum GPUFilter {
+enum SdlGPUFilter {
   NEAREST,  /**< Point filtering. */
   LINEAR,   /**< Linear filtering. */
 }
-enum GPUFrontFace {
+enum SdlGPUFrontFace {
   COUNTER_CLOCKWISE,  /**< A triangle with counter-clockwise vertex winding will be considered front-facing. */
   CLOCKWISE,          /**< A triangle with clockwise vertex winding will be considered front-facing. */
 }
-enum GPUIndexElementSize {
+enum SdlGPUIndexElementSize {
   BIT16, /**< The index elements are 16-bit. */
   BIT32, /**< The index elements are 32-bit. */
 }
-enum GPULoadOp {
+enum SdlGPULoadOp {
   LOAD,      /**< The previous contents of the texture will be preserved. */
   CLEAR,     /**< The contents of the texture will be cleared to a color. */
   DONT_CARE, /**< The previous contents of the texture need not be preserved. The contents will be undefined. */
 }
-enum GPUPresentMode {
+enum SdlGPUPresentMode {
   VSYNC,
   IMMEDIATE,
   MAILBOX,
 }
-enum GPUPrimitiveType {
+enum SdlGPUPrimitiveType {
   TRIANGLELIST,  /**< A series of separate triangles. */
   TRIANGLESTRIP, /**< A series of connected triangles. */
   LINELIST,      /**< A series of separate lines. */
   LINESTRIP,     /**< A series of connected lines. */
   POINTLIST,     /**< A series of separate points. */
 }
-enum GPUSampleCount {
+enum SdlGPUSampleCount {
   S1,  /**< No multisampling. */
   S2,  /**< MSAA 2x */
   S4,  /**< MSAA 4x */
   S8,  /**< MSAA 8x */
 }
-enum GPUSamplerAddressMode {
+enum SdlGPUSamplerAddressMode {
   REPEAT,           /**< Specifies that the coordinates will wrap around. */
   MIRRORED_REPEAT,  /**< Specifies that the coordinates will wrap around mirrored. */
   CLAMP_TO_EDGE,    /**< Specifies that the coordinates will clamp to the 0-1 range. */
 }
-enum GPUSamplerMipmapMode {
+enum SdlGPUSamplerMipmapMode {
   NEAREST,  /**< Point filtering. */
   LINEAR,   /**< Linear filtering. */
 }
-enum GPUShaderStage {
+enum SdlGPUShaderStage {
   VERTEX,
   FRAGMENT,
 }
-enum GPUStencilOp {
+enum SdlGPUStencilOp {
   INVALID,
   KEEP,                 /**< Keeps the current value. */
   ZERO,                 /**< Sets the value to 0. */
@@ -461,19 +461,19 @@ enum GPUStencilOp {
   INCREMENT_AND_WRAP,   /**< Increments the current value and wraps back to 0. */
   DECREMENT_AND_WRAP,   /**< Decrements the current value and wraps to the maximum value. */
 }
-enum GPUStoreOp {
+enum SdlGPUStoreOp {
   STORE,             /**< The contents generated during the render pass will be written to memory. */
   DONT_CARE,         /**< The contents generated during the render pass are not needed and may be discarded. The contents will be undefined. */
   RESOLVE,           /**< The multisample contents generated during the render pass will be resolved to a non-multisample texture. The contents in the multisample texture may then be discarded and will be undefined. */
   RESOLVE_AND_STORE, /**< The multisample contents generated during the render pass will be resolved to a non-multisample texture. The contents in the multisample texture will be written to memory. */
 }
-enum GPUSwapchainComposition {
+enum SdlGPUSwapchainComposition {
   SDR,
   SDR_LINEAR,
   HDR_EXTENDED_LINEAR,
   HDR10_ST2084,
 }
-enum GPUTextureFormat {
+enum SdlGPUTextureFormat {
   INVALID,
 
   /* Unsigned Normalized Float Color Formats */
@@ -596,18 +596,18 @@ enum GPUTextureFormat {
   ASTC_12X10_FLOAT,
   ASTC_12X12_FLOAT,
 }
-enum GPUTextureType {
+enum SdlGPUTextureType {
   T2D,         /**< The texture is a 2-dimensional image. */
   T2D_ARRAY,   /**< The texture is a 2-dimensional array image. */
   T3D,         /**< The texture is a 3-dimensional image. */
   CUBE,       /**< The texture is a cube image. */
   CUBE_ARRAY  /**< The texture is a cube array image. */
 }
-enum GPUTransferBufferUsage {
+enum SdlGPUTransferBufferUsage {
   UPLOAD,
   DOWNLOAD
 }
-enum GPUVertexElementFormat {
+enum SdlGPUVertexElementFormat {
   INVALID,
 
   /* 32-bit Signed Integers */
@@ -664,150 +664,150 @@ enum GPUVertexElementFormat {
   HALF2,
   HALF4,
 }
-enum GPUVertexInputRate {
+enum SdlGPUVertexInputRate {
   VERTEX,   /**< Attribute addressing is a function of the vertex index. */
   INSTANCE, /**< Attribute addressing is a function of the instance index. */
 }
 
 // Functions
-extern fn GPUCommandBuffer* acquireGPUCommandBuffer(GPUDevice* device) @cname("SDL_AcquireGPUCommandBuffer");
-extern fn bool acquireGPUSwapchainTexture(GPUCommandBuffer* command_buffer, Window* window, GPUTexture** swapchain_texture, uint* swapchain_texture_width, uint* swapchain_texture_height) @cname("SDL_AcquireGPUSwapchainTexture");
-extern fn GPUComputePass* beginGPUComputePass(
-  GPUCommandBuffer* command_buffer,
-  GPUStorageTextureReadWriteBinding* storage_texture_bindings, uint num_storage_texture_bindings,
-  GPUStorageBufferReadWriteBinding*  storage_buffer_bindings,  uint num_storage_buffer_bindings) @cname("SDL_BeginGPUComputePass");
-extern fn GPUCopyPass* beginGPUCopyPass(GPUCommandBuffer* command_buffer) @cname("SDL_BeginGPUCopyPass");
-extern fn GPURenderPass* beginGPURenderPass(
-  GPUCommandBuffer* command_buffer,
-  GPUColorTargetInfo* color_target_infos, uint num_color_targets,
-  GPUDepthStencilTargetInfo* depth_stencil_target_info) @cname("SDL_BeginGPURenderPass");
-extern fn void bindGPUComputePipeline(GPUComputePass* compute_pass, GPUComputePipeline* compute_pipeline) @cname("SDL_BindGPUComputePipeline");
+extern fn SdlGPUCommandBuffer* acquireGPUCommandBuffer(SdlGPUDevice* device) @cname("SDL_AcquireGPUCommandBuffer");
+extern fn bool acquireGPUSwapchainTexture(SdlGPUCommandBuffer* command_buffer, SdlWindow* window, SdlGPUTexture** swapchain_texture, uint* swapchain_texture_width, uint* swapchain_texture_height) @cname("SDL_AcquireGPUSwapchainTexture");
+extern fn SdlGPUComputePass* beginGPUComputePass(
+  SdlGPUCommandBuffer* command_buffer,
+  SdlGPUStorageTextureReadWriteBinding* storage_texture_bindings, uint num_storage_texture_bindings,
+  SdlGPUStorageBufferReadWriteBinding*  storage_buffer_bindings,  uint num_storage_buffer_bindings) @cname("SDL_BeginGPUComputePass");
+extern fn SdlGPUCopyPass* beginGPUCopyPass(SdlGPUCommandBuffer* command_buffer) @cname("SDL_BeginGPUCopyPass");
+extern fn SdlGPURenderPass* beginGPURenderPass(
+  SdlGPUCommandBuffer* command_buffer,
+  SdlGPUColorTargetInfo* color_target_infos, uint num_color_targets,
+  SdlGPUDepthStencilTargetInfo* depth_stencil_target_info) @cname("SDL_BeginGPURenderPass");
+extern fn void bindGPUComputePipeline(SdlGPUComputePass* compute_pass, SdlGPUComputePipeline* compute_pipeline) @cname("SDL_BindGPUComputePipeline");
 extern fn void bindGPUComputeSamplers(
-  GPUComputePass* compute_pass, uint first_slot,
-  GPUTextureSamplerBinding* texture_sampler_bindings, uint num_bindings) @cname("SDL_BindGPUComputeSamplers");
+  SdlGPUComputePass* compute_pass, uint first_slot,
+  SdlGPUTextureSamplerBinding* texture_sampler_bindings, uint num_bindings) @cname("SDL_BindGPUComputeSamplers");
 extern fn void bindGPUComputeStorageBuffers(
-  GPUComputePass* compute_pass, uint first_slot,
-  GPUBuffer** storage_buffers, uint num_bindings) @cname("SDL_BindGPUComputeStorageBuffers");
+  SdlGPUComputePass* compute_pass, uint first_slot,
+  SdlGPUBuffer** storage_buffers, uint num_bindings) @cname("SDL_BindGPUComputeStorageBuffers");
 extern fn void bindGPUComputeStorageTextures(
-  GPUComputePass* compute_pass, uint first_slot,
-  GPUTexture** storage_textures, uint num_bindings) @cname("SDL_BindGPUComputeStorageTextures");
+  SdlGPUComputePass* compute_pass, uint first_slot,
+  SdlGPUTexture** storage_textures, uint num_bindings) @cname("SDL_BindGPUComputeStorageTextures");
 extern fn void bindGPUFragmentSamplers(
-  GPURenderPass* render_pass, uint first_slot,
-  GPUTextureSamplerBinding* texture_sampler_bindings, uint num_bindings) @cname("SDL_BindGPUFragmentSamplers");
+  SdlGPURenderPass* render_pass, uint first_slot,
+  SdlGPUTextureSamplerBinding* texture_sampler_bindings, uint num_bindings) @cname("SDL_BindGPUFragmentSamplers");
 extern fn void bindGPUFragmentStorageBuffers(
-  GPURenderPass* render_pass, uint first_slot,
-  GPUBuffer** storage_buffers, uint num_bindings) @cname("SDL_BindGPUFragmentStorageBuffers");
+  SdlGPURenderPass* render_pass, uint first_slot,
+  SdlGPUBuffer** storage_buffers, uint num_bindings) @cname("SDL_BindGPUFragmentStorageBuffers");
 extern fn void bindGPUFragmentStorageTextures(
-  GPURenderPass* render_pass, uint first_slot,
-  GPUTexture** storage_textures, uint num_bindings) @cname("SDL_BindGPUFragmentStorageTextures");
+  SdlGPURenderPass* render_pass, uint first_slot,
+  SdlGPUTexture** storage_textures, uint num_bindings) @cname("SDL_BindGPUFragmentStorageTextures");
 extern fn void bindGPUGraphicsPipeline(
-  GPURenderPass *render_pass,
-  GPUGraphicsPipeline* graphics_pipeline) @cname("SDL_BindGPUGraphicsPipeline");
+  SdlGPURenderPass *render_pass,
+  SdlGPUGraphicsPipeline* graphics_pipeline) @cname("SDL_BindGPUGraphicsPipeline");
 extern fn void bindGPUIndexBuffer(
-  GPURenderPass* render_pass,
-  GPUBufferBinding* binding, GPUIndexElementSize index_element_size) @cname("SDL_BindGPUIndexBuffer");
+  SdlGPURenderPass* render_pass,
+  SdlGPUBufferBinding* binding, SdlGPUIndexElementSize index_element_size) @cname("SDL_BindGPUIndexBuffer");
 extern fn void bindGPUVertexBuffers(
-  GPURenderPass* render_pass, uint first_slot,
-  GPUBufferBinding* bindings, uint num_bindings) @cname("SDL_BindGPUVertexBuffers");
+  SdlGPURenderPass* render_pass, uint first_slot,
+  SdlGPUBufferBinding* bindings, uint num_bindings) @cname("SDL_BindGPUVertexBuffers");
 extern fn void bindGPUVertexSamplers(
-  GPURenderPass* render_pass, uint first_slot,
-  GPUTextureSamplerBinding* texture_sampler_bindings, uint num_bindings) @cname("SDL_BindGPUVertexSamplers");
+  SdlGPURenderPass* render_pass, uint first_slot,
+  SdlGPUTextureSamplerBinding* texture_sampler_bindings, uint num_bindings) @cname("SDL_BindGPUVertexSamplers");
 extern fn void bindGPUVertexStorageBuffers(
-  GPURenderPass* render_pass, uint first_slot,
-  GPUBuffer** storage_buffers, uint num_bindings) @cname("SDL_BindGPUVertexStorageBuffers");
+  SdlGPURenderPass* render_pass, uint first_slot,
+  SdlGPUBuffer** storage_buffers, uint num_bindings) @cname("SDL_BindGPUVertexStorageBuffers");
 extern fn void bindGPUVertexStorageTextures(
-  GPURenderPass* render_pass, uint first_slot,
-  GPUTexture** storage_textures, uint num_bindings) @cname("SDL_BindGPUVertexStorageTextures");
+  SdlGPURenderPass* render_pass, uint first_slot,
+  SdlGPUTexture** storage_textures, uint num_bindings) @cname("SDL_BindGPUVertexStorageTextures");
 extern fn void blitGPUTexture(
-  GPUCommandBuffer* command_buffer,
-  GPUBlitInfo* info) @cname("SDL_BlitGPUTexture");
+  SdlGPUCommandBuffer* command_buffer,
+  SdlGPUBlitInfo* info) @cname("SDL_BlitGPUTexture");
 extern fn uint calculateGPUTextureFormatSize(
-  GPUTextureFormat format,
+  SdlGPUTextureFormat format,
   uint width, uint height,
   uint depth_or_layer_count) @cname("SDL_CalculateGPUTextureFormatSize");
-extern fn bool cancelGPUCommandBuffer(GPUCommandBuffer* command_buffer) @cname("SDL_CancelGPUCommandBuffer");
-extern fn bool claimWindowForGPUDevice(GPUDevice* device, Window* window) @cname("SDL_ClaimWindowForGPUDevice");
+extern fn bool cancelGPUCommandBuffer(SdlGPUCommandBuffer* command_buffer) @cname("SDL_CancelGPUCommandBuffer");
+extern fn bool claimWindowForGPUDevice(SdlGPUDevice* device, SdlWindow* window) @cname("SDL_ClaimWindowForGPUDevice");
 extern fn void copyGPUBufferToBuffer(
-  GPUCopyPass* copy_pass,
-  GPUBufferLocation* source,
-  GPUBufferLocation* destination,
+  SdlGPUCopyPass* copy_pass,
+  SdlGPUBufferLocation* source,
+  SdlGPUBufferLocation* destination,
   uint size, bool cycle) @cname("SDL_CopyGPUBufferToBuffer");
 extern fn void copyGPUTextureToTexture(
-  GPUCopyPass* copy_pass,
-  GPUTextureLocation* source,
-  GPUTextureLocation* destination,
+  SdlGPUCopyPass* copy_pass,
+  SdlGPUTextureLocation* source,
+  SdlGPUTextureLocation* destination,
   uint w, uint h, uint d,
   bool cycle) @cname("SDL_CopyGPUTextureToTexture");
-extern fn GPUBuffer* createGPUBuffer(GPUDevice* device, GPUBufferCreateInfo* createinfo) @cname("SDL_CreateGPUBuffer");
-extern fn GPUComputePipeline* createGPUComputePipeline(GPUDevice* device, GPUComputePipelineCreateInfo* createinfo) @cname("SDL_CreateGPUComputePipeline");
-extern fn GPUDevice* createGPUDevice(GPUShaderFormat format_flags, bool debug_mode, char* name) @cname("SDL_CreateGPUDevice");
-extern fn GPUDevice* createGPUDeviceWithProperties(PropertiesID props) @cname("SDL_CreateGPUDeviceWithProperties");
-extern fn GPUGraphicsPipeline* createGPUGraphicsPipeline(GPUDevice* device, GPUGraphicsPipelineCreateInfo* createinfo) @cname("SDL_CreateGPUGraphicsPipeline");
-extern fn GPUSampler* createGPUSampler(GPUDevice* device, GPUSamplerCreateInfo* createinfo) @cname("SDL_CreateGPUSampler");
-extern fn GPUShader* createGPUShader(GPUDevice* device, GPUShaderCreateInfo* createinfo) @cname("SDL_CreateGPUShader");
-extern fn GPUTexture* createGPUTexture(GPUDevice* device, GPUTextureCreateInfo* createinfo) @cname("SDL_CreateGPUTexture");
-extern fn GPUTransferBuffer* createGPUTransferBuffer(GPUDevice* device, GPUTransferBufferCreateInfo* createinfo) @cname("SDL_CreateGPUTransferBuffer");
-extern fn void destroyGPUDevice(GPUDevice* device) @cname("SDL_DestroyGPUDevice");
-extern fn void dispatchGPUCompute(GPUComputePass* compute_pass, uint groupcount_x, uint groupcount_y, uint groupcount_z) @cname("SDL_DispatchGPUCompute");
-extern fn void dispatchGPUComputeIndirect(GPUComputePass* compute_pass, GPUBuffer* buffer, uint offset) @cname("SDL_DispatchGPUComputeIndirect");
-extern fn void downloadFromGPUBuffer(GPUCopyPass* copy_pass, GPUBufferRegion* source, GPUTransferBufferLocation* destination) @cname("SDL_DownloadFromGPUBuffer");
-extern fn void downloadFromGPUTexture(GPUCopyPass* copy_pass, GPUTextureRegion* source, GPUTextureTransferInfo* destination) @cname("SDL_DownloadFromGPUTexture");
-extern fn void drawGPUIndexedPrimitives(GPURenderPass* render_pass, uint num_indices, uint num_instances, uint first_index, int vertex_offset, uint first_instance) @cname("SDL_DrawGPUIndexedPrimitives");
-extern fn void drawGPUIndexedPrimitivesIndirect(GPURenderPass* render_pass, GPUBuffer* buffer, uint offset, uint draw_count) @cname("SDL_DrawGPUIndexedPrimitivesIndirect");
-extern fn void drawGPUPrimitives(GPURenderPass* render_pass, uint num_vertices, uint num_instances, uint first_vertex, uint first_instance) @cname("SDL_DrawGPUPrimitives");
-extern fn void drawGPUPrimitivesIndirect(GPURenderPass* render_pass, GPUBuffer* buffer, uint offset, uint draw_count) @cname("SDL_DrawGPUPrimitivesIndirect");
-extern fn void endGPUComputePass(GPUComputePass* compute_pass) @cname("SDL_EndGPUComputePass");
-extern fn void endGPUCopyPass(GPUCopyPass* copy_pass) @cname("SDL_EndGPUCopyPass");
-extern fn void endGPURenderPass(GPURenderPass* render_pass) @cname("SDL_EndGPURenderPass");
-extern fn void resumeGPUGDK(GPUDevice* device) @cname("SDL_GDKResumeGPU");
-extern fn void suspendGPUGDK(GPUDevice* device) @cname("SDL_GDKSuspendGPU");
-extern fn void generateMipmapsForGPUTexture(GPUCommandBuffer* command_buffer, GPUTexture* texture) @cname("SDL_GenerateMipmapsForGPUTexture");
-extern fn char* getGPUDeviceDriver(GPUDevice* device) @cname("SDL_GetGPUDeviceDriver");
-extern fn PropertiesID getGPUDeviceProperties(GPUDevice* device) @cname("SDL_GetGPUDeviceProperties");
+extern fn SdlGPUBuffer* createGPUBuffer(SdlGPUDevice* device, SdlGPUBufferCreateInfo* createinfo) @cname("SDL_CreateGPUBuffer");
+extern fn SdlGPUComputePipeline* createGPUComputePipeline(SdlGPUDevice* device, SdlGPUComputePipelineCreateInfo* createinfo) @cname("SDL_CreateGPUComputePipeline");
+extern fn SdlGPUDevice* createGPUDevice(SdlGPUShaderFormat format_flags, bool debug_mode, char* name) @cname("SDL_CreateGPUDevice");
+extern fn SdlGPUDevice* createGPUDeviceWithProperties(SdlPropertiesID props) @cname("SDL_CreateGPUDeviceWithProperties");
+extern fn SdlGPUGraphicsPipeline* createGPUGraphicsPipeline(SdlGPUDevice* device, SdlGPUGraphicsPipelineCreateInfo* createinfo) @cname("SDL_CreateGPUGraphicsPipeline");
+extern fn SdlGPUSampler* createGPUSampler(SdlGPUDevice* device, SdlGPUSamplerCreateInfo* createinfo) @cname("SDL_CreateGPUSampler");
+extern fn SdlGPUShader* createGPUShader(SdlGPUDevice* device, SdlGPUShaderCreateInfo* createinfo) @cname("SDL_CreateGPUShader");
+extern fn SdlGPUTexture* createGPUTexture(SdlGPUDevice* device, SdlGPUTextureCreateInfo* createinfo) @cname("SDL_CreateGPUTexture");
+extern fn SdlGPUTransferBuffer* createGPUTransferBuffer(SdlGPUDevice* device, SdlGPUTransferBufferCreateInfo* createinfo) @cname("SDL_CreateGPUTransferBuffer");
+extern fn void destroyGPUDevice(SdlGPUDevice* device) @cname("SDL_DestroyGPUDevice");
+extern fn void dispatchGPUCompute(SdlGPUComputePass* compute_pass, uint groupcount_x, uint groupcount_y, uint groupcount_z) @cname("SDL_DispatchGPUCompute");
+extern fn void dispatchGPUComputeIndirect(SdlGPUComputePass* compute_pass, SdlGPUBuffer* buffer, uint offset) @cname("SDL_DispatchGPUComputeIndirect");
+extern fn void downloadFromGPUBuffer(SdlGPUCopyPass* copy_pass, SdlGPUBufferRegion* source, SdlGPUTransferBufferLocation* destination) @cname("SDL_DownloadFromGPUBuffer");
+extern fn void downloadFromGPUTexture(SdlGPUCopyPass* copy_pass, SdlGPUTextureRegion* source, SdlGPUTextureTransferInfo* destination) @cname("SDL_DownloadFromGPUTexture");
+extern fn void drawGPUIndexedPrimitives(SdlGPURenderPass* render_pass, uint num_indices, uint num_instances, uint first_index, int vertex_offset, uint first_instance) @cname("SDL_DrawGPUIndexedPrimitives");
+extern fn void drawGPUIndexedPrimitivesIndirect(SdlGPURenderPass* render_pass, SdlGPUBuffer* buffer, uint offset, uint draw_count) @cname("SDL_DrawGPUIndexedPrimitivesIndirect");
+extern fn void drawGPUPrimitives(SdlGPURenderPass* render_pass, uint num_vertices, uint num_instances, uint first_vertex, uint first_instance) @cname("SDL_DrawGPUPrimitives");
+extern fn void drawGPUPrimitivesIndirect(SdlGPURenderPass* render_pass, SdlGPUBuffer* buffer, uint offset, uint draw_count) @cname("SDL_DrawGPUPrimitivesIndirect");
+extern fn void endGPUComputePass(SdlGPUComputePass* compute_pass) @cname("SDL_EndGPUComputePass");
+extern fn void endGPUCopyPass(SdlGPUCopyPass* copy_pass) @cname("SDL_EndGPUCopyPass");
+extern fn void endGPURenderPass(SdlGPURenderPass* render_pass) @cname("SDL_EndGPURenderPass");
+extern fn void resumeGPUGDK(SdlGPUDevice* device) @cname("SDL_GDKResumeGPU");
+extern fn void suspendGPUGDK(SdlGPUDevice* device) @cname("SDL_GDKSuspendGPU");
+extern fn void generateMipmapsForGPUTexture(SdlGPUCommandBuffer* command_buffer, SdlGPUTexture* texture) @cname("SDL_GenerateMipmapsForGPUTexture");
+extern fn char* getGPUDeviceDriver(SdlGPUDevice* device) @cname("SDL_GetGPUDeviceDriver");
+extern fn SdlPropertiesID getGPUDeviceProperties(SdlGPUDevice* device) @cname("SDL_GetGPUDeviceProperties");
 extern fn char* getGPUDriver(int index) @cname("SDL_GetGPUDriver");
-extern fn GPUShaderFormat getGPUShaderFormats(GPUDevice* device) @cname("SDL_GetGPUShaderFormats");
-extern fn GPUTextureFormat getGPUSwapchainTextureFormat(GPUDevice* device, Window* window) @cname("SDL_GetGPUSwapchainTextureFormat");
-extern fn GPUTextureFormat getGPUTextureFormatFromPixelFormat(PixelFormat format) @cname("SDL_GetGPUTextureFormatFromPixelFormat");
+extern fn SdlGPUShaderFormat getGPUShaderFormats(SdlGPUDevice* device) @cname("SDL_GetGPUShaderFormats");
+extern fn SdlGPUTextureFormat getGPUSwapchainTextureFormat(SdlGPUDevice* device, SdlWindow* window) @cname("SDL_GetGPUSwapchainTextureFormat");
+extern fn SdlGPUTextureFormat getGPUTextureFormatFromPixelFormat(SdlPixelFormat format) @cname("SDL_GetGPUTextureFormatFromPixelFormat");
 extern fn int getNumGPUDrivers() @cname("SDL_GetNumGPUDrivers");
-extern fn PixelFormat getPixelFormatFromGPUTextureFormat(GPUTextureFormat format) @cname("SDL_GetPixelFormatFromGPUTextureFormat");
-extern fn bool supportsPropertiesGPU(PropertiesID props) @cname("SDL_GPUSupportsProperties");
-extern fn bool supportsShaderFormatsGPU(GPUShaderFormat format_flags, char* name) @cname("SDL_GPUSupportsShaderFormats");
-extern fn uint textureFormatTexelBlockSizeGPU(GPUTextureFormat format) @cname("SDL_GPUTextureFormatTexelBlockSizeGPU");
-extern fn bool textureSupportsFormatGPU(GPUDevice* device, GPUTextureFormat format, GPUTextureType type, GPUTextureUsageFlags usage) @cname("SDL_GPUTextureSupportsFormat");
-extern fn bool textureSupportsSampleCountGPU(GPUDevice *device, GPUTextureFormat format, GPUSampleCount sample_count) @cname("SDL_GPUTextureSupportsSampleCount");
-extern fn void insertGPUDebugLabel(GPUCommandBuffer *command_buffer, char* text) @cname("SDL_InsertGPUDebugLabel");
-extern fn void* mapGPUTransferBuffer(GPUDevice* device, GPUTransferBuffer* transfer_buffer, bool cycle) @cname("SDL_MapGPUTransferBuffer");
-extern fn void popGPUDebugGroup(GPUCommandBuffer* command_buffer) @cname("SDL_PopGPUDebugGroup");
-extern fn void pushGPUComputeUniformData(GPUCommandBuffer* command_buffer, uint slot_index, void* data, uint length) @cname("SDL_PushGPUComputeUniformData");
-extern fn void pushGPUDebugGroup(GPUCommandBuffer* command_buffer, char* name) @cname("SDL_PushGPUDebugGroup");
-extern fn void pushGPUFragmentUniformData(GPUCommandBuffer* command_buffer, uint slot_index, void* data, uint length) @cname("SDL_PushGPUFragmentUniformData");
-extern fn void pushGPUVertexUniformData(GPUCommandBuffer* command_buffer, uint slot_index, void* data, uint length) @cname("SDL_PushGPUVertexUniformData");
-extern fn bool queryGPUFence(GPUDevice* device, GPUFence* fence) @cname("SDL_QueryGPUFence");
-extern fn void releaseGPUBuffer(GPUDevice* device, GPUBuffer* buffer) @cname("SDL_ReleaseGPUBuffer");
-extern fn void releaseGPUComputePipeline(GPUDevice* device, GPUComputePipeline* compute_pipeline) @cname("SDL_ReleaseGPUComputePipeline");
-extern fn void releaseGPUFence(GPUDevice* device, GPUFence* fence) @cname("SDL_ReleaseGPUFence");
-extern fn void releaseGPUGraphicsPipeline(GPUDevice* device, GPUGraphicsPipeline* graphics_pipeline) @cname("SDL_ReleaseGPUGraphicsPipeline");
-extern fn void releaseGPUSampler(GPUDevice* device, GPUSampler* sampler) @cname("SDL_ReleaseGPUSampler");
-extern fn void releaseGPUShader(GPUDevice* device, GPUShader* shader) @cname("SDL_ReleaseGPUShader");
-extern fn void releaseGPUTexture(GPUDevice* device, GPUTexture* texture) @cname("SDL_ReleaseGPUTexture");
-extern fn void releaseGPUTransferBuffer(GPUDevice* device, GPUTransferBuffer* transfer_buffer) @cname("SDL_ReleaseGPUTransferBuffer");
-extern fn void releaseWindowFromGPUDevice(GPUDevice* device, Window* window) @cname("SDL_ReleaseWindowFromGPUDevice");
-extern fn bool setGPUAllowedFramesInFlight(GPUDevice* device, uint allowed_frames_in_flight) @cname("SDL_SetGPUAllowedFramesInFlight");
-extern fn void setGPUBlendConstants(GPURenderPass* render_pass, FColor blend_constants) @cname("SDL_SetGPUBlendConstants");
-extern fn void setGPUBufferName(GPUDevice* device, GPUBuffer* buffer, char* text) @cname("SDL_SetGPUBufferName");
-extern fn void setGPUScissor(GPURenderPass* render_pass, Rect* scissor) @cname("SDL_SetGPUScissor");
-extern fn void setGPUStencilReference(GPURenderPass* render_pass, char reference) @cname("SDL_SetGPUStencilReference");
-extern fn bool setGPUSwapchainParameters(GPUDevice* device, Window* window, GPUSwapchainComposition swapchain_composition, GPUPresentMode present_mode) @cname("SDL_SetGPUSwapchainParameters");
-extern fn void setGPUTextureName(GPUDevice* device, GPUTexture* texture, char* text) @cname("SDL_SetGPUTextureName");
-extern fn void setGPUViewport(GPURenderPass* render_pass, GPUViewport* viewport) @cname("SDL_SetGPUViewport");
-extern fn bool submitGPUCommandBuffer(GPUCommandBuffer* command_buffer) @cname("SDL_SubmitGPUCommandBuffer");
-extern fn GPUFence* submitGPUCommandBufferAndAcquireFence(GPUCommandBuffer* command_buffer) @cname("SDL_SubmitGPUCommandBufferAndAcquireFence");
-extern fn void unmapGPUTransferBuffer(GPUDevice* device, GPUTransferBuffer* transfer_buffer) @cname("SDL_UnmapGPUTransferBuffer");
-extern fn void uploadToGPUBuffer(GPUCopyPass* copy_pass, GPUTransferBufferLocation* source, GPUBufferRegion* destination, bool cycle) @cname("SDL_UploadToGPUBuffer");
-extern fn void uploadToGPUTexture(GPUCopyPass* copy_pass, GPUTextureTransferInfo* source, GPUTextureRegion* destination, bool cycle) @cname("SDL_UploadToGPUTexture");
-extern fn bool waitAndAcquireGPUSwapchainTexture(GPUCommandBuffer* command_buffer, Window* window, GPUTexture** swapchain_texture, uint* swapchain_texture_width, uint* swapchain_texture_height) @cname("SDL_WaitAndAcquireGPUSwapchainTexture");
-extern fn bool waitForGPUFences(GPUDevice* device, bool wait_all, GPUFence** fences, uint num_fences) @cname("SDL_WaitForGPUFences");
-extern fn bool waitForGPUIdle(GPUDevice* device) @cname("SDL_WaitForGPUIdle");
-extern fn bool waitForGPUSwapchain(GPUDevice* device, Window* window) @cname("SDL_WaitForGPUSwapchain");
-extern fn bool windowSupportsGPUPresentMode(GPUDevice* device, Window* window, GPUPresentMode present_mode) @cname("SDL_WindowSupportsGPUPresentMode");
-extern fn bool windowSupportsGPUSwapchainComposition(GPUDevice* device, Window* window, GPUSwapchainComposition swapchain_composition) @cname("SDL_WindowSupportsGPUSwapchainComposition");
+extern fn SdlPixelFormat getPixelFormatFromGPUTextureFormat(SdlGPUTextureFormat format) @cname("SDL_GetPixelFormatFromGPUTextureFormat");
+extern fn bool supportsPropertiesGPU(SdlPropertiesID props) @cname("SDL_GPUSupportsProperties");
+extern fn bool supportsShaderFormatsGPU(SdlGPUShaderFormat format_flags, char* name) @cname("SDL_GPUSupportsShaderFormats");
+extern fn uint textureFormatTexelBlockSizeGPU(SdlGPUTextureFormat format) @cname("SDL_GPUTextureFormatTexelBlockSizeGPU");
+extern fn bool textureSupportsFormatGPU(SdlGPUDevice* device, SdlGPUTextureFormat format, SdlGPUTextureType type, SdlGPUTextureUsageFlags usage) @cname("SDL_GPUTextureSupportsFormat");
+extern fn bool textureSupportsSampleCountGPU(SdlGPUDevice *device, SdlGPUTextureFormat format, SdlGPUSampleCount sample_count) @cname("SDL_GPUTextureSupportsSampleCount");
+extern fn void insertGPUDebugLabel(SdlGPUCommandBuffer *command_buffer, char* text) @cname("SDL_InsertGPUDebugLabel");
+extern fn void* mapGPUTransferBuffer(SdlGPUDevice* device, SdlGPUTransferBuffer* transfer_buffer, bool cycle) @cname("SDL_MapGPUTransferBuffer");
+extern fn void popGPUDebugGroup(SdlGPUCommandBuffer* command_buffer) @cname("SDL_PopGPUDebugGroup");
+extern fn void pushGPUComputeUniformData(SdlGPUCommandBuffer* command_buffer, uint slot_index, void* data, uint length) @cname("SDL_PushGPUComputeUniformData");
+extern fn void pushGPUDebugGroup(SdlGPUCommandBuffer* command_buffer, char* name) @cname("SDL_PushGPUDebugGroup");
+extern fn void pushGPUFragmentUniformData(SdlGPUCommandBuffer* command_buffer, uint slot_index, void* data, uint length) @cname("SDL_PushGPUFragmentUniformData");
+extern fn void pushGPUVertexUniformData(SdlGPUCommandBuffer* command_buffer, uint slot_index, void* data, uint length) @cname("SDL_PushGPUVertexUniformData");
+extern fn bool queryGPUFence(SdlGPUDevice* device, SdlGPUFence* fence) @cname("SDL_QueryGPUFence");
+extern fn void releaseGPUBuffer(SdlGPUDevice* device, SdlGPUBuffer* buffer) @cname("SDL_ReleaseGPUBuffer");
+extern fn void releaseGPUComputePipeline(SdlGPUDevice* device, SdlGPUComputePipeline* compute_pipeline) @cname("SDL_ReleaseGPUComputePipeline");
+extern fn void releaseGPUFence(SdlGPUDevice* device, SdlGPUFence* fence) @cname("SDL_ReleaseGPUFence");
+extern fn void releaseGPUGraphicsPipeline(SdlGPUDevice* device, SdlGPUGraphicsPipeline* graphics_pipeline) @cname("SDL_ReleaseGPUGraphicsPipeline");
+extern fn void releaseGPUSampler(SdlGPUDevice* device, SdlGPUSampler* sampler) @cname("SDL_ReleaseGPUSampler");
+extern fn void releaseGPUShader(SdlGPUDevice* device, SdlGPUShader* shader) @cname("SDL_ReleaseGPUShader");
+extern fn void releaseGPUTexture(SdlGPUDevice* device, SdlGPUTexture* texture) @cname("SDL_ReleaseGPUTexture");
+extern fn void releaseGPUTransferBuffer(SdlGPUDevice* device, SdlGPUTransferBuffer* transfer_buffer) @cname("SDL_ReleaseGPUTransferBuffer");
+extern fn void releaseWindowFromGPUDevice(SdlGPUDevice* device, SdlWindow* window) @cname("SDL_ReleaseWindowFromGPUDevice");
+extern fn bool setGPUAllowedFramesInFlight(SdlGPUDevice* device, uint allowed_frames_in_flight) @cname("SDL_SetGPUAllowedFramesInFlight");
+extern fn void setGPUBlendConstants(SdlGPURenderPass* render_pass, SdlFColor blend_constants) @cname("SDL_SetGPUBlendConstants");
+extern fn void setGPUBufferName(SdlGPUDevice* device, SdlGPUBuffer* buffer, char* text) @cname("SDL_SetGPUBufferName");
+extern fn void setGPUScissor(SdlGPURenderPass* render_pass, SdlRect* scissor) @cname("SDL_SetGPUScissor");
+extern fn void setGPUStencilReference(SdlGPURenderPass* render_pass, char reference) @cname("SDL_SetGPUStencilReference");
+extern fn bool setGPUSwapchainParameters(SdlGPUDevice* device, SdlWindow* window, SdlGPUSwapchainComposition swapchain_composition, SdlGPUPresentMode present_mode) @cname("SDL_SetGPUSwapchainParameters");
+extern fn void setGPUTextureName(SdlGPUDevice* device, SdlGPUTexture* texture, char* text) @cname("SDL_SetGPUTextureName");
+extern fn void setGPUViewport(SdlGPURenderPass* render_pass, SdlGPUViewport* viewport) @cname("SDL_SetGPUViewport");
+extern fn bool submitGPUCommandBuffer(SdlGPUCommandBuffer* command_buffer) @cname("SDL_SubmitGPUCommandBuffer");
+extern fn SdlGPUFence* submitGPUCommandBufferAndAcquireFence(SdlGPUCommandBuffer* command_buffer) @cname("SDL_SubmitGPUCommandBufferAndAcquireFence");
+extern fn void unmapGPUTransferBuffer(SdlGPUDevice* device, SdlGPUTransferBuffer* transfer_buffer) @cname("SDL_UnmapGPUTransferBuffer");
+extern fn void uploadToGPUBuffer(SdlGPUCopyPass* copy_pass, SdlGPUTransferBufferLocation* source, SdlGPUBufferRegion* destination, bool cycle) @cname("SDL_UploadToGPUBuffer");
+extern fn void uploadToGPUTexture(SdlGPUCopyPass* copy_pass, SdlGPUTextureTransferInfo* source, SdlGPUTextureRegion* destination, bool cycle) @cname("SDL_UploadToGPUTexture");
+extern fn bool waitAndAcquireGPUSwapchainTexture(SdlGPUCommandBuffer* command_buffer, SdlWindow* window, SdlGPUTexture** swapchain_texture, uint* swapchain_texture_width, uint* swapchain_texture_height) @cname("SDL_WaitAndAcquireGPUSwapchainTexture");
+extern fn bool waitForGPUFences(SdlGPUDevice* device, bool wait_all, SdlGPUFence** fences, uint num_fences) @cname("SDL_WaitForGPUFences");
+extern fn bool waitForGPUIdle(SdlGPUDevice* device) @cname("SDL_WaitForGPUIdle");
+extern fn bool waitForGPUSwapchain(SdlGPUDevice* device, SdlWindow* window) @cname("SDL_WaitForGPUSwapchain");
+extern fn bool windowSupportsGPUPresentMode(SdlGPUDevice* device, SdlWindow* window, SdlGPUPresentMode present_mode) @cname("SDL_WindowSupportsGPUPresentMode");
+extern fn bool windowSupportsGPUSwapchainComposition(SdlGPUDevice* device, SdlWindow* window, SdlGPUSwapchainComposition swapchain_composition) @cname("SDL_WindowSupportsGPUSwapchainComposition");

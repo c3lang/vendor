@@ -2,11 +2,11 @@
 module sdl3;
 
 // Bitstructs
-bitstruct MessageBoxButtonFlags : uint {
+bitstruct SdlMessageBoxButtonFlags : uint {
   bool returnkey;
   bool escapekey;
 }
-bitstruct MessageBoxFlags : uint {
+bitstruct SdlMessageBoxFlags : uint {
   bool error:   5;
   bool warning: 6;
   bool info:    7;
@@ -15,30 +15,30 @@ bitstruct MessageBoxFlags : uint {
 }
 
 // Structs
-struct MessageBoxButtonData {
-  MessageBoxButtonFlags flags;
+struct SdlMessageBoxButtonData {
+  SdlMessageBoxButtonFlags flags;
   int buttonID; /**< User defined button id (value returned via SDL_ShowMessageBox) */
   char* text;   /**< The UTF-8 button text */
 }
-struct MessageBoxColor {
+struct SdlMessageBoxColor {
   char r, g, b;
 }
-struct MessageBoxColorScheme {
-  MessageBoxColor[MessageBoxColorType.COLOR_COUNT.ordinal] colors;
+struct SdlMessageBoxColorScheme {
+  SdlMessageBoxColor[SdlMessageBoxColorType.COLOR_COUNT.ordinal] colors;
 }
-struct MessageBoxData {
-  MessageBoxFlags flags;
-  Window* window;        /**< Parent window, can be NULL */
+struct SdlMessageBoxData {
+  SdlMessageBoxFlags flags;
+  SdlWindow* window;        /**< Parent window, can be NULL */
   char* title;           /**< UTF-8 title */
   char* message;         /**< UTF-8 message text */
 
   int numbuttons;
-  MessageBoxButtonData* buttons;
-  MessageBoxColorScheme* colorScheme; /**< SDL_MessageBoxColorScheme, can be NULL to use system settings */
+  SdlMessageBoxButtonData* buttons;
+  SdlMessageBoxColorScheme* colorScheme; /**< SDL_MessageBoxColorScheme, can be NULL to use system settings */
 }
 
 // Enums
-enum MessageBoxColorType {
+enum SdlMessageBoxColorType {
   BACKGROUND,
   TEXT,
   BUTTON_BORDER,
@@ -48,5 +48,5 @@ enum MessageBoxColorType {
 }
 
 // Functions
-extern fn bool showMessageBox(MessageBoxData* messageboxdata, int* buttonid) @cname("SDL_ShowMessageBox");
-extern fn bool showSimpleMessageBox(MessageBoxFlags flags, char* title, char* message, Window* window) @cname("SDL_ShowSimpleMessageBox");
+extern fn bool showMessageBox(SdlMessageBoxData* messageboxdata, int* buttonid) @cname("SDL_ShowMessageBox");
+extern fn bool showSimpleMessageBox(SdlMessageBoxFlags flags, char* title, char* message, SdlWindow* window) @cname("SDL_ShowSimpleMessageBox");

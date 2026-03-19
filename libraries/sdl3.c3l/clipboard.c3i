@@ -2,8 +2,8 @@
 module sdl3;
 
 // Types
-alias ClipboardCleanupCallback = fn void(void* userdata);
-alias ClipboardDataCallback = fn void*(void *userdata, char* mime_type, usz* size);
+alias SdlClipboardCleanupCallback = fn void(void* userdata);
+alias SdlClipboardDataCallback = fn void*(void *userdata, char* mime_type, usz* size);
 
 // Functions
 extern fn bool clearClipboardData() @cname("SDL_ClearClipboardData");
@@ -14,6 +14,6 @@ extern fn char* getPrimarySelectionText() @cname("SDL_GetPrimarySelectionText");
 extern fn bool hasClipboardData(char* mime_type) @cname("SDL_HasClipboardData");
 extern fn bool hasClipboardText() @cname("SDL_HasClipboardText");
 extern fn bool hasPrimarySelectionText() @cname("SDL_HasPrimarySelectionText");
-extern fn bool setClipboardData(ClipboardDataCallback callback, ClipboardCleanupCallback cleanup, void* userdata, char** mime_types, usz num_mime_types) @cname("SDL_SetClipboardData");
+extern fn bool setClipboardData(SdlClipboardDataCallback callback, SdlClipboardCleanupCallback cleanup, void* userdata, char** mime_types, usz num_mime_types) @cname("SDL_SetClipboardData");
 extern fn bool setClipboardText(char* text) @cname("SDL_SetClipboardText");
 extern fn bool setPrimarySelectionText(char* text) @cname("SDL_SetPrimarySelectionText");

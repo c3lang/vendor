@@ -2,23 +2,23 @@
 module sdl3;
 
 // Types
-alias DialogFileCallback = fn void(void* userdata, char** filelist, int filter);
+alias SdlDialogFileCallback = fn void(void* userdata, char** filelist, int filter);
 
 // Structs
-struct DialogFileFilter {
+struct SdlDialogFileFilter {
   char* name;
   char* pattern;
 }
 
 // Enums
-enum FileDialogType {
+enum SdlFileDialogType {
   OPENFILE,
   SAVEFILE,
   OPENFOLDER
 }
 
 // Functions
-extern fn void showFileDialogWithProperties(FileDialogType type, DialogFileCallback callback, void* userdata, PropertiesID props) @cname("SDL_ShowFileDialogWithProperties");
-extern fn void showOpenFileDialog(DialogFileCallback callback, void* userdata, Window* window, DialogFileFilter* filters, int nfilters, char* default_location, bool allow_many) @cname("SDL_ShowOpenFileDialog");
-extern fn void showOpenFolderDialog(DialogFileCallback callback, void* userdata, Window* window, char* default_location, bool allow_many) @cname("SDL_ShowOpenFolderDialog");
-extern fn void showSaveFileDialog(DialogFileCallback callback, void* userdata, Window* window, DialogFileFilter* filters, int nfilters, char* default_location) @cname("SDL_ShowSaveFileDialog");
+extern fn void showFileDialogWithProperties(SdlFileDialogType type, SdlDialogFileCallback callback, void* userdata, SdlPropertiesID props) @cname("SDL_ShowFileDialogWithProperties");
+extern fn void showOpenFileDialog(SdlDialogFileCallback callback, void* userdata, SdlWindow* window, SdlDialogFileFilter* filters, int nfilters, char* default_location, bool allow_many) @cname("SDL_ShowOpenFileDialog");
+extern fn void showOpenFolderDialog(SdlDialogFileCallback callback, void* userdata, SdlWindow* window, char* default_location, bool allow_many) @cname("SDL_ShowOpenFolderDialog");
+extern fn void showSaveFileDialog(SdlDialogFileCallback callback, void* userdata, SdlWindow* window, SdlDialogFileFilter* filters, int nfilters, char* default_location) @cname("SDL_ShowSaveFileDialog");

@@ -2,14 +2,14 @@
 module sdl3;
 
 // Types
-typedef AsyncIO = void;
-typedef AsyncIOQueue = void;
+typedef SdlAsyncIO = void;
+typedef SdlAsyncIOQueue = void;
 
 // Structs
-struct AsyncIOOutcome {
-  AsyncIO* asyncio;      /**< what generated this task. This pointer will be invalid if it was closed! */
-  AsyncIOTaskType type;  /**< What sort of task was this? Read, write, etc? */
-  AsyncIOResult result;  /**< the result of the work (success, failure, cancellation). */
+struct SdlAsyncIOOutcome {
+  SdlAsyncIO* asyncio;      /**< what generated this task. This pointer will be invalid if it was closed! */
+  SdlAsyncIOTaskType type;  /**< What sort of task was this? Read, write, etc? */
+  SdlAsyncIOResult result;  /**< the result of the work (success, failure, cancellation). */
   void* buffer;          /**< buffer where data was read/written. */
   ulong offset;          /**< offset in the SDL_AsyncIO where data was read/written. */
   ulong bytes_requested; /**< number of bytes the task was to read/write. */
@@ -18,26 +18,26 @@ struct AsyncIOOutcome {
 }
 
 // Enums
-enum AsyncIOResult {
+enum SdlAsyncIOResult {
   COMPLETE,  /**< request was completed without error */
   FAILURE,   /**< request failed for some reason; check SDL_GetError()! */
   CANCELED,  /**< request was canceled before completing. */
 }
-enum AsyncIOTaskType {
+enum SdlAsyncIOTaskType {
   READ,   /**< A read operation. */
   WRITE,  /**< A write operation. */
   CLOSE,  /**< A close operation. */
 }
 
 // Functions
-extern fn AsyncIO* asyncIOFromFile(char* file, char* mode) @cname("SDL_AsyncIOFromFile");
-extern fn bool closeAsyncIO(AsyncIO* asyncio, bool flush, AsyncIOQueue* queue, void* userdata) @cname("SDL_CloseAsyncIO");
-extern fn AsyncIOQueue* createAsyncIOQueue() @cname("SDL_AsyncIOQueue");
-extern fn void destroyAsyncIOQueue(AsyncIOQueue* queue) @cname("SDL_DestroyAsyncIOQueue");
-extern fn bool getAsyncIOResult(AsyncIOQueue* queue, AsyncIOOutcome* outcome) @cname("SDL_GetAsyncIOResult");
-extern fn long getAsyncIOSize(AsyncIO* asyncio) @cname("SDL_GetAsyncIOSize");
-extern fn bool loadFileAsync(char* file, AsyncIOQueue* queue, void* userdata) @cname("SDL_LoadFileAsync");
-extern fn bool readAsyncIO(AsyncIO* asyncio, void* ptr, ulong offset, ulong size, AsyncIOQueue* queue, void* userdata) @cname("SDL_ReadAsyncIO");
-extern fn void signalAsyncIOQueue(AsyncIOQueue* queue) @cname("SDL_SignalAsyncIOQueue");
-extern fn bool waitAsyncIOResult(AsyncIOQueue* queue, AsyncIOOutcome* outcome, int timeoutMS) @cname("SDL_WaitAsyncIOResult");
-extern fn bool writeAsyncIO(AsyncIO* asyncio, void* ptr, ulong offset, ulong size, AsyncIOQueue* queue, void* userdata) @cname("SDL_WriteAsyncIO");
+extern fn SdlAsyncIO* asyncIOFromFile(char* file, char* mode) @cname("SDL_AsyncIOFromFile");
+extern fn bool closeAsyncIO(SdlAsyncIO* asyncio, bool flush, SdlAsyncIOQueue* queue, void* userdata) @cname("SDL_CloseAsyncIO");
+extern fn SdlAsyncIOQueue* createAsyncIOQueue() @cname("SDL_AsyncIOQueue");
+extern fn void destroyAsyncIOQueue(SdlAsyncIOQueue* queue) @cname("SDL_DestroyAsyncIOQueue");
+extern fn bool getAsyncIOResult(SdlAsyncIOQueue* queue, SdlAsyncIOOutcome* outcome) @cname("SDL_GetAsyncIOResult");
+extern fn long getAsyncIOSize(SdlAsyncIO* asyncio) @cname("SDL_GetAsyncIOSize");
+extern fn bool loadFileAsync(char* file, SdlAsyncIOQueue* queue, void* userdata) @cname("SDL_LoadFileAsync");
+extern fn bool readAsyncIO(SdlAsyncIO* asyncio, void* ptr, ulong offset, ulong size, SdlAsyncIOQueue* queue, void* userdata) @cname("SDL_ReadAsyncIO");
+extern fn void signalAsyncIOQueue(SdlAsyncIOQueue* queue) @cname("SDL_SignalAsyncIOQueue");
+extern fn bool waitAsyncIOResult(SdlAsyncIOQueue* queue, SdlAsyncIOOutcome* outcome, int timeoutMS) @cname("SDL_WaitAsyncIOResult");
+extern fn bool writeAsyncIO(SdlAsyncIO* asyncio, void* ptr, ulong offset, ulong size, SdlAsyncIOQueue* queue, void* userdata) @cname("SDL_WriteAsyncIO");

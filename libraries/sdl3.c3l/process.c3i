@@ -2,10 +2,10 @@
 module sdl3;
 
 // Types
-typedef Process = void;
+typedef SdlProcess = void;
 
 // Enums
-enum ProcessIO {
+enum SdlProcessIO {
   INHERITED,    /**< The I/O stream is inherited from the application. */
   NULL,         /**< The I/O stream is ignored. */
   APP,          /**< The I/O stream is connected to a new SDL_IOStream that the application can read or write */
@@ -13,12 +13,12 @@ enum ProcessIO {
 }
 
 // Functions
-extern fn Process* createProcess(char** args, bool pipe_stdio) @cname("SDL_CreateProcess");
-extern fn Process* createProcessWithProperties(PropertiesID props) @cname("SDL_CreateProcessWithProperties");
-extern fn void destroyProcess(Process* process) @cname("SDL_DestroyProcess");
-extern fn IOStream* getProcessInput(Process* process) @cname("SDL_GetProcessInput");
-extern fn IOStream* getProcessOutput(Process* process) @cname("SDL_GetProcessOutput");
-extern fn PropertiesID getProcessProperties(Process* process) @cname("SDL_GetProcessProperties");
-extern fn bool killProcess(Process* process, bool force) @cname("SDL_KillProcess");
-extern fn void* readProcess(Process* process, usz* datasize, int* exitcode) @cname("SDL_ReadProcess");
-extern fn bool waitProcess(Process* process, bool block, int* exitcode) @cname("SDL_WaitProcess");
+extern fn SdlProcess* createProcess(char** args, bool pipe_stdio) @cname("SDL_CreateProcess");
+extern fn SdlProcess* createProcessWithProperties(SdlPropertiesID props) @cname("SDL_CreateProcessWithProperties");
+extern fn void destroyProcess(SdlProcess* process) @cname("SDL_DestroyProcess");
+extern fn SdlIOStream* getProcessInput(SdlProcess* process) @cname("SDL_GetProcessInput");
+extern fn SdlIOStream* getProcessOutput(SdlProcess* process) @cname("SDL_GetProcessOutput");
+extern fn SdlPropertiesID getProcessProperties(SdlProcess* process) @cname("SDL_GetProcessProperties");
+extern fn bool killProcess(SdlProcess* process, bool force) @cname("SDL_KillProcess");
+extern fn void* readProcess(SdlProcess* process, usz* datasize, int* exitcode) @cname("SDL_ReadProcess");
+extern fn bool waitProcess(SdlProcess* process, bool block, int* exitcode) @cname("SDL_WaitProcess");

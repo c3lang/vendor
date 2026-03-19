@@ -2,20 +2,20 @@
 module sdl3;
 
 // Structs
-struct Color {
+struct SdlColor {
   char r, g, b, a;
 }
-struct FColor {
+struct SdlFColor {
   float r, g, b, a;
 }
-struct Palette {
+struct SdlPalette {
   int ncolors;    /**< number of elements in `colors`. */
-  Color *colors;  /**< an array of colors, `ncolors` long. */
+  SdlColor *colors;  /**< an array of colors, `ncolors` long. */
   uint version;   /**< internal use only, do not touch. */
   int refcount;   /**< internal use only, do not touch. */
 }
-struct PixelFormatDetails {
-  PixelFormat format;
+struct SdlPixelFormatDetails {
+  SdlPixelFormat format;
   char bits_per_pixel;
   char bytes_per_pixel;
   char[2] padding;
@@ -25,7 +25,7 @@ struct PixelFormatDetails {
 }
 
 // Enums
-enum ArrayOrder {
+enum SdlArrayOrder {
   NONE,
   RGB,
   RGBA,
@@ -34,18 +34,18 @@ enum ArrayOrder {
   BGRA,
   ABGR,
 }
-enum BitmapOrder {
+enum SdlBitmapOrder {
   NONE,
   O4321,
   O1234,
 }
-enum ChromaLocation {
+enum SdlChromaLocation {
   NONE,    /**< RGB, no chroma sampling */
   LEFT,    /**< In MPEG-2, MPEG-4, and AVC, Cb and Cr are taken on midpoint of the left-edge of the 2x2 square. In other words, they have the same horizontal location as the top-left pixel, but is shifted one-half pixel down vertically. */
   CENTER,  /**< In JPEG/JFIF, H.261, and MPEG-1, Cb and Cr are taken at the center of the 2x2 square. In other words, they are offset one-half pixel to the right and one-half pixel down compared to the top-left pixel. */
   TOPLEFT, /**< In HEVC for BT.2020 and BT.2100 content (in particular on Blu-rays), Cb and Cr are sampled at the same location as the group's top-left Y pixel ("co-sited", "co-located"). */
 }
-constdef ColorPrimaries : CInt {
+constdef SdlColorPrimaries : CInt {
   UNKNOWN = 0,
   BT709 = 1,                  /**< ITU-R BT.709-6 */
   UNSPECIFIED = 2,
@@ -61,12 +61,12 @@ constdef ColorPrimaries : CInt {
   EBU3213 = 22,               /**< EBU Tech. 3213-E */
   CUSTOM = 31,
 }
-enum ColorRange {
+enum SdlColorRange {
     UNKNOWN,
     LIMITED, /**< Narrow range, e.g. 16-235 for 8-bit RGB and luma, and 16-240 for 8-bit chroma */
     FULL,    /**< Full range, e.g. 0-255 for 8-bit RGB and luma, and 1-255 for 8-bit chroma */
 }
-constdef Colorspace : CInt {
+constdef SdlColorspace : CInt {
   UNKNOWN = 0,
   SRGB = 0x120005a0u,           /**< Equivalent to DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709 */
   SRGB_LINEAR = 0x12000500u,    /**< Equivalent to DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709  */
@@ -81,12 +81,12 @@ constdef Colorspace : CInt {
   RGB_DEFAULT = SRGB,           /**< The default colorspace for RGB surfaces if no colorspace is specified */
   YUV_DEFAULT = BT601_LIMITED   /**< The default colorspace for YUV surfaces if no colorspace is specified */
 }
-enum ColorType {
+enum SdlColorType {
   UNKNOWN,
   RGB,
   YCBCR,
 }
-constdef MatrixCoefficients : CInt {
+constdef SdlMatrixCoefficients : CInt {
   IDENTITY = 0,
   BT709 = 1,              /**< ITU-R BT.709-6 */
   UNSPECIFIED = 2,
@@ -103,7 +103,7 @@ constdef MatrixCoefficients : CInt {
   ICTCP = 14,             /**< ITU-R BT.2100-0 ICTCP */
   CUSTOM = 31,
 }
-enum PackedLayout {
+enum SdlPackedLayout {
   NONE,
   L332,
   L4444,
@@ -114,7 +114,7 @@ enum PackedLayout {
   L2101010,
   L1010102
 }
-enum PackedOrder {
+enum SdlPackedOrder {
   NONE,
   XRGB,
   RGBX,
@@ -125,7 +125,7 @@ enum PackedOrder {
   ABGR,
   BGRA
 }
-constdef PixelFormat : CInt {
+constdef SdlPixelFormat : CInt {
   UNKNOWN = 0,
   INDEX1LSB = 0x11100100u,
   INDEX1MSB = 0x11200100u,
@@ -194,7 +194,7 @@ constdef PixelFormat : CInt {
 
   MJPG = 0x47504a4du,
 }
-enum PixelType {
+enum SdlPixelType {
   UNKNOWN,
   INDEX1,
   INDEX4,
@@ -210,7 +210,7 @@ enum PixelType {
 
   INDEX2,
 }
-constdef TransferCharacteristics : CInt {
+constdef SdlTransferCharacteristics : CInt {
   UNKNOWN = 0,
   BT709 = 1,         /**< Rec. ITU-R BT.709-6 / ITU-R BT1361 */
   UNSPECIFIED = 2,
@@ -233,14 +233,14 @@ constdef TransferCharacteristics : CInt {
 }
 
 // Functions
-extern fn Palette* createPalette(int ncolors) @cname("SDL_CreatePalette");
-extern fn void destroyPalette(Palette* palette) @cname("SDL_DestroyPalette");
-extern fn bool getMasksForPixelFormat(PixelFormat format, int* bpp, uint* rmask, uint* gmask, uint* bmask, uint* amask) @cname("SDL_GetMasksForPixelFormat");
-extern fn PixelFormatDetails* getPixelFormatDetails(PixelFormat format) @cname("SDL_PixelFormatDetails");
-extern fn PixelFormat getPixelFormatForMasks(int bpp, uint rmask, uint gmask, uint bmask, uint amask) @cname("SDL_GetPixelFormatForMasks");
-extern fn char* getPixelFormatName(PixelFormat format) @cname("SDL_GetPixelFormatName");
-extern fn void getRGB(uint pixelvalue, PixelFormatDetails* format, Palette* palette, char* r, char* g, char* b) @cname("SDL_GetRGB");
-extern fn void getRGBA(uint pixelvalue, PixelFormatDetails* format, Palette* palette, char* r, char* g, char* b, char* a) @cname("SDL_GetRGBA");
-extern fn uint mapRGB(PixelFormatDetails* format, Palette* palette, char r, char g, char b) @cname("SDL_MapRGB");
-extern fn uint mapRGBA(PixelFormatDetails* format, Palette* palette, char r, char g, char b, char a) @cname("SDL_MapRGBA");
-extern fn bool setPaletteColors(Palette* palette, Color* colors, int firstcolor, int ncolors) @cname("SDL_SetPaletteColors");
+extern fn SdlPalette* createPalette(int ncolors) @cname("SDL_CreatePalette");
+extern fn void destroyPalette(SdlPalette* palette) @cname("SDL_DestroyPalette");
+extern fn bool getMasksForPixelFormat(SdlPixelFormat format, int* bpp, uint* rmask, uint* gmask, uint* bmask, uint* amask) @cname("SDL_GetMasksForPixelFormat");
+extern fn SdlPixelFormatDetails* getPixelFormatDetails(SdlPixelFormat format) @cname("SDL_PixelFormatDetails");
+extern fn SdlPixelFormat getPixelFormatForMasks(int bpp, uint rmask, uint gmask, uint bmask, uint amask) @cname("SDL_GetPixelFormatForMasks");
+extern fn char* getPixelFormatName(SdlPixelFormat format) @cname("SDL_GetPixelFormatName");
+extern fn void getRGB(uint pixelvalue, SdlPixelFormatDetails* format, SdlPalette* palette, char* r, char* g, char* b) @cname("SDL_GetRGB");
+extern fn void getRGBA(uint pixelvalue, SdlPixelFormatDetails* format, SdlPalette* palette, char* r, char* g, char* b, char* a) @cname("SDL_GetRGBA");
+extern fn uint mapRGB(SdlPixelFormatDetails* format, SdlPalette* palette, char r, char g, char b) @cname("SDL_MapRGB");
+extern fn uint mapRGBA(SdlPixelFormatDetails* format, SdlPalette* palette, char r, char g, char b, char a) @cname("SDL_MapRGBA");
+extern fn bool setPaletteColors(SdlPalette* palette, SdlColor* colors, int firstcolor, int ncolors) @cname("SDL_SetPaletteColors");

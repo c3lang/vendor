@@ -2,9 +2,9 @@
 module sdl3;
 
 // Constants
-const uint MAJOR_VERSION = 3;
-const uint MINOR_VERSION = 5;
-const uint MICRO_VERSION = 0;
+const uint SDL_MAJOR_VERSION = 3;
+const uint SDL_MINOR_VERSION = 5;
+const uint SDL_MICRO_VERSION = 0;
 
 // Functions
 extern fn char* getRevision() @cname("SDL_GetRevision");

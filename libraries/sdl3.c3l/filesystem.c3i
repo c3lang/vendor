@@ -2,29 +2,29 @@
 module sdl3;
 
 // Types
-alias EnumerateDirectoryCallback = fn EnumerationResult(void* userdata, char* dirname, char* fname);
+alias SdlEnumerateDirectoryCallback = fn SdlEnumerationResult(void* userdata, char* dirname, char* fname);
 
 // Bitstructs
-bitstruct GlobFlags: uint {
+bitstruct SdlGlobFlags: uint {
   bool case_insensitive;
 }
 
 // Structs
-struct PathInfo {
-  PathType type;      /**< the path type */
+struct SdlPathInfo {
+  SdlPathType type;      /**< the path type */
   ulong size;         /**< the file size in bytes */
-  Time create_time;   /**< the time when the path was created */
-  Time modify_time;   /**< the last time the path was modified */
-  Time access_time;   /**< the last time the path was read */
+  SdlTime create_time;   /**< the time when the path was created */
+  SdlTime modify_time;   /**< the last time the path was modified */
+  SdlTime access_time;   /**< the last time the path was read */
 }
 
 // Enums
-enum EnumerationResult {
+enum SdlEnumerationResult {
   CONTINUE,   /**< Value that requests that enumeration continue. */
   SUCCESS,    /**< Value that requests that enumeration stop, successfully. */
   FAILURE,    /**< Value that requests that enumeration stop, as a failure. */
 }
-enum Folder {
+enum SdlFolder {
   HOME,        /**< The folder which contains all of the current user's data, preferences, and documents. It usually contains most of the other folders. If a requested folder does not exist, the home folder can be considered a safe fallback to store a user's documents. */
   DESKTOP,     /**< The folder of files that are displayed on the desktop. Note that the existence of a desktop folder does not guarantee that the system does show icons on its desktop; certain GNU/Linux distros with a graphical environment may not have desktop icons. */
   DOCUMENTS,   /**< User document files, possibly application-specific. This is a good place to save a user's projects. */
@@ -38,7 +38,7 @@ enum Folder {
   VIDEOS,      /**< Video files that can be played using a standard video player (mp4, webm...). */
   COUNT,       /**< Total number of types in this enum, not a folder type by itself. */
 }
-enum PathType {
+enum SdlPathType {
   NONE,      /**< path does not exist */
   FILE,      /**< a normal file */
   DIRECTORY, /**< a directory */
@@ -48,10 +48,10 @@ enum PathType {
 // Functions
 extern fn bool copyFile(char* oldpath, char* newpath) @cname("SDL_CopyFile");
 extern fn bool createDirectory(char* path) @cname("SDL_CreateDirectory");
-extern fn bool enumerateDirectory(char* path, EnumerateDirectoryCallback callback, void* userdata) @cname("SDL_EnumerateDirectory");
+extern fn bool enumerateDirectory(char* path, SdlEnumerateDirectoryCallback callback, void* userdata) @cname("SDL_EnumerateDirectory");
 extern fn char* getBasePath() @cname("SDL_GetBasePath");
 extern fn char* getCurrentDirectory() @cname("SDL_GetCurrentDirectory");
-extern fn bool getPathInfo(char* path, PathInfo* info) @cname("SDL_GetPathInfo");
+extern fn bool getPathInfo(char* path, SdlPathInfo* info) @cname("SDL_GetPathInfo");
 extern fn char* getPrefPath(char* org, char* app) @cname("SDL_GetPrefPath");
-extern fn char* getUserFolder(Folder folder) @cname("SDL_GetUserFolder");
-extern fn char** globDirectory(char* path, char* pattern, GlobFlags flags, int* count) @cname("SDL_GlobDirectory");
+extern fn char* getUserFolder(SdlFolder folder) @cname("SDL_GetUserFolder");
+extern fn char** globDirectory(char* path, char* pattern, SdlGlobFlags flags, int* count) @cname("SDL_GlobDirectory");

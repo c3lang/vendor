@@ -2,12 +2,12 @@
 module sdl3;
 
 // Types
-alias CleanupPropertyCallback = fn void(void* userdata, void* value);
-alias EnumeratePropertiesCallback = fn void(void* userdata, PropertiesID props, char* name);
-typedef PropertiesID = uint;
+alias SdlCleanupPropertyCallback = fn void(void* userdata, void* value);
+alias SdlEnumeratePropertiesCallback = fn void(void* userdata, SdlPropertiesID props, char* name);
+typedef SdlPropertiesID = uint;
 
 // Enums
-enum PropertyType {
+enum SdlPropertyType {
   INVALID,
   POINTER,
   STRING,
@@ -17,24 +17,24 @@ enum PropertyType {
 }
 
 // Functions
-extern fn bool clearProperty(PropertiesID props, char* name) @cname("SDL_ClearProperty");
-extern fn bool copyProperties(PropertiesID src, PropertiesID dst) @cname("SDL_CopyProperties");
-extern fn PropertiesID createProperties() @cname("SDL_CreateProperties");
-extern fn void destroyProperties(PropertiesID props) @cname("SDL_DestroyProperties");
-extern fn bool enumerateProperties(PropertiesID props, EnumeratePropertiesCallback callback, void* userdata) @cname("SDL_EnumerateProperties");
-extern fn bool getBooleanProperty(PropertiesID props, char* name, bool default_value) @cname("SDL_GetBooleanProperty");
-extern fn float getFloatProperty(PropertiesID props, char* name, float default_value) @cname("SDL_GetFloatProperty");
-extern fn PropertiesID getGlobalProperties() @cname("SDL_GetGlobalProperties");
-extern fn long getNumberProperty(PropertiesID props, char* name, long default_value) @cname("SDL_GetNumberProperty");
-extern fn void* getPointerProperty(PropertiesID props, char* name, void* default_value) @cname("SDL_GetPointerProperty");
-extern fn PropertyType getPropertyType(PropertiesID props, char* name) @cname("SDL_GetPropertyType");
-extern fn char* getStringProperty(PropertiesID props, char* name, char* default_value) @cname("SDL_GetStringProperty");
-extern fn bool hasProperty(PropertiesID props, char* name) @cname("SDL_HasProperty");
-extern fn bool lockProperties(PropertiesID props) @cname("SDL_LockProperties");
-extern fn bool setBooleanProperty(PropertiesID props, char* name, bool value) @cname("SDL_SetBooleanProperty");
-extern fn bool setFloatProperty(PropertiesID props, char* name, float value) @cname("SDL_SetFloatProperty");
-extern fn bool setNumberProperty(PropertiesID props, char* name, long value) @cname("SDL_SetNumberProperty");
-extern fn bool setPointerProperty(PropertiesID props, char* name, void* value) @cname("SDL_SetPointerProperty");
-extern fn bool setPointerPropertyWithCleanup(PropertiesID props, char* name, void* value, CleanupPropertyCallback cleanup, void* userdata) @cname("SDL_SetPointerPropertyWithCleanup");
-extern fn bool setStringProperty(PropertiesID props, char* name, char* value) @cname("SDL_SetStringProperty");
-extern fn void unlockProperties(PropertiesID props) @cname("SDL_UnlockProperties");
+extern fn bool clearProperty(SdlPropertiesID props, char* name) @cname("SDL_ClearProperty");
+extern fn bool copyProperties(SdlPropertiesID src, SdlPropertiesID dst) @cname("SDL_CopyProperties");
+extern fn SdlPropertiesID createProperties() @cname("SDL_CreateProperties");
+extern fn void destroyProperties(SdlPropertiesID props) @cname("SDL_DestroyProperties");
+extern fn bool enumerateProperties(SdlPropertiesID props, SdlEnumeratePropertiesCallback callback, void* userdata) @cname("SDL_EnumerateProperties");
+extern fn bool getBooleanProperty(SdlPropertiesID props, char* name, bool default_value) @cname("SDL_GetBooleanProperty");
+extern fn float getFloatProperty(SdlPropertiesID props, char* name, float default_value) @cname("SDL_GetFloatProperty");
+extern fn SdlPropertiesID getGlobalProperties() @cname("SDL_GetGlobalProperties");
+extern fn long getNumberProperty(SdlPropertiesID props, char* name, long default_value) @cname("SDL_GetNumberProperty");
+extern fn void* getPointerProperty(SdlPropertiesID props, char* name, void* default_value) @cname("SDL_GetPointerProperty");
+extern fn SdlPropertyType getPropertyType(SdlPropertiesID props, char* name) @cname("SDL_GetPropertyType");
+extern fn char* getStringProperty(SdlPropertiesID props, char* name, char* default_value) @cname("SDL_GetStringProperty");
+extern fn bool hasProperty(SdlPropertiesID props, char* name) @cname("SDL_HasProperty");
+extern fn bool lockProperties(SdlPropertiesID props) @cname("SDL_LockProperties");
+extern fn bool setBooleanProperty(SdlPropertiesID props, char* name, bool value) @cname("SDL_SetBooleanProperty");
+extern fn bool setFloatProperty(SdlPropertiesID props, char* name, float value) @cname("SDL_SetFloatProperty");
+extern fn bool setNumberProperty(SdlPropertiesID props, char* name, long value) @cname("SDL_SetNumberProperty");
+extern fn bool setPointerProperty(SdlPropertiesID props, char* name, void* value) @cname("SDL_SetPointerProperty");
+extern fn bool setPointerPropertyWithCleanup(SdlPropertiesID props, char* name, void* value, SdlCleanupPropertyCallback cleanup, void* userdata) @cname("SDL_SetPointerPropertyWithCleanup");
+extern fn bool setStringProperty(SdlPropertiesID props, char* name, char* value) @cname("SDL_SetStringProperty");
+extern fn void unlockProperties(SdlPropertiesID props) @cname("SDL_UnlockProperties");

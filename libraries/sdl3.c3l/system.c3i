@@ -2,11 +2,11 @@
 module sdl3;
 
 // Types
-alias IOSAnimationCallback = fn void(void* userdata);
-alias RequestAndroidPermissionCallback = fn void(void* userdata, char* permission, bool granted);
+alias SdlIOSAnimationCallback = fn void(void* userdata);
+alias SdlRequestAndroidPermissionCallback = fn void(void* userdata, char* permission, bool granted);
 
 // Enums
-enum Sandbox {
+enum SdlSandbox {
   NONE,
   UNKNOWN_CONTAINER,
   FLATPAK,
@@ -22,9 +22,9 @@ extern fn uint getAndroidExternalStorageState() @cname("SDL_GetAndroidExternalSt
 extern fn char* getAndroidInternalStoragePath() @cname("SDL_GetAndroidInternalStoragePath");
 extern fn void* getAndroidJNIEnv() @cname("SDL_GetAndroidJNIEnv");
 extern fn int getAndroidSDKVersion() @cname("SDL_GetAndroidSDKVersion");
-extern fn int getDirect3D9AdapterIndex(DisplayID displayID) @cname("SDL_GetDirect3D9AdapterIndex");
-extern fn bool getDXGIOutputInfo(DisplayID displayID, int* adapterIndex, int* outputIndex) @cname("SDL_GetDXGIOutputInfo");
-extern fn Sandbox getSandbox() @cname("SDL_GetSandbox");
+extern fn int getDirect3D9AdapterIndex(SdlDisplayID displayID) @cname("SDL_GetDirect3D9AdapterIndex");
+extern fn bool getDXGIOutputInfo(SdlDisplayID displayID, int* adapterIndex, int* outputIndex) @cname("SDL_GetDXGIOutputInfo");
+extern fn SdlSandbox getSandbox() @cname("SDL_GetSandbox");
 extern fn bool isChromebook() @cname("SDL_IsChromebook");
 extern fn bool isDeXMode() @cname("SDL_IsDeXMode");
 extern fn bool isTablet() @cname("SDL_IsTablet");
@@ -36,10 +36,10 @@ extern fn void onApplicationDidReceiveMemoryWarning() @cname("SDL_OnApplicationD
 extern fn void onApplicationWillEnterBackground() @cname("SDL_OnApplicationWillEnterBackground");
 extern fn void onApplicationWillEnterForeground() @cname("SDL_OnApplicationWillEnterForeground");
 extern fn void onApplicationWillTerminate() @cname("SDL_OnApplicationWillTerminate");
-extern fn bool requestAndroidPermission(char* permission, RequestAndroidPermissionCallback cb, void* userdata) @cname("SDL_RequestAndroidPermission");
+extern fn bool requestAndroidPermission(char* permission, SdlRequestAndroidPermissionCallback cb, void* userdata) @cname("SDL_RequestAndroidPermission");
 extern fn void sendAndroidBackButton() @cname("SDL_SendAndroidBackButton");
 extern fn bool sendAndroidMessage(uint command, int param) @cname("SDL_SendAndroidMessage");
-extern fn bool setiOSAnimationCallback(Window* window, int interval, IOSAnimationCallback callback, void *callbackParam) @cname("SDL_SetiOSAnimationCallback");
+extern fn bool setiOSAnimationCallback(SdlWindow* window, int interval, SdlIOSAnimationCallback callback, void *callbackParam) @cname("SDL_SetiOSAnimationCallback");
 extern fn void setiOSEventPump(bool enabled) @cname("SDL_SetiOSEventPump");
 extern fn bool setLinuxThreadPriority(long threadID, int priority) @cname("SDL_SetLinuxThreadPriority");
 extern fn bool setLinuxThreadPriorityAndPolicy(long threadID, int sdlPriority, int schedPolicy) @cname("SDL_SetLinuxThreadPriorityAndPolicy");

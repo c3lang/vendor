@@ -2,7 +2,7 @@
 module sdl3;
 
 // Bitstructs
-bitstruct BlendMode : uint {
+bitstruct SdlBlendMode : uint {
   bool blend:   0;
   bool add:     1;
   bool mod:     2;
@@ -10,7 +10,7 @@ bitstruct BlendMode : uint {
 }
 
 // Enums
-enum BlendFactor {
+enum SdlBlendFactor {
   EMPTY,
   ZERO,
   ONE,
@@ -23,7 +23,7 @@ enum BlendFactor {
   DST_ALPHA,
   ONE_MINUS_DST_ALPHA,
 }
-enum BlendOperation {
+enum SdlBlendOperation {
   EMPTY,
   ADD,
   SUBTRACT,
@@ -33,5 +33,5 @@ enum BlendOperation {
 }
 
 // Functions
-extern fn BlendMode composeCustomBlendMode(BlendFactor srcColorFactor, BlendFactor dstColorFactor, BlendOperation colorOperation, BlendFactor srcAlphaFactor, BlendFactor dstAlphaFactor, BlendOperation alphaOperation) @cname("SDL_ComposeCustomBlendMode");
+extern fn SdlBlendMode composeCustomBlendMode(SdlBlendFactor srcColorFactor, SdlBlendFactor dstColorFactor, SdlBlendOperation colorOperation, SdlBlendFactor srcAlphaFactor, SdlBlendFactor dstAlphaFactor, SdlBlendOperation alphaOperation) @cname("SDL_ComposeCustomBlendMode");
 

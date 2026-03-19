@@ -2,10 +2,10 @@
 module sdl3;
 
 // Types
-typedef PenID = int;
+typedef SdlPenID = int;
 
 // Bitstructs
-bitstruct PenInputFlags : uint {
+bitstruct SdlPenInputFlags : uint {
   bool down    : 0;
   bool button1 : 1;
   bool button2 : 2;
@@ -17,7 +17,7 @@ bitstruct PenInputFlags : uint {
 }
 
 // Enums
-enum PenAxis {
+enum SdlPenAxis {
   PRESSURE,  /**< Pen pressure.  Unidirectional: 0 to 1.0 */
   XTILT,     /**< Pen horizontal tilt angle.  Bidirectional: -90.0 to 90.0 (left-to-right). */
   YTILT,     /**< Pen vertical tilt angle.  Bidirectional: -90.0 to 90.0 (top-to-down). */
@@ -27,7 +27,7 @@ enum PenAxis {
   TANGENTIAL_PRESSURE,    /**< Pressure from squeezing the pen ("barrel pressure"). */
   COUNT,      /**< Total known pen axis types in this version of SDL. This number may grow in future releases! */
 }
-constdef PenDeviceType : CInt {
+constdef SdlPenDeviceType : CInt {
   INVALID  = -1, /**< Not a valid pen device. */
   UNKNOWN  =  0, /**< Don't know specifics of this pen. */
   DIRECT   =  1, /**< Pen touches display. */
@@ -35,4 +35,4 @@ constdef PenDeviceType : CInt {
 }
 
 // Functions
-extern fn PenDeviceType getPenDeviceType(PenID instance_id) @cname("SDL_GetPenDeviceType");
+extern fn SdlPenDeviceType getPenDeviceType(SdlPenID instance_id) @cname("SDL_GetPenDeviceType");
