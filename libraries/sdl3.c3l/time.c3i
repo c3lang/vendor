@@ -2,7 +2,7 @@
 module sdl3;
 
 // Structs
-struct DateTime {
+struct SdlDateTime {
   int year, month, day;
   int hour, minute;
   int second, nanosecond;
@@ -11,23 +11,23 @@ struct DateTime {
 }
 
 // Enums
-enum DateFormat {
+enum SdlDateFormat {
   YYYYMMDD, /**< Year/Month/Day */
   DDMMYYYY, /**< Day/Month/Year */
   MMDDYYYY, /**< Month/Day/Year */
 }
-enum TimeFormat {
+enum SdlTimeFormat {
   HR24, /**< 24 hour time */
   HR12, /**< 12 hour time */
 }
 
 // Functions
-extern fn bool dateTimeToTime(DateTime* dt, Time* ticks) @cname("SDL_DateTimeToTime");
-extern fn bool getCurrentTime(Time* ticks) @cname("SDL_GetCurrentTime");
-extern fn bool getDateTimeLocalePreferences(DateFormat* dateFormat, TimeFormat* timeFormat) @cname("SDL_GetDateTimeLocalePreferences");
+extern fn bool dateTimeToTime(SdlDateTime* dt, SdlTime* ticks) @cname("SDL_DateTimeToTime");
+extern fn bool getCurrentTime(SdlTime* ticks) @cname("SDL_GetCurrentTime");
+extern fn bool getDateTimeLocalePreferences(SdlDateFormat* dateFormat, SdlTimeFormat* timeFormat) @cname("SDL_GetDateTimeLocalePreferences");
 extern fn int getDayOfWeek(int year, int month, int day) @cname("SDL_GetDayOfWeek");
 extern fn int getDayOfYear(int year, int month, int day) @cname("SDL_GetDayOfYear");
 extern fn int getDaysInMonth(int year, int month) @cname("SDL_GetDaysInMonth");
-extern fn Time timeFromWindows(uint dwLowDateTime, uint dwHighDateTime) @cname("SDL_TimeFromWindows");
-extern fn bool timeToDateTime(Time ticks, DateTime* dt, bool localTime) @cname("SDL_TimeToDateTime");
-extern fn void timeToWindows(Time ticks, uint* dwLowDateTime, uint* dwHighDateTime) @cname("SDL_TimeToWindows");
+extern fn SdlTime timeFromWindows(uint dwLowDateTime, uint dwHighDateTime) @cname("SDL_TimeFromWindows");
+extern fn bool timeToDateTime(SdlTime ticks, SdlDateTime* dt, bool localTime) @cname("SDL_TimeToDateTime");
+extern fn void timeToWindows(SdlTime ticks, uint* dwLowDateTime, uint* dwHighDateTime) @cname("SDL_TimeToWindows");

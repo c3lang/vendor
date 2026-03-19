@@ -2,20 +2,20 @@
 module sdl3;
 
 // Types
-typedef Cursor = void;
-typedef MouseID = uint;
-alias MouseMotionTransformCallback = fn void(void* userdata, ulong timestamp, Window* window, MouseID mouseID, float* x, float* y);
+typedef SdlCursor = void;
+typedef SdlMouseID = uint;
+alias SdlMouseMotionTransformCallback = fn void(void* userdata, ulong timestamp, SdlWindow* window, SdlMouseID mouseID, float* x, float* y);
 
-typedef MouseButtonFlags = uint;
+typedef SdlMouseButtonFlags = uint;
 
-const MouseButtonFlags BUTTON_LEFT = 1;
-const MouseButtonFlags BUTTON_MIDDLE = 2;
-const MouseButtonFlags BUTTON_RIGHT = 3;
-const MouseButtonFlags BUTTON_X1 = 4;
-const MouseButtonFlags BUTTON_X2 = 5;
+const SdlMouseButtonFlags BUTTON_LEFT = 1;
+const SdlMouseButtonFlags BUTTON_MIDDLE = 2;
+const SdlMouseButtonFlags BUTTON_RIGHT = 3;
+const SdlMouseButtonFlags BUTTON_X1 = 4;
+const SdlMouseButtonFlags BUTTON_X2 = 5;
 
-macro MouseButtonFlags @buttonMask(#a) {
-  return (MouseButtonFlags)(1u << ((uint)(#a) - 1));
+macro SdlMouseButtonFlags @buttonMask(#a) {
+  return (SdlMouseButtonFlags)(1u << ((uint)(#a) - 1));
 }
 const BUTTON_LMASK   = @buttonMask(BUTTON_LEFT);
 const BUTTON_MMASK   = @buttonMask(BUTTON_MIDDLE);
@@ -24,17 +24,17 @@ const BUTTON_X1MASK  = @buttonMask(BUTTON_X1);
 const BUTTON_X2MASK  = @buttonMask(BUTTON_X2);
 
 // Structs
-struct CursorFrameInfo {
-  Surface* surface; /**< The surface data for this frame */
+struct SdlCursorFrameInfo {
+  SdlSurface* surface; /**< The surface data for this frame */
   uint duration;    /**< The frame duration in milliseconds (a duration of 0 is infinite) */
 }
 
 // Enums
-enum MouseWheelDirection {
+enum SdlMouseWheelDirection {
   NORMAL,    /**< The scroll direction is normal */
   FLIPPED,   /**< The scroll direction is flipped / natural */
 }
-enum SystemCursor {
+enum SdlSystemCursor {
   DEFAULT,      /**< Default cursor. Usually an arrow. */
   TEXT,         /**< Text selection. Usually an I-beam. */
   WAIT,         /**< Wait. Usually an hourglass or watch or spinning ball. */
@@ -47,39 +47,39 @@ enum SystemCursor {
   MOVE,         /**< Four pointed arrow pointing north, south, east, and west. */
   NOT_ALLOWED,  /**< Not permitted. Usually a slashed circle or crossbones. */
   POINTER,      /**< Pointer that indicates a link. Usually a pointing hand. */
-  NW_RESIZE,    /**< Window resize top-left. This may be a single arrow or a double arrow like NWSE_RESIZE. */
-  N_RESIZE,     /**< Window resize top. May be NS_RESIZE. */
-  NE_RESIZE,    /**< Window resize top-right. May be NESW_RESIZE. */
-  E_RESIZE,     /**< Window resize right. May be EW_RESIZE. */
-  SE_RESIZE,    /**< Window resize bottom-right. May be NWSE_RESIZE. */
-  S_RESIZE,     /**< Window resize bottom. May be NS_RESIZE. */
-  SW_RESIZE,    /**< Window resize bottom-left. May be NESW_RESIZE. */
-  W_RESIZE,     /**< Window resize left. May be EW_RESIZE. */
+  NW_RESIZE,    /**< SdlWindow resize top-left. This may be a single arrow or a double arrow like NWSE_RESIZE. */
+  N_RESIZE,     /**< SdlWindow resize top. May be NS_RESIZE. */
+  NE_RESIZE,    /**< SdlWindow resize top-right. May be NESW_RESIZE. */
+  E_RESIZE,     /**< SdlWindow resize right. May be EW_RESIZE. */
+  SE_RESIZE,    /**< SdlWindow resize bottom-right. May be NWSE_RESIZE. */
+  S_RESIZE,     /**< SdlWindow resize bottom. May be NS_RESIZE. */
+  SW_RESIZE,    /**< SdlWindow resize bottom-left. May be NESW_RESIZE. */
+  W_RESIZE,     /**< SdlWindow resize left. May be EW_RESIZE. */
   COUNT,
 }
 
 // Functions
 extern fn bool captureMouse(bool enabled) @cname("SDL_CaptureMouse");
-extern fn Cursor* createAnimatedCursor(CursorFrameInfo* frames, int frame_count, int hot_x, int hot_y) @cname("SDL_CreateAnimatedCursor");
-extern fn Cursor* createColorCursor(Surface* surface, int hot_x, int hot_y) @cname("SDL_CreateColorCursor");
-extern fn Cursor* createCursor(char* data, char* mask, int w, int h, int hot_x, int hot_y) @cname("SDL_CreateCursor");
-extern fn Cursor* createSystemCursor(SystemCursor id) @cname("SDL_CreateSystemCursor");
+extern fn SdlCursor* createAnimatedCursor(SdlCursorFrameInfo* frames, int frame_count, int hot_x, int hot_y) @cname("SDL_CreateAnimatedCursor");
+extern fn SdlCursor* createColorCursor(SdlSurface* surface, int hot_x, int hot_y) @cname("SDL_CreateColorCursor");
+extern fn SdlCursor* createCursor(char* data, char* mask, int w, int h, int hot_x, int hot_y) @cname("SDL_CreateCursor");
+extern fn SdlCursor* createSystemCursor(SdlSystemCursor id) @cname("SDL_CreateSystemCursor");
 extern fn bool cursorVisible() @cname("SDL_CursorVisible");
-extern fn void destroyCursor(Cursor* cursor) @cname("SDL_DestroyCursor");
-extern fn Cursor* getCursor() @cname("SDL_GetCursor");
-extern fn Cursor* getDefaultCursor() @cname("SDL_GetDefaultCursor");
-extern fn MouseButtonFlags getGlobalMouseState(float* x, float* y) @cname("SDL_GetGlobalMouseState");
-extern fn MouseID* getMice(int* count) @cname("SDL_GetMice");
-extern fn Window* getMouseFocus() @cname("SDL_GetMouseFocus");
-extern fn char* getMouseNameForID(MouseID instance_id) @cname("SDL_GetMouseNameForID");
-extern fn MouseButtonFlags getMouseState(float* x, float* y) @cname("SDL_GetMouseState");
-extern fn MouseButtonFlags getRelativeMouseState(float* x, float* y) @cname("SDL_GetRelativeMouseState");
-extern fn bool getWindowRelativeMouseMode(Window* window) @cname("SDL_GetWindowRelativeMouseMode");
+extern fn void destroyCursor(SdlCursor* cursor) @cname("SDL_DestroyCursor");
+extern fn SdlCursor* getCursor() @cname("SDL_GetCursor");
+extern fn SdlCursor* getDefaultCursor() @cname("SDL_GetDefaultCursor");
+extern fn SdlMouseButtonFlags getGlobalMouseState(float* x, float* y) @cname("SDL_GetGlobalMouseState");
+extern fn SdlMouseID* getMice(int* count) @cname("SDL_GetMice");
+extern fn SdlWindow* getMouseFocus() @cname("SDL_GetMouseFocus");
+extern fn char* getMouseNameForID(SdlMouseID instance_id) @cname("SDL_GetMouseNameForID");
+extern fn SdlMouseButtonFlags getMouseState(float* x, float* y) @cname("SDL_GetMouseState");
+extern fn SdlMouseButtonFlags getRelativeMouseState(float* x, float* y) @cname("SDL_GetRelativeMouseState");
+extern fn bool getWindowRelativeMouseMode(SdlWindow* window) @cname("SDL_GetWindowRelativeMouseMode");
 extern fn bool hasMouse() @cname("SDL_HasMouse");
 extern fn bool hideCursor() @cname("SDL_HideCursor");
-extern fn bool setCursor(Cursor* cursor) @cname("SDL_SetCursor");
-extern fn bool setRelativeMouseTransform(MouseMotionTransformCallback callback, void* userdata) @cname("SDL_SetRelativeMouseTransform");
-extern fn bool setWindowRelativeMouseMode(Window* window, bool enabled) @cname("SDL_SetWindowRelativeMouseMode");
+extern fn bool setCursor(SdlCursor* cursor) @cname("SDL_SetCursor");
+extern fn bool setRelativeMouseTransform(SdlMouseMotionTransformCallback callback, void* userdata) @cname("SDL_SetRelativeMouseTransform");
+extern fn bool setWindowRelativeMouseMode(SdlWindow* window, bool enabled) @cname("SDL_SetWindowRelativeMouseMode");
 extern fn bool showCursor() @cname("SDL_ShowCursor");
 extern fn bool warpMouseGlobal(float x, float y) @cname("SDL_WarpMouseGlobal");
-extern fn void warpMouseInWindow(Window* window, float x, float y) @cname("SDL_WarpMouseInWindow");
+extern fn void warpMouseInWindow(SdlWindow* window, float x, float y) @cname("SDL_WarpMouseInWindow");

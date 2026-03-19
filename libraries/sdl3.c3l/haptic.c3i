@@ -2,18 +2,18 @@
 module sdl3;
 
 // Types
-typedef Haptic = void;
-typedef HapticDirectionType = char;
-typedef HapticEffectID = int;
-typedef HapticEffectType = ushort;
-typedef HapticID = uint;
+typedef SdlHaptic = void;
+typedef SdlHapticDirectionType = char;
+typedef SdlHapticEffectID = int;
+typedef SdlHapticEffectType = ushort;
+typedef SdlHapticID = uint;
 
 // Structs
-struct HapticCondition {
+struct SdlHapticCondition {
   /* Header */
-  HapticEffectType type;      /**< SDL_HAPTIC_SPRING, SDL_HAPTIC_DAMPER,
+  SdlHapticEffectType type;      /**< SDL_HAPTIC_SPRING, SDL_HAPTIC_DAMPER,
                                    SDL_HAPTIC_INERTIA or SDL_HAPTIC_FRICTION */
-  HapticDirection direction;  /**< Direction of the effect. */
+  SdlHapticDirection direction;  /**< Direction of the effect. */
 
   /* Replay */
   uint length;            /**< Duration of the effect. */
@@ -31,10 +31,10 @@ struct HapticCondition {
   ushort[3] deadband;     /**< Size of the dead zone; max 0xFFFF: whole axis-range when 0-centered. */
   short[3] center;        /**< Position of the dead zone. */
 }
-struct HapticConstant {
+struct SdlHapticConstant {
   /* Header */
-  HapticEffectType type;      /**< SDL_HAPTIC_CONSTANT */
-  HapticDirection direction;  /**< Direction of the effect. */
+  SdlHapticEffectType type;      /**< SDL_HAPTIC_CONSTANT */
+  SdlHapticDirection direction;  /**< Direction of the effect. */
 
   /* Replay */
   uint length;            /**< Duration of the effect. */
@@ -53,10 +53,10 @@ struct HapticConstant {
   ushort fade_length;     /**< Duration of the fade. */
   ushort fade_level;      /**< Level at the end of the fade. */
 }
-struct HapticCustom {
+struct SdlHapticCustom {
   /* Header */
-  HapticEffectType type;      /**< SDL_HAPTIC_CUSTOM */
-  HapticDirection direction;  /**< Direction of the effect. */
+  SdlHapticEffectType type;      /**< SDL_HAPTIC_CUSTOM */
+  SdlHapticDirection direction;  /**< Direction of the effect. */
 
   /* Replay */
   uint length;            /**< Duration of the effect. */
@@ -78,13 +78,13 @@ struct HapticCustom {
   ushort fade_length;     /**< Duration of the fade. */
   ushort fade_level;      /**< Level at the end of the fade. */
 }
-struct HapticDirection {
-  HapticDirectionType type;  /**< The type of encoding. */
+struct SdlHapticDirection {
+  SdlHapticDirectionType type;  /**< The type of encoding. */
   int[3] dir;                /**< The encoded direction. */
 }
-struct HapticLeftRight {
+struct SdlHapticLeftRight {
   /* Header */
-  HapticEffectType type;  /**< SDL_HAPTIC_LEFTRIGHT */
+  SdlHapticEffectType type;  /**< SDL_HAPTIC_LEFTRIGHT */
 
   /* Replay */
   uint length;          /**< Duration of the effect in milliseconds. */
@@ -93,12 +93,12 @@ struct HapticLeftRight {
   ushort large_magnitude; /**< Control of the large controller motor. */
   ushort small_magnitude; /**< Control of the small controller motor. */
 }
-struct HapticPeriodic {
+struct SdlHapticPeriodic {
   /* Header */
-  HapticEffectType type;      /**< SDL_HAPTIC_SINE, SDL_HAPTIC_SQUARE
+  SdlHapticEffectType type;      /**< SDL_HAPTIC_SINE, SDL_HAPTIC_SQUARE
                                    SDL_HAPTIC_TRIANGLE, SDL_HAPTIC_SAWTOOTHUP or
                                    SDL_HAPTIC_SAWTOOTHDOWN */
-  HapticDirection direction;  /**< Direction of the effect. */
+  SdlHapticDirection direction;  /**< Direction of the effect. */
 
   /* Replay */
   uint length;      /**< Duration of the effect. */
@@ -120,10 +120,10 @@ struct HapticPeriodic {
   ushort fade_length;     /**< Duration of the fade. */
   ushort fade_level;      /**< Level at the end of the fade. */
 }
-struct HapticRamp {
+struct SdlHapticRamp {
   /* Header */
-  HapticEffectType type;      /**< SDL_HAPTIC_RAMP */
-  HapticDirection direction;  /**< Direction of the effect. */
+  SdlHapticEffectType type;      /**< SDL_HAPTIC_RAMP */
+  SdlHapticDirection direction;  /**< Direction of the effect. */
 
   /* Replay */
   uint length;          /**< Duration of the effect. */
@@ -143,46 +143,46 @@ struct HapticRamp {
   ushort fade_length;     /**< Duration of the fade. */
   ushort fade_level;      /**< Level at the end of the fade. */
 }
-union HapticEffect {
+union SdlHapticEffect {
   /* Common for all force feedback effects */
-  HapticEffectType type;      /**< Effect type. */
-  HapticConstant constant;    /**< Constant effect. */
-  HapticPeriodic periodic;    /**< Periodic effect. */
-  HapticCondition condition;  /**< Condition effect. */
-  HapticRamp ramp;            /**< Ramp effect. */
-  HapticLeftRight leftright;  /**< Left/Right effect. */
-  HapticCustom custom;        /**< Custom effect. */
+  SdlHapticEffectType type;      /**< Effect type. */
+  SdlHapticConstant constant;    /**< Constant effect. */
+  SdlHapticPeriodic periodic;    /**< Periodic effect. */
+  SdlHapticCondition condition;  /**< Condition effect. */
+  SdlHapticRamp ramp;            /**< Ramp effect. */
+  SdlHapticLeftRight leftright;  /**< Left/Right effect. */
+  SdlHapticCustom custom;        /**< Custom effect. */
 }
 
 // Functions
-extern fn void closeHaptic(Haptic* haptic) @cname("SDL_CloseHaptic");
-extern fn HapticEffectID createHapticEffect(Haptic* haptic, HapticEffect* effect) @cname("SDL_CreateHapticEffect");
-extern fn void destroyHapticEffect(Haptic* haptic, HapticEffectID effect) @cname("SDL_DestroyHapticEffect");
-extern fn bool getHapticEffectStatus(Haptic* haptic, HapticEffectID effect) @cname("SDL_GetHapticEffectStatus");
-extern fn uint getHapticFeatures(Haptic* haptic) @cname("SDL_GetHapticFeatures");
-extern fn Haptic* getHapticFromID(HapticID instance_id) @cname("SDL_GetHapticFromID");
-extern fn HapticID getHapticID(Haptic* haptic) @cname("SDL_GetHapticID");
-extern fn char* getHapticName(Haptic* haptic) @cname("SDL_GetHapticName");
-extern fn char* getHapticNameForID(HapticID instance_id) @cname("SDL_GetHapticNameForID");
-extern fn HapticID* getHaptics(int* count) @cname("SDL_GetHaptics");
-extern fn int getMaxHapticEffects(Haptic* haptic) @cname("SDL_GetMaxHapticEffects");
-extern fn int getMaxHapticEffectsPlaying(Haptic* haptic) @cname("SDL_GetMaxHapticEffectsPlaying");
-extern fn int getNumHapticAxes(Haptic* haptic) @cname("SDL_GetNumHapticAxes");
-extern fn bool hapticEffectSupported(Haptic* haptic, HapticEffect* effect) @cname("SDL_HapticEffectSupported");
-extern fn bool hapticRumbleSupported(Haptic* haptic) @cname("SDL_HapticRumbleSupported");
-extern fn bool initHapticRumble(Haptic* haptic) @cname("SDL_InitHapticRumble");
-extern fn bool isJoystickHaptic(Joystick* joystick) @cname("SDL_IsJoystickHaptic");
+extern fn void closeHaptic(SdlHaptic* haptic) @cname("SDL_CloseHaptic");
+extern fn SdlHapticEffectID createHapticEffect(SdlHaptic* haptic, SdlHapticEffect* effect) @cname("SDL_CreateHapticEffect");
+extern fn void destroyHapticEffect(SdlHaptic* haptic, SdlHapticEffectID effect) @cname("SDL_DestroyHapticEffect");
+extern fn bool getHapticEffectStatus(SdlHaptic* haptic, SdlHapticEffectID effect) @cname("SDL_GetHapticEffectStatus");
+extern fn uint getHapticFeatures(SdlHaptic* haptic) @cname("SDL_GetHapticFeatures");
+extern fn SdlHaptic* getHapticFromID(SdlHapticID instance_id) @cname("SDL_GetHapticFromID");
+extern fn SdlHapticID getHapticID(SdlHaptic* haptic) @cname("SDL_GetHapticID");
+extern fn char* getHapticName(SdlHaptic* haptic) @cname("SDL_GetHapticName");
+extern fn char* getHapticNameForID(SdlHapticID instance_id) @cname("SDL_GetHapticNameForID");
+extern fn SdlHapticID* getHaptics(int* count) @cname("SDL_GetHaptics");
+extern fn int getMaxHapticEffects(SdlHaptic* haptic) @cname("SDL_GetMaxHapticEffects");
+extern fn int getMaxHapticEffectsPlaying(SdlHaptic* haptic) @cname("SDL_GetMaxHapticEffectsPlaying");
+extern fn int getNumHapticAxes(SdlHaptic* haptic) @cname("SDL_GetNumHapticAxes");
+extern fn bool hapticEffectSupported(SdlHaptic* haptic, SdlHapticEffect* effect) @cname("SDL_HapticEffectSupported");
+extern fn bool hapticRumbleSupported(SdlHaptic* haptic) @cname("SDL_HapticRumbleSupported");
+extern fn bool initHapticRumble(SdlHaptic* haptic) @cname("SDL_InitHapticRumble");
+extern fn bool isJoystickHaptic(SdlJoystick* joystick) @cname("SDL_IsJoystickHaptic");
 extern fn bool isMouseHaptic() @cname("SDL_IsMouseHaptic");
-extern fn Haptic* openHaptic(HapticID instance_id) @cname("SDL_OpenHaptic");
-extern fn Haptic* openHapticFromJoystick(Joystick* joystick) @cname("SDL_OpenHapticFromJoystick");
-extern fn Haptic* openHapticFromMouse() @cname("SDL_OpenHapticFromMouse");
-extern fn bool pauseHaptic(Haptic* haptic) @cname("SDL_PauseHaptic");
-extern fn bool playHapticRumble(Haptic* haptic, float strength, uint length) @cname("SDL_PlayHapticRumble");
-extern fn bool resumeHaptic(Haptic* haptic) @cname("SDL_ResumeHaptic");
-extern fn bool runHapticEffect(Haptic* haptic, HapticEffectID effect, uint iterations) @cname("SDL_RunHapticEffect");
-extern fn bool setHapticAutocenter(Haptic* haptic, int autocenter) @cname("SDL_SetHapticAutocenter");
-extern fn bool setHapticGain(Haptic* haptic, int gain) @cname("SDL_SetHapticGain");
-extern fn bool stopHapticEffect(Haptic* haptic, HapticEffectID effect) @cname("SDL_StopHapticEffect");
-extern fn bool stopHapticEffects(Haptic* haptic) @cname("SDL_StopHapticEffects");
-extern fn bool stopHapticRumble(Haptic* haptic) @cname("SDL_StopHapticRumble");
-extern fn bool updateHapticEffect(Haptic* haptic, HapticEffectID effect, HapticEffect* data) @cname("SDL_UpdateHapticEffect");
+extern fn SdlHaptic* openHaptic(SdlHapticID instance_id) @cname("SDL_OpenHaptic");
+extern fn SdlHaptic* openHapticFromJoystick(SdlJoystick* joystick) @cname("SDL_OpenHapticFromJoystick");
+extern fn SdlHaptic* openHapticFromMouse() @cname("SDL_OpenHapticFromMouse");
+extern fn bool pauseHaptic(SdlHaptic* haptic) @cname("SDL_PauseHaptic");
+extern fn bool playHapticRumble(SdlHaptic* haptic, float strength, uint length) @cname("SDL_PlayHapticRumble");
+extern fn bool resumeHaptic(SdlHaptic* haptic) @cname("SDL_ResumeHaptic");
+extern fn bool runHapticEffect(SdlHaptic* haptic, SdlHapticEffectID effect, uint iterations) @cname("SDL_RunHapticEffect");
+extern fn bool setHapticAutocenter(SdlHaptic* haptic, int autocenter) @cname("SDL_SetHapticAutocenter");
+extern fn bool setHapticGain(SdlHaptic* haptic, int gain) @cname("SDL_SetHapticGain");
+extern fn bool stopHapticEffect(SdlHaptic* haptic, SdlHapticEffectID effect) @cname("SDL_StopHapticEffect");
+extern fn bool stopHapticEffects(SdlHaptic* haptic) @cname("SDL_StopHapticEffects");
+extern fn bool stopHapticRumble(SdlHaptic* haptic) @cname("SDL_StopHapticRumble");
+extern fn bool updateHapticEffect(SdlHaptic* haptic, SdlHapticEffectID effect, SdlHapticEffect* data) @cname("SDL_UpdateHapticEffect");

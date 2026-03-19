@@ -2,20 +2,20 @@
 module sdl3;
 
 // Types
-typedef Thread = void;
-typedef ThreadID = ulong;
-typedef TLsID = AtomicInt;
-alias ThreadFunction = fn int(void* data);
-alias TLSDestructorCallback = fn void(void* data);
+typedef SdlThread = void;
+typedef SdlThreadID = ulong;
+typedef SdlTLSID = SdlAtomicInt;
+alias SdlThreadFunction = fn int(void* data);
+alias SdlTLSDestructorCallback = fn void(void* data);
 
 // Enums
-enum ThreadPriority {
+enum SdlThreadPriority {
   LOW,
   NORMAL,
   HIGH,
   TIME_CRITICAL,
 }
-enum ThreadState {
+enum SdlThreadState {
   UNKNOWN,     /**< The thread is not valid */
   ALIVE,       /**< The thread is currently running */
   DETACHED,    /**< The thread is detached and can't be waited on */
@@ -24,14 +24,14 @@ enum ThreadState {
 
 // Functions
 extern fn void cleanupTLS() @cname("SDL_CleanupTLS");
-extern fn Thread* createThread(ThreadFunction func, char* name, void* data) @cname("SDL_CreateThread");
-extern fn Thread* createThreadWithProperties(PropertiesID props) @cname("SDL_CreateThreadWithProperties");
-extern fn void detachThread(Thread* thread) @cname("SDL_DetachThread");
-extern fn ThreadID getCurrentThreadID() @cname("SDL_GetCurrentThreadID");
-extern fn ThreadID getThreadID(Thread* thread) @cname("SDL_GetThreadID");
-extern fn char* getThreadName(Thread* thread) @cname("SDL_GetThreadName");
-extern fn ThreadState getThreadState(Thread* thread) @cname("SDL_GetThreadState");
-extern fn void* getTLS(TLsID* id) @cname("SDL_GetTLS");
-extern fn bool setCurrentThreadPriority(ThreadPriority priority) @cname("SDL_SetCurrentThreadPriority");
-extern fn bool setTLS(TLsID* id, void* value, TLSDestructorCallback destructor) @cname("SDL_SetTLS");
-extern fn void waitThread(Thread* thread, int* status) @cname("SDL_WaitThread");
+extern fn SdlThread* createThread(SdlThreadFunction func, char* name, void* data) @cname("SDL_CreateThread");
+extern fn SdlThread* createThreadWithProperties(SdlPropertiesID props) @cname("SDL_CreateThreadWithProperties");
+extern fn void detachThread(SdlThread* thread) @cname("SDL_DetachThread");
+extern fn SdlThreadID getCurrentThreadID() @cname("SDL_GetCurrentThreadID");
+extern fn SdlThreadID getThreadID(SdlThread* thread) @cname("SDL_GetThreadID");
+extern fn char* getThreadName(SdlThread* thread) @cname("SDL_GetThreadName");
+extern fn SdlThreadState getThreadState(SdlThread* thread) @cname("SDL_GetThreadState");
+extern fn void* getTLS(SdlTLSID* id) @cname("SDL_GetTLS");
+extern fn bool setCurrentThreadPriority(SdlThreadPriority priority) @cname("SDL_SetCurrentThreadPriority");
+extern fn bool setTLS(SdlTLSID* id, void* value, SdlTLSDestructorCallback destructor) @cname("SDL_SetTLS");
+extern fn void waitThread(SdlThread* thread, int* status) @cname("SDL_WaitThread");

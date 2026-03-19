@@ -2,7 +2,7 @@
 module sdl3;
 
 // Enums
-constdef PowerState : CInt {
+constdef SdlPowerState : CInt {
   ERROR      = -1,   /**< error determining power status */
   UNKNOWN    =  0,   /**< cannot determine power status */
   ON_BATTERY =  1,   /**< Not plugged in, running on the battery */
@@ -12,4 +12,4 @@ constdef PowerState : CInt {
 }
 
 // Functions
-extern fn PowerState getPowerInfo(int* seconds, int* percent) @cname("SDL_GetPowerInfo");
+extern fn SdlPowerState getPowerInfo(int* seconds, int* percent) @cname("SDL_GetPowerInfo");

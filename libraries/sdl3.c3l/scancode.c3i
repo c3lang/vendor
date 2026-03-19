@@ -2,7 +2,7 @@
 module sdl3;
 
 // Enums
-constdef Scancode : CInt {
+constdef SdlScancode : CInt {
   UNKNOWN = 0,
 
   A = 4,
