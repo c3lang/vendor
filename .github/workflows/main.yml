@@ -9,7 +9,7 @@ on:
 
 jobs:
   update-packages:
-        runs-on: macos-latest
+    runs-on: macos-latest
     steps:
       - uses: &checkout actions/checkout@v4
         
