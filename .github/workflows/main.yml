@@ -8,12 +8,15 @@ on:
 
 jobs:
   update-packages:
-    runs-on: ubuntu-latest
+        runs-on: macos-latest
     steps:
       - uses: &checkout actions/checkout@v4
+        
+      - name: Prepare
+        run: brew install ruby
 
       - name: Package
-        run: bash package.sh
+        run: ruby package.rb
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
