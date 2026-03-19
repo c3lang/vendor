@@ -1,0 +1,11 @@
+
+module sdl3;
+
+// Structs
+struct GuID {
+  char[16] data;
+}
+
+// Functions
+extern fn void guidToString(GuID guid, char* pszGUID, int cbGUID) @cname("SDL_GUIDToString");
+extern fn GuID stringToGUID(char* pchGUID) @cname("SDL_StringToGUID");

@@ -1,0 +1,45 @@
+
+module sdl3;
+
+// Types
+typedef Camera = void;
+typedef CameraID = uint;
+
+// Structs
+struct CameraSpec {
+  PixelFormat format;      /**< Frame format */
+  Colorspace colorspace;   /**< Frame colorspace */
+  int width;               /**< Frame width */
+  int height;              /**< Frame height */
+  int framerate_numerator; /**< Frame rate numerator ((num / denom) == FPS, (denom / num) == duration in seconds) */
+  int framerate_denominator; /**< Frame rate denominator ((num / denom) == FPS, (denom / num) == duration in seconds) */
+}
+
+// Enums
+constdef CameraPermissionState : CInt {
+    DENIED   = -1,
+    PENDING  =  0,
+    APPROVED =  1,
+}
+enum CameraPosition {
+  UNKNOWN,
+  FRONT_FACING,
+  BACK_FACING,
+}
+
+// Functions
+extern fn Surface* acquireCameraFrame(Camera* camera, ulong* timestampNS) @cname("SDL_AcquireCameraFrame");
+extern fn void closeCamera(Camera* camera) @cname("SDL_CloseCamera");
+extern fn char* getCameraDriver(int index) @cname("SDL_GetCameraDriver");
+extern fn bool getCameraFormat(Camera* camera, CameraSpec* spec) @cname("SDL_GetCameraFormat");
+extern fn CameraID getCameraID(Camera* camera) @cname("SDL_GetCameraID");
+extern fn char* getCameraName(CameraID instance_id) @cname("SDL_GetCameraName");
+extern fn CameraPermissionState getCameraPermissionState(Camera* camera) @cname("SDL_GetCameraPermissionState");
+extern fn CameraPosition getCameraPosition(CameraID instance_id) @cname("SDL_GetCameraPosition");
+extern fn PropertiesID getCameraProperties(Camera* camera) @cname("SDL_GetCameraProperties");
+extern fn CameraID* getCameras(int* count) @cname("SDL_GetCameras");
+extern fn CameraSpec** getCameraSupportedFormats(CameraID instance_id, int* count) @cname("SDL_GetCameraSupportedFormats");
+extern fn char* getCurrentCameraDriver() @cname("SDL_GetCurrentCameraDriver");
+extern fn int getNumCameraDrivers() @cname("SDL_GetNumCameraDrivers");
+extern fn Camera* openCamera(CameraID instance_id, CameraSpec* spec) @cname("SDL_OpenCamera");
+extern fn void releaseCameraFrame(Camera* camera, Surface* frame) @cname("SDL_ReleaseCameraFrame");

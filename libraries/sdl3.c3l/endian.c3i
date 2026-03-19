@@ -1,0 +1,8 @@
+
+module sdl3;
+
+// Functions
+extern fn ushort swap16(ushort x) @cname("SDL_Swap16");
+extern fn uint swap32(uint x) @cname("SDL_Swap32");
+extern fn ulong swap64(ulong x) @cname("SDL_Swap64");
+extern fn float swapFloat(float x) @cname("SDL_SwapFloat");

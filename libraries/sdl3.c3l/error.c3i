@@ -1,0 +1,8 @@
+
+module sdl3;
+
+// Functions
+extern fn bool clearError() @cname("SDL_ClearError");
+extern fn char* getError() @cname("SDL_GetError");
+extern fn bool outOfMemory() @cname("SDL_OutOfMemory");
+extern fn bool setError(char* fmt, ...) @cname("SDL_SetError");

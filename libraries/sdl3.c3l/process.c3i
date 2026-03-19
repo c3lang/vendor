@@ -1,0 +1,24 @@
+
+module sdl3;
+
+// Types
+typedef Process = void;
+
+// Enums
+enum ProcessIO {
+  INHERITED,    /**< The I/O stream is inherited from the application. */
+  NULL,         /**< The I/O stream is ignored. */
+  APP,          /**< The I/O stream is connected to a new SDL_IOStream that the application can read or write */
+  REDIRECT,     /**< The I/O stream is redirected to an existing SDL_IOStream. */
+}
+
+// Functions
+extern fn Process* createProcess(char** args, bool pipe_stdio) @cname("SDL_CreateProcess");
+extern fn Process* createProcessWithProperties(PropertiesID props) @cname("SDL_CreateProcessWithProperties");
+extern fn void destroyProcess(Process* process) @cname("SDL_DestroyProcess");
+extern fn IOStream* getProcessInput(Process* process) @cname("SDL_GetProcessInput");
+extern fn IOStream* getProcessOutput(Process* process) @cname("SDL_GetProcessOutput");
+extern fn PropertiesID getProcessProperties(Process* process) @cname("SDL_GetProcessProperties");
+extern fn bool killProcess(Process* process, bool force) @cname("SDL_KillProcess");
+extern fn void* readProcess(Process* process, usz* datasize, int* exitcode) @cname("SDL_ReadProcess");
+extern fn bool waitProcess(Process* process, bool block, int* exitcode) @cname("SDL_WaitProcess");
