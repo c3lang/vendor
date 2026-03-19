@@ -1,0 +1,289 @@
+
+module sdl3_ttf;
+
+import sdl3;
+
+// Constants
+const SDL_TTF_MAJOR_VERSION = 3;
+const SDL_TTF_MINOR_VERSION = 3;
+const SDL_TTF_MICRO_VERSION = 0;
+const SDL_TTF_VERSION = SDL_TTF_MAJOR_VERSION*1000000 + SDL_TTF_MINOR_VERSION*1000 + SDL_TTF_MICRO_VERSION;
+
+
+// Types
+typedef SdlTTFFont = void;
+typedef SdlTTFTextEngine = void;
+typedef SdlTTFTextData = void;
+
+
+// Structs
+struct SdlTTFText
+{
+	char* text;
+	int num_lines;
+	int refcount;
+	SdlTTFTextData* internal;
+}
+
+struct SdlTTFGPUAtlasDrawSequence
+{
+    SdlGPUTexture* atlas_texture;
+    SdlFPoint* xy;
+    SdlFPoint* uv;
+    int num_vertices;
+    int* indices;
+    int num_indices;
+    SdlTTFImageType image_type;
+    SdlTTFGPUAtlasDrawSequence* next;
+}
+
+struct SdlTTFSubString
+{
+    SdlTTFSubStringFlags flags;
+    int offset;
+    int length;
+    int line_index;
+    int cluster_index;
+    SdlRect rect;
+}
+
+
+// Bitstructs
+bitstruct SdlTTFFontStyleFlags : uint
+{
+	bool normal;
+	bool bold;
+	bool italic;
+	bool underline;
+	bool strikethrough;
+}
+
+
+// Enums
+enum SdlTTFImageType
+{
+	INVALID,
+	ALPHA,
+	COLOR,
+	SDF,
+}
+
+
+// Constdefs
+constdef SdlTTFHintingFlags
+{
+	INVALID = -1,
+	NORMAL,
+	LIGHT,
+	MONO,
+	NONE,
+	LIGHT_SUBPIXEL,
+}
+
+constdef SdlTTFFontWeight : int
+{
+	THIN        = 100,
+	EXTRA_LIGHT = 200,
+	LIGHT       = 300,
+	NORMAL      = 400,
+	MEDIUM      = 500,
+	SEMI_BOLD   = 600,
+	BOLD        = 700,
+	EXTRA_BOLD  = 800,
+	BLACK       = 900,
+	EXTRA_BLACK = 950,
+}
+
+constdef SdlTTFHorizontalAlignment
+{
+	INVALID = -1,
+	LEFT,
+	CENTER,
+	RIGHT,
+}
+
+constdef SdlTTFDirection
+{
+	INVALID = 0,
+	LTR = 4,
+	RTL,
+	TTB,
+	BTT,
+}
+
+constdef SdlTTFGPUTextEngineWinding
+{
+	INVALID = -1,
+	CLOCKWISE,
+	COUNTER_CLOCKWISE,
+}
+
+constdef SdlTTFSubStringFlags : uint
+{
+	DIRECTION_MASK = 0x000000FF,
+	TEXT_START     = 0x00000100,
+	LINE_START     = 0x00000200,
+	LINE_END       = 0x00000400,
+	TEXT_END       = 0x00000800,
+}
+
+constdef SdlTTFFontCreateProperties : ZString
+{
+	FILENAME_STRING            = "SDL_ttf.font.create.filename",
+	IOSTREAM_POINTER           = "SDL_ttf.font.create.iostream",
+	IOSTREAM_OFFSET_NUMBER     = "SDL_ttf.font.create.iostream.offset",
+	IOSTREAM_AUTOCLOSE_BOOLEAN = "SDL_ttf.font.create.iostream.autoclose",
+	SIZE_FLOAT                 = "SDL_ttf.font.create.size",
+	FACE_NUMBER                = "SDL_ttf.font.create.face",
+	HORIZONTAL_DPI_NUMBER      = "SDL_ttf.font.create.hdpi",
+	VERTICAL_DPI_NUMBER        = "SDL_ttf.font.create.vdpi",
+	EXISTING_FONT_POINTER      = "SDL_ttf.font.create.existing_font",
+}
+
+constdef SdlTTFFontOutlineProperties : ZString
+{
+	LINE_CAP_NUMBER    = "SDL_ttf.font.outline.line_cap",
+	LINE_JOIN_NUMBER   = "SDL_ttf.font.outline.line_join",
+	MITER_LIMIT_NUMBER = "SDL_ttf.font.outline.miter_limit",
+}
+
+constdef SdlTTFRendererTextEngineProperties : ZString
+{
+	RENDERER_POINTER          = "SDL_ttf.renderer_text_engine.create.renderer",
+	ATLAS_TEXTURE_SIZE_NUMBER = "SDL_ttf.renderer_text_engine.create.atlas_texture_size",
+}
+
+constdef SdlTTFGPUTextEngineProperties : ZString
+{
+	DEVICE_POINTER            = "SDL_ttf.gpu_text_engine.create.device",
+	ATLAS_TEXTURE_SIZE_NUMBER = "SDL_ttf.gpu_text_engine.create.atlas_texture_size",
+}
+
+
+// Macros
+macro bool sdl_image_version_atleast(x, y, z) =>
+	((SDL_TTF_MAJOR_VERSION >= X) &&
+	 (SDL_TTF_MAJOR_VERSION > X || SDL_TTF_MINOR_VERSION >= Y) &&
+	 (SDL_TTF_MAJOR_VERSION > X || SDL_TTF_MINOR_VERSION > Y || SDL_TTF_MICRO_VERSION >= Z));
+
+
+// Functions
+extern fn int version() @cname("TTF_Version");
+extern fn void getFreeTypeVersion(int* major, int* minor, int* patch) @cname("TTF_GetFreeTypeVersion");
+extern fn void getHarfBuzzVersion(int* major, int* minor, int* patch) @cname("TTF_GetHarfBuzzVersion");
+extern fn bool init() @cname("TTF_Init");
+extern fn SdlTTFFont* openFont(char* file, float ptsize) @cname("TTF_OpenFont");
+extern fn SdlTTFFont* openFontIO(SdlIOStream* src, bool closeio, float ptsize) @cname("TTF_OpenFont");
+extern fn SdlTTFFont* openFontWithProperties(SdlPropertiesID props) @cname("TTF_OpenFontWithProperties");
+extern fn SdlTTFFont* copyFont(SdlTTFFont* font) @cname("TTF_CopyFont");
+extern fn SdlPropertiesID getFontProperties(SdlTTFFont* font) @cname("TTF_GetFontProperties");
+extern fn uint getFontGeneration(SdlTTFFont* font) @cname("TTF_GetFontGeneration");
+extern fn bool addFallbackFont(SdlTTFFont* font, SdlTTFFont* fallback) @cname("TTF_AddFallbackFont");
+extern fn void removeFallbackFont(SdlTTFFont* font, SdlTTFFont* fallback) @cname("TTF_RemoveFallbackFont");
+extern fn void clearFallbackFonts(SdlTTFFont* font) @cname("TTF_ClearFallbackFonts");
+extern fn bool setFontSize(SdlTTFFont* font, float ptsize) @cname("TTF_SetFontSize");
+extern fn bool setFontSizeDPI(SdlTTFFont* font, float ptsize, int hdpi, int vdpi) @cname("TTF_SetFontSizeDPI");
+extern fn float getFontSize(SdlTTFFont* font) @cname("TTF_GetFontSize");
+extern fn bool getFontDPI(SdlTTFFont* font, int* hdpi, int* vdpi) @cname("TTF_GetFontDPI");
+extern fn void setFontStyle(SdlTTFFont* font, SdlTTFFontStyleFlags style) @cname("TTF_SetFontStyle");
+extern fn SdlTTFFontStyleFlags getFontStyle(SdlTTFFont* font) @cname("TTF_GetFontStyle");
+extern fn bool setFontOutline(SdlTTFFont* font, int outline) @cname("TTF_SetFontOutline");
+extern fn int getFontOutline(SdlTTFFont* font) @cname("TTF_GetFontOutline");
+extern fn void setFontHinting(SdlTTFFont* font, SdlTTFHintingFlags hinting) @cname("TTF_SetFontHinting");
+extern fn int getNumFontFaces(SdlTTFFont* font) @cname("TTF_GetNumFontFaces");
+extern fn SdlTTFHintingFlags getFontHinting(SdlTTFFont* font) @cname("TTF_GetFontHinting");
+extern fn bool setFontSDF(SdlTTFFont* font, bool enabled) @cname("TTF_SetFontSDF");
+extern fn bool getFontSDF(SdlTTFFont* font) @cname("TTF_GetFontSDF");
+extern fn SdlTTFFontWeight getFontWeight(SdlTTFFont* font) @cname("TTF_GetFontWeight");
+extern fn void setFontWrapAlignment(SdlTTFFont* font, SdlTTFHorizontalAlignment align) @cname("TTF_SetFontWrapAlignment");
+extern fn SdlTTFHorizontalAlignment getFontWrapAlignment(SdlTTFFont* font) @cname("TTF_GetFontWrapAlignment");
+extern fn int getFontHeight(SdlTTFFont* font) @cname("TTF_GetFontHeight");
+extern fn int getFontAscent(SdlTTFFont* font) @cname("TTF_GetFontAscent");
+extern fn int getFontDescent(SdlTTFFont* font) @cname("TTF_GetFontDescent");
+extern fn void setFontLineSkip(SdlTTFFont* font, int lineskip) @cname("TTF_SetFontLineSkip");
+extern fn int getFontLineSkip(SdlTTFFont* font) @cname("TTF_GetFontLineSkip");
+extern fn void setFontKerning(SdlTTFFont* font, bool enabled) @cname("TTF_SetFontKerning");
+extern fn bool getFontKerning(SdlTTFFont* font) @cname("TTF_GetFontKerning");
+extern fn bool fontIsFixedWidth(SdlTTFFont* font) @cname("TTF_FontIsFixedWidth");
+extern fn bool fontIsScalable(SdlTTFFont* font) @cname("TTF_FontIsScalable");
+extern fn char* getFontFamilyName(SdlTTFFont* font) @cname("TTF_GetFontFamilyName");
+extern fn char* getFontStyleName(SdlTTFFont* font) @cname("TTF_GetFontStyleName");
+extern fn bool setFontDirection(SdlTTFFont* font, SdlTTFDirection direction) @cname("TTF_SetFontDirection");
+extern fn SdlTTFDirection getFontDirection(SdlTTFFont* font) @cname("TTF_GetFontDirection");
+extern fn bool setFontCharSpacing(SdlTTFFont* font, int spacing) @cname("TTF_SetFontCharSpacing");
+extern fn int getFontCharSpacing(SdlTTFFont* font) @cname("TTF_GetFontCharSpacing");
+extern fn uint stringToTag(char* string) @cname("TTF_StringToTag");
+extern fn void tagToString(uint tag, char* string, usz size) @cname("TTF_TagToString");
+extern fn bool setFontScript(SdlTTFFont* font, uint script) @cname("TTF_SetFontScript");
+extern fn uint getFontScript(SdlTTFFont* font) @cname("TTF_GetFontScript");
+extern fn uint getGlyphScript(uint ch) @cname("TTF_GetGlyphScript");
+extern fn bool setFontLanguage(SdlTTFFont* font, char* language_bcp47) @cname("TTF_SetFontLanguage");
+extern fn bool fontHasGlyph(SdlTTFFont* font, uint ch) @cname("TTF_FontHasGlyph");
+extern fn SdlSurface getGlyphImage(SdlTTFFont* font, uint ch, SdlTTFImageType* image_type) @cname("TTF_GetGlyphImage");
+extern fn SdlSurface getGlyphImageForIndex(SdlTTFFont* font, uint glyph_index, SdlTTFImageType* image_type) @cname("TTF_GetGlyphImageForIndex");
+extern fn bool getGlyphMetrics(SdlTTFFont* font, uint ch, int* minx, int* maxx, int* miny, int* maxy, int* advance) @cname("TTF_GetGlyphMetrics");
+extern fn bool getGlyphKerning(SdlTTFFont* font, uint previous_ch, uint ch, int* kerning) @cname("TTF_GetGlyphKerning");
+extern fn bool getStringSize(SdlTTFFont* font, char* text, usz length, int* w, int* h) @cname("TTF_GetStringSize");
+extern fn bool getStringSizeWrapped(SdlTTFFont* font, char* text, usz length, int wrap_width, int* w, int* h) @cname("TTF_GetStringSizeWrapped");
+extern fn bool measureString(SdlTTFFont* font, char* text, usz length, int max_width, int* measured_width, usz* measured_length) @cname("TTF_MeasureString");
+extern fn SdlSurface* renderTextSolid(SdlTTFFont* font, char* text, usz length, SdlColor fg) @cname("TTF_RenderText_Solid");
+extern fn SdlSurface* renderTextSolidWrapped(SdlTTFFont* font, char* text, usz length, SdlColor fg, int wrapLength) @cname("TTF_RenderText_Solid_Wrapped");
+extern fn SdlSurface* renderGlyphSolid(SdlTTFFont* font, uint ch, SdlColor fg) @cname("TTF_RenderGlyph_Solid");
+extern fn SdlSurface* renderTextShaded(SdlTTFFont* font, char* text, usz length, SdlColor fg, SdlColor bg) @cname("TTF_RenderText_Shaded");
+extern fn SdlSurface* renderTextShadedWrapped(SdlTTFFont* font, char* text, usz length, SdlColor fg, SdlColor bg, int wrap_width) @cname("TTF_RenderText_Shaded_Wrapped");
+extern fn SdlSurface* renderGlyphShaded(SdlTTFFont* font, uint ch, SdlColor fg, SdlColor bg) @cname("TTF_RenderGlyph_Shaded");
+extern fn SdlSurface* renderTextBlended(SdlTTFFont* font, char* text, usz length, SdlColor fg) @cname("TTF_RenderText_Blended");
+extern fn SdlSurface* renderTextBlendedWrapped(SdlTTFFont* font, char* text, usz length, SdlColor fg, int wrap_width) @cname("TTF_RenderText_Blended_Wrapped");
+extern fn SdlSurface* renderGlyphBlended(SdlTTFFont* font, uint ch, SdlColor fg) @cname("TTF_RenderGlyph_Blended");
+extern fn SdlSurface* renderTextLCD(SdlTTFFont* font, char* text, usz length, SdlColor fg, SdlColor bg) @cname("TTF_RenderText_LCD");
+extern fn SdlSurface* renderTextLCDWrapped(SdlTTFFont* font, char* text, usz length, SdlColor fg, SdlColor bg, int wrap_width) @cname("TTF_RenderText_LCD_Wrapped");
+extern fn SdlSurface* renderGlyphLCD(SdlTTFFont* font, uint ch, SdlColor fg, SdlColor bg) @cname("TTF_RenderGlyph_LCD");
+extern fn SdlTTFTextEngine* createSurfaceTextEngine() @cname("TTF_CreateSurfaceTextEngine");
+extern fn bool drawSurfaceText(SdlTTFText* text, int x, int y, SdlSurface* surface) @cname("TTF_DrawSurfaceText");
+extern fn void destroySurfaceTextEngine(SdlTTFTextEngine* engine) @cname("TTF_DestroySurfaceTextEngine");
+extern fn SdlTTFTextEngine* createRendererTextEngine(SdlRenderer* renderer) @cname("TTF_CreateRendererTextEngine");
+extern fn SdlTTFTextEngine* createRendererTextEngineWithProperties(SdlPropertiesID props) @cname("TTF_CreateRendererTextEngineWithProperties");
+extern fn bool drawRendererText(SdlTTFText* text, float x, float y) @cname("TTF_DrawRendererText");
+extern fn void destroyRendererTextEngine(SdlTTFTextEngine* engine) @cname("TTF_DestroyRendererTextEngine");
+extern fn SdlTTFTextEngine* createGPUTextEngine(SdlGPUDevice* device) @cname("TTF_CreateGPUTextEngine");
+extern fn SdlTTFTextEngine* createGPUTextEngineWithProperties(SdlPropertiesID props) @cname("TTF_CreateGPUTextEngineWithProperties");
+extern fn SdlTTFGPUAtlasDrawSequence* getGPUTextDrawData(SdlTTFText* text) @cname("TTF_GetGPUTextDrawData");
+extern fn void destroyGPUTextEngine(SdlTTFTextEngine* engine) @cname("TTF_DestroyGPUTextEngine");
+extern fn void setGPUTextEngineWinding(SdlTTFTextEngine* engine, SdlTTFGPUTextEngineWinding winding) @cname("TTF_SetGPUTextEngineWinding");
+extern fn SdlTTFGPUTextEngineWinding getGPUTextEngineWinding(SdlTTFTextEngine* engine) @cname("TTF_GetGPUTextEngineWinding");
+extern fn SdlTTFText* createText(SdlTTFTextEngine* engine, SdlTTFFont* font, char* text, usz length) @cname("TTF_CreateText");
+extern fn SdlPropertiesID getTextProperties(SdlTTFText* text) @cname("TTF_GetTextProperties");
+extern fn bool setTextEngine(SdlTTFText* text, SdlTTFTextEngine* engine) @cname("TTF_SetTextEngine");
+extern fn SdlTTFTextEngine* getTextEngine(SdlTTFText* text) @cname("TTF_GetTextEngine");
+extern fn bool setTextFont(SdlTTFText* text, SdlTTFFont* font) @cname("TTF_SetTextFont");
+extern fn SdlTTFFont* getTextFont(SdlTTFText* text) @cname("TTF_GetTextFont");
+extern fn bool setTextDirection(SdlTTFText* text, SdlTTFDirection direction) @cname("TTF_SetTextDirection");
+extern fn SdlTTFDirection getTextDirection(SdlTTFText* text) @cname("TTF_GetTextDirection");
+extern fn bool setTextScript(SdlTTFText* text, uint script) @cname("TTF_SetTextScript");
+extern fn uint getTextScript(SdlTTFText* text) @cname("TTF_GetTextScript");
+extern fn bool setTextColor(SdlTTFText* text, char r, char g, char b, char a) @cname("TTF_SetTextColor");
+extern fn bool setTextColorFloat(SdlTTFText* text, float r, float g, float b, float a) @cname("TTF_SetTextColorFloat");
+extern fn bool getTextColor(SdlTTFText* text, char* r, char* g, char* b, char* a) @cname("TTF_GetTextColor");
+extern fn bool getTextColorFloat(SdlTTFText* text, float* r, float* g, float* b, float* a) @cname("TTF_GetTextColorFloat");
+extern fn bool setTextPosition(SdlTTFText* text, int x, int y) @cname("TTF_SetTextPosition");
+extern fn bool getTextPosition(SdlTTFText* text, int* x, int* y) @cname("TTF_GetTextPosition");
+extern fn bool setTextWrapWidth(SdlTTFText* text, int wrap_width) @cname("TTF_SetTextWrapWidth");
+extern fn bool getTextWrapWidth(SdlTTFText* text, int* wrap_width) @cname("TTF_GetTextWrapWidth");
+extern fn bool setTextWrapWhitespaceVisible(SdlTTFText* text, bool visible) @cname("TTF_SetTextWrapWhitespaceVisible");
+extern fn bool textWrapWhitespaceVisible(SdlTTFText* text) @cname("TTF_TextWrapWhitespaceVisible");
+extern fn bool setTextString(SdlTTFText* text, char* string, usz length) @cname("TTF_SetTextString");
+extern fn bool insertTextString(SdlTTFText* text, int offset, char* string, usz length) @cname("TTF_InsertTextString");
+extern fn bool appendTextString(SdlTTFText* text, char* string, usz length) @cname("TTF_AppendTextString");
+extern fn bool deleteTextString(SdlTTFText* text, int offset, int length) @cname("TTF_DeleteTextString");
+extern fn bool getTextSize(SdlTTFText* text, int* w, int* h) @cname("TTF_GetTextSize");
+extern fn bool getTextSubString(SdlTTFText* text, int offset, SdlTTFSubString* substring) @cname("TTF_GetTextSubString");
+extern fn bool getTextSubStringForLine(SdlTTFText* text, int line, SdlTTFSubString* substring) @cname("TTF_GetTextSubStringForLine");
+extern fn SdlTTFSubString** getTextSubStringsForRange(SdlTTFText* text, int offset, int length, int* count) @cname("TTF_GetTextSubStringsForRange");
+extern fn bool getTextSubStringForPoint(SdlTTFText* text, int x, int y, SdlTTFSubString* substring) @cname("TTF_GetTextSubStringForPoint");
+extern fn bool getPreviousTextSubString(SdlTTFText* text, SdlTTFSubString* substring, SdlTTFSubString* previous) @cname("TTF_GetPreviousTextSubString");
+extern fn bool getNextTextSubString(SdlTTFText* text, SdlTTFSubString* substring, SdlTTFSubString* next) @cname("TTF_GetNextTextSubString");
+extern fn bool updateText(SdlTTFText* text) @cname("TTF_UpdateText");
+extern fn void destroyText(SdlTTFText* text) @cname("TTF_DestroyText");
+extern fn void closeFont(SdlTTFFont* font) @cname("TTF_CloseFont");
+extern fn void quit() @cname("TTF_Quit");
+extern fn int wasInit() @cname("TTF_WasInit");
