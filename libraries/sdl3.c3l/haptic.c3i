@@ -1,148 +1,192 @@
 
 module sdl3;
 
+// Constants
+const HAPTIC_INFINITY = 4294967295U;
+
+
 // Types
 typedef SdlHaptic = void;
-typedef SdlHapticDirectionType = char;
 typedef SdlHapticEffectID = int;
 typedef SdlHapticEffectType = ushort;
 typedef SdlHapticID = uint;
 
+
+// Bitstructs
+bitstruct SdlHapticEffects : uint
+{
+	bool constant;
+	bool sine;
+	bool square;
+	bool triangle;
+	bool sawtoothup;
+	bool sawtoothdown;
+	bool ramp;
+	bool spring;
+	bool damper;
+	bool inertia;
+	bool friction;
+	bool leftright;
+	bool reserved1;
+	bool reserved2;
+	bool reserved3;
+	bool custom;
+	bool gain;
+	bool autocenter;
+	bool status;
+	bool pause;
+}
+
+
 // Structs
-struct SdlHapticCondition {
-  /* Header */
-  SdlHapticEffectType type;      /**< SDL_HAPTIC_SPRING, SDL_HAPTIC_DAMPER,
-                                   SDL_HAPTIC_INERTIA or SDL_HAPTIC_FRICTION */
-  SdlHapticDirection direction;  /**< Direction of the effect. */
+struct SdlHapticCondition
+{
+	/* Header */
+	SdlHapticEffectType type;      /**< SDL_HAPTIC_SPRING, SDL_HAPTIC_DAMPER,
+	                                    SDL_HAPTIC_INERTIA or SDL_HAPTIC_FRICTION */
+	SdlHapticDirection direction;  /**< Direction of the effect. */
 
-  /* Replay */
-  uint length;            /**< Duration of the effect. */
-  ushort delay;           /**< Delay before starting the effect. */
+	/* Replay */
+	uint length;            /**< Duration of the effect. */
+	ushort delay;           /**< Delay before starting the effect. */
 
-  /* Trigger */
-  ushort button;          /**< Button that triggers the effect. */
-  ushort interval;        /**< How soon it can be triggered again after button. */
+	/* Trigger */
+	ushort button;          /**< Button that triggers the effect. */
+	ushort interval;        /**< How soon it can be triggered again after button. */
 
-  /* Condition */
-  ushort[3] right_sat;    /**< Level when joystick is to the positive side; max 0xFFFF. */
-  ushort[3] left_sat;     /**< Level when joystick is to the negative side; max 0xFFFF. */
-  ushort[3] right_coeff;  /**< How fast to increase the force towards the positive side. */
-  ushort[3] left_coeff;   /**< How fast to increase the force towards the negative side. */
-  ushort[3] deadband;     /**< Size of the dead zone; max 0xFFFF: whole axis-range when 0-centered. */
-  short[3] center;        /**< Position of the dead zone. */
+	/* Condition */
+	ushort[3] right_sat;    /**< Level when joystick is to the positive side; max 0xFFFF. */
+	ushort[3] left_sat;     /**< Level when joystick is to the negative side; max 0xFFFF. */
+	short[3] right_coeff;  /**< How fast to increase the force towards the positive side. */
+	short[3] left_coeff;   /**< How fast to increase the force towards the negative side. */
+	ushort[3] deadband;     /**< Size of the dead zone; max 0xFFFF: whole axis-range when 0-centered. */
+	short[3] center;        /**< Position of the dead zone. */
 }
-struct SdlHapticConstant {
-  /* Header */
-  SdlHapticEffectType type;      /**< SDL_HAPTIC_CONSTANT */
-  SdlHapticDirection direction;  /**< Direction of the effect. */
 
-  /* Replay */
-  uint length;            /**< Duration of the effect. */
-  ushort delay;           /**< Delay before starting the effect. */
+struct SdlHapticConstant
+{
+	/* Header */
+	SdlHapticEffectType type;      /**< SDL_HAPTIC_CONSTANT */
+	SdlHapticDirection direction;  /**< Direction of the effect. */
 
-  /* Trigger */
-  ushort button;          /**< Button that triggers the effect. */
-  ushort interval;        /**< How soon it can be triggered again after button. */
+	/* Replay */
+	uint length;            /**< Duration of the effect. */
+	ushort delay;           /**< Delay before starting the effect. */
 
-  /* Constant */
-  short level;            /**< Strength of the constant effect. */
+	/* Trigger */
+	ushort button;          /**< Button that triggers the effect. */
+	ushort interval;        /**< How soon it can be triggered again after button. */
 
-  /* Envelope */
-  ushort attack_length;   /**< Duration of the attack. */
-  ushort attack_level;    /**< Level at the start of the attack. */
-  ushort fade_length;     /**< Duration of the fade. */
-  ushort fade_level;      /**< Level at the end of the fade. */
+	/* Constant */
+	short level;            /**< Strength of the constant effect. */
+
+	/* Envelope */
+	ushort attack_length;   /**< Duration of the attack. */
+	ushort attack_level;    /**< Level at the start of the attack. */
+	ushort fade_length;     /**< Duration of the fade. */
+	ushort fade_level;      /**< Level at the end of the fade. */
 }
-struct SdlHapticCustom {
-  /* Header */
-  SdlHapticEffectType type;      /**< SDL_HAPTIC_CUSTOM */
-  SdlHapticDirection direction;  /**< Direction of the effect. */
 
-  /* Replay */
-  uint length;            /**< Duration of the effect. */
-  ushort delay;           /**< Delay before starting the effect. */
+struct SdlHapticCustom
+{
+	/* Header */
+	SdlHapticEffectType type;      /**< SDL_HAPTIC_CUSTOM */
+	SdlHapticDirection direction;  /**< Direction of the effect. */
 
-  /* Trigger */
-  ushort button;          /**< Button that triggers the effect. */
-  ushort interval;        /**< How soon it can be triggered again after button. */
+	/* Replay */
+	uint length;            /**< Duration of the effect. */
+	ushort delay;           /**< Delay before starting the effect. */
 
-  /* Custom */
-  char channels;          /**< Axes to use, minimum of one. */
-  ushort period;          /**< Sample periods. */
-  ushort samples;         /**< Amount of samples. */
-  ushort* data;           /**< Should contain channels*samples items. */
+	/* Trigger */
+	ushort button;          /**< Button that triggers the effect. */
+	ushort interval;        /**< How soon it can be triggered again after button. */
 
-  /* Envelope */
-  ushort attack_length;   /**< Duration of the attack. */
-  ushort attack_level;    /**< Level at the start of the attack. */
-  ushort fade_length;     /**< Duration of the fade. */
-  ushort fade_level;      /**< Level at the end of the fade. */
+	/* Custom */
+	char channels;          /**< Axes to use, minimum of one. */
+	ushort period;          /**< Sample periods. */
+	ushort samples;         /**< Amount of samples. */
+	ushort* data;           /**< Should contain channels*samples items. */
+
+	/* Envelope */
+	ushort attack_length;   /**< Duration of the attack. */
+	ushort attack_level;    /**< Level at the start of the attack. */
+	ushort fade_length;     /**< Duration of the fade. */
+	ushort fade_level;      /**< Level at the end of the fade. */
 }
-struct SdlHapticDirection {
-  SdlHapticDirectionType type;  /**< The type of encoding. */
-  int[3] dir;                /**< The encoded direction. */
+
+struct SdlHapticDirection
+{
+	SdlHapticDirectionType type;  /**< The type of encoding. */
+	int[3] dir;                /**< The encoded direction. */
 }
-struct SdlHapticLeftRight {
-  /* Header */
-  SdlHapticEffectType type;  /**< SDL_HAPTIC_LEFTRIGHT */
 
-  /* Replay */
-  uint length;          /**< Duration of the effect in milliseconds. */
+struct SdlHapticLeftRight
+{
+	/* Header */
+	SdlHapticEffectType type;  /**< SDL_HAPTIC_LEFTRIGHT */
 
-  /* Rumble */
-  ushort large_magnitude; /**< Control of the large controller motor. */
-  ushort small_magnitude; /**< Control of the small controller motor. */
+	/* Replay */
+	uint length;          /**< Duration of the effect in milliseconds. */
+
+	/* Rumble */
+	ushort large_magnitude; /**< Control of the large controller motor. */
+	ushort small_magnitude; /**< Control of the small controller motor. */
 }
-struct SdlHapticPeriodic {
-  /* Header */
-  SdlHapticEffectType type;      /**< SDL_HAPTIC_SINE, SDL_HAPTIC_SQUARE
-                                   SDL_HAPTIC_TRIANGLE, SDL_HAPTIC_SAWTOOTHUP or
-                                   SDL_HAPTIC_SAWTOOTHDOWN */
-  SdlHapticDirection direction;  /**< Direction of the effect. */
 
-  /* Replay */
-  uint length;      /**< Duration of the effect. */
-  ushort delay;       /**< Delay before starting the effect. */
+struct SdlHapticPeriodic
+{
+	/* Header */
+	SdlHapticEffectType type;      /**< SDL_HAPTIC_SINE, SDL_HAPTIC_SQUARE
+	                                    SDL_HAPTIC_TRIANGLE, SDL_HAPTIC_SAWTOOTHUP or
+	                                    SDL_HAPTIC_SAWTOOTHDOWN */
+	SdlHapticDirection direction;  /**< Direction of the effect. */
 
-  /* Trigger */
-  ushort button;      /**< Button that triggers the effect. */
-  ushort interval;    /**< How soon it can be triggered again after button. */
+	/* Replay */
+	uint length;      /**< Duration of the effect. */
+	ushort delay;       /**< Delay before starting the effect. */
 
-  /* Periodic */
-  ushort period;      /**< Period of the wave. */
-  short magnitude;    /**< Peak value; if negative, equivalent to 180 degrees extra phase shift. */
-  short offset;       /**< Mean value of the wave. */
-  ushort phase;       /**< Positive phase shift given by hundredth of a degree. */
+	/* Trigger */
+	ushort button;      /**< Button that triggers the effect. */
+	ushort interval;    /**< How soon it can be triggered again after button. */
 
-  /* Envelope */
-  ushort attack_length;   /**< Duration of the attack. */
-  ushort attack_level;    /**< Level at the start of the attack. */
-  ushort fade_length;     /**< Duration of the fade. */
-  ushort fade_level;      /**< Level at the end of the fade. */
+	/* Periodic */
+	ushort period;      /**< Period of the wave. */
+	short magnitude;    /**< Peak value; if negative, equivalent to 180 degrees extra phase shift. */
+	short offset;       /**< Mean value of the wave. */
+	ushort phase;       /**< Positive phase shift given by hundredth of a degree. */
+
+	/* Envelope */
+	ushort attack_length;   /**< Duration of the attack. */
+	ushort attack_level;    /**< Level at the start of the attack. */
+	ushort fade_length;     /**< Duration of the fade. */
+	ushort fade_level;      /**< Level at the end of the fade. */
 }
-struct SdlHapticRamp {
-  /* Header */
-  SdlHapticEffectType type;      /**< SDL_HAPTIC_RAMP */
-  SdlHapticDirection direction;  /**< Direction of the effect. */
 
-  /* Replay */
-  uint length;          /**< Duration of the effect. */
-  ushort delay;           /**< Delay before starting the effect. */
+struct SdlHapticRamp
+{
+	/* Header */
+	SdlHapticEffectType type;      /**< SDL_HAPTIC_RAMP */
+	SdlHapticDirection direction;  /**< Direction of the effect. */
 
-  /* Trigger */
-  ushort button;          /**< Button that triggers the effect. */
-  ushort interval;        /**< How soon it can be triggered again after button. */
+	/* Replay */
+	uint length;          /**< Duration of the effect. */
+	ushort delay;           /**< Delay before starting the effect. */
 
-  /* Ramp */
-  short start;           /**< Beginning strength level. */
-  short end;             /**< Ending strength level. */
+	/* Trigger */
+	ushort button;          /**< Button that triggers the effect. */
+	ushort interval;        /**< How soon it can be triggered again after button. */
 
-  /* Envelope */
-  ushort attack_length;   /**< Duration of the attack. */
-  short attack_level;    /**< Level at the start of the attack. */
-  ushort fade_length;     /**< Duration of the fade. */
-  ushort fade_level;      /**< Level at the end of the fade. */
+	/* Ramp */
+	short start;           /**< Beginning strength level. */
+	short end;             /**< Ending strength level. */
+
+	/* Envelope */
+	ushort attack_length;   /**< Duration of the attack. */
+	ushort attack_level;    /**< Level at the start of the attack. */
+	ushort fade_length;     /**< Duration of the fade. */
+	ushort fade_level;      /**< Level at the end of the fade. */
 }
+
 union SdlHapticEffect {
   /* Common for all force feedback effects */
   SdlHapticEffectType type;      /**< Effect type. */
@@ -153,6 +197,17 @@ union SdlHapticEffect {
   SdlHapticLeftRight leftright;  /**< Left/Right effect. */
   SdlHapticCustom custom;        /**< Custom effect. */
 }
+
+
+// Enums
+enum SdlHapticDirectionType : char
+{
+	POLAR,
+	CARTESIAN,
+	SPHERICAL,
+	STEERING_AXIS,
+}
+
 
 // Functions
 extern fn void closeHaptic(SdlHaptic* haptic) @cname("SDL_CloseHaptic");

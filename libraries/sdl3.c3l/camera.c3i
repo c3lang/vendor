@@ -5,27 +5,34 @@ module sdl3;
 typedef SdlCamera = void;
 typedef SdlCameraID = uint;
 
+
 // Structs
-struct SdlCameraSpec {
-  SdlPixelFormat format;      /**< Frame format */
-  SdlColorspace colorspace;   /**< Frame colorspace */
-  int width;               /**< Frame width */
-  int height;              /**< Frame height */
-  int framerate_numerator; /**< Frame rate numerator ((num / denom) == FPS, (denom / num) == duration in seconds) */
-  int framerate_denominator; /**< Frame rate denominator ((num / denom) == FPS, (denom / num) == duration in seconds) */
+struct SdlCameraSpec
+{
+	SdlPixelFormat format;      /**< Frame format */
+	SdlColorspace colorspace;   /**< Frame colorspace */
+	int width;                  /**< Frame width */
+	int height;                 /**< Frame height */
+	int framerate_numerator;    /**< Frame rate numerator ((num / denom) == FPS, (denom / num) == duration in seconds) */
+	int framerate_denominator;  /**< Frame rate denominator ((num / denom) == FPS, (denom / num) == duration in seconds) */
 }
 
+
 // Enums
-constdef SdlCameraPermissionState : CInt {
-    DENIED   = -1,
-    PENDING  =  0,
-    APPROVED =  1,
+constdef SdlCameraPermissionState : CInt
+{
+	DENIED = -1,
+	PENDING,
+	APPROVED,
 }
-enum SdlCameraPosition {
-  UNKNOWN,
-  FRONT_FACING,
-  BACK_FACING,
+
+enum SdlCameraPosition
+{
+	UNKNOWN,
+	FRONT_FACING,
+	BACK_FACING,
 }
+
 
 // Functions
 extern fn SdlSurface* acquireCameraFrame(SdlCamera* camera, ulong* timestampNS) @cname("SDL_AcquireCameraFrame");

@@ -4,6 +4,7 @@ module sdl3;
 // Types
 typedef SdlSharedObject = void;
 
+
 // Functions
 extern fn SdlFunctionPointer loadFunction(SdlSharedObject* handle, char* name) @cname("SDL_LoadFunction");
 extern fn SdlSharedObject* loadObject(char* sofile) @cname("SDL_LoadObject");

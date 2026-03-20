@@ -15,34 +15,37 @@ alias SdlStorageRenameCallback = fn bool(void* userdata, char* oldPath, char* ne
 alias SdlStorageCopyCallback = fn bool(void* userdata, char* oldPath, char* newPath);
 alias SdlStorageSpaceRemainingCallback = fn ulong(void* userdata);
 
-// Structs
-struct SdlStorageInterface {
-  /* The version of this interface */
-  uint version;
 
-  /* Called when the storage is closed */
-  SdlStorageCloseCallback close;
-  /* Optional, returns whether the storage is currently ready for access */
-  SdlStorageReadyCallback ready;
-  /* SdlStorageEnumerateCallback a directory, optional for write-only storage */
-  SdlStorageEnumerateCallback enumerate;
-  /* Get path information, optional for write-only storage */
-  SdlStorageInfoCallback info;
-  /* Read a file from storage, optional for write-only storage */
-  SdlStorageReadFileCallback readFile;
-  /* Write a file to storage, optional for read-only storage */
-  SdlStorageWriteFileCallback writeFile;
-  /* Create a directory, optional for read-only storage */
-  SdlStorageMkDirCallback mkDir;
-  /* SdlStorageRemoveCallback a file or empty directory, optional for read-only storage */
-  SdlStorageRemoveCallback remove;
-  /* SdlStorageRenameCallback a path, optional for read-only storage */
-  SdlStorageRenameCallback rename;
-  /* SdlStorageCopyCallback a file, optional for read-only storage */
-  SdlStorageCopyCallback copy;
-  /* Get the space remaining, optional for read-only storage */
-  SdlStorageSpaceRemainingCallback spaceRemaining;
+// Structs
+struct SdlStorageInterface
+{
+	/* The version of this interface */
+	uint version;
+
+	/* Called when the storage is closed */
+	SdlStorageCloseCallback close;
+	/* Optional, returns whether the storage is currently ready for access */
+	SdlStorageReadyCallback ready;
+	/* SdlStorageEnumerateCallback a directory, optional for write-only storage */
+	SdlStorageEnumerateCallback enumerate;
+	/* Get path information, optional for write-only storage */
+	SdlStorageInfoCallback info;
+	/* Read a file from storage, optional for write-only storage */
+	SdlStorageReadFileCallback read_file;
+	/* Write a file to storage, optional for read-only storage */
+	SdlStorageWriteFileCallback write_file;
+	/* Create a directory, optional for read-only storage */
+	SdlStorageMkDirCallback mkdir;
+	/* SdlStorageRemoveCallback a file or empty directory, optional for read-only storage */
+	SdlStorageRemoveCallback remove;
+	/* SdlStorageRenameCallback a path, optional for read-only storage */
+	SdlStorageRenameCallback rename;
+	/* SdlStorageCopyCallback a file, optional for read-only storage */
+	SdlStorageCopyCallback copy;
+	/* Get the space remaining, optional for read-only storage */
+	SdlStorageSpaceRemainingCallback space_remaining;
 }
+
 
 // Functions
 extern fn bool closeStorage(SdlStorage *storage) @cname("SDL_CloseStorage");

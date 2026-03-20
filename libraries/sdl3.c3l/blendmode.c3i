@@ -1,36 +1,45 @@
 
 module sdl3;
 
-// Bitstructs
-bitstruct SdlBlendMode : uint {
-  bool blend:   0;
-  bool add:     1;
-  bool mod:     2;
-  bool mul:     3; // Also premul
+// Enums
+enum SdlBlendFactor
+{
+	NONE,
+	ZERO,
+	ONE,
+	SRC_COLOR,
+	ONE_MINUS_SRC_COLOR,
+	SRC_ALPHA,
+	ONE_MINUS_SRC_ALPHA,
+	DST_COLOR,
+	ONE_MINUS_DST_COLOR,
+	DST_ALPHA,
+	ONE_MINUS_DST_ALPHA,
 }
 
-// Enums
-enum SdlBlendFactor {
-  EMPTY,
-  ZERO,
-  ONE,
-  SRC_COLOR,
-  ONE_MINUS_SRC_COLOR,
-  SRC_ALPHA,
-  ONE_MINUS_SRC_ALPHA,
-  DST_COLOR,
-  ONE_MINUS_DST_COLOR,
-  DST_ALPHA,
-  ONE_MINUS_DST_ALPHA,
+constdef SdlBlendMode : uint
+{
+	NONE                = 0x00000000u,
+	BLEND               = 0x00000001u,
+	BLEND_PREMULTIPLIED = 0x00000010u,
+	ADD                 = 0x00000002u,
+	ADD_PREMULTIPLIED   = 0x00000020u,
+	MOD                 = 0x00000004u,
+	MUL                 = 0x00000008u,
+	INVALID             = 0x7FFFFFFFu,
 }
-enum SdlBlendOperation {
-  EMPTY,
-  ADD,
-  SUBTRACT,
-  REV_SUBTRACT,
-  MINIMUM,
-  MAXIMUM,
+
+
+enum SdlBlendOperation
+{
+	NONE,
+	ADD,
+	SUBTRACT,
+	REV_SUBTRACT,
+	MINIMUM,
+	MAXIMUM,
 }
+
 
 // Functions
 extern fn SdlBlendMode composeCustomBlendMode(SdlBlendFactor srcColorFactor, SdlBlendFactor dstColorFactor, SdlBlendOperation colorOperation, SdlBlendFactor srcAlphaFactor, SdlBlendFactor dstAlphaFactor, SdlBlendOperation alphaOperation) @cname("SDL_ComposeCustomBlendMode");

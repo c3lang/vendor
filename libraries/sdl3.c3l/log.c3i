@@ -4,43 +4,48 @@ module sdl3;
 // Types
 alias SdlLogOutputFunction = fn void(void* userdata, SdlLogCategory category, SdlLogPriority priority, ZString message);
 
+
 // Enums
-enum SdlLogCategory {
-  APPLICATION,
-  ERROR,
-  ASSERT,
-  SYSTEM,
-  AUDIO,
-  VIDEO,
-  RENDER,
-  INPUT,
-  TEST,
-  GPU,
+enum SdlLogCategory
+{
+	APPLICATION,
+	ERROR,
+	ASSERT,
+	SYSTEM,
+	AUDIO,
+	VIDEO,
+	RENDER,
+	INPUT,
+	TEST,
+	GPU,
 
-  /* Reserved for future SDL library use */
-  RESERVED2,
-  RESERVED3,
-  RESERVED4,
-  RESERVED5,
-  RESERVED6,
-  RESERVED7,
-  RESERVED8,
-  RESERVED9,
-  RESERVED10,
+	/* Reserved for future SDL library use */
+	RESERVED2,
+	RESERVED3,
+	RESERVED4,
+	RESERVED5,
+	RESERVED6,
+	RESERVED7,
+	RESERVED8,
+	RESERVED9,
+	RESERVED10,
 
-  CUSTOM,
+	CUSTOM,
 }
-enum SdlLogPriority {
-  INVALID,
-  TRACE,
-  VERBOSE,
-  DEBUG,
-  INFO,
-  WARN,
-  ERROR,
-  CRITICAL,
-  COUNT,
+
+enum SdlLogPriority
+{
+	INVALID,
+	TRACE,
+	VERBOSE,
+	DEBUG,
+	INFO,
+	WARN,
+	ERROR,
+	CRITICAL,
+	COUNT,
 }
+
 
 // Functions
 extern fn SdlLogOutputFunction getDefaultLogOutputFunction() @cname("SDL_GetDefaultLogOutputFunction");
@@ -52,6 +57,7 @@ extern fn void logDebug(int category, char* fmt, ...) @cname("SDL_LogDebug");
 extern fn void logError(int category, char* fmt, ...) @cname("SDL_LogError");
 extern fn void logInfo(int category, char* fmt, ...) @cname("SDL_LogInfo");
 extern fn void logMessage(int category, SdlLogPriority priority, char* fmt, ...) @cname("SDL_LogMessage");
+extern fn void logMessageV(int category, SdlLogPriority priority, char* fmt, CVaList ap) @cname("SDL_LogMessageV");
 extern fn void logTrace(int category, char* fmt, ...) @cname("SDL_LogTrace");
 extern fn void logVerbose(int category, char* fmt, ...) @cname("SDL_LogVerbose");
 extern fn void logWarn(int category, char* fmt, ...) @cname("SDL_LogWarn");

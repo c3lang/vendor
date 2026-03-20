@@ -8,24 +8,57 @@ typedef SdlTLSID = SdlAtomicInt;
 alias SdlThreadFunction = fn int(void* data);
 alias SdlTLSDestructorCallback = fn void(void* data);
 
+
 // Enums
-enum SdlThreadPriority {
-  LOW,
-  NORMAL,
-  HIGH,
-  TIME_CRITICAL,
+enum SdlThreadPriority
+{
+	LOW,
+	NORMAL,
+	HIGH,
+	TIME_CRITICAL,
 }
-enum SdlThreadState {
-  UNKNOWN,     /**< The thread is not valid */
-  ALIVE,       /**< The thread is currently running */
-  DETACHED,    /**< The thread is detached and can't be waited on */
-  COMPLETE,    /**< The thread has finished and should be cleaned up with SDL_WaitThread() */
+
+enum SdlThreadState
+{
+	UNKNOWN,     /**< The thread is not valid */
+	ALIVE,       /**< The thread is currently running */
+	DETACHED,    /**< The thread is detached and can't be waited on */
+	COMPLETE,    /**< The thread has finished and should be cleaned up with SDL_WaitThread() */
 }
+
+constdef SdlThreadCreateProperties : ZString
+{
+	ENTRY_FUNCTION_POINTER = "SDL.thread.create.entry_function",
+	NAME_STRING            = "SDL.thread.create.name",
+	USERDATA_POINTER       = "SDL.thread.create.userdata",
+	STACKSIZE_NUMBER       = "SDL.thread.create.stacksize",
+}
+
+
+// Macros
+macro SdlThread* createThread(SdlThreadFunction fn_, ZString name, void* data)
+{
+	$if (env::WIN32):
+		return createThreadRuntime(fn_, name, data, (SDL_FunctionPointer)_beginthreadex, (SDL_FunctionPointer)_endthreadex);
+	$else
+		return createThreadRuntime(fn_, name, data, null, null);
+	$endif
+}
+
+macro SdlThread* createThreadWithProperties(SdlPropertiesID props)
+{
+	$if (env::WIN32):
+		return createThreadWithPropertiesRuntime(props, (SDL_FunctionPointer)_beginthreadex, (SDL_FunctionPointer)_endthreadex);
+	$else
+		return createThreadWithPropertiesRuntime(props, null, null);
+	$endif
+}
+
 
 // Functions
 extern fn void cleanupTLS() @cname("SDL_CleanupTLS");
-extern fn SdlThread* createThread(SdlThreadFunction func, char* name, void* data) @cname("SDL_CreateThread");
-extern fn SdlThread* createThreadWithProperties(SdlPropertiesID props) @cname("SDL_CreateThreadWithProperties");
+extern fn SdlThread* createThreadRuntime(SdlThreadFunction fn_, char* name, void* data, SdlFunctionPointer pfnBeginThread, SdlFunctionPointer pfnEndThread) @cname("SDL_CreateThreadRuntime");
+extern fn SdlThread* createThreadWithPropertiesRuntime(SdlPropertiesID props, SdlFunctionPointer pfnBeginThread, SdlFunctionPointer pfnEndThread) @cname("SDL_CreateThreadWithPropertiesRuntime");
 extern fn void detachThread(SdlThread* thread) @cname("SDL_DetachThread");
 extern fn SdlThreadID getCurrentThreadID() @cname("SDL_GetCurrentThreadID");
 extern fn SdlThreadID getThreadID(SdlThread* thread) @cname("SDL_GetThreadID");

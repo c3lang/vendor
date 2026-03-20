@@ -1,18 +1,32 @@
 
 module sdl3;
 
+// Constants
+const ANDROID_EXTERNAL_STORAGE_READ  = 0x01;
+const ANDROID_EXTERNAL_STORAGE_WRITE = 0x02;
+
+
 // Types
 alias SdlIOSAnimationCallback = fn void(void* userdata);
 alias SdlRequestAndroidPermissionCallback = fn void(void* userdata, char* permission, bool granted);
+typedef SdlMSG = void;
+alias SdlWindowsMessageHook = fn bool(void* userdata, SdlMSG* msg);
+typedef SdlXEvent = void;
+alias SdlX11EventHook = fn bool(void* userdata, SdlXEvent* xevent);
+typedef SdlXTaskQueueHandle = void*;
+typedef SdlXUserHandle = void*;
+
 
 // Enums
-enum SdlSandbox {
-  NONE,
-  UNKNOWN_CONTAINER,
-  FLATPAK,
-  SNAP,
-  MACOS,
+enum SdlSandbox
+{
+	NONE,
+	UNKNOWN_CONTAINER,
+	FLATPAK,
+	SNAP,
+	MACOS,
 }
+
 
 // Functions
 extern fn void* getAndroidActivity() @cname("SDL_GetAndroidActivity");
@@ -24,6 +38,8 @@ extern fn void* getAndroidJNIEnv() @cname("SDL_GetAndroidJNIEnv");
 extern fn int getAndroidSDKVersion() @cname("SDL_GetAndroidSDKVersion");
 extern fn int getDirect3D9AdapterIndex(SdlDisplayID displayID) @cname("SDL_GetDirect3D9AdapterIndex");
 extern fn bool getDXGIOutputInfo(SdlDisplayID displayID, int* adapterIndex, int* outputIndex) @cname("SDL_GetDXGIOutputInfo");
+extern fn bool getGDKDefaultUser(SdlXUserHandle* outUserHandle) @cname("SDL_GetGDKDefaultUser");
+extern fn bool getGDKTaskQueue(SdlXTaskQueueHandle* outTaskQueue) @cname("SDL_GetGDKTaskQueue");
 extern fn SdlSandbox getSandbox() @cname("SDL_GetSandbox");
 extern fn bool isChromebook() @cname("SDL_IsChromebook");
 extern fn bool isDeXMode() @cname("SDL_IsDeXMode");
@@ -39,8 +55,10 @@ extern fn void onApplicationWillTerminate() @cname("SDL_OnApplicationWillTermina
 extern fn bool requestAndroidPermission(char* permission, SdlRequestAndroidPermissionCallback cb, void* userdata) @cname("SDL_RequestAndroidPermission");
 extern fn void sendAndroidBackButton() @cname("SDL_SendAndroidBackButton");
 extern fn bool sendAndroidMessage(uint command, int param) @cname("SDL_SendAndroidMessage");
-extern fn bool setiOSAnimationCallback(SdlWindow* window, int interval, SdlIOSAnimationCallback callback, void *callbackParam) @cname("SDL_SetiOSAnimationCallback");
+extern fn bool setiOSAnimationCallback(SdlWindow* window, int interval, SdlIOSAnimationCallback callback, void* callbackParam) @cname("SDL_SetiOSAnimationCallback");
 extern fn void setiOSEventPump(bool enabled) @cname("SDL_SetiOSEventPump");
 extern fn bool setLinuxThreadPriority(long threadID, int priority) @cname("SDL_SetLinuxThreadPriority");
 extern fn bool setLinuxThreadPriorityAndPolicy(long threadID, int sdlPriority, int schedPolicy) @cname("SDL_SetLinuxThreadPriorityAndPolicy");
+extern fn void setWindowsMessageHook(SdlWindowsMessageHook callback, void* userdata) @cname("SDL_SetWindowsMessageHook");
+extern fn void setX11EventHook(SdlX11EventHook callback, void* userdata) @cname("SDL_SetX11EventHook");
 extern fn bool showAndroidToast(char* message, int duration, int gravity, int xoffset, int yoffset) @cname("SDL_ShowAndroidToast");
