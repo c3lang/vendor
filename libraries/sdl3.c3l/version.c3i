@@ -2,9 +2,19 @@
 module sdl3;
 
 // Constants
-const uint SDL_MAJOR_VERSION = 3;
-const uint SDL_MINOR_VERSION = 5;
-const uint SDL_MICRO_VERSION = 0;
+const MAJOR_VERSION = 3;
+const MINOR_VERSION = 5;
+const MICRO_VERSION = 0;
+
+
+// Macros
+macro versionnum(major, minor, patch) => major*1000000 + minor*1000 + patch;
+macro versionnum_major(version) => version / 1000000;
+macro versionnum_minor(version) => (version / 1000) % 1000;
+macro versionnum_micro(version) => version % 1000;
+macro version() => versionnum(MAJOR_VERSION, MINOR_VERSION, MICRO_VERSION);
+macro version_atleast(major, minor, patch) => version() >= versionnum(major, minor, patch);
+
 
 // Functions
 extern fn char* getRevision() @cname("SDL_GetRevision");

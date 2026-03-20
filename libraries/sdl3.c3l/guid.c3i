@@ -2,9 +2,11 @@
 module sdl3;
 
 // Structs
-struct SdlGUID {
-  char[16] data;
+struct SdlGUID
+{
+	char[16] data;
 }
+
 
 // Functions
 extern fn void guidToString(SdlGUID guid, char* pszGUID, int cbGUID) @cname("SDL_GUIDToString");

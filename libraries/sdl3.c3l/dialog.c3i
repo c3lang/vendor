@@ -4,18 +4,35 @@ module sdl3;
 // Types
 alias SdlDialogFileCallback = fn void(void* userdata, char** filelist, int filter);
 
+
 // Structs
-struct SdlDialogFileFilter {
-  char* name;
-  char* pattern;
+struct SdlDialogFileFilter
+{
+	char* name;
+	char* pattern;
 }
 
+
 // Enums
-enum SdlFileDialogType {
-  OPENFILE,
-  SAVEFILE,
-  OPENFOLDER
+constdef SdlFileDialogProperties : ZString
+{
+	FILTERS_POINTER = "SDL.filedialog.filters",
+	NFILTERS_NUMBER = "SDL.filedialog.nfilters",
+	WINDOW_POINTER  = "SDL.filedialog.window",
+	LOCATION_STRING = "SDL.filedialog.location",
+	MANY_BOOLEAN    = "SDL.filedialog.many",
+	TITLE_STRING    = "SDL.filedialog.title",
+	ACCEPT_STRING   = "SDL.filedialog.accept",
+	CANCEL_STRING   = "SDL.filedialog.cancel",
 }
+
+enum SdlFileDialogType
+{
+	OPENFILE,
+	SAVEFILE,
+	OPENFOLDER
+}
+
 
 // Functions
 extern fn void showFileDialogWithProperties(SdlFileDialogType type, SdlDialogFileCallback callback, void* userdata, SdlPropertiesID props) @cname("SDL_ShowFileDialogWithProperties");

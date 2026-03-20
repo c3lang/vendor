@@ -2,24 +2,30 @@
 module sdl3;
 
 // Structs
-struct SdlDateTime {
-  int year, month, day;
-  int hour, minute;
-  int second, nanosecond;
-  int day_of_week;
-  int utc_offset;
+struct SdlDateTime
+{
+	int year, month, day;
+	int hour, minute;
+	int second, nanosecond;
+	int day_of_week;
+	int utc_offset;
 }
 
+
 // Enums
-enum SdlDateFormat {
-  YYYYMMDD, /**< Year/Month/Day */
-  DDMMYYYY, /**< Day/Month/Year */
-  MMDDYYYY, /**< Month/Day/Year */
+enum SdlDateFormat
+{
+	YYYYMMDD, /**< Year/Month/Day */
+	DDMMYYYY, /**< Day/Month/Year */
+	MMDDYYYY, /**< Month/Day/Year */
 }
-enum SdlTimeFormat {
-  HR24, /**< 24 hour time */
-  HR12, /**< 12 hour time */
+
+enum SdlTimeFormat
+{
+	HR24, /**< 24 hour time */
+	HR12, /**< 12 hour time */
 }
+
 
 // Functions
 extern fn bool dateTimeToTime(SdlDateTime* dt, SdlTime* ticks) @cname("SDL_DateTimeToTime");

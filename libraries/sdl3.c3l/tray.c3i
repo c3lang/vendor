@@ -8,18 +8,21 @@ typedef SdlTrayMenu = void;
 alias SdlTrayCallback = fn void(void* userdata, SdlTrayEntry* entry);
 alias SdlTrayClickCallback = fn bool(void* userdata, SdlTray* tray);
 
+
 // Bitstructs
-bitstruct SdlTrayEntryFlags : uint {
-  bool button:    0;
-  bool checkbox:  1;
-  bool submenu:   2;
-  bool checked:  30;
-  bool disabled: 31;
+bitstruct SdlTrayEntryFlags : uint
+{
+	bool button   : 0;
+	bool checkbox : 1;
+	bool submenu  : 2;
+	bool checked  : 30;
+	bool disabled : 31;
 }
+
 
 // Functions
 extern fn void clickTrayEntry(SdlTrayEntry* entry) @cname("SDL_ClickTrayEntry");
-extern fn SdlTray * createTray(SdlSurface* icon, char* tooltip) @cname("SDL_CreateTray");
+extern fn SdlTray* createTray(SdlSurface* icon, char* tooltip) @cname("SDL_CreateTray");
 extern fn SdlTrayMenu* createTrayMenu(SdlTray* tray) @cname("SDL_CreateTrayMenu");
 extern fn SdlTrayMenu* createTraySubmenu(SdlTrayEntry* entry) @cname("SDL_CreateTraySubmenu");
 extern fn SdlTray* createTrayWithProperties(SdlPropertiesID props) @cname("SDL_CreateTrayWithProperties");

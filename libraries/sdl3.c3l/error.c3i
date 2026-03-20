@@ -1,8 +1,14 @@
 
 module sdl3;
 
+// Macros
+macro bool unsupported() => setError("That operation is not supported");
+macro bool invalidParamError(ZString param) => setError("Parameter '%s' is invalid", param);
+
+
 // Functions
 extern fn bool clearError() @cname("SDL_ClearError");
 extern fn char* getError() @cname("SDL_GetError");
 extern fn bool outOfMemory() @cname("SDL_OutOfMemory");
 extern fn bool setError(char* fmt, ...) @cname("SDL_SetError");
+extern fn bool setErrorV(char* fmt, CVaList ap) @cname("SDL_SetErrorV");
