@@ -1,6 +1,6 @@
 // tigr.c3i
 // Created 15/07/2023
-// Updated 16/07/2023
+// Updated 20/03/2026
 // Binding originally created Kenta @ https://github.com/Its-Kenta
 // All copyrights for Tigr goes to erkkah @ https://github.com/erkkah/tigr
 
@@ -211,10 +211,12 @@ struct Font
 	Glyph *glyphs;
 }
 
-typedef TCodepage = int;
-const TCodepage TCP_ASCII = 0;
-const TCodepage TCP_1252 = 1252;
-const TCodepage TCP_UTF32 = 12001;
+constdef TCodepage : int
+{
+	TCP_ASCII = 0;
+	TCP_1252 = 1252;
+	TCP_UTF32 = 12001
+}
 
 // Loads a font.
 //
@@ -247,76 +249,78 @@ fn int textHeight(Font *font, char* text) @cname("tigrTextHeight");
 
 extern Font *tfont;
 
-typedef TKey = int;
-const TKey TK_PAD0 = 128;
-const TKey TK_PAD1 = 129;
-const TKey TK_PAD2 = 130;
-const TKey TK_PAD3 = 131;
-const TKey TK_PAD4 = 132;
-const TKey TK_PAD5 = 133;
-const TKey TK_PAD6 = 134;
-const TKey TK_PAD7 = 135;
-const TKey TK_PAD8 = 136;
-const TKey TK_PAD9 = 137;
-const TKey TK_PADMUL = 138;
-const TKey TK_PADADD = 139;
-const TKey TK_PADENTER = 140;
-const TKey TK_PADSUB = 141;
-const TKey TK_PADDOT = 142;
-const TKey TK_PADDIV = 143;
-const TKey TK_F1 = 144;
-const TKey TK_F2 = 145;
-const TKey TK_F3 = 146;
-const TKey TK_F4 = 147;
-const TKey TK_F5 = 148;
-const TKey TK_F6 = 149;
-const TKey TK_F7 = 150;
-const TKey TK_F8 = 151;
-const TKey TK_F9 = 152;
-const TKey TK_F10 = 153;
-const TKey TK_F11 = 154;
-const TKey TK_F12 = 155;
-const TKey TK_BACKSPACE = 156;
-const TKey TK_TAB = 157;
-const TKey TK_RETURN = 158;
-const TKey TK_SHIFT = 159;
-const TKey TK_CONTROL = 160;
-const TKey TK_ALT = 161;
-const TKey TK_PAUSE = 162;
-const TKey TK_CAPSLOCK = 163;
-const TKey TK_ESCAPE = 164;
-const TKey TK_SPACE = 165;
-const TKey TK_PAGEUP = 166;
-const TKey TK_PAGEDN = 167;
-const TKey TK_END = 168;
-const TKey TK_HOME = 169;
-const TKey TK_LEFT = 170;
-const TKey TK_UP = 171;
-const TKey TK_RIGHT = 172;
-const TKey TK_DOWN = 173;
-const TKey TK_INSERT = 174;
-const TKey TK_DELETE = 175;
-const TKey TK_LWIN = 176;
-const TKey TK_RWIN = 177;
-const TKey TK_NUMLOCK = 178;
-const TKey TK_SCROLL = 179;
-const TKey TK_LSHIFT = 180;
-const TKey TK_RSHIFT = 181;
-const TKey TK_LCONTROL = 182;
-const TKey TK_RCONTROL = 183;
-const TKey TK_LALT = 184;
-const TKey TK_RALT = 185;
-const TKey TK_SEMICOLON = 186;
-const TKey TK_EQUALS = 187;
-const TKey TK_COMMA = 188;
-const TKey TK_MINUS = 189;
-const TKey TK_DOT = 190;
-const TKey TK_SLASH = 191;
-const TKey TK_BACKTICK = 192;
-const TKey TK_LSQUARE = 193;
-const TKey TK_BACKSLASH = 194;
-const TKey TK_RSQUARE = 195;
-const TKey TK_TICK = 196;
+constdef TKey : int
+{
+	TK_PAD0 = 128,
+	TK_PAD1 = 129,
+	TK_PAD2 = 130,
+	TK_PAD3 = 131,
+	TK_PAD4 = 132,
+	TK_PAD5 = 133,
+	TK_PAD6 = 134,
+	TK_PAD7 = 135,
+	TK_PAD8 = 136,
+	TK_PAD9 = 137,
+	TK_PADMUL = 138,
+	TK_PADADD = 139,
+	TK_PADENTER = 140,
+	TK_PADSUB = 141,
+	TK_PADDOT = 142,
+	TK_PADDIV = 143,
+	TK_F1 = 144,
+	TK_F2 = 145,
+	TK_F3 = 146,
+	TK_F4 = 147,
+	TK_F5 = 148,
+	TK_F6 = 149,
+	TK_F7 = 150,
+	TK_F8 = 151,
+	TK_F9 = 152,
+	TK_F10 = 153,
+	TK_F11 = 154,
+	TK_F12 = 155,
+	TK_BACKSPACE = 156,
+	TK_TAB = 157,
+	TK_RETURN = 158,
+	TK_SHIFT = 159,
+	TK_CONTROL = 160,
+	TK_ALT = 161,
+	TK_PAUSE = 162,
+	TK_CAPSLOCK = 163,
+	TK_ESCAPE = 164,
+	TK_SPACE = 165,
+	TK_PAGEUP = 166,
+	TK_PAGEDN = 167,
+	TK_END = 168,
+	TK_HOME = 169,
+	TK_LEFT = 170,
+	TK_UP = 171,
+	TK_RIGHT = 172,
+	TK_DOWN = 173,
+	TK_INSERT = 174,
+	TK_DELETE = 175,
+	TK_LWIN = 176,
+	TK_RWIN = 177,
+	TK_NUMLOCK = 178,
+	TK_SCROLL = 179,
+	TK_LSHIFT = 180,
+	TK_RSHIFT = 181,
+	TK_LCONTROL = 182,
+	TK_RCONTROL = 183,
+	TK_LALT = 184,
+	TK_RALT = 185,
+	TK_SEMICOLON = 186,
+	TK_EQUALS = 187,
+	TK_COMMA = 188,
+	TK_MINUS = 189,
+	TK_DOT = 190,
+	TK_SLASH = 191,
+	TK_BACKTICK = 192,
+	TK_LSQUARE = 193,
+	TK_BACKSLASH = 194,
+	TK_RSQUARE = 195,
+	TK_TICK = 196
+}
 
 // Returns mouse input for a window.
 fn void mouse(Tigr *bmp, int *x, int *y, int *buttons) @cname("tigrMouse");
