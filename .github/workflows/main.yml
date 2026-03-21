@@ -1,3 +1,11 @@
+# LATEST GITHUB ACTIONS VERSIONS:
+# actions/checkout@v6
+# actions/download-artifact@v8
+# actions/upload-artifact@v6
+# actions/github-script@v8
+# actions/cache@v5
+# softprops/action-gh-release@v2
+
 name: CI
 
 on:
@@ -5,39 +13,289 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
 
-  update-packages:
-    runs-on: macos-latest
+  build-static-libs:
+    name: Build ${{ matrix.library.name }} (${{ matrix.os }})
     strategy:
-      fail-fast: true
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        library:
+          - name: box2d
+            repo: https://github.com/erincatto/box2d.git
+            tag: v3.1.1
+            c3l: box2d.c3l
+            cmake: "-DBOX2D_SAMPLES=OFF -DBOX2D_UNIT_TESTS=OFF"
+
+          - name: lz4
+            repo: https://github.com/lz4/lz4.git
+            tag: v1.10.0
+            c3l: lz4.c3l
+            cmake: "-DLZ4_BUILD_CLI=OFF -DLZ4_BUILD_LEGACY_LZ4C=OFF"
+            src_path: "build/cmake"
+
+          - name: tree_sitter
+            repo: https://github.com/tree-sitter/tree-sitter.git
+            tag: v0.26.7
+            c3l: tree_sitter.c3l
+            cmake: "-DBUILD_SHARED_LIBS=OFF"
+
+          - name: glfw34
+            tag: "3.4"
+            c3l: glfw34.c3l
+            cmake: ""
+            mac_url: "https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.bin.MACOS.zip"
+            mac_lib: "glfw-3.4.bin.MACOS/lib-universal/libglfw3.a"
+            win_url: "https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.bin.WIN64.zip"
+            win_lib: "glfw-3.4.bin.WIN64/lib-vc2022/glfw3.lib"
+
+          - name: ktx
+            repo: https://github.com/KhronosGroup/KTX-Software.git
+            tag: v4.4.2
+            c3l: ktx.c3l
+            cmake: "-DKTX_FEATURE_TESTS=OFF"
+
+          - name: raylib
+            tag: "5.5"
+            c3l: raylib.c3l
+            cmake: ""
+            linux_url: "https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_linux_amd64.tar.gz"
+            linux_lib: "raylib-5.5_linux_amd64/lib/libraylib.a"
+            mac_url: "https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_macos.tar.gz"
+            mac_lib: "raylib-5.5_macos/lib/libraylib.a"
+            win_url: "https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_win64_msvc16.zip"
+            win_lib: "raylib-5.5_win64_msvc16/lib/raylib.lib"
+
+          - name: raylib5
+            tag: "5.0"
+            c3l: raylib5.c3l
+            cmake: ""
+            linux_url: "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_linux_amd64.tar.gz"
+            linux_lib: "raylib-5.0_linux_amd64/lib/libraylib.a"
+            mac_url: "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_macos.tar.gz"
+            mac_lib: "raylib-5.0_macos/lib/libraylib.a"
+            win_url: "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_win64_msvc16.zip"
+            win_lib: "raylib-5.0_win64_msvc16/lib/raylib.lib"
+
+          - name: sdl2
+            repo: https://github.com/libsdl-org/SDL.git
+            tag: release-2.32.10
+            c3l: sdl2.c3l
+            cmake: "-DSDL_STATIC=ON -DSDL_SHARED=OFF -DSDL_TESTS=OFF -DSDL_DISABLE_INSTALL=OFF"
+
+          - name: sdl3
+            repo: https://github.com/libsdl-org/SDL.git
+            tag: release-3.4.2
+            c3l: sdl3.c3l
+            cmake: "-DSDL_TESTS=OFF -DSDL_DISABLE_INSTALL=OFF"
+
+          - name: sdl3_image
+            repo: https://github.com/libsdl-org/SDL_image.git
+            tag: release-3.4.0
+            c3l: sdl3_image.c3l
+            cmake: "-DSDLIMAGE_SAMPLES=OFF -DSDLIMAGE_TESTS=OFF -DSDLIMAGE_AVIF=OFF -DSDLIMAGE_VENDORED=ON"
+
+          - name: sdl3_ttf
+            repo: https://github.com/libsdl-org/SDL_ttf.git
+            tag: release-3.2.2
+            c3l: sdl3_ttf.c3l
+            cmake: "-DSDLTTF_SAMPLES=OFF -DSDLTTF_VENDORED=ON"
+
+          - name: webgpu
+            tag: v0.19.1.1
+            c3l: webgpu.c3l
+            cmake: ""
+            linux_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-linux-x86_64-release.zip"
+            linux_lib: "libwgpu_native.a"
+            mac_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-macos-aarch64-release.zip"
+            mac_lib: "libwgpu_native.a"
+            win_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-windows-x86_64-release.zip"
+            win_lib: "wgpu_native.lib"
+
+    runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
-      - name: prepare
+      - name: Install Linux Dependencies
+        if: runner.os == 'Linux'
         run: |
-          brew install ruby
+          sudo apt-get update
+          sudo apt-get install -y pkg-config libx11-dev libxcursor-dev libxi-dev libxinerama-dev \
+            libxrandr-dev libwayland-dev libxkbcommon-dev wayland-protocols libgl1-mesa-dev \
+            libglu1-mesa-dev libxext-dev libxfixes-dev libxss-dev libxtst-dev libasound2-dev \
+            libpulse-dev libjack-dev libsndio-dev mesa-common-dev xorg-dev libxkbcommon-x11-dev
 
-      - name: package
-        run: |
-          ruby package.rb
-
-      - name: upload artifacts
-        uses: actions/upload-artifact@v4
+      - name: Cache Static Library
+        id: build-cache
+        uses: actions/cache@v5
         with:
-          name: packages
-          path: temp/*.c3l
+          path: upload_stage/
+          key: static-lib-v5-${{ matrix.library.name }}-${{ matrix.os }}-${{ matrix.library.tag }}
 
-  release:
+      - name: Build and Package ${{ matrix.library.name }}
+        if: steps.build-cache.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          set -x
+          echo "--- START OF BUILD SCRIPT ---"
+          pwd
+          ls -la
+
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            TARGET_DIR="windows-x64"
+          elif [ "${{ matrix.os }}" == "macos-latest" ]; then
+            TARGET_DIR="macos-aarch64"
+          elif [ "${{ matrix.os }}" == "macos-wedontsupport_x64" ]; then
+            TARGET_DIR="macos-x64"
+          elif [ "${{ runner.os }}" == "Linux" ]; then
+            TARGET_DIR="linux-x64"
+          fi
+
+          TARGET_BASE="upload_stage/libraries/${{ matrix.library.c3l }}"
+          echo "CREATING DIRECTORIES: $TARGET_BASE/$TARGET_DIR"
+          mkdir -p "$TARGET_BASE/$TARGET_DIR"
+
+          echo "--- VERIFYING CREATION ---"
+          ls -la upload_stage/ || echo "UPLOAD STAGE IS MISSING AFTER MKDIR"
+
+          # Generic binary download handler: select URL for current OS, download if available
+          BIN_URL=""
+          BIN_LIB=""
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            BIN_URL="${{ matrix.library.win_url }}"
+            BIN_LIB="${{ matrix.library.win_lib }}"
+          elif [ "${{ matrix.os }}" == "macos-latest" ]; then
+            BIN_URL="${{ matrix.library.mac_url }}"
+            BIN_LIB="${{ matrix.library.mac_lib }}"
+          else
+            BIN_URL="${{ matrix.library.linux_url }}"
+            BIN_LIB="${{ matrix.library.linux_lib }}"
+          fi
+          if [ -n "$BIN_URL" ]; then
+            ARCHIVE=$(basename "$BIN_URL")
+            curl -fsSL -o "$ARCHIVE" "$BIN_URL"
+            if [[ "$ARCHIVE" == *.tar.gz ]]; then
+              tar -xzf "$ARCHIVE" "$BIN_LIB"
+              cp "$BIN_LIB" "$TARGET_BASE/$TARGET_DIR/"
+            else
+              unzip -j "$ARCHIVE" "$BIN_LIB" -d "$TARGET_BASE/$TARGET_DIR/"
+            fi
+            echo "=== STAGE ARTIFACTS PACKED EXACTLY FOR UPLOAD ==="
+            ls -R upload_stage/ || true
+            exit 0
+          fi
+
+          # Satellite build hook for items requiring SDL3 base installed locally
+          EXTRA_CMAKE=""
+          if [[ "${{ matrix.library.name }}" == "sdl3_image" || "${{ matrix.library.name }}" == "sdl3_ttf" ]]; then
+            echo "--- BUILDING INTERNAL SDL3 DEPENDENCY ---"
+            SDL_BASE="$(pwd)/sdl3_base"
+            mkdir -p "$SDL_BASE"
+            git clone https://github.com/libsdl-org/SDL.git -b release-3.4.2 internal_sdl3
+            cd internal_sdl3
+            git submodule update --init --recursive
+            mkdir -p c3_build_temp && cd c3_build_temp
+            cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DSDL_TESTS=OFF -DCMAKE_INSTALL_PREFIX="$SDL_BASE" ..
+            cmake --build . --config Release --parallel 4 --target install
+            cd ../..
+            # Point satellite to the internal build
+            EXTRA_CMAKE="-DSDL3_DIR=$SDL_BASE/lib/cmake/SDL3 -DCMAKE_PREFIX_PATH=$SDL_BASE"
+          fi
+
+          git clone ${{ matrix.library.repo }} -b ${{ matrix.library.tag }} build_src
+          cd build_src
+          git submodule update --init --recursive
+
+          # Handle cases where the CMakeLists.txt is in a subdirectory (like lz4)
+          SRC_REL_PATH="${{ matrix.library.src_path }}"
+          if [ -z "$SRC_REL_PATH" ]; then SRC_REL_PATH="."; fi
+
+          # Use a unique build folder name and -p to avoid "File exists" errors
+          mkdir -p c3_build_temp && cd c3_build_temp
+
+          cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release ${{ matrix.library.cmake }} $EXTRA_CMAKE "../$SRC_REL_PATH"
+          cmake --build . --config Release --parallel 4
+
+          find . -type f \( -name "*.a" -o -name "*.lib" \) -exec cp {} "../../$TARGET_BASE/$TARGET_DIR/" \;
+          cd ../..
+
+          # Normalize glfw3 names to match the C3 manifest.json expectations natively
+          if [ "${{ matrix.library.name }}" == "glfw34" ]; then
+            find "upload_stage/" -type f -name "libglfw3.a" -execdir mv libglfw3.a libglfw.a \; || true
+            find "upload_stage/" -type f -name "glfw3.lib" -execdir mv glfw3.lib glfw.lib \; || true
+          fi
+
+          echo "=== STAGE ARTIFACTS PACKED EXACTLY FOR UPLOAD ==="
+          ls -R upload_stage/ || true
+
+      - name: Upload ${{ matrix.library.name }} Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ matrix.library.name }}-statics-${{ matrix.os }}
+          path: upload_stage/
+
+  build-and-release:
+    needs: [build-static-libs]
     runs-on: ubuntu-latest
-    needs: [update-packages]
-    if: github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v3
-      - name: delete tag
+      - uses: actions/checkout@v6
+
+      - name: Merge all compiled static binaries
+        uses: actions/download-artifact@v8
+        with:
+          pattern: "*-statics-*"
+          merge-multiple: true
+          path: .
+
+      - name: Install C3 Compiler
+        run: |
+          curl -L https://github.com/c3lang/c3c/releases/download/latest-prerelease-tag/c3-linux.tar.gz -o c3.tar.gz
+          tar -xzf c3.tar.gz
+          echo "$(pwd)/c3" >> $GITHUB_PATH
+
+      - name: Install APT Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libcurl4-openssl-dev \
+            libpq-dev libmysqlclient-dev libgl1-mesa-dev libglu1-mesa-dev \
+            libvulkan-dev libclang-dev clang build-essential pkg-config \
+            libx11-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev \
+            libwayland-dev libxkbcommon-dev wayland-protocols \
+            libasound2-dev libpulse-dev libjack-dev libsndio-dev \
+            xorg-dev libxkbcommon-x11-dev
+
+      - name: Prepare System Libraries
+        run: |
+          # System Fixes - Ubuntu
+          sudo cp -r /usr/local/lib/x86_64-linux-gnu/* /usr/local/lib/ 2>/dev/null || true
+          sudo ln -sf /usr/lib/llvm-18/lib/libclang.so /usr/lib/libclang.so || true
+          sudo ldconfig
+
+      - name: Run Tests
+        run: c3c test
+
+      - name: Package Libraries
+        run: |
+          mkdir -p temp
+          for lib in $(jq -r '.targets.all_tests.dependencies | .[]' project.json); do
+            folder="${lib}.c3l"
+            if [ -d "libraries/$folder" ]; then
+              cd "libraries/$folder"
+              zip -r "../../temp/$folder" * -x "*.DS_Store"
+              cd ../..
+            else
+              echo "Warning: $folder not found"
+            fi
+          done
+
+      - name: Delete Old Tag
+        if: github.ref == 'refs/heads/main'
         continue-on-error: true
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           script: |
             github.rest.git.deleteRef({
@@ -46,8 +304,10 @@ jobs:
               ref: 'tags/latest',
               sha: context.sha
             })
-      - name: create tag
-        uses: actions/github-script@v6
+
+      - name: Create New Tag
+        if: github.ref == 'refs/heads/main'
+        uses: actions/github-script@v8
         with:
           script: |
             github.rest.git.createRef({
@@ -57,184 +317,14 @@ jobs:
               sha: context.sha
             })
 
-      - uses: actions/download-artifact@v4
-
-      - id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create or Update Release
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: latest
-          release_name: Latest
+          name: Latest
           draft: false
           prerelease: false
-
-      - name: upload raylib
-        uses: actions/upload-release-asset@v1
+          files: temp/*.c3l
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/raylib.c3l
-          asset_name: raylib.c3l
-          asset_content_type: application/zip
-
-      - name: upload raygui
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/raygui.c3l
-          asset_name: raygui.c3l
-          asset_content_type: application/zip
-
-      - name: upload box2d
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/box2d.c3l
-          asset_name: box2d.c3l
-          asset_content_type: application/zip
-
-      - name: upload sdl2
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/sdl2.c3l
-          asset_name: sdl2.c3l
-          asset_content_type: application/zip
-      
-      - name: upload sdl3
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/sdl3.c3l
-          asset_name: sdl3.c3l
-          asset_content_type: application/zip
-
-      - name: upload tigr
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/tigr.c3l
-          asset_name: tigr.c3l
-          asset_content_type: application/zip
-
-      - name: upload opengl
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/opengl.c3l
-          asset_name: opengl.c3l
-          asset_content_type: application/zip
-
-      - name: upload vulkan
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/vulkan.c3l
-          asset_name: vulkan.c3l
-          asset_content_type: application/zip
-
-      - name: upload tree_sitter
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/tree_sitter.c3l
-          asset_name: tree_sitter.c3l
-          asset_content_type: application/zip
-
-      - name: upload curl
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/curl.c3l
-          asset_name: curl.c3l
-          asset_content_type: application/zip
-      
-      - name: upload clang
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/clang.c3l
-          asset_name: clang.c3l
-          asset_content_type: application/zip
-
-      - name: upload glfw
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/glfw.c3l
-          asset_name: glfw.c3l
-          asset_content_type: application/zip
-
-      - name: upload glfw3.4
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/glfw34.c3l
-          asset_name: glfw34.c3l
-          asset_content_type: application/zip
-
-      - name: upload pq
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/pq.c3l
-          asset_name: pq.c3l
-          asset_content_type: application/zip
-
-      - name: upload mysql8
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/mysql8.c3l
-          asset_name: mysql8.c3l
-          asset_content_type: application/zip
-
-      - name: upload sqlite3
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/sqlite3.c3l
-          asset_name: sqlite3.c3l
-          asset_content_type: application/zip
-
-      - name: upload ktx
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: packages/ktx.c3l
-          asset_name: ktx.c3l
-          asset_content_type: application/zip

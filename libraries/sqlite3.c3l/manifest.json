@@ -1,45 +1,20 @@
 {
-  "provides": "sqlite3",
-  "targets": {
-    "macos-aarch64": {
-      "linked-libraries": [
-        "sqlite3"
-      ]
-    },
-    "macos-x64": {
-      "linked-libraries": [
-        "sqlite3"
-      ]
-    },
-    "linux-x64": {
-      "linked-libraries": [
-        "sqlite3"
-      ]
-    },
-    "linux-x86": {
-      "linked-libraries": [
-        "sqlite3"
-      ]
-    },
-    "openbsd-x86": {
-      "linked-libraries": [
-        "sqlite3"
-      ]
-    },
-    "openbsd-x64": {
-      "linked-libraries": [
-        "sqlite3"
-      ]
-    },
-    "freebsd-x64": {
-      "linked-libraries": [
-        "sqlite3"
-      ]
-    },
-    "freebsd-x86": {
-      "linked-libraries": [
-        "sqlite3"
-      ]
-    }
-  }
+	"provides": "sqlite3",
+	"sources": [
+		"sqlite.c3i"
+	],
+	"c-sources": [
+		"sqlite3.c"
+	],
+	"targets": {
+		"macos-aarch64": {},
+		"macos-x64": {},
+		"linux-x64": {},
+		"linux-x86": {},
+		"openbsd-x86": {},
+		"openbsd-x64": {},
+		"freebsd-x64": {},
+		"freebsd-x86": {},
+		"windows-x64": {}
+	}
 }
