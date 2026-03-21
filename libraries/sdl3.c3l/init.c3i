@@ -2,10 +2,10 @@
 module sdl3;
 
 // Types
-alias SdlAppEvent_func = fn SdlAppResult(void* appstate, SdlEvent* event);
-alias SdlAppInit_func = fn SdlAppResult(void** appstate, int argc, char** argv);
-alias SdlAppIterate_func = fn SdlAppResult(void* appstate);
-alias SdlAppQuit_func = fn void(void* appstate, SdlAppResult result);
+alias SdlAppEventFunc = fn SdlAppResult(void* appstate, SdlEvent* event);
+alias SdlAppInitFunc = fn SdlAppResult(void** appstate, int argc, char** argv);
+alias SdlAppIterateFunc = fn SdlAppResult(void* appstate);
+alias SdlAppQuitFunc = fn void(void* appstate, SdlAppResult result);
 alias SdlMainThreadCallback = fn void(void* userdata);
 
 
