@@ -36,10 +36,12 @@ constdef SdlThreadCreateProperties : ZString
 
 
 // Macros
+extern fn uptr _beginthreadex(void* security, uint stack_size, void* start_address, void* arglist, uint initflag, uint* thraddr) @if(env::WIN32);
+extern fn uptr _endthreadex(uint retval) @if(env::WIN32);
 macro SdlThread* createThread(SdlThreadFunction fn_, ZString name, void* data)
 {
 	$if (env::WIN32):
-		return createThreadRuntime(fn_, name, data, (SDL_FunctionPointer)_beginthreadex, (SDL_FunctionPointer)_endthreadex);
+		return createThreadRuntime(fn_, name, data, (SdlFunctionPointer)&_beginthreadex, (SdlFunctionPointer)&_endthreadex);
 	$else
 		return createThreadRuntime(fn_, name, data, null, null);
 	$endif
@@ -48,7 +50,7 @@ macro SdlThread* createThread(SdlThreadFunction fn_, ZString name, void* data)
 macro SdlThread* createThreadWithProperties(SdlPropertiesID props)
 {
 	$if (env::WIN32):
-		return createThreadWithPropertiesRuntime(props, (SDL_FunctionPointer)_beginthreadex, (SDL_FunctionPointer)_endthreadex);
+		return createThreadWithPropertiesRuntime(props, (SdlFunctionPointer)&_beginthreadex, (SdlFunctionPointer)&_endthreadex);
 	$else
 		return createThreadWithPropertiesRuntime(props, null, null);
 	$endif
