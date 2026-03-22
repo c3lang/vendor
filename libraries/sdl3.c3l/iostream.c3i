@@ -113,7 +113,7 @@ extern fn SdlIOStream* fromMemIO(void* mem, usz size) @cname("SDL_IOFromMem");
 extern fn usz printfIO(SdlIOStream* context, char* fmt, ...) @cname("SDL_IOprintf");
 extern fn usz vprintfIO(SdlIOStream* context, char* fmt, CVaList ap) @cname("SDL_IOvprintf");
 extern fn void* loadFile(char* file, usz* datasize) @cname("SDL_LoadFile");
-extern fn void* loadFileIO(SdlIOStream* src, usz* datasize, bool closeio) @cname("SDL_LoadFile_IO");
+extern fn void* loadFile_IO(SdlIOStream* src, usz* datasize, bool closeio) @cname("SDL_LoadFile_IO");
 extern fn SdlIOStream* openIO(SdlIOStreamInterface* iface, void* userdata) @cname("SDL_OpenIO");
 extern fn usz readIO(SdlIOStream* context, void* ptr, usz size) @cname("SDL_ReadIO");
 extern fn bool readS16BE(SdlIOStream* src, short* value) @cname("SDL_ReadS16BE");
@@ -131,7 +131,7 @@ extern fn bool readU64BE(SdlIOStream* src, ulong* value) @cname("SDL_ReadU64BE")
 extern fn bool readU64LE(SdlIOStream* src, ulong* value) @cname("SDL_ReadU64LE");
 extern fn bool readU8(SdlIOStream* src, char* value) @cname("SDL_ReadU8");
 extern fn bool saveFile(char* file, void* data, usz datasize) @cname("SDL_SaveFile");
-extern fn bool saveFileIO(SdlIOStream* src, void* data, usz datasize, bool closeio) @cname("SDL_SaveFile_IO");
+extern fn bool saveFile_IO(SdlIOStream* src, void* data, usz datasize, bool closeio) @cname("SDL_SaveFile_IO");
 extern fn long seekIO(SdlIOStream* context, long offset, SdlIOWhence whence) @cname("SDL_SeekIO");
 extern fn long tellIO(SdlIOStream* context) @cname("SDL_TellIO");
 extern fn usz writeIO(SdlIOStream* context, void* ptr, usz size) @cname("SDL_WriteIO");
