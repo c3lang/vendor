@@ -103,7 +103,7 @@ extern fn int getSilenceValueForFormat(SdlAudioFormat format) @cname("SDL_GetSil
 extern fn bool isAudioDevicePhysical(SdlAudioDeviceID devid) @cname("SDL_IsAudioDevicePhysical");
 extern fn bool isAudioDevicePlayback(SdlAudioDeviceID devid) @cname("SDL_IsAudioDevicePlayback");
 extern fn bool loadWAV(char* path, SdlAudioSpec* spec, char** audio_buf, uint* audio_len) @cname("SDL_LoadWAV");
-extern fn bool loadWAVIO(SdlIOStream* src, bool closeio, SdlAudioSpec* spec, char** audio_buf, uint* audio_len) @cname("SDL_LoadWAV_IO");
+extern fn bool loadWAV_IO(SdlIOStream* src, bool closeio, SdlAudioSpec* spec, char** audio_buf, uint* audio_len) @cname("SDL_LoadWAV_IO");
 extern fn bool lockAudioStream(SdlAudioStream* stream) @cname("SDL_LockAudioStream");
 extern fn bool mixAudio(char* dst, char* src, SdlAudioFormat format, uint len, float volume) @cname("SDL_MixAudio");
 extern fn SdlAudioDeviceID openAudioDevice(SdlAudioDeviceID devid, SdlAudioSpec* spec) @cname("SDL_OpenAudioDevice");
