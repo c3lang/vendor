@@ -228,6 +228,11 @@ jobs:
             find "upload_stage/" -type f -name "glfw3.lib" -execdir mv glfw3.lib glfw.lib \; || true
           fi
 
+          # Normalize SDL3 names
+          if [ "${{ matrix.library.name }}" == "sdl3" ] && [ "${{ runner.os }}" == "Windows" ]; then
+            find "upload_stage/" -type f -name "SDL3-static.lib" -execdir mv SDL3-static.lib SDL3.lib \; || true
+          fi
+
           echo "=== STAGE ARTIFACTS PACKED EXACTLY FOR UPLOAD ==="
           ls -R upload_stage/ || true
 
