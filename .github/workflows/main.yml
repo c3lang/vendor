@@ -133,7 +133,7 @@ jobs:
         uses: actions/cache@v5
         with:
           path: upload_stage/
-          key: static-lib-v5-${{ matrix.library.name }}-${{ matrix.os }}-${{ matrix.library.tag }}
+          key: static-lib-v6-${{ matrix.library.name }}-${{ matrix.os }}-${{ matrix.library.tag }}
 
       - name: Build and Package ${{ matrix.library.name }}
         if: steps.build-cache.outputs.cache-hit != 'true'
