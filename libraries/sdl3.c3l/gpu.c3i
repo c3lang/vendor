@@ -50,7 +50,7 @@ bitstruct SdlGPUTextureUsageFlags : uint
 {
 	bool sampler;
 	bool color_target;
-	bool depth_stencil_starget;
+	bool depth_stencil_target;
 	bool graphics_storage_read;
 	bool compute_storage_read;
 	bool compute_storage_write;
