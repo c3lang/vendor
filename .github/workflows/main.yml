@@ -229,8 +229,10 @@ jobs:
           fi
 
           # Normalize SDL3 names
-          if [ "${{ matrix.library.name }}" == "sdl3" ] && [ "${{ runner.os }}" == "Windows" ]; then
+          if [[ "${{ matrix.library.name }}" == "sdl3"* ]] && [ "${{ runner.os }}" == "Windows" ]; then
             find "upload_stage/" -type f -name "SDL3-static.lib" -execdir mv SDL3-static.lib SDL3.lib \; || true
+            find "upload_stage/" -type f -name "SDL3_image-static.lib" -execdir mv SDL3_image-static.lib SDL3_image.lib \; || true
+            find "upload_stage/" -type f -name "SDL3_ttf-static.lib" -execdir mv SDL3_ttf-static.lib SDL3_ttf.lib \; || true
           fi
 
           echo "=== STAGE ARTIFACTS PACKED EXACTLY FOR UPLOAD ==="

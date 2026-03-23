@@ -34,7 +34,7 @@
 		"linux-x64" : {
 			"link-args" : [],
 			"dependencies" : [],
-			"linked-libraries" : [ "SDL3", "SDL3_image" ]
+			"linked-libraries" : [ "SDL3", "SDL3_image", "sharpyuv", "z" ]
 		},
 		"ios-aarch64" : {
 			"link-args" : [],
@@ -44,7 +44,7 @@
 		"macos-aarch64" : {
 			"link-args" : [],
 			"dependencies" : [],
-			"linked-libraries" : [ "SDL3", "SDL3_image" ]
+			"linked-libraries" : [ "SDL3", "SDL3_image", "sharpyuv", "z" ]
 		},
 		"macos-x64" : {
 			"link-args" : [],
@@ -79,7 +79,7 @@
 		"windows-x64" : {
 			"link-args" : [],
 			"dependencies" : [],
-			"linked-libraries" : [ "SDL3", "SDL3_image" ]
+			"linked-libraries" : [ "SDL3", "SDL3_image", "libpng16-16", "libsharpyuv", "libwebp", "libwebpmux", "tiff", "webpdecode", "webpdsp", "webpencode", "webputils", "zlibstatic" ]
 		},
 	}
 }

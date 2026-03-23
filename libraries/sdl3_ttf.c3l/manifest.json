@@ -34,7 +34,7 @@
 		"linux-x64" : {
 			"link-args" : [],
 			"dependencies" : [],
-			"linked-libraries" : [ "SDL3", "SDL3_ttf" ]
+			"linked-libraries" : [ "SDL3", "SDL3_ttf", "freetype", "harfbuzz", "plutosvg", "plutovg" ]
 		},
 		"ios-aarch64" : {
 			"link-args" : [],
@@ -44,7 +44,7 @@
 		"macos-aarch64" : {
 			"link-args" : [],
 			"dependencies" : [],
-			"linked-libraries" : [ "SDL3", "SDL3_ttf" ]
+			"linked-libraries" : [ "SDL3", "SDL3_ttf", "freetype", "harfbuzz", "plutosvg", "plutovg" ]
 		},
 		"macos-x64" : {
 			"link-args" : [],
@@ -79,7 +79,7 @@
 		"windows-x64" : {
 			"link-args" : [],
 			"dependencies" : [],
-			"linked-libraries" : [ "SDL3", "SDL3_ttf" ]
+			"linked-libraries" : [ "SDL3", "SDL3_ttf", "freetype", "harfbuzz", "plutosvg", "plutovg" ]
 		},
 	}
 }

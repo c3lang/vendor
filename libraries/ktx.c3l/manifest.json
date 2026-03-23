@@ -34,12 +34,12 @@
 		"linux-x64" : {
 			"link-args" : [],
 			"dependencies" : [],
-			"linked-libraries" : [ "ktx" ]
+			"linked-libraries" : [ "ktx", "astcenc-avx2-static", "fmt", "imageio", "ktx_read", "obj_basisu_cbind", "objUtil" ]
 		},
 		"macos-aarch64" : {
 			"link-args" : [],
 			"dependencies" : [],
-			"linked-libraries" : [ "ktx" ]
+			"linked-libraries" : [ "ktx", "astcenc-neon-static", "fmt", "imageio", "ktx_read", "obj_basisu_cbind", "objUtil" ]
 		},
 		"macos-x64" : {
 			"link-args" : [],
@@ -79,7 +79,7 @@
 		"windows-x64" : {
 			"link-args" : [],
 			"dependencies" : [],
-			"linked-libraries" : [ "ktx" ]
+			"linked-libraries" : [ "ktx", "astcenc-avx2-static", "fmt", "imageio", "ktx_read", "obj_basisu_cbind", "objUtil" ]
 		},
 	}
 }
