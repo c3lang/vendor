@@ -44,9 +44,10 @@ jobs:
             cmake: "-DBUILD_SHARED_LIBS=OFF"
 
           - name: glfw34
+            repo: https://github.com/glfw/glfw.git
             tag: "3.4"
             c3l: glfw34.c3l
-            cmake: ""
+            cmake: "-DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF"
             mac_url: "https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.bin.MACOS.zip"
             mac_lib: "glfw-3.4.bin.MACOS/lib-universal/libglfw3.a"
             win_url: "https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.bin.WIN64.zip"
