@@ -3096,7 +3096,7 @@ fn Window* renderGetWindow(Renderer* renderer) @cname("SDL_RenderGetWindow");
 fn int getRendererInfo(Renderer* renderer, RendererInfo* info) @cname("SDL_GetRendererInfo");
 fn int getRendererOutputSize(Renderer* renderer, int* w, int* h) @cname("SDL_GetRendererOutputSize");
 fn Texture* createTexture(Renderer* renderer, uint format, int access, int w, int h) @cname("SDL_CreateTexture");
-fn Texture* createTextureFromSurface(Renderer* renderer, Surface surface) @cname("SDL_CreateTextureFromSurface");
+fn Texture* createTextureFromSurface(Renderer* renderer, Surface* surface) @cname("SDL_CreateTextureFromSurface");
 fn int queryTexture(Texture* texture, uint* format, int* access, int* w, int* h) @cname("SDL_QueryTexture");
 fn int setTextureColorMod(Texture* texture, char r, char g, char b) @cname("SDL_SetTextureColorMod");
 fn int getTextureColorMod(Texture* texture, char* r, char* g, char* b) @cname("SDL_GetTextureColorMod");
