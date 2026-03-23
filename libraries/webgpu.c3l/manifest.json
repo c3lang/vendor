@@ -26,7 +26,7 @@
 			"linked-libraries" : ["wgpu_native"]
 		},
 		"windows-x64" : {
-			"linked-libraries" : ["wgpu_native"]
+			"linked-libraries" : ["wgpu_native", "userenv", "bcrypt", "advapi32", "d3dcompiler", "d3d12", "dxgi"]
 		},
 		"wasm32" : {
 			"linked-libraries" : ["wgpu_native"]

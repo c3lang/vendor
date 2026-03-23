@@ -40,6 +40,11 @@
 			"linked-libraries": [
 				"clang"
 			]
+		},
+		"windows-x64": {
+			"linked-libraries": [
+				"clang"
+			]
 		}
 	}
 }

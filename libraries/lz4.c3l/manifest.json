@@ -16,8 +16,8 @@
 			"dependencies" : [],
 			"linked-libraries" : ["lz4"]
 		},
-	"windows-x64" : {
-		"linked-libraries" : ["liblz4"]
-	}
+		"windows-x64" : {
+			"linked-libraries" : ["lz4"]
+		}
 	}
 }

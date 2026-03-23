@@ -40,6 +40,11 @@
 			"linked-libraries": [
 				"mysqlclient"
 			]
+		},
+		"windows-x64": {
+			"linked-libraries": [
+				"mysqlclient"
+			]
 		}
 	}
 }

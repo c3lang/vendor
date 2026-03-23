@@ -79,7 +79,7 @@
 		"windows-x64" : {
 			"link-args" : [],
 			"dependencies" : [],
-			"linked-libraries" : [ "SDL3", "SDL3_image", "libpng16-16", "libsharpyuv", "libwebp", "libwebpmux", "tiff", "webpdecode", "webpdsp", "webpencode", "webputils", "zlibstatic" ]
+			"linked-libraries" : [ "SDL3", "SDL3_image", "libpng16-16", "libsharpyuv", "libwebp", "libwebpmux", "tiff", "webpdecode", "webpdsp", "webpencode", "webputils", "zlibstatic", "user32", "gdi32", "winmm", "imm32", "ole32", "oleaut32", "version", "uuid", "advapi32", "setupapi", "shell32" ]
 		},
 	}
 }

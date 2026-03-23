@@ -228,8 +228,9 @@ jobs:
             find "upload_stage/" -type f -name "glfw3.lib" -execdir mv glfw3.lib glfw.lib \; || true
           fi
 
-          # Normalize SDL3 names
-          if [[ "${{ matrix.library.name }}" == "sdl3"* ]] && [ "${{ runner.os }}" == "Windows" ]; then
+          # Normalize SDL names
+          if [[ "${{ matrix.library.name }}" == "sdl"* ]] && [ "${{ runner.os }}" == "Windows" ]; then
+            find "upload_stage/" -type f -name "SDL2-static.lib" -execdir mv SDL2-static.lib SDL2.lib \; || true
             find "upload_stage/" -type f -name "SDL3-static.lib" -execdir mv SDL3-static.lib SDL3.lib \; || true
             find "upload_stage/" -type f -name "SDL3_image-static.lib" -execdir mv SDL3_image-static.lib SDL3_image.lib \; || true
             find "upload_stage/" -type f -name "SDL3_ttf-static.lib" -execdir mv SDL3_ttf-static.lib SDL3_ttf.lib \; || true

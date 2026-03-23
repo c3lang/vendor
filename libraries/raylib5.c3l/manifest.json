@@ -17,7 +17,7 @@
 			"linked-libraries" : ["raylib"]
 		},
 		"windows-x64" : {
-			"linked-libraries" : ["raylib", "gdi32", "winmm"],
+			"linked-libraries" : ["raylib", "gdi32", "winmm", "user32", "shell32"],
 			"wincrt": "none"
 		},
 		"wasm32" : {
