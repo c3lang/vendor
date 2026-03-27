@@ -1,22 +1,29 @@
 
 module sdl3;
 
+// Constants
+const STANDARD_GRAVITY = 9.80665f;
+
+
 // Types
 typedef SdlSensor = void;
 typedef SdlSensorID = uint;
 
+
 // Enums
-constdef SdlSensorType : CInt {
-  INVALID = -1,  /**< Returned for an invalid sensor */
-  UNKNOWN =  0,  /**< Unknown sensor type */
-  ACCEL   =  1,  /**< Accelerometer */
-  GYRO    =  2,  /**< Gyroscope */
-  ACCEL_L =  3,  /**< Accelerometer for left Joy-Con controller and Wii nunchuk */
-  GYRO_L  =  4,  /**< Gyroscope for left Joy-Con controller */
-  ACCEL_R =  5,  /**< Accelerometer for right Joy-Con controller */
-  GYRO_R  =  6,  /**< Gyroscope for right Joy-Con controller */
-  COUNT
+constdef SdlSensorType : CInt
+{
+	INVALID = -1, /**< Returned for an invalid sensor */
+	UNKNOWN,      /**< Unknown sensor type */
+	ACCEL,        /**< Accelerometer */
+	GYRO,         /**< Gyroscope */
+	ACCEL_L,      /**< Accelerometer for left Joy-Con controller and Wii nunchuk */
+	GYRO_L,       /**< Gyroscope for left Joy-Con controller */
+	ACCEL_R,      /**< Accelerometer for right Joy-Con controller */
+	GYRO_R,       /**< Gyroscope for right Joy-Con controller */
+	COUNT
 }
+
 
 // Functions
 extern fn void closeSensor(SdlSensor* sensor) @cname("SDL_CloseSensor");

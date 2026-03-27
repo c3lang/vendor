@@ -4,24 +4,38 @@ module sdl3;
 // Types
 typedef SdlKeyboardID = uint;
 
+
 // Enums
-enum SdlCapitalization {
-  NONE,        /**< No auto-capitalization will be done */
-  SENTENCES,   /**< The first letter of sentences will be capitalized */
-  WORDS,       /**< The first letter of words will be capitalized */
-  LETTERS,     /**< All letters will be capitalized */
+enum SdlCapitalization
+{
+	NONE,        /**< No auto-capitalization will be done */
+	SENTENCES,   /**< The first letter of sentences will be capitalized */
+	WORDS,       /**< The first letter of words will be capitalized */
+	LETTERS,     /**< All letters will be capitalized */
 }
-enum SdlTextInputType {
-  TEXT,                        /**< The input is text */
-  TEXT_NAME,                   /**< The input is a person's name */
-  TEXT_EMAIL,                  /**< The input is an e-mail address */
-  TEXT_USERNAME,               /**< The input is a username */
-  TEXT_PASSWORD_HIDDEN,        /**< The input is a secure password that is hidden */
-  TEXT_PASSWORD_VISIBLE,       /**< The input is a secure password that is visible */
-  NUMBER,                      /**< The input is a number */
-  NUMBER_PASSWORD_HIDDEN,      /**< The input is a secure PIN that is hidden */
-  NUMBER_PASSWORD_VISIBLE,     /**< The input is a secure PIN that is visible */
+
+enum SdlTextInputType
+{
+	TEXT,                        /**< The input is text */
+	TEXT_NAME,                   /**< The input is a person's name */
+	TEXT_EMAIL,                  /**< The input is an e-mail address */
+	TEXT_USERNAME,               /**< The input is a username */
+	TEXT_PASSWORD_HIDDEN,        /**< The input is a secure password that is hidden */
+	TEXT_PASSWORD_VISIBLE,       /**< The input is a secure password that is visible */
+	NUMBER,                      /**< The input is a number */
+	NUMBER_PASSWORD_HIDDEN,      /**< The input is a secure PIN that is hidden */
+	NUMBER_PASSWORD_VISIBLE,     /**< The input is a secure PIN that is visible */
 }
+
+constdef SdlTextInputProperties : ZString
+{
+	TYPE_NUMBER              = "SDL.textinput.type",
+	CAPITALIZATION_NUMBER    = "SDL.textinput.capitalization",
+	AUTOCORRECT_BOOLEAN      = "SDL.textinput.autocorrect",
+	MULTILINE_BOOLEAN        = "SDL.textinput.multiline",
+	ANDROID_INPUTTYPE_NUMBER = "SDL.textinput.android.inputtype",
+}
+
 
 // Functions
 extern fn bool clearComposition(SdlWindow* window) @cname("SDL_ClearComposition");

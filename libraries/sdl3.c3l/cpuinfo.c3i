@@ -1,6 +1,10 @@
 
 module sdl3;
 
+// Constants
+const CACHELINE_SIZE = 128;
+
+
 // Functions
 extern fn int getCPUCacheLineSize() @cname("SDL_GetCPUCacheLineSize");
 extern fn int getNumLogicalCPUCores() @cname("SDL_GetNumLogicalCPUCores");

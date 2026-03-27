@@ -1,6 +1,11 @@
 
 module sdl3;
 
+// Constants
+const JOYSTICK_AXIS_MAX = 32767;
+const JOYSTICK_AXIS_MIN = -32768;
+
+
 // Types
 typedef SdlJoystick = void;
 typedef SdlJoystickID = uint;
@@ -14,75 +19,97 @@ alias SdlVirtualJoystickSendEffectCallback = fn bool(void* userdata, void* data,
 alias SdlVirtualJoystickSetSensorsEnabledCallback = fn bool(void* userdata, bool enabled);
 alias SdlVirtualJoystickCleanupCallback = fn void(void* userdata);
 
+
 // Bitstructs
-bitstruct SdlJoystickHat : int {
-  bool up:    0;
-  bool right: 1;
-  bool down:  2;
-  bool left:  3;
+bitstruct SdlJoystickHat : char
+{
+	bool up;
+	bool right;
+	bool down;
+	bool left;
 }
+
 
 // Structs
-struct SdlVirtualJoystickDesc {
-  uint version;       /**< the version of this interface */
-  ushort type;        /**< `SDL_JoystickType` */
-  ushort padding;     /**< unused */
-  ushort vendor_id;   /**< the USB vendor ID of this joystick */
-  ushort product_id;  /**< the USB product ID of this joystick */
-  ushort naxes;       /**< the number of axes on this joystick */
-  ushort nbuttons;    /**< the number of buttons on this joystick */
-  ushort nballs;      /**< the number of balls on this joystick */
-  ushort nhats;       /**< the number of hats on this joystick */
-  ushort ntouchpads;  /**< the number of touchpads on this joystick, requires `touchpads` to point at valid descriptions */
-  ushort nsensors;    /**< the number of sensors on this joystick, requires `sensors` to point at valid descriptions */
-  ushort[2] padding2; /**< unused */
-  uint button_mask;   /**< A mask of which buttons are valid for this controller
-                             e.g. (1 << SDL_GAMEPAD_BUTTON_SOUTH) */
-  uint axis_mask;     /**< A mask of which axes are valid for this controller
-                             e.g. (1 << SDL_GAMEPAD_AXIS_LEFTX) */
-  char* name;   /**< the name of the joystick */
-  SdlVirtualJoystickTouchpadDesc* touchpads;   /**< A pointer to an array of touchpad descriptions, required if `ntouchpads` is > 0 */
-  SdlVirtualJoystickSensorDesc* sensors;       /**< A pointer to an array of sensor descriptions, required if `nsensors` is > 0 */
+struct SdlVirtualJoystickDesc
+{
+	uint version;       /**< the version of this interface */
+	ushort type;        /**< `SDL_JoystickType` */
+	ushort padding;     /**< unused */
+	ushort vendor_id;   /**< the USB vendor ID of this joystick */
+	ushort product_id;  /**< the USB product ID of this joystick */
+	ushort naxes;       /**< the number of axes on this joystick */
+	ushort nbuttons;    /**< the number of buttons on this joystick */
+	ushort nballs;      /**< the number of balls on this joystick */
+	ushort nhats;       /**< the number of hats on this joystick */
+	ushort ntouchpads;  /**< the number of touchpads on this joystick, requires `touchpads` to point at valid descriptions */
+	ushort nsensors;    /**< the number of sensors on this joystick, requires `sensors` to point at valid descriptions */
+	ushort[2] padding2; /**< unused */
+	uint button_mask;   /**< A mask of which buttons are valid for this controller
+	                         e.g. (1 << SDL_GAMEPAD_BUTTON_SOUTH) */
+	uint axis_mask;     /**< A mask of which axes are valid for this controller
+	                         e.g. (1 << SDL_GAMEPAD_AXIS_LEFTX) */
+	char* name;   /**< the name of the joystick */
+	SdlVirtualJoystickTouchpadDesc* touchpads;   /**< A pointer to an array of touchpad descriptions, required if `ntouchpads` is > 0 */
+	SdlVirtualJoystickSensorDesc* sensors;       /**< A pointer to an array of sensor descriptions, required if `nsensors` is > 0 */
 
-  void* userdata;     /**< User data pointer passed to callbacks */
-  SdlVirtualJoystickUpdateCallback update;
-  SdlVritualJoystickSetPlayerIndexCallback setPlayerIndex;
-  SdlVirtualJoystickRumbleCallback rumble;
-  SdlVirtualJoystickRumbleTriggersCallback rumbleTriggers;
-  SdlVirtualJoystickSetLEDCallback setLED;
-  SdlVirtualJoystickSendEffectCallback sendEffect;
-  SdlVirtualJoystickSetSensorsEnabledCallback setSensorsEnabled;
-  SdlVirtualJoystickCleanupCallback cleanup;
+	void* userdata;     /**< User data pointer passed to callbacks */
+	SdlVirtualJoystickUpdateCallback update;
+	SdlVritualJoystickSetPlayerIndexCallback setPlayerIndex;
+	SdlVirtualJoystickRumbleCallback rumble;
+	SdlVirtualJoystickRumbleTriggersCallback rumbleTriggers;
+	SdlVirtualJoystickSetLEDCallback setLED;
+	SdlVirtualJoystickSendEffectCallback sendEffect;
+	SdlVirtualJoystickSetSensorsEnabledCallback setSensorsEnabled;
+	SdlVirtualJoystickCleanupCallback cleanup;
 }
-struct SdlVirtualJoystickSensorDesc {
-  SdlSensorType type;    /**< the type of this sensor */
-  float rate;             /**< the update frequency of this sensor, may be 0.0f */
+
+struct SdlVirtualJoystickSensorDesc
+{
+	SdlSensorType type;    /**< the type of this sensor */
+	float rate;             /**< the update frequency of this sensor, may be 0.0f */
 }
-struct SdlVirtualJoystickTouchpadDesc {
-  ushort nfingers;    /**< the number of simultaneous fingers on this touchpad */
-  ushort[3] padding;
+
+struct SdlVirtualJoystickTouchpadDesc
+{
+	ushort nfingers;    /**< the number of simultaneous fingers on this touchpad */
+	ushort[3] padding;
 }
+
 
 // Enums
-constdef SdlJoystickConnectionState : CInt {
-  INVALID  = -1,
-  UNKNOWN  =  0,
-  WIRED    =  1,
-  WIRELESS =  2,
+constdef SdlJoystickConnectionState : CInt
+{
+	INVALID = -1,
+	UNKNOWN,
+	WIRED,
+	WIRELESS,
 }
-enum SdlJoystickType {
-  UNKNOWN,
-  GAMEPAD,
-  WHEEL,
-  ARCADE_STICK,
-  FLIGHT_STICK,
-  DANCE_PAD,
-  GUITAR,
-  DRUM_KIT,
-  ARCADE_PAD,
-  THROTTLE,
-  COUNT,
+
+enum SdlJoystickType
+{
+	UNKNOWN,
+	GAMEPAD,
+	WHEEL,
+	ARCADE_STICK,
+	FLIGHT_STICK,
+	DANCE_PAD,
+	GUITAR,
+	DRUM_KIT,
+	ARCADE_PAD,
+	THROTTLE,
+	COUNT,
 }
+
+constdef SdlJoystickCapProperties : ZString
+{
+	MONO_LED_BOOLEAN       = "SDL.joystick.cap.mono_led",
+	RGB_LED_BOOLEAN        = "SDL.joystick.cap.rgb_led",
+	PLAYER_LED_BOOLEAN     = "SDL.joystick.cap.player_led",
+	RUMBLE_BOOLEAN         = "SDL.joystick.cap.rumble",
+	TRIGGER_RUMBLE_BOOLEAN = "SDL.joystick.cap.trigger_rumble",
+}
+
 
 // Functions
 extern fn SdlJoystickID attachVirtualJoystick(SdlVirtualJoystickDesc* desc) @cname("SDL_AttachVirtualJoystick");
@@ -92,20 +119,20 @@ extern fn short getJoystickAxis(SdlJoystick* joystick, int axis) @cname("SDL_Get
 extern fn bool getJoystickAxisInitialState(SdlJoystick* joystick, int axis, short* state) @cname("SDL_GetJoystickAxisInitialState");
 extern fn bool getJoystickBall(SdlJoystick* joystick, int ball, int* dx, int* dy) @cname("SDL_GetJoystickBall");
 extern fn bool getJoystickButton(SdlJoystick* joystick, int button) @cname("SDL_GetJoystickButton");
-extern fn SdlJoystickConnectionState getJoystickConnectionState(SdlJoystick* joystick) @cname("SDL_JoystickConnectionState");
+extern fn SdlJoystickConnectionState getJoystickConnectionState(SdlJoystick* joystick) @cname("SDL_GetJoystickConnectionState");
 extern fn ushort getJoystickFirmwareVersion(SdlJoystick* joystick) @cname("SDL_GetJoystickFirmwareVersion");
 extern fn SdlJoystick* getJoystickFromID(SdlJoystickID instance_id) @cname("SDL_GetJoystickFromID");
 extern fn SdlJoystick* getJoystickFromPlayerIndex(int player_index) @cname("SDL_GetJoystickFromPlayerIndex");
 extern fn SdlGUID getJoystickGUID(SdlJoystick* joystick) @cname("SDL_GetJoystickGUID");
 extern fn SdlGUID getJoystickGUIDForID(SdlJoystickID instance_id) @cname("SDL_GetJoystickGUIDForID");
 extern fn void getJoystickGUIDInfo(SdlGUID guid, ushort* vendor, ushort* product, ushort* version, ushort* crc16) @cname("SDL_GetJoystickGUIDInfo");
-extern fn char getJoystickHat(SdlJoystick* joystick, SdlJoystickHat hat) @cname("SDL_GetJoystickHat");
+extern fn SdlJoystickHat getJoystickHat(SdlJoystick* joystick, int hat) @cname("SDL_GetJoystickHat");
 extern fn SdlJoystickID getJoystickID(SdlJoystick* joystick) @cname("SDL_GetJoystickID");
 extern fn char* getJoystickName(SdlJoystick* joystick) @cname("SDL_GetJoystickName");
 extern fn char* getJoystickNameForID(SdlJoystickID instance_id) @cname("SDL_GetJoystickNameForID");
 extern fn char* getJoystickPath(SdlJoystick* joystick) @cname("SDL_GetJoystickPath");
 extern fn char* getJoystickPathForID(SdlJoystickID instance_id) @cname("SDL_GetJoystickPathForID");
-extern fn int getJoystickPlayerIndex(SdlJoystick *joystick) @cname("SDL_GetJoystickPlayerIndex");
+extern fn int getJoystickPlayerIndex(SdlJoystick* joystick) @cname("SDL_GetJoystickPlayerIndex");
 extern fn int getJoystickPlayerIndexForID(SdlJoystickID instance_id) @cname("SDL_GetJoystickPlayerIndexForID");
 extern fn SdlPowerState getJoystickPowerInfo(SdlJoystick* joystick, int* percent) @cname("SDL_GetJoystickPowerInfo");
 extern fn ushort getJoystickProduct(SdlJoystick* joystick) @cname("SDL_GetJoystickProduct");

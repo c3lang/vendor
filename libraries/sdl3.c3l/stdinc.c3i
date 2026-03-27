@@ -1,5 +1,18 @@
 
-module sdl3;
+module sdl3::stdinc;
+
+import libc;
+
+// Constants
+const SIZE_MAX = (usz)-1;
+const FLT_EPSILON = 1.1920928955078125e-07F; /* 0x0.000002p0 */
+const INVALID_UNICODE_CODEPOINT = 0xFFFD;
+const PI = 3.141592653589793238462643383279502884;
+const ICONV_ERROR  = (usz)-1;  /**< Generic error. Check SDL_GetError()? */
+const ICONV_E2BIG  = (usz)-2;  /**< Output buffer was too small. */
+const ICONV_EILSEQ = (usz)-3;  /**< Invalid input sequence was encountered. */
+const ICONV_EINVAL = (usz)-4;  /**< Incomplete input sequence was encountered. */
+
 
 // Types
 typedef SdlEnvironment = void;
@@ -11,3 +24,186 @@ alias SdlFreeFunc = fn void(void* mem);
 alias SdlFunctionPointer = fn void*();
 alias SdlMallocFunc = fn void*(usz size);
 alias SdlReallocFunc = fn void*(void* mem, usz size);
+typedef SdlIconv = void*;
+
+
+// Macros
+macro uint fourcc(a, b, c, d) => (a<<0) | (b<<8) | (c<<16) | (d<<24);
+
+macro bool size_mul_check_overflow(usz a, usz b, usz* ret)
+{
+    if (a != 0 && b > SIZE_MAX / a) {
+        return false;
+    }
+    *ret = a * b;
+    return true;
+}
+
+
+// Functions
+extern fn void* malloc(usz size) @cname("SDL_malloc");
+extern fn void* calloc(usz nmemb, usz size) @cname("SDL_calloc");
+extern fn void* realloc(void* mem, usz size) @cname("SDL_realloc");
+extern fn void free(void* mem) @cname("SDL_free");
+extern fn void getOriginalMemoryFunctions(SdlMallocFunc* mallocFunc, SdlCallocFunc* callocFunc, SdlReallocFunc* reallocFunc, SdlFreeFunc* freeFunc) @cname("SDL_GetOriginalMemoryFunctions");
+extern fn void getMemoryFunctions(SdlMallocFunc* mallocFunc, SdlCallocFunc* callocFunc, SdlReallocFunc* reallocFunc, SdlFreeFunc* freeFunc) @cname("SDL_GetMemoryFunctions");
+extern fn bool setMemoryFunctions(SdlMallocFunc mallocFunc, SdlCallocFunc callocFunc, SdlReallocFunc reallocFunc, SdlFreeFunc freeFunc) @cname("SDL_SetMemoryFunctions");
+extern fn void* alignedAlloc(usz alignment, usz size) @cname("SDL_aligned_alloc");
+extern fn void alignedFree(void* mem) @cname("SDL_aligned_free");
+extern fn int getNumAllocations() @cname("SDL_GetNumAllocations");
+extern fn SdlEnvironment* getEnvironment() @cname("SDL_GetEnvironment");
+extern fn SdlEnvironment* createEnvironment(bool populated) @cname("SDL_CreateEnvironment");
+extern fn char* getEnvironmentVariable(SdlEnvironment* env, char* name) @cname("SDL_GetEnvironmentVariable");
+extern fn char** getEnvironmentVariables(SdlEnvironment* env) @cname("SDL_GetEnvironmentVariables");
+extern fn bool setEnvironmentVariable(SdlEnvironment* env, char* name, char* value, bool overwrite) @cname("SDL_SetEnvironmentVariable");
+extern fn bool unsetEnvironmentVariable(SdlEnvironment* env, char* name) @cname("SDL_UnsetEnvironmentVariable");
+extern fn void destroyEnvironment(SdlEnvironment* env) @cname("SDL_DestroyEnvironment");
+extern fn char* getenv(char* name) @cname("SDL_getenv");
+extern fn char* getenvUnsafe(char* name) @cname("SDL_getenv_unsafe");
+extern fn int setenvUnsafe(char* name, char* value, int overwrite) @cname("SDL_setenv_unsafe");
+extern fn int unsetenvUnsafe(char* name) @cname("SDL_unsetenv_unsafe");
+extern fn void qsort(void* base, usz nmemb, usz size, SdlCompareCallback compare) @cname("SDL_qsort");
+extern fn void* bsearch(void* key, void* base, usz nmemb, usz size, SdlCompareCallback compare) @cname("SDL_bsearch");
+extern fn void qsort_r(void* base, usz nmemb, usz size, SdlCompareCallback_r compare, void* userdata) @cname("SDL_qsort_r");
+extern fn void* bsearch_r(void* key, void* base, usz nmemb, usz size, SdlCompareCallback_r compare, void* userdata) @cname("SDL_bsearch_r");
+extern fn int abs(int x) @cname("SDL_abs");
+extern fn int isalpha(int x) @cname("SDL_isalpha");
+extern fn int isalnum(int x) @cname("SDL_isalnum");
+extern fn int isblank(int x) @cname("SDL_isblank");
+extern fn int iscntrl(int x) @cname("SDL_iscntrl");
+extern fn int isdigit(int x) @cname("SDL_isdigit");
+extern fn int isxdigit(int x) @cname("SDL_isxdigit");
+extern fn int ispunct(int x) @cname("SDL_ispunct");
+extern fn int isspace(int x) @cname("SDL_isspace");
+extern fn int isupper(int x) @cname("SDL_isupper");
+extern fn int islower(int x) @cname("SDL_islower");
+extern fn int isprint(int x) @cname("SDL_isprint");
+extern fn int isgraph(int x) @cname("SDL_isgraph");
+extern fn int toupper(int x) @cname("SDL_toupper");
+extern fn int tolower(int x) @cname("SDL_tolower");
+extern fn ushort crc16(ushort crc, void* data, usz len) @cname("SDL_crc16");
+extern fn uint crc32(uint crc, void* data, usz len) @cname("SDL_crc32");
+extern fn uint murmur3_32(void* data, usz len, uint seed) @cname("SDL_murmur3_32");
+extern fn void* memcpy(void* dst, void* src, usz len) @cname("SDL_memcpy");
+extern fn void* memmove(void* dst, void* src, usz len) @cname("SDL_memmove");
+extern fn void* memset(void* dst, int c, usz len) @cname("SDL_memset");
+extern fn void* memset4(void* dst, uint val, usz dwords) @cname("SDL_memset4");
+extern fn int memcmp(void* s1, void* s2, usz len) @cname("SDL_memcmp");
+extern fn usz wcslen(WChar* wstr) @cname("SDL_wcslen");
+extern fn usz wcsnlen(WChar* wstr, usz maxlen) @cname("SDL_wcsnlen");
+extern fn usz wcslcpy(WChar* dst, WChar* src, usz maxlen) @cname("SDL_wcslcpy");
+extern fn usz wcslcat(WChar* dst, WChar* src, usz maxlen) @cname("SDL_wcslcat");
+extern fn WChar* wcsdup(WChar* wstr) @cname("SDL_wcsdup");
+extern fn WChar* wcsstr(WChar* haystack, WChar* needle) @cname("SDL_wcsstr");
+extern fn WChar* wcsnstr(WChar* haystack, WChar* needle, usz maxlen) @cname("SDL_wcsnstr");
+extern fn int wcscmp(WChar* str1, WChar* str2) @cname("SDL_wcscmp");
+extern fn int wcsncmp(WChar* str1, WChar* str2, usz maxlen) @cname("SDL_wcsncmp");
+extern fn int wcscasecmp(WChar* str1, WChar* str2) @cname("SDL_wcscasecmp");
+extern fn int wcsncasecmp(WChar* str1, WChar* str2, usz maxlen) @cname("SDL_wcsncasecmp");
+extern fn long wcstol(WChar* str, WChar** endp, int base) @cname("SDL_wcstol");
+extern fn usz strlen(char* str) @cname("SDL_strlen");
+extern fn usz strnlen(char* str, usz maxlen) @cname("SDL_strnlen");
+extern fn usz strlcpy(char* dst, char* src, usz maxlen) @cname("SDL_strlcpy");
+extern fn usz utf8strlcpy(char* dst, char* src, usz dst_bytes) @cname("SDL_utf8strlcpy");
+extern fn usz strlcat(char* dst, char* src, usz maxlen) @cname("SDL_strlcat");
+extern fn char* strdup(char* str) @cname("SDL_strdup");
+extern fn char* strndup(char* str, usz maxlen) @cname("SDL_strndup");
+extern fn char* strrev(char* str) @cname("SDL_strrev");
+extern fn char* strupr(char* str) @cname("SDL_strupr");
+extern fn char* strlwr(char* str) @cname("SDL_strlwr");
+extern fn char* strchr(char* str, int c) @cname("SDL_strchr");
+extern fn char* strrchr(char* str, int c) @cname("SDL_strrchr");
+extern fn char* strstr(char* haystack, char* needle) @cname("SDL_strstr");
+extern fn char* strnstr(char* haystack, char* needle, usz maxlen) @cname("SDL_strnstr");
+extern fn char* strcasestr(char* haystack, char* needle) @cname("SDL_strcasestr");
+extern fn char* strtok_r(char* str, char* delim, char** saveptr) @cname("SDL_strtok_r");
+extern fn usz utf8strlen(char* str) @cname("SDL_utf8strlen");
+extern fn usz utf8strnlen(char* str, usz bytes) @cname("SDL_utf8strnlen");
+extern fn char* itoa(int value, char* str, int radix) @cname("SDL_itoa");
+extern fn char* uitoa(uint value, char* str, int radix) @cname("SDL_uitoa");
+extern fn char* ltoa(long value, char* str, int radix) @cname("SDL_ltoa");
+extern fn char* ultoa(CULong value, char* str, int radix) @cname("SDL_ultoa");
+extern fn char* lltoa(long value, char* str, int radix) @cname("SDL_lltoa");
+extern fn char* ulltoa(ulong value, char* str, int radix) @cname("SDL_ulltoa");
+extern fn int atoi(char* str) @cname("SDL_atoi");
+extern fn double atof(char* str) @cname("SDL_atof");
+extern fn long strtol(char* str, char** endp, int base) @cname("SDL_strtol");
+extern fn CULong strtoul(char* str, char** endp, int base) @cname("SDL_strtoul");
+extern fn long strtoll(char* str, char** endp, int base) @cname("SDL_strtoll");
+extern fn ulong strtoull(char* str, char** endp, int base) @cname("SDL_strtoull");
+extern fn double strtod(char* str, char** endp) @cname("SDL_strtod");
+extern fn int strcmp(char* str1, char* str2) @cname("SDL_strcmp");
+extern fn int strncmp(char* str1, char* str2, usz maxlen) @cname("SDL_strncmp");
+extern fn int strcasecmp(char* str1, char* str2) @cname("SDL_strcasecmp");
+extern fn int strncasecmp(char* str1, char* str2, usz maxlen) @cname("SDL_strncasecmp");
+extern fn char* strpbrk(char* str, char* breakset) @cname("SDL_strpbrk");
+extern fn uint stepUTF8(char** pstr, usz* pslen) @cname("SDL_StepUTF8");
+extern fn uint stepBackUTF8(char* start, char** pstr) @cname("SDL_StepBackUTF8");
+extern fn char* uCS4ToUTF8(uint codepoint, char* dst) @cname("SDL_UCS4ToUTF8");
+extern fn int sscanf(char* text, char* fmt, ...) @cname("SDL_sscanf");
+extern fn int vsscanf(char* text, char* fmt, CVaList ap) @cname("SDL_vsscanf");
+extern fn int snprintf(char* text, usz maxlen, char* fmt, ...) @cname("SDL_snprintf");
+extern fn int swprintf(WChar* text, usz maxlen, WChar* fmt, ...) @cname("SDL_swprintf");
+extern fn int vsnprintf(char* text, usz maxlen, char* fmt, CVaList ap) @cname("SDL_vsnprintf");
+extern fn int vswprintf(WChar* text, usz maxlen, WChar* fmt, CVaList ap) @cname("SDL_vswprintf");
+extern fn int asprintf(char** strp, char* fmt, ...) @cname("SDL_asprintf");
+extern fn int vasprintf(char** strp, char* fmt, CVaList ap) @cname("SDL_vasprintf");
+extern fn void srand(ulong seed) @cname("SDL_srand");
+extern fn int rand(int n) @cname("SDL_rand");
+extern fn float randf() @cname("SDL_randf");
+extern fn uint rand_bits() @cname("SDL_rand_bits");
+extern fn int rand_r(ulong* state, int n) @cname("SDL_rand_r");
+extern fn float randf_r(ulong* state) @cname("SDL_randf_r");
+extern fn uint rand_bits_r(ulong* state) @cname("SDL_rand_bits_r");
+extern fn double acos(double x) @cname("SDL_acos");
+extern fn float acosf(float x) @cname("SDL_acosf");
+extern fn double asin(double x) @cname("SDL_asin");
+extern fn float asinf(float x) @cname("SDL_asinf");
+extern fn double atan(double x) @cname("SDL_atan");
+extern fn float atanf(float x) @cname("SDL_atanf");
+extern fn double atan2(double y, double x) @cname("SDL_atan2");
+extern fn float atan2f(float y, float x) @cname("SDL_atan2f");
+extern fn double ceil(double x) @cname("SDL_ceil");
+extern fn float ceilf(float x) @cname("SDL_ceilf");
+extern fn double copysign(double x, double y) @cname("SDL_copysign");
+extern fn float copysignf(float x, float y) @cname("SDL_copysignf");
+extern fn double cos(double x) @cname("SDL_cos");
+extern fn float cosf(float x) @cname("SDL_cosf");
+extern fn double exp(double x) @cname("SDL_exp");
+extern fn float expf(float x) @cname("SDL_expf");
+extern fn double fabs(double x) @cname("SDL_fabs");
+extern fn float fabsf(float x) @cname("SDL_fabsf");
+extern fn double floor(double x) @cname("SDL_floor");
+extern fn float floorf(float x) @cname("SDL_floorf");
+extern fn double trunc(double x) @cname("SDL_trunc");
+extern fn float truncf(float x) @cname("SDL_truncf");
+extern fn double fmod(double x, double y) @cname("SDL_fmod");
+extern fn float fmodf(float x, float y) @cname("SDL_fmodf");
+extern fn int isinf(double x) @cname("SDL_isinf");
+extern fn int isinff(float x) @cname("SDL_isinff");
+extern fn int isnan(double x) @cname("SDL_isnan");
+extern fn int isnanf(float x) @cname("SDL_isnanf");
+extern fn double log(double x) @cname("SDL_log");
+extern fn float logf(float x) @cname("SDL_logf");
+extern fn double log10(double x) @cname("SDL_log10");
+extern fn float log10f(float x) @cname("SDL_log10f");
+extern fn double modf(double x, double* y) @cname("SDL_modf");
+extern fn float modff(float x, float* y) @cname("SDL_modff");
+extern fn double pow(double x, double y) @cname("SDL_pow");
+extern fn float powf(float x, float y) @cname("SDL_powf");
+extern fn double round(double x) @cname("SDL_round");
+extern fn float roundf(float x) @cname("SDL_roundf");
+extern fn long lround(double x) @cname("SDL_lround");
+extern fn long lroundf(float x) @cname("SDL_lroundf");
+extern fn double scalbn(double x, int n) @cname("SDL_scalbn");
+extern fn float scalbnf(float x, int n) @cname("SDL_scalbnf");
+extern fn double sin(double x) @cname("SDL_sin");
+extern fn float sinf(float x) @cname("SDL_sinf");
+extern fn double sqrt(double x) @cname("SDL_sqrt");
+extern fn float sqrtf(float x) @cname("SDL_sqrtf");
+extern fn double tan(double x) @cname("SDL_tan");
+extern fn float tanf(float x) @cname("SDL_tanf");
+extern fn SdlIconv iconv_open(char* tocode, char* fromcode) @cname("SDL_iconv_open");
+extern fn int iconv_close(SdlIconv cd) @cname("SDL_iconv_close");
+extern fn usz iconv(SdlIconv cd, char** inbuf, usz* inbytesleft, char** outbuf, usz* outbytesleft) @cname("SDL_iconv");
+extern fn char* iconv_string(char* tocode, char* fromcode, char* inbuf, usz inbytesleft) @cname("SDL_iconv_string");

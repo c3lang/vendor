@@ -1,61 +1,198 @@
 
 module sdl3;
 
+// Constants
+const SOFTWARE_RENDERER = "software";
+const GPU_RENDERER      = "gpu";
+
+const DEBUG_TEXT_FONT_CHARACTER_SIZE = 8;
+
+
 // Types
 typedef SdlGPURenderState = void;
 typedef SdlRenderer = void;
 
+
 // Structs
-struct SdlGPURenderStateCreateInfo {
-  SdlGPUShader* fragment_shader; /**< The fragment shader to use when this render state is active */
+struct SdlGPURenderStateCreateInfo
+{
+	SdlGPUShader* fragment_shader; /**< The fragment shader to use when this render state is active */
 
-  int num_sampler_bindings;    /**< The number of additional fragment samplers to bind when this render state is active */
-  SdlGPUTextureSamplerBinding* sampler_bindings;   /**< Additional fragment samplers to bind when this render state is active */
+	int num_sampler_bindings;    /**< The number of additional fragment samplers to bind when this render state is active */
+	SdlGPUTextureSamplerBinding* sampler_bindings;   /**< Additional fragment samplers to bind when this render state is active */
 
-  int num_storage_textures;    /**< The number of storage textures to bind when this render state is active */
-  SdlGPUTexture** storage_textures;    /**< Storage textures to bind when this render state is active */
+	int num_storage_textures;    /**< The number of storage textures to bind when this render state is active */
+	SdlGPUTexture** storage_textures;    /**< Storage textures to bind when this render state is active */
 
-  int num_storage_buffers;     /**< The number of storage buffers to bind when this render state is active */
-  SdlGPUBuffer** storage_buffers;      /**< Storage buffers to bind when this render state is active */
+	int num_storage_buffers;     /**< The number of storage buffers to bind when this render state is active */
+	SdlGPUBuffer** storage_buffers;      /**< Storage buffers to bind when this render state is active */
 
-  SdlPropertiesID props;         /**< A properties ID for extensions. Should be 0 if no extensions are needed. */
+	SdlPropertiesID props;         /**< A properties ID for extensions. Should be 0 if no extensions are needed. */
 }
-struct SdlTexture {
-  SdlPixelFormat format;     /**< The format of the texture, read-only */
-  int w;                  /**< The width of the texture, read-only. */
-  int h;                  /**< The height of the texture, read-only. */
 
-  int refcount;           /**< Application reference count, used when freeing texture */
+struct SdlTexture
+{
+	SdlPixelFormat format;     /**< The format of the texture, read-only */
+	int w;                  /**< The width of the texture, read-only. */
+	int h;                  /**< The height of the texture, read-only. */
+
+	int refcount;           /**< Application reference count, used when freeing texture */
 }
-struct SdlVertex {
-  SdlFPoint position;        /**< SdlVertex position, in SDL_Renderer coordinates  */
-  SdlFColor color;           /**< SdlVertex color */
-  SdlFPoint tex_coord;       /**< Normalized texture coordinates, if needed */
+
+struct SdlVertex
+{
+	SdlFPoint position;        /**< SdlVertex position, in SDL_Renderer coordinates  */
+	SdlFColor color;           /**< SdlVertex color */
+	SdlFPoint tex_coord;       /**< Normalized texture coordinates, if needed */
 }
+
 
 // Enums
-enum SdlRendererLogicalPresentation {
-  DISABLED,  /**< There is no logical size in effect */
-  STRETCH,   /**< The rendered content is stretched to the output resolution */
-  LETTERBOX, /**< The rendered content is fit to the largest dimension and the other dimension is letterboxed with the clear color */
-  OVERSCAN,  /**< The rendered content is fit to the smallest dimension and the other dimension extends beyond the output bounds */
-  INTEGER_SCALE,   /**< The rendered content is scaled up by integer multiples to fit the output resolution */
+enum SdlRendererLogicalPresentation
+{
+	DISABLED,        /**< There is no logical size in effect */
+	STRETCH,         /**< The rendered content is stretched to the output resolution */
+	LETTERBOX,       /**< The rendered content is fit to the largest dimension and the other dimension is letterboxed with the clear color */
+	OVERSCAN,        /**< The rendered content is fit to the smallest dimension and the other dimension extends beyond the output bounds */
+	INTEGER_SCALE,   /**< The rendered content is scaled up by integer multiples to fit the output resolution */
 }
-enum SdlTextureAccess {
-  STATIC,    /**< Changes rarely, not lockable */
-  STREAMING, /**< Changes frequently, lockable */
-  TARGET,    /**< SdlTexture can be used as a render target */
+
+enum SdlTextureAccess
+{
+	STATIC,    /**< Changes rarely, not lockable */
+	STREAMING, /**< Changes frequently, lockable */
+	TARGET,    /**< SdlTexture can be used as a render target */
 }
-constdef SdlTextureAddressMode : CInt {
-  INVALID = -1,
-  AUTO    =  0, /**< Wrapping is enabled if texture coordinates are outside [0, 1], this is the default */
-  CLAMP   =  1, /**< SdlTexture coordinates are clamped to the [0, 1] range */
-  WRAP    =  2, /**< The texture is repeated (tiled) */
+
+constdef SdlTextureAddressMode : CInt
+{
+	INVALID = -1,
+	AUTO,         /**< Wrapping is enabled if texture coordinates are outside [0, 1], this is the default */
+	CLAMP,        /**< SdlTexture coordinates are clamped to the [0, 1] range */
+	WRAP,         /**< The texture is repeated (tiled) */
 }
-constdef SdlRendererVSync : CInt {
-  DISABLED =  0,
-  ADAPTIVE = -1,
+
+constdef SdlRendererVSync : CInt
+{
+	DISABLED =  0,
+	ADAPTIVE = -1,
 }
+
+constdef SdlRendererCreateProperties : ZString
+{
+	NAME_STRING                               = "SDL.renderer.create.name",
+	WINDOW_POINTER                            = "SDL.renderer.create.window",
+	SURFACE_POINTER                           = "SDL.renderer.create.surface",
+	OUTPUT_COLORSPACE_NUMBER                  = "SDL.renderer.create.output_colorspace",
+	PRESENT_VSYNC_NUMBER                      = "SDL.renderer.create.present_vsync",
+	GPU_DEVICE_POINTER                        = "SDL.renderer.create.gpu.device",
+	GPU_SHADERS_SPIRV_BOOLEAN                 = "SDL.renderer.create.gpu.shaders_spirv",
+	GPU_SHADERS_DXIL_BOOLEAN                  = "SDL.renderer.create.gpu.shaders_dxil",
+	GPU_SHADERS_MSL_BOOLEAN                   = "SDL.renderer.create.gpu.shaders_msl",
+	VULKAN_INSTANCE_POINTER                   = "SDL.renderer.create.vulkan.instance",
+	VULKAN_SURFACE_NUMBER                     = "SDL.renderer.create.vulkan.surface",
+	VULKAN_PHYSICAL_DEVICE_POINTER            = "SDL.renderer.create.vulkan.physical_device",
+	VULKAN_DEVICE_POINTER                     = "SDL.renderer.create.vulkan.device",
+	VULKAN_GRAPHICS_QUEUE_FAMILY_INDEX_NUMBER = "SDL.renderer.create.vulkan.graphics_queue_family_index",
+	VULKAN_PRESENT_QUEUE_FAMILY_INDEX_NUMBER  = "SDL.renderer.create.vulkan.present_queue_family_index",
+}
+
+constdef SdlRendererProperties : ZString
+{
+	NAME_STRING                               = "SDL.renderer.name",
+	WINDOW_POINTER                            = "SDL.renderer.window",
+	SURFACE_POINTER                           = "SDL.renderer.surface",
+	VSYNC_NUMBER                              = "SDL.renderer.vsync",
+	MAX_TEXTURE_SIZE_NUMBER                   = "SDL.renderer.max_texture_size",
+	TEXTURE_FORMATS_POINTER                   = "SDL.renderer.texture_formats",
+	TEXTURE_WRAPPING_BOOLEAN                  = "SDL.renderer.texture_wrapping",
+	OUTPUT_COLORSPACE_NUMBER                  = "SDL.renderer.output_colorspace",
+	HDR_ENABLED_BOOLEAN                       = "SDL.renderer.HDR_enabled",
+	SDR_WHITE_POINT_FLOAT                     = "SDL.renderer.SDR_white_point",
+	HDR_HEADROOM_FLOAT                        = "SDL.renderer.HDR_headroom",
+	D3D9_DEVICE_POINTER                       = "SDL.renderer.d3d9.device",
+	D3D11_DEVICE_POINTER                      = "SDL.renderer.d3d11.device",
+	D3D11_SWAPCHAIN_POINTER                   = "SDL.renderer.d3d11.swap_chain",
+	D3D12_DEVICE_POINTER                      = "SDL.renderer.d3d12.device",
+	D3D12_SWAPCHAIN_POINTER                   = "SDL.renderer.d3d12.swap_chain",
+	D3D12_COMMAND_QUEUE_POINTER               = "SDL.renderer.d3d12.command_queue",
+	VULKAN_INSTANCE_POINTER                   = "SDL.renderer.vulkan.instance",
+	VULKAN_SURFACE_NUMBER                     = "SDL.renderer.vulkan.surface",
+	VULKAN_PHYSICAL_DEVICE_POINTER            = "SDL.renderer.vulkan.physical_device",
+	VULKAN_DEVICE_POINTER                     = "SDL.renderer.vulkan.device",
+	VULKAN_GRAPHICS_QUEUE_FAMILY_INDEX_NUMBER = "SDL.renderer.vulkan.graphics_queue_family_index",
+	VULKAN_PRESENT_QUEUE_FAMILY_INDEX_NUMBER  = "SDL.renderer.vulkan.present_queue_family_index",
+	VULKAN_SWAPCHAIN_IMAGE_COUNT_NUMBER       = "SDL.renderer.vulkan.swapchain_image_count",
+	GPU_DEVICE_POINTER                        = "SDL.renderer.gpu.device",
+}
+
+constdef SdlTextureCreateProperties : ZString
+{
+	COLORSPACE_NUMBER           = "SDL.texture.create.colorspace",
+	FORMAT_NUMBER               = "SDL.texture.create.format",
+	ACCESS_NUMBER               = "SDL.texture.create.access",
+	WIDTH_NUMBER                = "SDL.texture.create.width",
+	HEIGHT_NUMBER               = "SDL.texture.create.height",
+	PALETTE_POINTER             = "SDL.texture.create.palette",
+	SDR_WHITE_POINT_FLOAT       = "SDL.texture.create.SDR_white_point",
+	HDR_HEADROOM_FLOAT          = "SDL.texture.create.HDR_headroom",
+	D3D11_TEXTURE_POINTER       = "SDL.texture.create.d3d11.texture",
+	D3D11_TEXTURE_U_POINTER     = "SDL.texture.create.d3d11.texture_u",
+	D3D11_TEXTURE_V_POINTER     = "SDL.texture.create.d3d11.texture_v",
+	D3D12_TEXTURE_POINTER       = "SDL.texture.create.d3d12.texture",
+	D3D12_TEXTURE_U_POINTER     = "SDL.texture.create.d3d12.texture_u",
+	D3D12_TEXTURE_V_POINTER     = "SDL.texture.create.d3d12.texture_v",
+	METAL_PIXELBUFFER_POINTER   = "SDL.texture.create.metal.pixelbuffer",
+	OPENGL_TEXTURE_NUMBER       = "SDL.texture.create.opengl.texture",
+	OPENGL_TEXTURE_UV_NUMBER    = "SDL.texture.create.opengl.texture_uv",
+	OPENGL_TEXTURE_U_NUMBER     = "SDL.texture.create.opengl.texture_u",
+	OPENGL_TEXTURE_V_NUMBER     = "SDL.texture.create.opengl.texture_v",
+	OPENGLES2_TEXTURE_NUMBER    = "SDL.texture.create.opengles2.texture",
+	OPENGLES2_TEXTURE_UV_NUMBER = "SDL.texture.create.opengles2.texture_uv",
+	OPENGLES2_TEXTURE_U_NUMBER  = "SDL.texture.create.opengles2.texture_u",
+	OPENGLES2_TEXTURE_V_NUMBER  = "SDL.texture.create.opengles2.texture_v",
+	VULKAN_TEXTURE_NUMBER       = "SDL.texture.create.vulkan.texture",
+	VULKAN_LAYOUT_NUMBER        = "SDL.texture.create.vulkan.layout",
+	GPU_TEXTURE_POINTER         = "SDL.texture.create.gpu.texture",
+	GPU_TEXTURE_UV_POINTER      = "SDL.texture.create.gpu.texture_uv",
+	GPU_TEXTURE_U_POINTER       = "SDL.texture.create.gpu.texture_u",
+	GPU_TEXTURE_V_POINTER       = "SDL.texture.create.gpu.texture_v",
+}
+
+constdef SdlTextureProperties : ZString
+{
+	COLORSPACE_NUMBER               = "SDL.texture.colorspace",
+	FORMAT_NUMBER                   = "SDL.texture.format",
+	ACCESS_NUMBER                   = "SDL.texture.access",
+	WIDTH_NUMBER                    = "SDL.texture.width",
+	HEIGHT_NUMBER                   = "SDL.texture.height",
+	SDR_WHITE_POINT_FLOAT           = "SDL.texture.SDR_white_point",
+	HDR_HEADROOM_FLOAT              = "SDL.texture.HDR_headroom",
+	D3D11_TEXTURE_POINTER           = "SDL.texture.d3d11.texture",
+	D3D11_TEXTURE_U_POINTER         = "SDL.texture.d3d11.texture_u",
+	D3D11_TEXTURE_V_POINTER         = "SDL.texture.d3d11.texture_v",
+	D3D12_TEXTURE_POINTER           = "SDL.texture.d3d12.texture",
+	D3D12_TEXTURE_U_POINTER         = "SDL.texture.d3d12.texture_u",
+	D3D12_TEXTURE_V_POINTER         = "SDL.texture.d3d12.texture_v",
+	OPENGL_TEXTURE_NUMBER           = "SDL.texture.opengl.texture",
+	OPENGL_TEXTURE_UV_NUMBER        = "SDL.texture.opengl.texture_uv",
+	OPENGL_TEXTURE_U_NUMBER         = "SDL.texture.opengl.texture_u",
+	OPENGL_TEXTURE_V_NUMBER         = "SDL.texture.opengl.texture_v",
+	OPENGL_TEXTURE_TARGET_NUMBER    = "SDL.texture.opengl.target",
+	OPENGL_TEX_W_FLOAT              = "SDL.texture.opengl.tex_w",
+	OPENGL_TEX_H_FLOAT              = "SDL.texture.opengl.tex_h",
+	OPENGLES2_TEXTURE_NUMBER        = "SDL.texture.opengles2.texture",
+	OPENGLES2_TEXTURE_UV_NUMBER     = "SDL.texture.opengles2.texture_uv",
+	OPENGLES2_TEXTURE_U_NUMBER      = "SDL.texture.opengles2.texture_u",
+	OPENGLES2_TEXTURE_V_NUMBER      = "SDL.texture.opengles2.texture_v",
+	OPENGLES2_TEXTURE_TARGET_NUMBER = "SDL.texture.opengles2.target",
+	VULKAN_TEXTURE_NUMBER           = "SDL.texture.vulkan.texture",
+	GPU_TEXTURE_POINTER             = "SDL.texture.gpu.texture",
+	GPU_TEXTURE_UV_POINTER          = "SDL.texture.gpu.texture_uv",
+	GPU_TEXTURE_U_POINTER           = "SDL.texture.gpu.texture_u",
+	GPU_TEXTURE_V_POINTER           = "SDL.texture.gpu.texture_v",
+}
+
 
 // Functions
 extern fn bool addVulkanRenderSemaphores(SdlRenderer* renderer, uint wait_stage_mask, long wait_semaphore, long signal_semaphore) @cname("SDL_AddVulkanRenderSemaphores");

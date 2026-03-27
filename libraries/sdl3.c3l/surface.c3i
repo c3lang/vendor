@@ -2,38 +2,54 @@
 module sdl3;
 
 // Bitstructs
-bitstruct SdlSurfaceFlags : uint {
-  bool preallocated;
-  bool lockNeeded;
-  bool locked;
-  bool simdAligned;
+bitstruct SdlSurfaceFlags : uint
+{
+	bool preallocated;
+	bool lock_needed;
+	bool locked;
+	bool simd_aligned;
 }
-bitstruct SdlFlipMode : uint {
-  bool horizontal;
-  bool vertical;
+
+bitstruct SdlFlipMode : uint
+{
+	bool horizontal;
+	bool vertical;
 }
 
 // Structs
-struct SdlSurface {
-  SdlSurfaceFlags flags;     /**< The flags of the surface, read-only */
-  SdlPixelFormat format;     /**< The format of the surface, read-only */
-  int w;                  /**< The width of the surface, read-only. */
-  int h;                  /**< The height of the surface, read-only. */
-  int pitch;              /**< The distance in bytes between rows of pixels, read-only */
-  void* pixels;           /**< A pointer to the pixels of the surface, the pixels are writeable if non-NULL */
+struct SdlSurface
+{
+	SdlSurfaceFlags flags;     /**< The flags of the surface, read-only */
+	SdlPixelFormat format;     /**< The format of the surface, read-only */
+	int w;                  /**< The width of the surface, read-only. */
+	int h;                  /**< The height of the surface, read-only. */
+	int pitch;              /**< The distance in bytes between rows of pixels, read-only */
+	void* pixels;           /**< A pointer to the pixels of the surface, the pixels are writeable if non-NULL */
 
-  int refcount;           /**< Application reference count, used when freeing surface */
+	int refcount;           /**< Application reference count, used when freeing surface */
 
-  void* reserved;         /**< Reserved for internal use */
+	void* reserved;         /**< Reserved for internal use */
 }
 
 // Enums
-constdef SdlScaleMode : CInt {
-  INVALID = -1,
-  NEAREST,  /**< nearest pixel sampling */
-  LINEAR,   /**< linear filtering */
-  PIXELART  /**< nearest pixel sampling with improved scaling for pixel art, available since SDL 3.4.0 */
+constdef SdlScaleMode : CInt
+{
+	INVALID = -1,
+	NEAREST,  /**< nearest pixel sampling */
+	LINEAR,   /**< linear filtering */
+	PIXELART  /**< nearest pixel sampling with improved scaling for pixel art, available since SDL 3.4.0 */
 }
+
+constdef SdlSurfaceProperties : ZString
+{
+	SDR_WHITE_POINT_FLOAT   = "SDL.surface.SDR_white_point",
+	HDR_HEADROOM_FLOAT      = "SDL.surface.HDR_headroom",
+	TONEMAP_OPERATOR_STRING = "SDL.surface.tonemap",
+	HOTSPOT_X_NUMBER        = "SDL.surface.hotspot.x",
+	HOTSPOT_Y_NUMBER        = "SDL.surface.hotspot.y",
+	ROTATION_FLOAT          = "SDL.surface.rotation",
+}
+
 
 // Functions
 extern fn bool addSurfaceAlternateImage(SdlSurface* surface, SdlSurface* image) @cname("SDL_AddSurfaceAlternateImage");

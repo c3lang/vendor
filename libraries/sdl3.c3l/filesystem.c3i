@@ -4,46 +4,56 @@ module sdl3;
 // Types
 alias SdlEnumerateDirectoryCallback = fn SdlEnumerationResult(void* userdata, char* dirname, char* fname);
 
+
 // Bitstructs
-bitstruct SdlGlobFlags: uint {
-  bool case_insensitive;
+bitstruct SdlGlobFlags : uint
+{
+	bool case_insensitive;
 }
 
+
 // Structs
-struct SdlPathInfo {
-  SdlPathType type;      /**< the path type */
-  ulong size;         /**< the file size in bytes */
-  SdlTime create_time;   /**< the time when the path was created */
-  SdlTime modify_time;   /**< the last time the path was modified */
-  SdlTime access_time;   /**< the last time the path was read */
+struct SdlPathInfo
+{
+	SdlPathType type;      /**< the path type */
+	ulong size;         /**< the file size in bytes */
+	SdlTime create_time;   /**< the time when the path was created */
+	SdlTime modify_time;   /**< the last time the path was modified */
+	SdlTime access_time;   /**< the last time the path was read */
 }
 
 // Enums
-enum SdlEnumerationResult {
-  CONTINUE,   /**< Value that requests that enumeration continue. */
-  SUCCESS,    /**< Value that requests that enumeration stop, successfully. */
-  FAILURE,    /**< Value that requests that enumeration stop, as a failure. */
+enum SdlEnumerationResult
+{
+	CONTINUE,   /**< Value that requests that enumeration continue. */
+	SUCCESS,    /**< Value that requests that enumeration stop, successfully. */
+	FAILURE,    /**< Value that requests that enumeration stop, as a failure. */
 }
-enum SdlFolder {
-  HOME,        /**< The folder which contains all of the current user's data, preferences, and documents. It usually contains most of the other folders. If a requested folder does not exist, the home folder can be considered a safe fallback to store a user's documents. */
-  DESKTOP,     /**< The folder of files that are displayed on the desktop. Note that the existence of a desktop folder does not guarantee that the system does show icons on its desktop; certain GNU/Linux distros with a graphical environment may not have desktop icons. */
-  DOCUMENTS,   /**< User document files, possibly application-specific. This is a good place to save a user's projects. */
-  DOWNLOADS,   /**< Standard folder for user files downloaded from the internet. */
-  MUSIC,       /**< Music files that can be played using a standard music player (mp3, ogg...). */
-  PICTURES,    /**< Image files that can be displayed using a standard viewer (png, jpg...). */
-  PUBLICSHARE, /**< Files that are meant to be shared with other users on the same computer. */
-  SAVEDGAMES,  /**< Save files for games. */
-  SCREENSHOTS, /**< Application screenshots. */
-  TEMPLATES,   /**< Template files to be used when the user requests the desktop environment to create a new file in a certain folder, such as "New Text File.txt".  Any file in the Templates folder can be used as a starting point for a new file. */
-  VIDEOS,      /**< Video files that can be played using a standard video player (mp4, webm...). */
-  COUNT,       /**< Total number of types in this enum, not a folder type by itself. */
+
+enum SdlFolder
+{
+	HOME,        /**< The folder which contains all of the current user's data, preferences, and documents. It usually contains most of the other folders. If a requested folder does not exist, the home folder can be considered a safe fallback to store a user's documents. */
+	DESKTOP,     /**< The folder of files that are displayed on the desktop. Note that the existence of a desktop folder does not guarantee that the system does show icons on its desktop; certain GNU/Linux distros with a graphical environment may not have desktop icons. */
+	DOCUMENTS,   /**< User document files, possibly application-specific. This is a good place to save a user's projects. */
+	DOWNLOADS,   /**< Standard folder for user files downloaded from the internet. */
+	MUSIC,       /**< Music files that can be played using a standard music player (mp3, ogg...). */
+	PICTURES,    /**< Image files that can be displayed using a standard viewer (png, jpg...). */
+	PUBLICSHARE, /**< Files that are meant to be shared with other users on the same computer. */
+	SAVEDGAMES,  /**< Save files for games. */
+	SCREENSHOTS, /**< Application screenshots. */
+	TEMPLATES,   /**< Template files to be used when the user requests the desktop environment to create a new file in a certain folder, such as "New Text File.txt".  Any file in the Templates folder can be used as a starting point for a new file. */
+	VIDEOS,      /**< Video files that can be played using a standard video player (mp4, webm...). */
+	COUNT,       /**< Total number of types in this enum, not a folder type by itself. */
 }
-enum SdlPathType {
-  NONE,      /**< path does not exist */
-  FILE,      /**< a normal file */
-  DIRECTORY, /**< a directory */
-  OTHER,     /**< something completely different like a device node (not a symlink, those are always followed) */
+
+enum SdlPathType
+{
+	NONE,      /**< path does not exist */
+	FILE,      /**< a normal file */
+	DIRECTORY, /**< a directory */
+	OTHER,     /**< something completely different like a device node (not a symlink, those are always followed) */
 }
+
 
 // Functions
 extern fn bool copyFile(char* oldpath, char* newpath) @cname("SDL_CopyFile");
@@ -55,3 +65,5 @@ extern fn bool getPathInfo(char* path, SdlPathInfo* info) @cname("SDL_GetPathInf
 extern fn char* getPrefPath(char* org, char* app) @cname("SDL_GetPrefPath");
 extern fn char* getUserFolder(SdlFolder folder) @cname("SDL_GetUserFolder");
 extern fn char** globDirectory(char* path, char* pattern, SdlGlobFlags flags, int* count) @cname("SDL_GlobDirectory");
+extern fn bool removePath(char* path) @cname("SDL_RemovePath");
+extern fn bool renamePath(char* oldpath, char* newpath) @cname("SDL_RenamePath");

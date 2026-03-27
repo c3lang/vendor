@@ -6,15 +6,23 @@ alias SdlCleanupPropertyCallback = fn void(void* userdata, void* value);
 alias SdlEnumeratePropertiesCallback = fn void(void* userdata, SdlPropertiesID props, char* name);
 typedef SdlPropertiesID = uint;
 
+
 // Enums
-enum SdlPropertyType {
-  INVALID,
-  POINTER,
-  STRING,
-  NUMBER,
-  FLOAT,
-  BOOLEAN,
+enum SdlPropertyType
+{
+	INVALID,
+	POINTER,
+	STRING,
+	NUMBER,
+	FLOAT,
+	BOOLEAN,
 }
+
+constdef SdlProperties : ZString
+{
+	NAME_STRING = "SDL.name",
+}
+
 
 // Functions
 extern fn bool clearProperty(SdlPropertiesID props, char* name) @cname("SDL_ClearProperty");

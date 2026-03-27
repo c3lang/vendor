@@ -4,9 +4,16 @@ module sdl3;
 // Types
 typedef SdlSpinLock = int;
 
+
 // Structs
 struct SdlAtomicInt { int value; }
 struct SdlAtomicU32 { uint value; }
+
+
+// Macros
+macro atomicIncRef(SdlAtomicInt* a) => addAtomicInt(a, 1);
+macro atomicDecRef(SdlAtomicInt* a) => addAtomicInt(a, -1) == 1;
+
 
 // Functions
 extern fn int addAtomicInt(SdlAtomicInt* a, int v) @cname("SDL_AddAtomicInt");

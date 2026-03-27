@@ -1,6 +1,6 @@
 // sdl2.c3i
 // Created 14/07/2023
-// Updated 29/12/2023
+// Updated 20/03/2026
 // Originally created Kenta @ https://github.com/Its-Kenta
 
 module sdl;
@@ -22,7 +22,6 @@ const int MAX_LOG_MESSAGE = 4096;
 const int NONSHAPEABLE_WINDOW = -1;
 const int INVALID_SHAPE_ARGUMENT = -2;
 const int WINDOW_LACKS_SHAPE = -3;
-
 
 enum AssertState : int
 {
@@ -52,7 +51,6 @@ struct AtomicT
 }
 
 alias AssertionHandler = fn AssertState(AssertData data, void* userdata);
-
 
 enum ErrorCode : int
 {
@@ -97,9 +95,10 @@ struct RWops
 	uint type;
 	union hidden
 	{
-		// struct androidio @if(env::ANDROID) {
-		// 	void *asset;
-		// } Android not yet supported in C3
+		struct androidio @if(env::ANDROID)
+		{
+			void *asset;
+		}
 
 		struct windowsio @if(env::WIN32)
 		{
@@ -262,57 +261,59 @@ struct PixelFormat
 	PixelFormat* next;
 }
 
-typedef PixelFormatEnum = int;
-const PixelFormatEnum PIXELFORMAT_UNKNOWN = 0;
-const PixelFormatEnum PIXELFORMAT_INDEX1LSB = 286261504;
-const PixelFormatEnum PIXELFORMAT_INDEX1MSB = 287310080;
-const PixelFormatEnum PIXELFORMAT_INDEX4LSB = 303039488;
-const PixelFormatEnum PIXELFORMAT_INDEX4MSB = 304088064;
-const PixelFormatEnum PIXELFORMAT_INDEX8 = 318769153;
-const PixelFormatEnum PIXELFORMAT_RGB332 = 336660481;
-const PixelFormatEnum PIXELFORMAT_XRGB4444 = 353504258;
-const PixelFormatEnum PIXELFORMAT_RGB444 = 353504258;
-const PixelFormatEnum PIXELFORMAT_XBGR4444 = 357698562;
-const PixelFormatEnum PIXELFORMAT_BGR444 = 357698562;
-const PixelFormatEnum PIXELFORMAT_XRGB1555 = 353570562;
-const PixelFormatEnum PIXELFORMAT_RGB555 = 353570562;
-const PixelFormatEnum PIXELFORMAT_XBGR1555 = 357764866;
-const PixelFormatEnum PIXELFORMAT_BGR555 = 357764866;
-const PixelFormatEnum PIXELFORMAT_ARGB4444 = 355602434;
-const PixelFormatEnum PIXELFORMAT_RGBA4444 = 356651010;
-const PixelFormatEnum PIXELFORMAT_ABGR4444 = 359796738;
-const PixelFormatEnum PIXELFORMAT_BGRA4444 = 360845314;
-const PixelFormatEnum PIXELFORMAT_ARGB1555 = 355667970;
-const PixelFormatEnum PIXELFORMAT_RGBA5551 = 356782082;
-const PixelFormatEnum PIXELFORMAT_ABGR1555 = 359862274;
-const PixelFormatEnum PIXELFORMAT_BGRA5551 = 360976386;
-const PixelFormatEnum PIXELFORMAT_RGB565 = 353701890;
-const PixelFormatEnum PIXELFORMAT_BGR565 = 357896194;
-const PixelFormatEnum PIXELFORMAT_RGB24 = 386930691;
-const PixelFormatEnum PIXELFORMAT_BGR24 = 390076419;
-const PixelFormatEnum PIXELFORMAT_XRGB8888 = 370546692;
-const PixelFormatEnum PIXELFORMAT_RGB888 = 370546692;
-const PixelFormatEnum PIXELFORMAT_RGBX8888 = 371595268;
-const PixelFormatEnum PIXELFORMAT_XBGR8888 = 374740996;
-const PixelFormatEnum PIXELFORMAT_BGR888 = 374740996;
-const PixelFormatEnum PIXELFORMAT_BGRX8888 = 375789572;
-const PixelFormatEnum PIXELFORMAT_ARGB8888 = 372645892;
-const PixelFormatEnum PIXELFORMAT_RGBA8888 = 373694468;
-const PixelFormatEnum PIXELFORMAT_ABGR8888 = 376840196;
-const PixelFormatEnum PIXELFORMAT_BGRA8888 = 377888772;
-const PixelFormatEnum PIXELFORMAT_ARGB2101010 = 372711428;
-const PixelFormatEnum PIXELFORMAT_RGBA32 = 376840196;
-const PixelFormatEnum PIXELFORMAT_ARGB32 = 377888772;
-const PixelFormatEnum PIXELFORMAT_BGRA32 = 372645892;
-const PixelFormatEnum PIXELFORMAT_ABGR32 = 373694468;
-const PixelFormatEnum PIXELFORMAT_YV12 = 842094169;
-const PixelFormatEnum PIXELFORMAT_IYUV = 1448433993;
-const PixelFormatEnum PIXELFORMAT_YUY2 = 844715353;
-const PixelFormatEnum PIXELFORMAT_UYVY = 1498831189;
-const PixelFormatEnum PIXELFORMAT_YVYU = 1431918169;
-const PixelFormatEnum PIXELFORMAT_NV12 = 842094158;
-const PixelFormatEnum PIXELFORMAT_NV21 = 825382478;
-const PixelFormatEnum PIXELFORMAT_EXTERNAL_OES = 542328143;
+constdef PixelFormatEnum : int
+{
+	UNKNOWN = 0,
+	INDEX1LSB = 286261504,
+	INDEX1MSB = 287310080,
+	INDEX4LSB = 303039488,
+	INDEX4MSB = 304088064,
+	INDEX8 = 318769153,
+	RGB332 = 336660481,
+	XRGB4444 = 353504258,
+	RGB444 = 353504258,
+	XBGR4444 = 357698562,
+	BGR444 = 357698562,
+	XRGB1555 = 353570562,
+	RGB555 = 353570562,
+	XBGR1555 = 357764866,
+	BGR555 = 357764866,
+	ARGB4444 = 355602434,
+	RGBA4444 = 356651010,
+	ABGR4444 = 359796738,
+	BGRA4444 = 360845314,
+	ARGB1555 = 355667970,
+	RGBA5551 = 356782082,
+	ABGR1555 = 359862274,
+	BGRA5551 = 360976386,
+	RGB565 = 353701890,
+	BGR565 = 357896194,
+	RGB24 = 386930691,
+	BGR24 = 390076419,
+	XRGB8888 = 370546692,
+	RGB888 = 370546692,
+	RGBX8888 = 371595268,
+	XBGR8888 = 374740996,
+	BGR888 = 374740996,
+	BGRX8888 = 375789572,
+	ARGB8888 = 372645892,
+	RGBA8888 = 373694468,
+	ABGR8888 = 376840196,
+	BGRA8888 = 377888772,
+	ARGB2101010 = 372711428,
+	RGBA32 = 376840196,
+	ARGB32 = 377888772,
+	BGRA32 = 372645892,
+	ABGR32 = 373694468,
+	YV12 = 842094169,
+	IYUV = 1448433993,
+	YUY2 = 844715353,
+	UYVY = 1498831189,
+	YVYU = 1431918169,
+	NV12 = 842094158,
+	NV21 = 825382478,
+	EXTERNAL_OES = 542328143
+}
 
 struct Color 
 {
@@ -358,13 +359,15 @@ struct FRect
 	float h;
 }
 
-typedef BlendMode = int;
-const BlendMode BLENDMODE_NONE = 0;
-const BlendMode BLENDMODE_BLEND = 1;
-const BlendMode BLENDMODE_ADD = 2;
-const BlendMode BLENDMODE_MOD = 4;
-const BlendMode BLENDMODE_MUL = 8;
-const BlendMode BLENDMODE_INVALID = 2147483647;
+constdef BlendMode : int
+{
+	NONE = 0,
+	BLEND = 1,
+	ADD = 2,
+	MOD = 4,
+	MUL = 8,
+	INVALID = 2147483647
+}
 
 enum BlendOperation : int
 {
@@ -432,549 +435,555 @@ struct DisplayMode
 
 alias Window = void;
 
-typedef WindowFlags = int;
-const WindowFlags WINDOW_FULLSCREEN = 1;
-const WindowFlags WINDOW_OPENGL = 2;
-const WindowFlags WINDOW_SHOWN = 4;
-const WindowFlags WINDOW_HIDDEN = 8;
-const WindowFlags WINDOW_BORDERLESS = 16;
-const WindowFlags WINDOW_RESIZABLE = 32;
-const WindowFlags WINDOW_MINIMIZED = 64;
-const WindowFlags WINDOW_MAXIMIZED = 128;
-const WindowFlags WINDOW_MOUSE_GRABBED = 256;
-const WindowFlags WINDOW_INPUT_FOCUS = 512;
-const WindowFlags WINDOW_MOUSE_FOCUS = 1024;
-const WindowFlags WINDOW_FULLSCREEN_DESKTOP = 4097;
-const WindowFlags WINDOW_FOREIGN = 2048;
-const WindowFlags WINDOW_ALLOW_HIGHDPI = 8192;
-const WindowFlags WINDOW_MOUSE_CAPTURE = 16384;
-const WindowFlags WINDOW_ALWAYS_ON_TOP = 32768;
-const WindowFlags WINDOW_SKIP_TASKBAR = 65536;
-const WindowFlags WINDOW_UTILITY = 131072;
-const WindowFlags WINDOW_TOOLTIP = 262144;
-const WindowFlags WINDOW_POPUP_MENU = 524288;
-const WindowFlags WINDOW_KEYBOARD_GRABBED = 1048576;
-const WindowFlags WINDOW_VULKAN = 268435456;
-const WindowFlags WINDOW_METAL = 536870912;
-const WindowFlags WINDOW_INPUT_GRABBED = 256;
+constdef WindowFlags : int
+{
+	FULLSCREEN = 1,
+	OPENGL = 2,
+	SHOWN = 4,
+	HIDDEN = 8,
+	BORDERLESS = 16,
+	RESIZABLE = 32,
+	MINIMIZED = 64,
+	MAXIMIZED = 128,
+	MOUSE_GRABBED = 256,
+	INPUT_FOCUS = 512,
+	MOUSE_FOCUS = 1024,
+	FULLSCREEN_DESKTOP = 4097,
+	FOREIGN = 2048,
+	ALLOW_HIGHDPI = 8192,
+	MOUSE_CAPTURE = 16384,
+	ALWAYS_ON_TOP = 32768,
+	SKIP_TASKBAR = 65536,
+	UTILITY = 131072,
+	TOOLTIP = 262144,
+	POPUP_MENU = 524288,
+	KEYBOARD_GRABBED = 1048576,
+	VULKAN = 268435456,
+	METAL = 536870912,
+	INPUT_GRABBED = 256
+}
 
-typedef Scancode = int;
+constdef Scancode : int
+{
+	UNKNOWN = 0,
+	A = 4,
+	B = 5,
+	C = 6,
+	D = 7,
+	E = 8,
+	F = 9,
+	G = 10,
+	H = 11,
+	I = 12,
+	J = 13,
+	K = 14,
+	L = 15,
+	M = 16,
+	N = 17,
+	O = 18,
+	P = 19,
+	Q = 20,
+	R = 21,
+	S = 22,
+	T = 23,
+	U = 24,
+	V = 25,
+	W = 26,
+	X = 27,
+	Y = 28,
+	Z = 29,
+	NUM1 = 30,
+	NUM2 = 31,
+	NUM3 = 32,
+	NUM4 = 33,
+	NUM5 = 34,
+	NUM6 = 35,
+	NUM7 = 36,
+	NUM8 = 37,
+	NUM9 = 38,
+	NUM0 = 39,
+	RETURN = 40,
+	ESCAPE = 41,
+	BACKSPACE = 42,
+	TAB = 43,
+	SPACE = 44,
+	MINUS = 45,
+	EQUALS = 46,
+	LEFTBRACKET = 47,
+	RIGHTBRACKET = 48,
+	BACKSLASH = 49,
+	NONUSHASH = 50,
+	SEMICOLON = 51,
+	APOSTROPHE = 52,
+	GRAVE = 53,
+	COMMA = 54,
+	PERIOD = 55,
+	SLASH = 56,
+	CAPSLOCK = 57,
+	F1 = 58,
+	F2 = 59,
+	F3 = 60,
+	F4 = 61,
+	F5 = 62,
+	F6 = 63,
+	F7 = 64,
+	F8 = 65,
+	F9 = 66,
+	F10 = 67,
+	F11 = 68,
+	F12 = 69,
+	PRINTSCREEN = 70,
+	SCROLLLOCK = 71,
+	PAUSE = 72,
+	INSERT = 73,
+	HOME = 74,
+	PAGEUP = 75,
+	DELETE = 76,
+	END = 77,
+	PAGEDOWN = 78,
+	RIGHT = 79,
+	LEFT = 80,
+	DOWN = 81,
+	UP = 82,
+	NUMLOCKCLEAR = 83,
+	KP_DIVIDE = 84,
+	KP_MULTIPLY = 85,
+	KP_MINUS = 86,
+	KP_PLUS = 87,
+	KP_ENTER = 88,
+	KP_1 = 89,
+	KP_2 = 90,
+	KP_3 = 91,
+	KP_4 = 92,
+	KP_5 = 93,
+	KP_6 = 94,
+	KP_7 = 95,
+	KP_8 = 96,
+	KP_9 = 97,
+	KP_0 = 98,
+	KP_PERIOD = 99,
+	NONUSBACKSLASH = 100,
+	APPLICATION = 101,
+	POWER = 102,
+	KP_EQUALS = 103,
+	F13 = 104,
+	F14 = 105,
+	F15 = 106,
+	F16 = 107,
+	F17 = 108,
+	F18 = 109,
+	F19 = 110,
+	F20 = 111,
+	F21 = 112,
+	F22 = 113,
+	F23 = 114,
+	F24 = 115,
+	EXECUTE = 116,
+	HELP = 117,
+	MENU = 118,
+	SELECT = 119,
+	STOP = 120,
+	AGAIN = 121,
+	UNDO = 122,
+	CUT = 123,
+	COPY = 124,
+	PASTE = 125,
+	FIND = 126,
+	MUTE = 127,
+	VOLUMEUP = 128,
+	VOLUMEDOWN = 129,
+	KP_COMMA = 133,
+	KP_EQUALSAS400 = 134,
+	INTERNATIONAL1 = 135,
+	INTERNATIONAL2 = 136,
+	INTERNATIONAL3 = 137,
+	INTERNATIONAL4 = 138,
+	INTERNATIONAL5 = 139,
+	INTERNATIONAL6 = 140,
+	INTERNATIONAL7 = 141,
+	INTERNATIONAL8 = 142,
+	INTERNATIONAL9 = 143,
+	LANG1 = 144,
+	LANG2 = 145,
+	LANG3 = 146,
+	LANG4 = 147,
+	LANG5 = 148,
+	LANG6 = 149,
+	LANG7 = 150,
+	LANG8 = 151,
+	LANG9 = 152,
+	ALTERASE = 153,
+	SYSREQ = 154,
+	CANCEL = 155,
+	CLEAR = 156,
+	PRIOR = 157,
+	RETURN2 = 158,
+	SEPARATOR = 159,
+	OUT = 160,
+	OPER = 161,
+	CLEARAGAIN = 162,
+	CRSEL = 163,
+	EXSEL = 164,
+	KP_00 = 176,
+	KP_000 = 177,
+	THOUSANDSSEPARATOR = 178,
+	DECIMALSEPARATOR = 179,
+	CURRENCYUNIT = 180,
+	CURRENCYSUBUNIT = 181,
+	KP_LEFTPAREN = 182,
+	KP_RIGHTPAREN = 183,
+	KP_LEFTBRACE = 184,
+	KP_RIGHTBRACE = 185,
+	KP_TAB = 186,
+	KP_BACKSPACE = 187,
+	KP_A = 188,
+	KP_B = 189,
+	KP_C = 190,
+	KP_D = 191,
+	KP_E = 192,
+	KP_F = 193,
+	KP_XOR = 194,
+	KP_POWER = 195,
+	KP_PERCENT = 196,
+	KP_LESS = 197,
+	KP_GREATER = 198,
+	KP_AMPERSAND = 199,
+	KP_DBLAMPERSAND = 200,
+	KP_VERTICALBAR = 201,
+	KP_DBLVERTICALBAR = 202,
+	KP_COLON = 203,
+	KP_HASH = 204,
+	KP_SPACE = 205,
+	KP_AT = 206,
+	KP_EXCLAM = 207,
+	KP_MEMSTORE = 208,
+	KP_MEMRECALL = 209,
+	KP_MEMCLEAR = 210,
+	KP_MEMADD = 211,
+	KP_MEMSUBTRACT = 212,
+	KP_MEMMULTIPLY = 213,
+	KP_MEMDIVIDE = 214,
+	KP_PLUSMINUS = 215,
+	KP_CLEAR = 216,
+	KP_CLEARENTRY = 217,
+	KP_BINARY = 218,
+	KP_OCTAL = 219,
+	KP_DECIMAL = 220,
+	KP_HEXADECIMAL = 221,
+	LCTRL = 224,
+	LSHIFT = 225,
+	LALT = 226,
+	LGUI = 227,
+	RCTRL = 228,
+	RSHIFT = 229,
+	RALT = 230,
+	RGUI = 231,
+	MODE = 257,
+	AUDIONEXT = 258,
+	AUDIOPREV = 259,
+	AUDIOSTOP = 260,
+	AUDIOPLAY = 261,
+	AUDIOMUTE = 262,
+	MEDIASELECT = 263,
+	WWW = 264,
+	MAIL = 265,
+	CALCULATOR = 266,
+	COMPUTER = 267,
+	AC_SEARCH = 268,
+	AC_HOME = 269,
+	AC_BACK = 270,
+	AC_FORWARD = 271,
+	AC_STOP = 272,
+	AC_REFRESH = 273,
+	AC_BOOKMARKS = 274,
+	BRIGHTNESSDOWN = 275,
+	BRIGHTNESSUP = 276,
+	DISPLAYSWITCH = 277,
+	KBDILLUMTOGGLE = 278,
+	KBDILLUMDOWN = 279,
+	KBDILLUMUP = 280,
+	EJECT = 281,
+	SLEEP = 282,
+	APP1 = 283,
+	APP2 = 284,
+	AUDIOREWIND = 285,
+	AUDIOFASTFORWARD = 286,
+	SOFTLEFT = 287,
+	SOFTRIGHT = 288,
+	CALL = 289,
+	ENDCALL = 290,
+	NUM_SCANCODES = 512
+}
 
-const Scancode SCANCODE_UNKNOWN = 0;
-const Scancode SCANCODE_A = 4;
-const Scancode SCANCODE_B = 5;
-const Scancode SCANCODE_C = 6;
-const Scancode SCANCODE_D = 7;
-const Scancode SCANCODE_E = 8;
-const Scancode SCANCODE_F = 9;
-const Scancode SCANCODE_G = 10;
-const Scancode SCANCODE_H = 11;
-const Scancode SCANCODE_I = 12;
-const Scancode SCANCODE_J = 13;
-const Scancode SCANCODE_K = 14;
-const Scancode SCANCODE_L = 15;
-const Scancode SCANCODE_M = 16;
-const Scancode SCANCODE_N = 17;
-const Scancode SCANCODE_O = 18;
-const Scancode SCANCODE_P = 19;
-const Scancode SCANCODE_Q = 20;
-const Scancode SCANCODE_R = 21;
-const Scancode SCANCODE_S = 22;
-const Scancode SCANCODE_T = 23;
-const Scancode SCANCODE_U = 24;
-const Scancode SCANCODE_V = 25;
-const Scancode SCANCODE_W = 26;
-const Scancode SCANCODE_X = 27;
-const Scancode SCANCODE_Y = 28;
-const Scancode SCANCODE_Z = 29;
-const Scancode SCANCODE_1 = 30;
-const Scancode SCANCODE_2 = 31;
-const Scancode SCANCODE_3 = 32;
-const Scancode SCANCODE_4 = 33;
-const Scancode SCANCODE_5 = 34;
-const Scancode SCANCODE_6 = 35;
-const Scancode SCANCODE_7 = 36;
-const Scancode SCANCODE_8 = 37;
-const Scancode SCANCODE_9 = 38;
-const Scancode SCANCODE_0 = 39;
-const Scancode SCANCODE_RETURN = 40;
-const Scancode SCANCODE_ESCAPE = 41;
-const Scancode SCANCODE_BACKSPACE = 42;
-const Scancode SCANCODE_TAB = 43;
-const Scancode SCANCODE_SPACE = 44;
-const Scancode SCANCODE_MINUS = 45;
-const Scancode SCANCODE_EQUALS = 46;
-const Scancode SCANCODE_LEFTBRACKET = 47;
-const Scancode SCANCODE_RIGHTBRACKET = 48;
-const Scancode SCANCODE_BACKSLASH = 49;
-const Scancode SCANCODE_NONUSHASH = 50;
-const Scancode SCANCODE_SEMICOLON = 51;
-const Scancode SCANCODE_APOSTROPHE = 52;
-const Scancode SCANCODE_GRAVE = 53;
-const Scancode SCANCODE_COMMA = 54;
-const Scancode SCANCODE_PERIOD = 55;
-const Scancode SCANCODE_SLASH = 56;
-const Scancode SCANCODE_CAPSLOCK = 57;
-const Scancode SCANCODE_F1 = 58;
-const Scancode SCANCODE_F2 = 59;
-const Scancode SCANCODE_F3 = 60;
-const Scancode SCANCODE_F4 = 61;
-const Scancode SCANCODE_F5 = 62;
-const Scancode SCANCODE_F6 = 63;
-const Scancode SCANCODE_F7 = 64;
-const Scancode SCANCODE_F8 = 65;
-const Scancode SCANCODE_F9 = 66;
-const Scancode SCANCODE_F10 = 67;
-const Scancode SCANCODE_F11 = 68;
-const Scancode SCANCODE_F12 = 69;
-const Scancode SCANCODE_PRINTSCREEN = 70;
-const Scancode SCANCODE_SCROLLLOCK = 71;
-const Scancode SCANCODE_PAUSE = 72;
-const Scancode SCANCODE_INSERT = 73;
-const Scancode SCANCODE_HOME = 74;
-const Scancode SCANCODE_PAGEUP = 75;
-const Scancode SCANCODE_DELETE = 76;
-const Scancode SCANCODE_END = 77;
-const Scancode SCANCODE_PAGEDOWN = 78;
-const Scancode SCANCODE_RIGHT = 79;
-const Scancode SCANCODE_LEFT = 80;
-const Scancode SCANCODE_DOWN = 81;
-const Scancode SCANCODE_UP = 82;
-const Scancode SCANCODE_NUMLOCKCLEAR = 83;
-const Scancode SCANCODE_KP_DIVIDE = 84;
-const Scancode SCANCODE_KP_MULTIPLY = 85;
-const Scancode SCANCODE_KP_MINUS = 86;
-const Scancode SCANCODE_KP_PLUS = 87;
-const Scancode SCANCODE_KP_ENTER = 88;
-const Scancode SCANCODE_KP_1 = 89;
-const Scancode SCANCODE_KP_2 = 90;
-const Scancode SCANCODE_KP_3 = 91;
-const Scancode SCANCODE_KP_4 = 92;
-const Scancode SCANCODE_KP_5 = 93;
-const Scancode SCANCODE_KP_6 = 94;
-const Scancode SCANCODE_KP_7 = 95;
-const Scancode SCANCODE_KP_8 = 96;
-const Scancode SCANCODE_KP_9 = 97;
-const Scancode SCANCODE_KP_0 = 98;
-const Scancode SCANCODE_KP_PERIOD = 99;
-const Scancode SCANCODE_NONUSBACKSLASH = 100;
-const Scancode SCANCODE_APPLICATION = 101;
-const Scancode SCANCODE_POWER = 102;
-const Scancode SCANCODE_KP_EQUALS = 103;
-const Scancode SCANCODE_F13 = 104;
-const Scancode SCANCODE_F14 = 105;
-const Scancode SCANCODE_F15 = 106;
-const Scancode SCANCODE_F16 = 107;
-const Scancode SCANCODE_F17 = 108;
-const Scancode SCANCODE_F18 = 109;
-const Scancode SCANCODE_F19 = 110;
-const Scancode SCANCODE_F20 = 111;
-const Scancode SCANCODE_F21 = 112;
-const Scancode SCANCODE_F22 = 113;
-const Scancode SCANCODE_F23 = 114;
-const Scancode SCANCODE_F24 = 115;
-const Scancode SCANCODE_EXECUTE = 116;
-const Scancode SCANCODE_HELP = 117;
-const Scancode SCANCODE_MENU = 118;
-const Scancode SCANCODE_SELECT = 119;
-const Scancode SCANCODE_STOP = 120;
-const Scancode SCANCODE_AGAIN = 121;
-const Scancode SCANCODE_UNDO = 122;
-const Scancode SCANCODE_CUT = 123;
-const Scancode SCANCODE_COPY = 124;
-const Scancode SCANCODE_PASTE = 125;
-const Scancode SCANCODE_FIND = 126;
-const Scancode SCANCODE_MUTE = 127;
-const Scancode SCANCODE_VOLUMEUP = 128;
-const Scancode SCANCODE_VOLUMEDOWN = 129;
-const Scancode SCANCODE_KP_COMMA = 133;
-const Scancode SCANCODE_KP_EQUALSAS400 = 134;
-const Scancode SCANCODE_INTERNATIONAL1 = 135;
-const Scancode SCANCODE_INTERNATIONAL2 = 136;
-const Scancode SCANCODE_INTERNATIONAL3 = 137;
-const Scancode SCANCODE_INTERNATIONAL4 = 138;
-const Scancode SCANCODE_INTERNATIONAL5 = 139;
-const Scancode SCANCODE_INTERNATIONAL6 = 140;
-const Scancode SCANCODE_INTERNATIONAL7 = 141;
-const Scancode SCANCODE_INTERNATIONAL8 = 142;
-const Scancode SCANCODE_INTERNATIONAL9 = 143;
-const Scancode SCANCODE_LANG1 = 144;
-const Scancode SCANCODE_LANG2 = 145;
-const Scancode SCANCODE_LANG3 = 146;
-const Scancode SCANCODE_LANG4 = 147;
-const Scancode SCANCODE_LANG5 = 148;
-const Scancode SCANCODE_LANG6 = 149;
-const Scancode SCANCODE_LANG7 = 150;
-const Scancode SCANCODE_LANG8 = 151;
-const Scancode SCANCODE_LANG9 = 152;
-const Scancode SCANCODE_ALTERASE = 153;
-const Scancode SCANCODE_SYSREQ = 154;
-const Scancode SCANCODE_CANCEL = 155;
-const Scancode SCANCODE_CLEAR = 156;
-const Scancode SCANCODE_PRIOR = 157;
-const Scancode SCANCODE_RETURN2 = 158;
-const Scancode SCANCODE_SEPARATOR = 159;
-const Scancode SCANCODE_OUT = 160;
-const Scancode SCANCODE_OPER = 161;
-const Scancode SCANCODE_CLEARAGAIN = 162;
-const Scancode SCANCODE_CRSEL = 163;
-const Scancode SCANCODE_EXSEL = 164;
-const Scancode SCANCODE_KP_00 = 176;
-const Scancode SCANCODE_KP_000 = 177;
-const Scancode SCANCODE_THOUSANDSSEPARATOR = 178;
-const Scancode SCANCODE_DECIMALSEPARATOR = 179;
-const Scancode SCANCODE_CURRENCYUNIT = 180;
-const Scancode SCANCODE_CURRENCYSUBUNIT = 181;
-const Scancode SCANCODE_KP_LEFTPAREN = 182;
-const Scancode SCANCODE_KP_RIGHTPAREN = 183;
-const Scancode SCANCODE_KP_LEFTBRACE = 184;
-const Scancode SCANCODE_KP_RIGHTBRACE = 185;
-const Scancode SCANCODE_KP_TAB = 186;
-const Scancode SCANCODE_KP_BACKSPACE = 187;
-const Scancode SCANCODE_KP_A = 188;
-const Scancode SCANCODE_KP_B = 189;
-const Scancode SCANCODE_KP_C = 190;
-const Scancode SCANCODE_KP_D = 191;
-const Scancode SCANCODE_KP_E = 192;
-const Scancode SCANCODE_KP_F = 193;
-const Scancode SCANCODE_KP_XOR = 194;
-const Scancode SCANCODE_KP_POWER = 195;
-const Scancode SCANCODE_KP_PERCENT = 196;
-const Scancode SCANCODE_KP_LESS = 197;
-const Scancode SCANCODE_KP_GREATER = 198;
-const Scancode SCANCODE_KP_AMPERSAND = 199;
-const Scancode SCANCODE_KP_DBLAMPERSAND = 200;
-const Scancode SCANCODE_KP_VERTICALBAR = 201;
-const Scancode SCANCODE_KP_DBLVERTICALBAR = 202;
-const Scancode SCANCODE_KP_COLON = 203;
-const Scancode SCANCODE_KP_HASH = 204;
-const Scancode SCANCODE_KP_SPACE = 205;
-const Scancode SCANCODE_KP_AT = 206;
-const Scancode SCANCODE_KP_EXCLAM = 207;
-const Scancode SCANCODE_KP_MEMSTORE = 208;
-const Scancode SCANCODE_KP_MEMRECALL = 209;
-const Scancode SCANCODE_KP_MEMCLEAR = 210;
-const Scancode SCANCODE_KP_MEMADD = 211;
-const Scancode SCANCODE_KP_MEMSUBTRACT = 212;
-const Scancode SCANCODE_KP_MEMMULTIPLY = 213;
-const Scancode SCANCODE_KP_MEMDIVIDE = 214;
-const Scancode SCANCODE_KP_PLUSMINUS = 215;
-const Scancode SCANCODE_KP_CLEAR = 216;
-const Scancode SCANCODE_KP_CLEARENTRY = 217;
-const Scancode SCANCODE_KP_BINARY = 218;
-const Scancode SCANCODE_KP_OCTAL = 219;
-const Scancode SCANCODE_KP_DECIMAL = 220;
-const Scancode SCANCODE_KP_HEXADECIMAL = 221;
-const Scancode SCANCODE_LCTRL = 224;
-const Scancode SCANCODE_LSHIFT = 225;
-const Scancode SCANCODE_LALT = 226;
-const Scancode SCANCODE_LGUI = 227;
-const Scancode SCANCODE_RCTRL = 228;
-const Scancode SCANCODE_RSHIFT = 229;
-const Scancode SCANCODE_RALT = 230;
-const Scancode SCANCODE_RGUI = 231;
-const Scancode SCANCODE_MODE = 257;
-const Scancode SCANCODE_AUDIONEXT = 258;
-const Scancode SCANCODE_AUDIOPREV = 259;
-const Scancode SCANCODE_AUDIOSTOP = 260;
-const Scancode SCANCODE_AUDIOPLAY = 261;
-const Scancode SCANCODE_AUDIOMUTE = 262;
-const Scancode SCANCODE_MEDIASELECT = 263;
-const Scancode SCANCODE_WWW = 264;
-const Scancode SCANCODE_MAIL = 265;
-const Scancode SCANCODE_CALCULATOR = 266;
-const Scancode SCANCODE_COMPUTER = 267;
-const Scancode SCANCODE_AC_SEARCH = 268;
-const Scancode SCANCODE_AC_HOME = 269;
-const Scancode SCANCODE_AC_BACK = 270;
-const Scancode SCANCODE_AC_FORWARD = 271;
-const Scancode SCANCODE_AC_STOP = 272;
-const Scancode SCANCODE_AC_REFRESH = 273;
-const Scancode SCANCODE_AC_BOOKMARKS = 274;
-const Scancode SCANCODE_BRIGHTNESSDOWN = 275;
-const Scancode SCANCODE_BRIGHTNESSUP = 276;
-const Scancode SCANCODE_DISPLAYSWITCH = 277;
-const Scancode SCANCODE_KBDILLUMTOGGLE = 278;
-const Scancode SCANCODE_KBDILLUMDOWN = 279;
-const Scancode SCANCODE_KBDILLUMUP = 280;
-const Scancode SCANCODE_EJECT = 281;
-const Scancode SCANCODE_SLEEP = 282;
-const Scancode SCANCODE_APP1 = 283;
-const Scancode SCANCODE_APP2 = 284;
-const Scancode SCANCODE_AUDIOREWIND = 285;
-const Scancode SCANCODE_AUDIOFASTFORWARD = 286;
-const Scancode SCANCODE_SOFTLEFT = 287;
-const Scancode SCANCODE_SOFTRIGHT = 288;
-const Scancode SCANCODE_CALL = 289;
-const Scancode SCANCODE_ENDCALL = 290;
-const Scancode NUM_SCANCODES = 512;
+constdef Keycode : int
+{
+	UNKNOWN = 0,
+	RETURN = 13,
+	ESCAPE = 27,
+	BACKSPACE = 8,
+	TAB = 9,
+	SPACE = 32,
+	EXCLAIM = 33,
+	QUOTEDBL = 34,
+	HASH = 35,
+	PERCENT = 37,
+	DOLLAR = 36,
+	AMPERSAND = 38,
+	QUOTE = 39,
+	LEFTPAREN = 40,
+	RIGHTPAREN = 41,
+	ASTERISK = 42,
+	PLUS = 43,
+	COMMA = 44,
+	MINUS = 45,
+	PERIOD = 46,
+	SLASH = 47,
+	NUM0 = 48,
+	NUM1 = 49,
+	NUM2 = 50,
+	NUM3 = 51,
+	NUM4 = 52,
+	NUM5 = 53,
+	NUM6 = 54,
+	NUM7 = 55,
+	NUM8 = 56,
+	NUM9 = 57,
+	COLON = 58,
+	SEMICOLON = 59,
+	LESS = 60,
+	EQUALS = 61,
+	GREATER = 62,
+	QUESTION = 63,
+	AT = 64,
+	LEFTBRACKET = 91,
+	BACKSLASH = 92,
+	RIGHTBRACKET = 93,
+	CARET = 94,
+	UNDERSCORE = 95,
+	BACKQUOTE = 96,
+	A = 97,
+	B = 98,
+	C = 99,
+	D = 100,
+	E = 101,
+	F = 102,
+	G = 103,
+	H = 104,
+	I = 105,
+	J = 106,
+	K = 107,
+	L = 108,
+	M = 109,
+	N = 110,
+	O = 111,
+	P = 112,
+	Q = 113,
+	R = 114,
+	S = 115,
+	T = 116,
+	U = 117,
+	V = 118,
+	W = 119,
+	X = 120,
+	Y = 121,
+	Z = 122,
+	CAPSLOCK = 1073741881,
+	F1 = 1073741882,
+	F2 = 1073741883,
+	F3 = 1073741884,
+	F4 = 1073741885,
+	F5 = 1073741886,
+	F6 = 1073741887,
+	F7 = 1073741888,
+	F8 = 1073741889,
+	F9 = 1073741890,
+	F10 = 1073741891,
+	F11 = 1073741892,
+	F12 = 1073741893,
+	PRINTSCREEN = 1073741894,
+	SCROLLLOCK = 1073741895,
+	PAUSE = 1073741896,
+	INSERT = 1073741897,
+	HOME = 1073741898,
+	PAGEUP = 1073741899,
+	DELETE = 127,
+	END = 1073741901,
+	PAGEDOWN = 1073741902,
+	RIGHT = 1073741903,
+	LEFT = 1073741904,
+	DOWN = 1073741905,
+	UP = 1073741906,
+	NUMLOCKCLEAR = 1073741907,
+	KP_DIVIDE = 1073741908,
+	KP_MULTIPLY = 1073741909,
+	KP_MINUS = 1073741910,
+	KP_PLUS = 1073741911,
+	KP_ENTER = 1073741912,
+	KP_1 = 1073741913,
+	KP_2 = 1073741914,
+	KP_3 = 1073741915,
+	KP_4 = 1073741916,
+	KP_5 = 1073741917,
+	KP_6 = 1073741918,
+	KP_7 = 1073741919,
+	KP_8 = 1073741920,
+	KP_9 = 1073741921,
+	KP_0 = 1073741922,
+	KP_PERIOD = 1073741923,
+	APPLICATION = 1073741925,
+	POWER = 1073741926,
+	KP_EQUALS = 1073741927,
+	F13 = 1073741928,
+	F14 = 1073741929,
+	F15 = 1073741930,
+	F16 = 1073741931,
+	F17 = 1073741932,
+	F18 = 1073741933,
+	F19 = 1073741934,
+	F20 = 1073741935,
+	F21 = 1073741936,
+	F22 = 1073741937,
+	F23 = 1073741938,
+	F24 = 1073741939,
+	EXECUTE = 1073741940,
+	HELP = 1073741941,
+	MENU = 1073741942,
+	SELECT = 1073741943,
+	STOP = 1073741944,
+	AGAIN = 1073741945,
+	UNDO = 1073741946,
+	CUT = 1073741947,
+	COPY = 1073741948,
+	PASTE = 1073741949,
+	FIND = 1073741950,
+	MUTE = 1073741951,
+	VOLUMEUP = 1073741952,
+	VOLUMEDOWN = 1073741953,
+	KP_COMMA = 1073741957,
+	KP_EQUALSAS400 = 1073741958,
+	ALTERASE = 1073741977,
+	SYSREQ = 1073741978,
+	CANCEL = 1073741979,
+	CLEAR = 1073741980,
+	PRIOR = 1073741981,
+	RETURN2 = 1073741982,
+	SEPARATOR = 1073741983,
+	OUT = 1073741984,
+	OPER = 1073741985,
+	CLEARAGAIN = 1073741986,
+	CRSEL = 1073741987,
+	EXSEL = 1073741988,
+	KP_00 = 1073742000,
+	KP_000 = 1073742001,
+	THOUSANDSSEPARATOR = 1073742002,
+	DECIMALSEPARATOR = 1073742003,
+	CURRENCYUNIT = 1073742004,
+	CURRENCYSUBUNIT = 1073742005,
+	KP_LEFTPAREN = 1073742006,
+	KP_RIGHTPAREN = 1073742007,
+	KP_LEFTBRACE = 1073742008,
+	KP_RIGHTBRACE = 1073742009,
+	KP_TAB = 1073742010,
+	KP_BACKSPACE = 1073742011,
+	KP_A = 1073742012,
+	KP_B = 1073742013,
+	KP_C = 1073742014,
+	KP_D = 1073742015,
+	KP_E = 1073742016,
+	KP_F = 1073742017,
+	KP_XOR = 1073742018,
+	KP_POWER = 1073742019,
+	KP_PERCENT = 1073742020,
+	KP_LESS = 1073742021,
+	KP_GREATER = 1073742022,
+	KP_AMPERSAND = 1073742023,
+	KP_DBLAMPERSAND = 1073742024,
+	KP_VERTICALBAR = 1073742025,
+	KP_DBLVERTICALBAR = 1073742026,
+	KP_COLON = 1073742027,
+	KP_HASH = 1073742028,
+	KP_SPACE = 1073742029,
+	KP_AT = 1073742030,
+	KP_EXCLAM = 1073742031,
+	KP_MEMSTORE = 1073742032,
+	KP_MEMRECALL = 1073742033,
+	KP_MEMCLEAR = 1073742034,
+	KP_MEMADD = 1073742035,
+	KP_MEMSUBTRACT = 1073742036,
+	KP_MEMMULTIPLY = 1073742037,
+	KP_MEMDIVIDE = 1073742038,
+	KP_PLUSMINUS = 1073742039,
+	KP_CLEAR = 1073742040,
+	KP_CLEARENTRY = 1073742041,
+	KP_BINARY = 1073742042,
+	KP_OCTAL = 1073742043,
+	KP_DECIMAL = 1073742044,
+	KP_HEXADECIMAL = 1073742045,
+	LCTRL = 1073742048,
+	LSHIFT = 1073742049,
+	LALT = 1073742050,
+	LGUI = 1073742051,
+	RCTRL = 1073742052,
+	RSHIFT = 1073742053,
+	RALT = 1073742054,
+	RGUI = 1073742055,
+	MODE = 1073742081,
+	AUDIONEXT = 1073742082,
+	AUDIOPREV = 1073742083,
+	AUDIOSTOP = 1073742084,
+	AUDIOPLAY = 1073742085,
+	AUDIOMUTE = 1073742086,
+	MEDIASELECT = 1073742087,
+	WWW = 1073742088,
+	MAIL = 1073742089,
+	CALCULATOR = 1073742090,
+	COMPUTER = 1073742091,
+	AC_SEARCH = 1073742092,
+	AC_HOME = 1073742093,
+	AC_BACK = 1073742094,
+	AC_FORWARD = 1073742095,
+	AC_STOP = 1073742096,
+	AC_REFRESH = 1073742097,
+	AC_BOOKMARKS = 1073742098,
+	BRIGHTNESSDOWN = 1073742099,
+	BRIGHTNESSUP = 1073742100,
+	DISPLAYSWITCH = 1073742101,
+	KBDILLUMTOGGLE = 1073742102,
+	KBDILLUMDOWN = 1073742103,
+	KBDILLUMUP = 1073742104,
+	EJECT = 1073742105,
+	SLEEP = 1073742106,
+	APP1 = 1073742107,
+	APP2 = 1073742108,
+	AUDIOREWIND = 1073742109,
+	AUDIOFASTFORWARD = 1073742110,
+	SOFTLEFT = 1073742111,
+	SOFTRIGHT = 1073742112,
+	CALL = 1073742113,
+	ENDCALL = 1073742114
+}
 
-typedef Keycode = int;
-const Keycode SDLK_UNKNOWN = 0;
-const Keycode SDLK_RETURN = 13;
-const Keycode SDLK_ESCAPE = 27;
-const Keycode SDLK_BACKSPACE = 8;
-const Keycode SDLK_TAB = 9;
-const Keycode SDLK_SPACE = 32;
-const Keycode SDLK_EXCLAIM = 33;
-const Keycode SDLK_QUOTEDBL = 34;
-const Keycode SDLK_HASH = 35;
-const Keycode SDLK_PERCENT = 37;
-const Keycode SDLK_DOLLAR = 36;
-const Keycode SDLK_AMPERSAND = 38;
-const Keycode SDLK_QUOTE = 39;
-const Keycode SDLK_LEFTPAREN = 40;
-const Keycode SDLK_RIGHTPAREN = 41;
-const Keycode SDLK_ASTERISK = 42;
-const Keycode SDLK_PLUS = 43;
-const Keycode SDLK_COMMA = 44;
-const Keycode SDLK_MINUS = 45;
-const Keycode SDLK_PERIOD = 46;
-const Keycode SDLK_SLASH = 47;
-const Keycode SDLK_0 = 48;
-const Keycode SDLK_1 = 49;
-const Keycode SDLK_2 = 50;
-const Keycode SDLK_3 = 51;
-const Keycode SDLK_4 = 52;
-const Keycode SDLK_5 = 53;
-const Keycode SDLK_6 = 54;
-const Keycode SDLK_7 = 55;
-const Keycode SDLK_8 = 56;
-const Keycode SDLK_9 = 57;
-const Keycode SDLK_COLON = 58;
-const Keycode SDLK_SEMICOLON = 59;
-const Keycode SDLK_LESS = 60;
-const Keycode SDLK_EQUALS = 61;
-const Keycode SDLK_GREATER = 62;
-const Keycode SDLK_QUESTION = 63;
-const Keycode SDLK_AT = 64;
-const Keycode SDLK_LEFTBRACKET = 91;
-const Keycode SDLK_BACKSLASH = 92;
-const Keycode SDLK_RIGHTBRACKET = 93;
-const Keycode SDLK_CARET = 94;
-const Keycode SDLK_UNDERSCORE = 95;
-const Keycode SDLK_BACKQUOTE = 96;
-const Keycode SDLK_A = 97;
-const Keycode SDLK_B = 98;
-const Keycode SDLK_C = 99;
-const Keycode SDLK_D = 100;
-const Keycode SDLK_E = 101;
-const Keycode SDLK_F = 102;
-const Keycode SDLK_G = 103;
-const Keycode SDLK_H = 104;
-const Keycode SDLK_I = 105;
-const Keycode SDLK_J = 106;
-const Keycode SDLK_K = 107;
-const Keycode SDLK_L = 108;
-const Keycode SDLK_M = 109;
-const Keycode SDLK_N = 110;
-const Keycode SDLK_O = 111;
-const Keycode SDLK_P = 112;
-const Keycode SDLK_Q = 113;
-const Keycode SDLK_R = 114;
-const Keycode SDLK_S = 115;
-const Keycode SDLK_T = 116;
-const Keycode SDLK_U = 117;
-const Keycode SDLK_V = 118;
-const Keycode SDLK_W = 119;
-const Keycode SDLK_X = 120;
-const Keycode SDLK_Y = 121;
-const Keycode SDLK_Z = 122;
-const Keycode SDLK_CAPSLOCK = 1073741881;
-const Keycode SDLK_F1 = 1073741882;
-const Keycode SDLK_F2 = 1073741883;
-const Keycode SDLK_F3 = 1073741884;
-const Keycode SDLK_F4 = 1073741885;
-const Keycode SDLK_F5 = 1073741886;
-const Keycode SDLK_F6 = 1073741887;
-const Keycode SDLK_F7 = 1073741888;
-const Keycode SDLK_F8 = 1073741889;
-const Keycode SDLK_F9 = 1073741890;
-const Keycode SDLK_F10 = 1073741891;
-const Keycode SDLK_F11 = 1073741892;
-const Keycode SDLK_F12 = 1073741893;
-const Keycode SDLK_PRINTSCREEN = 1073741894;
-const Keycode SDLK_SCROLLLOCK = 1073741895;
-const Keycode SDLK_PAUSE = 1073741896;
-const Keycode SDLK_INSERT = 1073741897;
-const Keycode SDLK_HOME = 1073741898;
-const Keycode SDLK_PAGEUP = 1073741899;
-const Keycode SDLK_DELETE = 127;
-const Keycode SDLK_END = 1073741901;
-const Keycode SDLK_PAGEDOWN = 1073741902;
-const Keycode SDLK_RIGHT = 1073741903;
-const Keycode SDLK_LEFT = 1073741904;
-const Keycode SDLK_DOWN = 1073741905;
-const Keycode SDLK_UP = 1073741906;
-const Keycode SDLK_NUMLOCKCLEAR = 1073741907;
-const Keycode SDLK_KP_DIVIDE = 1073741908;
-const Keycode SDLK_KP_MULTIPLY = 1073741909;
-const Keycode SDLK_KP_MINUS = 1073741910;
-const Keycode SDLK_KP_PLUS = 1073741911;
-const Keycode SDLK_KP_ENTER = 1073741912;
-const Keycode SDLK_KP_1 = 1073741913;
-const Keycode SDLK_KP_2 = 1073741914;
-const Keycode SDLK_KP_3 = 1073741915;
-const Keycode SDLK_KP_4 = 1073741916;
-const Keycode SDLK_KP_5 = 1073741917;
-const Keycode SDLK_KP_6 = 1073741918;
-const Keycode SDLK_KP_7 = 1073741919;
-const Keycode SDLK_KP_8 = 1073741920;
-const Keycode SDLK_KP_9 = 1073741921;
-const Keycode SDLK_KP_0 = 1073741922;
-const Keycode SDLK_KP_PERIOD = 1073741923;
-const Keycode SDLK_APPLICATION = 1073741925;
-const Keycode SDLK_POWER = 1073741926;
-const Keycode SDLK_KP_EQUALS = 1073741927;
-const Keycode SDLK_F13 = 1073741928;
-const Keycode SDLK_F14 = 1073741929;
-const Keycode SDLK_F15 = 1073741930;
-const Keycode SDLK_F16 = 1073741931;
-const Keycode SDLK_F17 = 1073741932;
-const Keycode SDLK_F18 = 1073741933;
-const Keycode SDLK_F19 = 1073741934;
-const Keycode SDLK_F20 = 1073741935;
-const Keycode SDLK_F21 = 1073741936;
-const Keycode SDLK_F22 = 1073741937;
-const Keycode SDLK_F23 = 1073741938;
-const Keycode SDLK_F24 = 1073741939;
-const Keycode SDLK_EXECUTE = 1073741940;
-const Keycode SDLK_HELP = 1073741941;
-const Keycode SDLK_MENU = 1073741942;
-const Keycode SDLK_SELECT = 1073741943;
-const Keycode SDLK_STOP = 1073741944;
-const Keycode SDLK_AGAIN = 1073741945;
-const Keycode SDLK_UNDO = 1073741946;
-const Keycode SDLK_CUT = 1073741947;
-const Keycode SDLK_COPY = 1073741948;
-const Keycode SDLK_PASTE = 1073741949;
-const Keycode SDLK_FIND = 1073741950;
-const Keycode SDLK_MUTE = 1073741951;
-const Keycode SDLK_VOLUMEUP = 1073741952;
-const Keycode SDLK_VOLUMEDOWN = 1073741953;
-const Keycode SDLK_KP_COMMA = 1073741957;
-const Keycode SDLK_KP_EQUALSAS400 = 1073741958;
-const Keycode SDLK_ALTERASE = 1073741977;
-const Keycode SDLK_SYSREQ = 1073741978;
-const Keycode SDLK_CANCEL = 1073741979;
-const Keycode SDLK_CLEAR = 1073741980;
-const Keycode SDLK_PRIOR = 1073741981;
-const Keycode SDLK_RETURN2 = 1073741982;
-const Keycode SDLK_SEPARATOR = 1073741983;
-const Keycode SDLK_OUT = 1073741984;
-const Keycode SDLK_OPER = 1073741985;
-const Keycode SDLK_CLEARAGAIN = 1073741986;
-const Keycode SDLK_CRSEL = 1073741987;
-const Keycode SDLK_EXSEL = 1073741988;
-const Keycode SDLK_KP_00 = 1073742000;
-const Keycode SDLK_KP_000 = 1073742001;
-const Keycode SDLK_THOUSANDSSEPARATOR = 1073742002;
-const Keycode SDLK_DECIMALSEPARATOR = 1073742003;
-const Keycode SDLK_CURRENCYUNIT = 1073742004;
-const Keycode SDLK_CURRENCYSUBUNIT = 1073742005;
-const Keycode SDLK_KP_LEFTPAREN = 1073742006;
-const Keycode SDLK_KP_RIGHTPAREN = 1073742007;
-const Keycode SDLK_KP_LEFTBRACE = 1073742008;
-const Keycode SDLK_KP_RIGHTBRACE = 1073742009;
-const Keycode SDLK_KP_TAB = 1073742010;
-const Keycode SDLK_KP_BACKSPACE = 1073742011;
-const Keycode SDLK_KP_A = 1073742012;
-const Keycode SDLK_KP_B = 1073742013;
-const Keycode SDLK_KP_C = 1073742014;
-const Keycode SDLK_KP_D = 1073742015;
-const Keycode SDLK_KP_E = 1073742016;
-const Keycode SDLK_KP_F = 1073742017;
-const Keycode SDLK_KP_XOR = 1073742018;
-const Keycode SDLK_KP_POWER = 1073742019;
-const Keycode SDLK_KP_PERCENT = 1073742020;
-const Keycode SDLK_KP_LESS = 1073742021;
-const Keycode SDLK_KP_GREATER = 1073742022;
-const Keycode SDLK_KP_AMPERSAND = 1073742023;
-const Keycode SDLK_KP_DBLAMPERSAND = 1073742024;
-const Keycode SDLK_KP_VERTICALBAR = 1073742025;
-const Keycode SDLK_KP_DBLVERTICALBAR = 1073742026;
-const Keycode SDLK_KP_COLON = 1073742027;
-const Keycode SDLK_KP_HASH = 1073742028;
-const Keycode SDLK_KP_SPACE = 1073742029;
-const Keycode SDLK_KP_AT = 1073742030;
-const Keycode SDLK_KP_EXCLAM = 1073742031;
-const Keycode SDLK_KP_MEMSTORE = 1073742032;
-const Keycode SDLK_KP_MEMRECALL = 1073742033;
-const Keycode SDLK_KP_MEMCLEAR = 1073742034;
-const Keycode SDLK_KP_MEMADD = 1073742035;
-const Keycode SDLK_KP_MEMSUBTRACT = 1073742036;
-const Keycode SDLK_KP_MEMMULTIPLY = 1073742037;
-const Keycode SDLK_KP_MEMDIVIDE = 1073742038;
-const Keycode SDLK_KP_PLUSMINUS = 1073742039;
-const Keycode SDLK_KP_CLEAR = 1073742040;
-const Keycode SDLK_KP_CLEARENTRY = 1073742041;
-const Keycode SDLK_KP_BINARY = 1073742042;
-const Keycode SDLK_KP_OCTAL = 1073742043;
-const Keycode SDLK_KP_DECIMAL = 1073742044;
-const Keycode SDLK_KP_HEXADECIMAL = 1073742045;
-const Keycode SDLK_LCTRL = 1073742048;
-const Keycode SDLK_LSHIFT = 1073742049;
-const Keycode SDLK_LALT = 1073742050;
-const Keycode SDLK_LGUI = 1073742051;
-const Keycode SDLK_RCTRL = 1073742052;
-const Keycode SDLK_RSHIFT = 1073742053;
-const Keycode SDLK_RALT = 1073742054;
-const Keycode SDLK_RGUI = 1073742055;
-const Keycode SDLK_MODE = 1073742081;
-const Keycode SDLK_AUDIONEXT = 1073742082;
-const Keycode SDLK_AUDIOPREV = 1073742083;
-const Keycode SDLK_AUDIOSTOP = 1073742084;
-const Keycode SDLK_AUDIOPLAY = 1073742085;
-const Keycode SDLK_AUDIOMUTE = 1073742086;
-const Keycode SDLK_MEDIASELECT = 1073742087;
-const Keycode SDLK_WWW = 1073742088;
-const Keycode SDLK_MAIL = 1073742089;
-const Keycode SDLK_CALCULATOR = 1073742090;
-const Keycode SDLK_COMPUTER = 1073742091;
-const Keycode SDLK_AC_SEARCH = 1073742092;
-const Keycode SDLK_AC_HOME = 1073742093;
-const Keycode SDLK_AC_BACK = 1073742094;
-const Keycode SDLK_AC_FORWARD = 1073742095;
-const Keycode SDLK_AC_STOP = 1073742096;
-const Keycode SDLK_AC_REFRESH = 1073742097;
-const Keycode SDLK_AC_BOOKMARKS = 1073742098;
-const Keycode SDLK_BRIGHTNESSDOWN = 1073742099;
-const Keycode SDLK_BRIGHTNESSUP = 1073742100;
-const Keycode SDLK_DISPLAYSWITCH = 1073742101;
-const Keycode SDLK_KBDILLUMTOGGLE = 1073742102;
-const Keycode SDLK_KBDILLUMDOWN = 1073742103;
-const Keycode SDLK_KBDILLUMUP = 1073742104;
-const Keycode SDLK_EJECT = 1073742105;
-const Keycode SDLK_SLEEP = 1073742106;
-const Keycode SDLK_APP1 = 1073742107;
-const Keycode SDLK_APP2 = 1073742108;
-const Keycode SDLK_AUDIOREWIND = 1073742109;
-const Keycode SDLK_AUDIOFASTFORWARD = 1073742110;
-const Keycode SDLK_SOFTLEFT = 1073742111;
-const Keycode SDLK_SOFTRIGHT = 1073742112;
-const Keycode SDLK_CALL = 1073742113;
-const Keycode SDLK_ENDCALL = 1073742114;
-
-typedef Keymod = int;
-
-const Keymod KMOD_NONE = 0;
-const Keymod KMOD_LSHIFT = 1;
-const Keymod KMOD_RSHIFT = 2;
-const Keymod KMOD_LCTRL = 64;
-const Keymod KMOD_RCTRL = 128;
-const Keymod KMOD_LALT = 256;
-const Keymod KMOD_RALT = 512;
-const Keymod KMOD_LGUI = 1024;
-const Keymod KMOD_RGUI = 2048;
-const Keymod KMOD_NUM = 4096;
-const Keymod KMOD_CAPS = 8192;
-const Keymod KMOD_MODE = 16384;
-const Keymod KMOD_SCROLL = 32768;
-const Keymod KMOD_CTRL = 192;
-const Keymod KMOD_SHIFT = 3;
-const Keymod KMOD_ALT = 768;
-const Keymod KMOD_GUI = 3072;
-const Keymod KMOD_RESERVED = 32768;
+constdef Keymod : int
+{
+	NONE = 0,
+	LSHIFT = 1,
+	RSHIFT = 2,
+	LCTRL = 64,
+	RCTRL = 128,
+	LALT = 256,
+	RALT = 512,
+	LGUI = 1024,
+	RGUI = 2048,
+	NUM = 4096,
+	CAPS = 8192,
+	MODE = 16384,
+	SCROLL = 32768,
+	CTRL = 192,
+	SHIFT = 3,
+	ALT = 768,
+	GUI = 3072,
+	RESERVED = 32768
+}
 
 enum WindowEventID : int
 {
@@ -1058,19 +1067,20 @@ enum GLattr : int
 	GL_FLOATBUFFERS
 }
 
-typedef GLProfile = int;
+constdef GLProfile : int
+{
+	CORE = 1,
+	COMPATIBILITY = 2,
+	ES = 4
+}
 
-const GLProfile GL_CONTEXT_PROFILE_CORE = 1;
-const GLProfile GL_CONTEXT_PROFILE_COMPATIBILITY = 2;
-const GLProfile GL_CONTEXT_PROFILE_ES = 4;
-
-
-typedef GLContextFlag = int;
-
-const GLContextFlag GL_CONTEXT_DEBUG_FLAG = 1;
-const GLContextFlag GL_CONTEXT_FORWARD_COMPATIBLE_FLAG = 2;
-const GLContextFlag GL_CONTEXT_ROBUST_ACCESS_FLAG = 4;
-const GLContextFlag GL_CONTEXT_RESET_ISOLATION_FLAG = 8;
+constdef GLContextFlag : int
+{
+	DEBUG_FLAG = 1,
+	FORWARD_COMPATIBLE_FLAG = 2,
+	ROBUST_ACCESS_FLAG = 4,
+	RESET_ISOLATION_FLAG = 8
+}
 
 enum GLContextReleaseFlag : int
 {
@@ -1160,14 +1170,16 @@ enum JoystickType : int
 	JOYSTICK_TYPE_THROTTLE
 }
 
-typedef JoystickPowerLevel = int;
-const JoystickPowerLevel JOYSTICK_POWER_UNKNOWN = -1;
-const JoystickPowerLevel JOYSTICK_POWER_EMPTY = 0;
-const JoystickPowerLevel JOYSTICK_POWER_LOW = 1;
-const JoystickPowerLevel JOYSTICK_POWER_MEDIUM = 2;
-const JoystickPowerLevel JOYSTICK_POWER_FULL = 3;
-const JoystickPowerLevel JOYSTICK_POWER_WIRED = 4;
-const JoystickPowerLevel JOYSTICK_POWER_MAX = 5;
+constdef JoystickPowerLevel : int
+{
+	UNKNOWN = -1,
+	EMPTY = 0,
+	LOW = 1,
+	MEDIUM = 2,
+	FULL = 3,
+	WIRED = 4,
+	MAX = 5
+}
 
 alias Update = fn void(void* userdata);
 alias SetPlayerIndex = fn int(void* userdata, int player_index);
@@ -1176,7 +1188,8 @@ alias RumbleTriggers = fn int(void* userdata, uint left_rumble, uint right_rumbl
 alias SetLED = fn int(void* userdata, char red, char green, char blue);
 alias SendEffect = fn int(void* userdata, void* data, int size);
 
-struct VirtualJoystickDesc {
+struct VirtualJoystickDesc
+{
 	uint version;
 	uint type;
 	uint naxes;
@@ -1202,19 +1215,20 @@ struct VirtualJoystickDesc {
 
 alias SensorID = int;
 
-typedef SensorType = int;
-const SensorType SENSOR_INVALID = -1;
-const SensorType SENSOR_UNKNOWN = 0;
-const SensorType SENSOR_ACCEL = 1;
-const SensorType SENSOR_GYRO = 2;
-const SensorType SENSOR_ACCEL_L = 3;
-const SensorType SENSOR_GYRO_L = 4;
-const SensorType SENSOR_ACCEL_R = 5;
-const SensorType SENSOR_GYRO_R = 6;
+constdef SensorType : int
+{
+	INVALID = -1,
+	UNKNOWN = 0,
+	ACCEL = 1,
+	GYRO = 2,
+	ACCEL_L = 3,
+	GYRO_L = 4,
+	ACCEL_R = 5,
+	GYRO_R = 6
+}
 
 typedef Sensor_hwdata = void*;
 typedef SensorDriver = void*;
-
 
 struct Sensor
 {
@@ -1277,51 +1291,55 @@ struct GameControllerButtonBind
 	}
 }
 
-typedef GameControllerAxis = int;
+constdef GameControllerAxis : int
+{
+	INVALID = -1,
+	LEFTX = 0,
+	LEFTY = 1,
+	RIGHTX = 2,
+	RIGHTY = 3,
+	TRIGGERLEFT = 4,
+	TRIGGERRIGHT = 5,
+	MAX = 6
+}
 
-const GameControllerAxis CONTROLLER_AXIS_INVALID = -1;
-const GameControllerAxis CONTROLLER_AXIS_LEFTX = 0;
-const GameControllerAxis CONTROLLER_AXIS_LEFTY = 1;
-const GameControllerAxis CONTROLLER_AXIS_RIGHTX = 2;
-const GameControllerAxis CONTROLLER_AXIS_RIGHTY = 3;
-const GameControllerAxis CONTROLLER_AXIS_TRIGGERLEFT = 4;
-const GameControllerAxis CONTROLLER_AXIS_TRIGGERRIGHT = 5;
-const GameControllerAxis CONTROLLER_AXIS_MAX = 6;
-
-typedef GameControllerButton = int;
-
-const GameControllerButton CONTROLLER_BUTTON_INVALID = -1;
-const GameControllerButton CONTROLLER_BUTTON_A = 0;
-const GameControllerButton CONTROLLER_BUTTON_B = 1;
-const GameControllerButton CONTROLLER_BUTTON_X = 2;
-const GameControllerButton CONTROLLER_BUTTON_Y = 3;
-const GameControllerButton CONTROLLER_BUTTON_BACK = 4;
-const GameControllerButton CONTROLLER_BUTTON_GUIDE = 5;
-const GameControllerButton CONTROLLER_BUTTON_START = 6;
-const GameControllerButton CONTROLLER_BUTTON_LEFTSTICK = 7;
-const GameControllerButton CONTROLLER_BUTTON_RIGHTSTICK = 8;
-const GameControllerButton CONTROLLER_BUTTON_LEFTSHOULDER = 9;
-const GameControllerButton CONTROLLER_BUTTON_RIGHTSHOULDER = 10;
-const GameControllerButton CONTROLLER_BUTTON_DPAD_UP = 11;
-const GameControllerButton CONTROLLER_BUTTON_DPAD_DOWN = 12;
-const GameControllerButton CONTROLLER_BUTTON_DPAD_LEFT = 13;
-const GameControllerButton CONTROLLER_BUTTON_DPAD_RIGHT = 14;
-const GameControllerButton CONTROLLER_BUTTON_MISC1 = 15;
-const GameControllerButton CONTROLLER_BUTTON_PADDLE1 = 16;
-const GameControllerButton CONTROLLER_BUTTON_PADDLE2 = 17;
-const GameControllerButton CONTROLLER_BUTTON_PADDLE3 = 18;
-const GameControllerButton CONTROLLER_BUTTON_PADDLE4 = 19;
-const GameControllerButton CONTROLLER_BUTTON_TOUCHPAD = 20;
-const GameControllerButton CONTROLLER_BUTTON_MAX = 21;
+constdef GameControllerButton : int
+{
+	INVALID = -1,
+	A = 0,
+	B = 1,
+	X = 2,
+	Y = 3,
+	BACK = 4,
+	GUIDE = 5,
+	START = 6,
+	LEFTSTICK = 7,
+	RIGHTSTICK = 8,
+	LEFTSHOULDER = 9,
+	RIGHTSHOULDER = 10,
+	DPAD_UP = 11,
+	DPAD_DOWN = 12,
+	DPAD_LEFT = 13,
+	DPAD_RIGHT = 14,
+	MISC1 = 15,
+	PADDLE1 = 16,
+	PADDLE2 = 17,
+	PADDLE3 = 18,
+	PADDLE4 = 19,
+	TOUCHPAD = 20,
+	MAX = 21
+}
 
 alias TouchID = long;
 alias FingerID = long;
 
-typedef TouchDeviceType = int;
-const TouchDeviceType CONTROLLER_BINDTYPE_NONE = -1;
-const TouchDeviceType CONTROLLER_BINDTYPE_BUTTON = 0;
-const TouchDeviceType CONTROLLER_BINDTYPE_AXIS = 1;
-const TouchDeviceType CONTROLLER_BINDTYPE_HAT = 2;
+constdef TouchDeviceType : int
+{
+	NONE = -1,
+	BUTTON = 0,
+	AXIS = 1,
+	HAT = 2
+}
 
 struct Finger
 {
@@ -1333,66 +1351,68 @@ struct Finger
 
 alias GestureID = long;
 
-typedef EventType = int;
-const EventType FIRSTEVENT = 0;
-const EventType QUIT = 256;
-const EventType APP_TERMINATING = 257;
-const EventType APP_LOWMEMORY = 258;
-const EventType APP_WILLENTERBACKGROUND = 259;
-const EventType APP_DIDENTERBACKGROUND = 260;
-const EventType APP_WILLENTERFOREGROUND = 261;
-const EventType APP_DIDENTERFOREGROUND = 262;
-const EventType LOCALECHANGED = 263;
-const EventType DISPLAYEVENT = 336;
-const EventType WINDOWEVENT = 512;
-const EventType SYSWMEVENT = 513;
-const EventType KEYDOWN = 768;
-const EventType KEYUP = 769;
-const EventType TEXTEDITING = 770;
-const EventType TEXTINPUT = 771;
-const EventType KEYMAPCHANGED = 772;
-const EventType TEXTEDITING_EXT = 773;
-const EventType MOUSEMOTION = 1024;
-const EventType MOUSEBUTTONDOWN = 1025;
-const EventType MOUSEBUTTONUP = 1026;
-const EventType MOUSEWHEEL = 1027;
-const EventType JOYAXISMOTION = 1536;
-const EventType JOYBALLMOTION = 1537;
-const EventType JOYHATMOTION = 1538;
-const EventType JOYBUTTONDOWN = 1539;
-const EventType JOYBUTTONUP = 1540;
-const EventType JOYDEVICEADDED = 1541;
-const EventType JOYDEVICEREMOVED = 1542;
-const EventType JOYBATTERYUPDATED = 1543;
-const EventType CONTROLLERAXISMOTION = 1616;
-const EventType CONTROLLERBUTTONDOWN = 1617;
-const EventType CONTROLLERBUTTONUP = 1618;
-const EventType CONTROLLERDEVICEADDED = 1619;
-const EventType CONTROLLERDEVICEREMOVED = 1620;
-const EventType CONTROLLERDEVICEREMAPPED = 1621;
-const EventType CONTROLLERTOUCHPADDOWN = 1622;
-const EventType CONTROLLERTOUCHPADMOTION = 1623;
-const EventType CONTROLLERTOUCHPADUP = 1624;
-const EventType CONTROLLERSENSORUPDATE = 1625;
-const EventType FINGERDOWN = 1792;
-const EventType FINGERUP = 1793;
-const EventType FINGERMOTION = 1794;
-const EventType DOLLARGESTURE = 2048;
-const EventType DOLLARRECORD = 2049;
-const EventType MULTIGESTURE = 2050;
-const EventType CLIPBOARDUPDATE = 2304;
-const EventType DROPFILE = 4096;
-const EventType DROPTEXT = 4097;
-const EventType DROPBEGIN = 4098;
-const EventType DROPCOMPLETE = 4099;
-const EventType AUDIODEVICEADDED = 4352;
-const EventType AUDIODEVICEREMOVED = 4353;
-const EventType SENSORUPDATE = 4608;
-const EventType RENDER_TARGETS_RESET = 8192;
-const EventType RENDER_DEVICE_RESET = 8193;
-const EventType POLLSENTINEL = 32512;
-const EventType USEREVENT = 32768;
-const EventType LASTEVENT = 65535;
+constdef EventType : int
+{
+	FIRSTEVENT = 0,
+	QUIT = 256,
+	APP_TERMINATING = 257,
+	APP_LOWMEMORY = 258,
+	APP_WILLENTERBACKGROUND = 259,
+	APP_DIDENTERBACKGROUND = 260,
+	APP_WILLENTERFOREGROUND = 261,
+	APP_DIDENTERFOREGROUND = 262,
+	LOCALECHANGED = 263,
+	DISPLAYEVENT = 336,
+	WINDOWEVENT = 512,
+	SYSWMEVENT = 513,
+	KEYDOWN = 768,
+	KEYUP = 769,
+	TEXTEDITING = 770,
+	TEXTINPUT = 771,
+	KEYMAPCHANGED = 772,
+	TEXTEDITING_EXT = 773,
+	MOUSEMOTION = 1024,
+	MOUSEBUTTONDOWN = 1025,
+	MOUSEBUTTONUP = 1026,
+	MOUSEWHEEL = 1027,
+	JOYAXISMOTION = 1536,
+	JOYBALLMOTION = 1537,
+	JOYHATMOTION = 1538,
+	JOYBUTTONDOWN = 1539,
+	JOYBUTTONUP = 1540,
+	JOYDEVICEADDED = 1541,
+	JOYDEVICEREMOVED = 1542,
+	JOYBATTERYUPDATED = 1543,
+	CONTROLLERAXISMOTION = 1616,
+	CONTROLLERBUTTONDOWN = 1617,
+	CONTROLLERBUTTONUP = 1618,
+	CONTROLLERDEVICEADDED = 1619,
+	CONTROLLERDEVICEREMOVED = 1620,
+	CONTROLLERDEVICEREMAPPED = 1621,
+	CONTROLLERTOUCHPADDOWN = 1622,
+	CONTROLLERTOUCHPADMOTION = 1623,
+	CONTROLLERTOUCHPADUP = 1624,
+	CONTROLLERSENSORUPDATE = 1625,
+	FINGERDOWN = 1792,
+	FINGERUP = 1793,
+	FINGERMOTION = 1794,
+	DOLLARGESTURE = 2048,
+	DOLLARRECORD = 2049,
+	MULTIGESTURE = 2050,
+	CLIPBOARDUPDATE = 2304,
+	DROPFILE = 4096,
+	DROPTEXT = 4097,
+	DROPBEGIN = 4098,
+	DROPCOMPLETE = 4099,
+	AUDIODEVICEADDED = 4352,
+	AUDIODEVICEREMOVED = 4353,
+	SENSORUPDATE = 4608,
+	RENDER_TARGETS_RESET = 8192,
+	RENDER_DEVICE_RESET = 8193,
+	POLLSENTINEL = 32512,
+	USEREVENT = 32768,
+	LASTEVENT = 65535
+}
 
 struct CommonEvent
 {
@@ -1924,30 +1944,33 @@ enum LogCategory : int
 	LOG_CATEGORY_CUSTOM
 }
 
-typedef LogPriority = int;
-
-const LogPriority LOG_PRIORITY_VERBOSE = 1;
-const LogPriority LOG_PRIORITY_DEBUG = 2;
-const LogPriority LOG_PRIORITY_INFO = 3;
-const LogPriority LOG_PRIORITY_WARN = 4;
-const LogPriority LOG_PRIORITY_ERROR = 5;
-const LogPriority LOG_PRIORITY_CRITICAL = 6;
-const LogPriority NUM_LOG_PRIORITIES = 7;
+constdef LogPriority : int
+{
+	LOG_PRIORITY_VERBOSE = 1,
+	LOG_PRIORITY_DEBUG = 2,
+	LOG_PRIORITY_INFO = 3,
+	LOG_PRIORITY_WARN = 4,
+	LOG_PRIORITY_ERROR = 5,
+	LOG_PRIORITY_CRITICAL = 6,
+	NUM_LOG_PRIORITIES = 7
+}
 
 alias LogOutputFunction = fn void(void* userdata, int category, LogPriority priority, char* message);
 
-typedef MessageBoxFlags = int;
+constdef MessageBoxFlags : int
+{
+	ERROR = 16,
+	WARNING = 32,
+	INFORMATION = 64,
+	BUTTONS_LEFT_TO_RIGHT = 128,
+	BUTTONS_RIGHT_TO_LEFT = 256
+}
 
-const MessageBoxFlags MESSAGEBOX_ERROR = 16;
-const MessageBoxFlags MESSAGEBOX_WARNING = 32;
-const MessageBoxFlags MESSAGEBOX_INFORMATION = 64;
-const MessageBoxFlags MESSAGEBOX_BUTTONS_LEFT_TO_RIGHT = 128;
-const MessageBoxFlags MESSAGEBOX_BUTTONS_RIGHT_TO_LEFT = 256;
-
-typedef MessageBoxButtonFlags = int;
-
-const MessageBoxButtonFlags MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT = 1;
-const MessageBoxButtonFlags MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT = 2;
+constdef MessageBoxButtonFlags : int
+{
+	RETURNKEY_DEFAULT = 1,
+	ESCAPEKEY_DEFAULT = 2
+}
 
 struct MessageBoxButtonData
 {
@@ -2000,12 +2023,13 @@ enum PowerState : int
   POWERSTATE_CHARGED
 }
 
-typedef RendererFlags = uint;
-
-const RendererFlags RENDERER_SOFTWARE = 1;
-const RendererFlags RENDERER_ACCELERATED = 2;
-const RendererFlags RENDERER_PRESENTVSYNC = 4;
-const RendererFlags RENDERER_TARGETTEXTURE = 8;
+constdef RendererFlags : uint
+{
+	SOFTWARE = 1,
+	ACCELERATED = 2,
+	PRESENTVSYNC = 4,
+	TARGETTEXTURE = 8
+}
 
 struct RendererInfo
 {
@@ -2037,12 +2061,14 @@ enum TextureAccess : int
 	TEXTUREACCESS_STREAMING,
 	TEXTUREACCESS_TARGET
 }
+
 enum TextureModulate : int
 {
 	TEXTUREMODULATE_NONE,
 	TEXTUREMODULATE_COLOR,
 	TEXTUREMODULATE_ALPHA
 }
+
 enum RendererFlip : int
 {
 	FLIP_NONE,
@@ -2053,7 +2079,8 @@ enum RendererFlip : int
 alias Renderer = void*;
 alias Texture = void*;
 
-enum WindowShapeModeEnum : int{
+enum WindowShapeModeEnum : int
+{
 	SHAPE_MODE_DEFAULT,
 	SHAPE_MODE_BINARIZE_ALPHA,
 	SHAPE_MODE_REVERSE_BINARIZE_ALPHA,
@@ -2065,7 +2092,6 @@ union WindowShapeParams
 	char binarizationcutoff;
 	Color colorkey;
 }
-
 
 struct WindowShapeMode
 {
@@ -2082,7 +2108,6 @@ struct Version
 	char minor;
 	char patch;
 }
-
 
 struct Locale
 {
@@ -2317,7 +2342,6 @@ const int BUTTON_X1 = 4;
 const int BUTTON_X2 = 5;
 const double IPHONE_MAX_GFORCE = 5.0;
 const int VIRTUAL_JOYSTICK_DESC_VERSION = 1;
-
 
 fn char* getPlatform() @cname("SDL_GetPlatform");
 fn void* malloc(usz size) @cname("SDL_malloc");
@@ -3072,7 +3096,7 @@ fn Window* renderGetWindow(Renderer* renderer) @cname("SDL_RenderGetWindow");
 fn int getRendererInfo(Renderer* renderer, RendererInfo* info) @cname("SDL_GetRendererInfo");
 fn int getRendererOutputSize(Renderer* renderer, int* w, int* h) @cname("SDL_GetRendererOutputSize");
 fn Texture* createTexture(Renderer* renderer, uint format, int access, int w, int h) @cname("SDL_CreateTexture");
-fn Texture* createTextureFromSurface(Renderer* renderer, Surface surface) @cname("SDL_CreateTextureFromSurface");
+fn Texture* createTextureFromSurface(Renderer* renderer, Surface* surface) @cname("SDL_CreateTextureFromSurface");
 fn int queryTexture(Texture* texture, uint* format, int* access, int* w, int* h) @cname("SDL_QueryTexture");
 fn int setTextureColorMod(Texture* texture, char r, char g, char b) @cname("SDL_SetTextureColorMod");
 fn int getTextureColorMod(Texture* texture, char* r, char* g, char* b) @cname("SDL_GetTextureColorMod");
