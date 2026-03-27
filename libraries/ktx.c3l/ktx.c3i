@@ -421,7 +421,7 @@ fn KtxErrorCode texture1_create_from_memory(char* bytes, usz size,
 fn KtxErrorCode texture1_create_from_stream(KtxStream* stream,
 	KtxTextureCreateFlags createFlags,
 	KtxTexture1** newTex) @cname("ktxtexture1_CreateFromStream");
-fn bool KtxTexture1.needs_transcoding(&self) @cname("ktxTexture1_NeedsTranscoding");
+// fn bool KtxTexture1.needs_transcoding(&self) @cname("ktxTexture1_NeedsTranscoding");
 fn KtxErrorCode KtxTexture1.write_ktx2_to_stdio_stream(&self, void* /* FILE* */ dstsstr) @cname("ktxTexture1_WriteKTX2ToStdioStream");
 fn KtxErrorCode KtxTexture1.write_ktx2_to_named_file(&self, ZString dstname) @cname("ktxTexture1_WriteKTX2ToNamedFile");
 fn KtxErrorCode KtxTexture1.write_ktx2_to_memory(&self,
@@ -452,7 +452,7 @@ fn KhrDfTransfer KtxTexture2.get_oetf_enum(&self) @cname("ktxTexture2_GetOETF_e"
 fn uint KtxTexture2.get_oetf(&self) @cname("ktxTexture2_GetOETF");
 fn KhrDfModel KtxTexture2.get_color_model_enum(&self) @cname("ktxTexture2_GetColorModel_e");
 fn bool KtxTexture2.get_premultiplied_alpha(&self) @cname("ktxTexture2_GetPremultipliedAlpha");
-fn bool KtxTexture2.needs_transcoding(&self) @cname("ktxTexture2_NeedsTranscoding");
+// fn bool KtxTexture2.needs_transcoding(&self) @cname("ktxTexture2_NeedsTranscoding");
 constdef KtxPackUastcFlags : CInt
 {
 	LEVEL_FASTEST = 0,

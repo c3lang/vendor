@@ -1,133 +1,85 @@
 {
-  "provides" : "ktx",
-  "targets" : {
-    "android-aarch64" : {
-      // Extra flags to the linker for this target:
-      "link-args" : [],
-      // C3 libraries this target depends on:
-      "dependencies" : [],
-      // The external libraries to link for this target:
-      "linked-libraries" : [ "ktx" ]
-    },
-    "freebsd-x64" : {
-      // Extra flags to the linker for this target:
-      "link-args" : [],
-      // C3 libraries this target depends on:
-      "dependencies" : [],
-      // The external libraries to link for this target:
-      "linked-libraries" : [ "ktx" ]
-    },
-    "linux-aarch64" : {
-      // Extra flags to the linker for this target:
-      "link-args" : [],
-      // C3 libraries this target depends on:
-      "dependencies" : [],
-      // The external libraries to link for this target:
-      "linked-libraries" : [ "ktx" ]
-    },
-    "linux-riscv32" : {
-      // Extra flags to the linker for this target:
-      "link-args" : [],
-      // C3 libraries this target depends on:
-      "dependencies" : [],
-      // The external libraries to link for this target:
-      "linked-libraries" : [ "ktx" ]
-    },
-    "linux-riscv64" : {
-      // Extra flags to the linker for this target:
-      "link-args" : [],
-      // C3 libraries this target depends on:
-      "dependencies" : [],
-      // The external libraries to link for this target:
-      "linked-libraries" : [ "ktx" ]
-    },
-    "linux-x86" : {
-      // Extra flags to the linker for this target:
-      "link-args" : [],
-      // C3 libraries this target depends on:
-      "dependencies" : [],
-      // The external libraries to link for this target:
-      "linked-libraries" : [ "ktx" ]
-    },
-    "linux-x64" : {
-      // Extra flags to the linker for this target:
-      "link-args" : [],
-      // C3 libraries this target depends on:
-      "dependencies" : [],
-      // The external libraries to link for this target:
-      "linked-libraries" : [ "ktx" ]
-    },
-    "macos-aarch64" : {
-      // Extra flags to the linker for this target:
-      "link-args" : [],
-      // C3 libraries this target depends on:
-      "dependencies" : [],
-      // The external libraries to link for this target:
-      "linked-libraries" : [ "ktx" ]
-    },
-    "macos-x64" : {
-      // Extra flags to the linker for this target:
-      "link-args" : [],
-      // C3 libraries this target depends on:
-      "dependencies" : [],
-      // The external libraries to link for this target:
-      "linked-libraries" : [ "ktx" ]
-    },
-    "netbsd-aarch64" : {
-      // Extra flags to the linker for this target:
-      "link-args" : [],
-      // C3 libraries this target depends on:
-      "dependencies" : [],
-      // The external libraries to link for this target:
-      "linked-libraries" : [ "ktx" ]
-    },
-    "netbsd-x64" : {
-      // Extra flags to the linker for this target:
-      "link-args" : [],
-      // C3 libraries this target depends on:
-      "dependencies" : [],
-      // The external libraries to link for this target:
-      "linked-libraries" : [ "ktx" ]
-    },
-    "openbsd-x64" : {
-      // Extra flags to the linker for this target:
-      "link-args" : [],
-      // C3 libraries this target depends on:
-      "dependencies" : [],
-      // The external libraries to link for this target:
-      "linked-libraries" : [ "ktx" ]
-    },
-    "wasm32" : {
-      // Extra flags to the linker for this target:
-      "link-args" : [],
-      // C3 libraries this target depends on:
-      "dependencies" : [],
-      // The external libraries to link for this target:
-      "linked-libraries" : [ "ktx" ]
-    },
-    "wasm64" : {
-      // Extra flags to the linker for this target:
-      "link-args" : [],
-      // C3 libraries this target depends on:
-      "dependencies" : [],
-      // The external libraries to link for this target:
-      "linked-libraries" : [ "ktx" ]
-    },
-    "windows-aarch64" : {
-      // Extra flags to the linker for this target:
-      "link-args" : [],
-      // C3 libraries this target depends on:
-      "dependencies" : [],
-      // The external libraries to link for this target:
-      "linked-libraries" : [ "ktx" ]
-    },
-    "windows-x64" : {
-      // Extra flags to the linker for this target:
-      "link-args" : [],
-      // C3 libraries this target depends on:
-      "dependencies" : [],
-      // The external libraries to link for this target:
-      "linked-libraries" : [ "ktx" ]
-    },
-  }
+	"provides" : "ktx",
+	"targets" : {
+		"android-aarch64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : [ "ktx" ]
+		},
+		"freebsd-x64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : [ "ktx" ]
+		},
+		"linux-aarch64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : [ "ktx" ]
+		},
+		"linux-riscv32" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : [ "ktx" ]
+		},
+		"linux-riscv64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : [ "ktx" ]
+		},
+		"linux-x86" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : [ "ktx" ]
+		},
+		"linux-x64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : [ "ktx", "astcenc-avx2-static", "fmt", "imageio", "ktx_read", "obj_basisu_cbind", "objUtil" ]
+		},
+		"macos-aarch64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : [ "ktx", "astcenc-neon-static", "fmt", "imageio", "ktx_read", "obj_basisu_cbind", "objUtil" ]
+		},
+		"macos-x64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : [ "ktx" ]
+		},
+		"netbsd-aarch64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : [ "ktx" ]
+		},
+		"netbsd-x64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : [ "ktx" ]
+		},
+		"openbsd-x64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : [ "ktx" ]
+		},
+		"wasm32" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : [ "ktx" ]
+		},
+		"wasm64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : [ "ktx" ]
+		},
+		"windows-aarch64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : [ "ktx" ]
+		},
+		"windows-x64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : [ "ktx", "astcenc-avx2-static", "fmt", "imageio", "ktx_read", "obj_basisu_cbind", "objUtil" ]
+		},
+	}
 }

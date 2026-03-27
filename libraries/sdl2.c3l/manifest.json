@@ -1,23 +1,25 @@
-{ 
-  "provides" : "sdl2",
-  "targets" : {
-    "macos-x64" : {
-      "link-args" : [],
-      "dependencies" : [],
-      "linked-libraries" : []
-    },
-    "macos-aarch64" : {
-      "link-args" : [],
-      "dependencies" : [],
-      "linked-libraries" : []
-    },
-    "linux-x64" : {
-      "link-args" : [],
-      "dependencies" : [],
-      "linked-libraries" : ["SDL2"]
-    },
-	"windows-x64" : {
-		"linked-libraries" : []
+{
+	"provides" : "sdl2",
+	"targets" : {
+		"macos-x64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : ["SDL2", "SDL2main"]
+		},
+		"macos-aarch64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : ["SDL2", "SDL2main"]
+		},
+		"linux-x64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : ["SDL2", "SDL2main"]
+		},
+		"windows-x64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : ["SDL2", "user32", "gdi32", "winmm", "imm32", "ole32", "oleaut32", "version", "uuid", "advapi32", "setupapi", "shell32"]
+		}
 	}
-  }
 }

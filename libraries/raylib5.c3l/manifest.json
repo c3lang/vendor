@@ -1,27 +1,27 @@
 { 
-  "provides" : "raylib5",
-  "targets" : {
-    "macos-x64" : {
-      "link-args" : [],
-      "dependencies" : [],
-      "linked-libraries" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "GLUT.framework", "IOKit.framework", "c"]
-    },
-    "macos-aarch64" : {
-      "link-args" : [],
-      "dependencies" : [],
-      "linked-libraries" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "GLUT.framework", "IOKit.framework", "c"]
-    },
-    "linux-x64" : {
-      "link-args" : [],
-      "dependencies" : [],
-      "linked-libraries" : ["raylib"]
-    },
- 	  "windows-x64" : {
-		  "linked-libraries" : ["raylib", "gdi32", "winmm"],
-      "wincrt": "none"
-	  },
-    "wasm32" : {
-      "linked-libraries" : ["raylib"]
-    }
-  }
+	"provides" : "raylib5",
+	"targets" : {
+		"macos-x64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "GLUT.framework", "IOKit.framework", "c"]
+		},
+		"macos-aarch64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : ["raylib", "Cocoa.framework", "OpenGL.framework", "CoreVideo.framework", "GLUT.framework", "IOKit.framework", "c"]
+		},
+		"linux-x64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : ["raylib"]
+		},
+		"windows-x64" : {
+			"linked-libraries" : ["raylib", "gdi32", "winmm", "user32", "shell32"],
+			"wincrt": "none"
+		},
+		"wasm32" : {
+			"linked-libraries" : ["raylib"]
+		}
+	}
 }
