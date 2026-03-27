@@ -579,7 +579,7 @@ fn ZString* getRequiredInstanceExtensions(ulong* count) @cname("glfwGetRequiredI
 
 
 module vulkan @if(!$defined(env::GLFW_INCLUDE_VULKAN) ||| !env::GLFW_INCLUDE_VULKAN);
-module glfw @if($defined(env::GLFW_INCLUDE_VULKAN) &&& env::GLFW_INCLUDE_VULKAN);
+module glfw34 @if($defined(env::GLFW_INCLUDE_VULKAN) &&& env::GLFW_INCLUDE_VULKAN);
 
 import vulkan;
 
