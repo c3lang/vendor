@@ -1,14 +1,23 @@
 {
 	"provides" : "tinyfiledialogs",
-	"c-sources" : ["tinyfiledialogs.c"],
 	"targets" : {
-		"linux-x86" : {},
-		"linux-x64" : {},
-		"linux-aarch64": {},
-		"macos-x64" : {},
-		"macos-aarch64": {},
+		"linux-x86" : {
+			"linked-libraries" : ["tinyfiledialogs"]
+		},
+		"linux-x64" : {
+			"linked-libraries" : ["tinyfiledialogs"]
+		},
+		"linux-aarch64": {
+			"linked-libraries" : ["tinyfiledialogs"]
+		},
+		"macos-x64" : {
+			"linked-libraries" : ["tinyfiledialogs"]
+		},
+		"macos-aarch64": {
+			"linked-libraries" : ["tinyfiledialogs"]
+		},
 		"windows-x64" : {
-			"linked-libraries" : ["comdlg32", "ole32"]
+			"linked-libraries" : ["tinyfiledialogs", "comdlg32", "ole32"]
 		}
 	}
 }

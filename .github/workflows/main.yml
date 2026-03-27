@@ -17,105 +17,277 @@ on:
 
 jobs:
 
-  build-static-libs:
-    name: Build ${{ matrix.library.name }} (${{ matrix.os }})
+  build-box2d:
     strategy:
-      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        library:
-          - name: box2d
-            repo: https://github.com/erincatto/box2d.git
-            tag: v3.1.1
-            c3l: box2d.c3l
-            cmake: "-DBOX2D_SAMPLES=OFF -DBOX2D_UNIT_TESTS=OFF"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build box2d
+        uses: ./.github/actions/build-static-lib
+        with:
+          name: box2d
+          repo: https://github.com/erincatto/box2d.git
+          tag: v3.1.1
+          c3l: box2d.c3l
+          cmake_flags: "-DBOX2D_SAMPLES=OFF -DBOX2D_UNIT_TESTS=OFF"
+          os: ${{ matrix.os }}
 
-          - name: lz4
-            repo: https://github.com/lz4/lz4.git
-            tag: v1.10.0
-            c3l: lz4.c3l
-            cmake: "-DLZ4_BUILD_CLI=OFF -DLZ4_BUILD_LEGACY_LZ4C=OFF"
-            src_path: "build/cmake"
+  build-sdl2:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build sdl2
+        uses: ./.github/actions/build-static-lib
+        with:
+          name: sdl2
+          repo: https://github.com/libsdl-org/SDL.git
+          tag: release-2.32.10
+          c3l: sdl2.c3l
+          cmake_flags: "-DSDL_STATIC=ON -DSDL_SHARED=OFF -DSDL_TESTS=OFF -DSDL_DISABLE_INSTALL=OFF"
+          os: ${{ matrix.os }}
+          after_build: |
+             # Normalize SDL2-static.lib -> SDL2.lib on Windows
+             if [ "${{ runner.os }}" == "Windows" ]; then
+               find "upload_stage/" -type f -name "SDL2-static.lib" -execdir mv {} "SDL2.lib" \; || true
+             fi
 
-          - name: tree_sitter
-            repo: https://github.com/tree-sitter/tree-sitter.git
-            tag: v0.26.7
-            c3l: tree_sitter.c3l
-            cmake: "-DBUILD_SHARED_LIBS=OFF"
+  build-sdl3:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build and install sdl3
+        uses: ./.github/actions/build-static-lib
+        with:
+          name: sdl3
+          repo: https://github.com/libsdl-org/SDL.git
+          tag: release-3.4.2
+          c3l: sdl3.c3l
+          cmake_flags: "-DSDL_TESTS=OFF -DSDL_DISABLE_INSTALL=OFF"
+          os: ${{ matrix.os }}
+          after_build: |
+             # Normalize SDL3-static.lib -> SDL3.lib on Windows
+             if [ "${{ runner.os }}" == "Windows" ]; then
+               find "upload_stage/" -type f -name "SDL3-static.lib" -execdir mv {} "SDL3.lib" \; || true
+             fi
+             cmake --install build_src/c3_build_temp --config Release --prefix "$GITHUB_WORKSPACE/sdl3_install"
+      - name: Upload sdl3 Installation Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: sdl3-install-${{ matrix.os }}
+          path: sdl3_install/
 
-          - name: glfw34
-            repo: https://github.com/glfw/glfw.git
-            tag: "3.4"
-            c3l: glfw34.c3l
-            cmake: "-DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF"
-            mac_url: "https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.bin.MACOS.zip"
-            mac_lib: "glfw-3.4.bin.MACOS/lib-universal/libglfw3.a"
-            win_url: "https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.bin.WIN64.zip"
-            win_lib: "glfw-3.4.bin.WIN64/lib-vc2022/glfw3.lib"
+  build-sdl3_image:
+    needs: [build-sdl3]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Download sdl3 Installation
+        uses: actions/download-artifact@v8
+        with:
+          name: sdl3-install-${{ matrix.os }}
+          path: sdl3_install
+      - name: Build sdl3_image
+        uses: ./.github/actions/build-static-lib
+        with:
+          name: sdl3_image
+          repo: https://github.com/libsdl-org/SDL_image.git
+          tag: release-3.4.0
+          c3l: sdl3_image.c3l
+          cmake_flags: "-DSDLIMAGE_SAMPLES=OFF -DSDLIMAGE_TESTS=OFF -DSDLIMAGE_AVIF=OFF -DSDLIMAGE_VENDORED=ON -DCMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/sdl3_install"
+          os: ${{ matrix.os }}
+          after_build: |
+             # Normalize SDL3_image-static.lib -> SDL3_image.lib on Windows
+             if [ "${{ runner.os }}" == "Windows" ]; then
+               find "upload_stage/" -type f -name "SDL3_image-static.lib" -execdir mv {} "SDL3_image.lib" \; || true
+             fi
 
-          - name: ktx
-            repo: https://github.com/KhronosGroup/KTX-Software.git
-            tag: v4.4.2
-            c3l: ktx.c3l
-            cmake: "-DKTX_FEATURE_TESTS=OFF"
+  build-sdl3_ttf:
+    needs: [build-sdl3]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Download sdl3 Installation
+        uses: actions/download-artifact@v8
+        with:
+          name: sdl3-install-${{ matrix.os }}
+          path: sdl3_install
+      - name: Build sdl3_ttf
+        uses: ./.github/actions/build-static-lib
+        with:
+          name: sdl3_ttf
+          repo: https://github.com/libsdl-org/SDL_ttf.git
+          tag: release-3.2.2
+          c3l: sdl3_ttf.c3l
+          cmake_flags: "-DSDLTTF_SAMPLES=OFF -DSDLTTF_VENDORED=ON -DCMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/sdl3_install"
+          os: ${{ matrix.os }}
+          after_build: |
+             # Normalize SDL3_ttf-static.lib -> SDL3_ttf.lib on Windows
+             if [ "${{ runner.os }}" == "Windows" ]; then
+               find "upload_stage/" -type f -name "SDL3_ttf-static.lib" -execdir mv {} "SDL3_ttf.lib" \; || true
+             fi
 
-          - name: raylib
-            tag: "5.5"
-            c3l: raylib.c3l
-            cmake: ""
-            linux_url: "https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_linux_amd64.tar.gz"
-            linux_lib: "raylib-5.5_linux_amd64/lib/libraylib.a"
-            mac_url: "https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_macos.tar.gz"
-            mac_lib: "raylib-5.5_macos/lib/libraylib.a"
-            win_url: "https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_win64_msvc16.zip"
-            win_lib: "raylib-5.5_win64_msvc16/lib/raylib.lib"
+  build-lz4:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build lz4
+        uses: ./.github/actions/build-static-lib
+        with:
+          name: lz4
+          repo: https://github.com/lz4/lz4.git
+          tag: v1.10.0
+          c3l: lz4.c3l
+          cmake_flags: "-DLZ4_BUILD_CLI=OFF -DLZ4_BUILD_LEGACY_LZ4C=OFF"
+          src_path: "build/cmake"
+          os: ${{ matrix.os }}
 
-          - name: raylib5
-            tag: "5.0"
-            c3l: raylib5.c3l
-            cmake: ""
-            linux_url: "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_linux_amd64.tar.gz"
-            linux_lib: "raylib-5.0_linux_amd64/lib/libraylib.a"
-            mac_url: "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_macos.tar.gz"
-            mac_lib: "raylib-5.0_macos/lib/libraylib.a"
-            win_url: "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_win64_msvc16.zip"
-            win_lib: "raylib-5.0_win64_msvc16/lib/raylib.lib"
+  build-tree_sitter:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build tree_sitter
+        uses: ./.github/actions/build-static-lib
+        with:
+          name: tree_sitter
+          repo: https://github.com/tree-sitter/tree-sitter.git
+          tag: v0.26.7
+          c3l: tree_sitter.c3l
+          cmake_flags: "-DBUILD_SHARED_LIBS=OFF"
+          os: ${{ matrix.os }}
 
-          - name: sdl2
-            repo: https://github.com/libsdl-org/SDL.git
-            tag: release-2.32.10
-            c3l: sdl2.c3l
-            cmake: "-DSDL_STATIC=ON -DSDL_SHARED=OFF -DSDL_TESTS=OFF -DSDL_DISABLE_INSTALL=OFF"
+  build-glfw34:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build glfw34
+        uses: ./.github/actions/build-static-lib
+        with:
+          name: glfw34
+          repo: https://github.com/glfw/glfw.git
+          tag: "3.4"
+          c3l: glfw34.c3l
+          cmake_flags: "-DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF"
+          mac_url: "https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.bin.MACOS.zip"
+          mac_lib: "glfw-3.4.bin.MACOS/lib-universal/libglfw3.a"
+          win_url: "https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.bin.WIN64.zip"
+          win_lib: "glfw-3.4.bin.WIN64/lib-vc2022/glfw3.lib"
+          os: ${{ matrix.os }}
+          after_build: |
+             # Normalize libglfw3 -> libglfw for C3
+             find "upload_stage/" -type f \( -name "libglfw3.a" -o -name "glfw3.lib" \) | while read f; do
+               dir=$(dirname "$f")
+               base=$(basename "$f")
+               new_base=${base/3/} # removes the '3' from name
+               mv "$f" "$dir/$new_base"
+             done
 
-          - name: sdl3
-            repo: https://github.com/libsdl-org/SDL.git
-            tag: release-3.4.2
-            c3l: sdl3.c3l
-            cmake: "-DSDL_TESTS=OFF -DSDL_DISABLE_INSTALL=OFF"
+  build-ktx:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build ktx
+        uses: ./.github/actions/build-static-lib
+        with:
+          name: ktx
+          repo: https://github.com/KhronosGroup/KTX-Software.git
+          tag: v4.4.2
+          c3l: ktx.c3l
+          cmake_flags: "-DKTX_FEATURE_TESTS=OFF"
+          os: ${{ matrix.os }}
 
-          - name: sdl3_image
-            repo: https://github.com/libsdl-org/SDL_image.git
-            tag: release-3.4.0
-            c3l: sdl3_image.c3l
-            cmake: "-DSDLIMAGE_SAMPLES=OFF -DSDLIMAGE_TESTS=OFF -DSDLIMAGE_AVIF=OFF -DSDLIMAGE_VENDORED=ON"
+  build-raylib:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Download raylib
+        uses: ./.github/actions/build-static-lib
+        with:
+          name: raylib
+          tag: "5.5"
+          c3l: raylib.c3l
+          linux_url: "https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_linux_amd64.tar.gz"
+          linux_lib: "raylib-5.5_linux_amd64/lib/libraylib.a"
+          mac_url: "https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_macos.tar.gz"
+          mac_lib: "raylib-5.5_macos/lib/libraylib.a"
+          win_url: "https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_win64_msvc16.zip"
+          win_lib: "raylib-5.5_win64_msvc16/lib/raylib.lib"
+          os: ${{ matrix.os }}
 
-          - name: sdl3_ttf
-            repo: https://github.com/libsdl-org/SDL_ttf.git
-            tag: release-3.2.2
-            c3l: sdl3_ttf.c3l
-            cmake: "-DSDLTTF_SAMPLES=OFF -DSDLTTF_VENDORED=ON"
+  build-raylib5:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Download raylib5
+        uses: ./.github/actions/build-static-lib
+        with:
+          name: raylib5
+          tag: "5.0"
+          c3l: raylib5.c3l
+          linux_url: "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_linux_amd64.tar.gz"
+          linux_lib: "raylib-5.0_linux_amd64/lib/libraylib.a"
+          mac_url: "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_macos.tar.gz"
+          mac_lib: "raylib-5.0_macos/lib/libraylib.a"
+          win_url: "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_win64_msvc16.zip"
+          win_lib: "raylib-5.0_win64_msvc16/lib/raylib.lib"
+          os: ${{ matrix.os }}
 
-          - name: webgpu
-            tag: v0.19.1.1
-            c3l: webgpu.c3l
-            cmake: ""
-            linux_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-linux-x86_64-release.zip"
-            linux_lib: "libwgpu_native.a"
-            mac_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-macos-aarch64-release.zip"
-            mac_lib: "libwgpu_native.a"
-            win_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-windows-x86_64-release.zip"
-            win_lib: "wgpu_native.lib"
+  build-webgpu:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Download webgpu
+        uses: ./.github/actions/build-static-lib
+        with:
+          name: webgpu
+          tag: v0.19.1.1
+          c3l: webgpu.c3l
+          linux_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-linux-x86_64-release.zip"
+          linux_lib: "libwgpu_native.a"
+          mac_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-macos-aarch64-release.zip"
+          mac_lib: "libwgpu_native.a"
+          win_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-windows-x86_64-release.zip"
+          win_lib: "wgpu_native.lib"
+          os: ${{ matrix.os }}
 
+  build-tigr:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -124,130 +296,196 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y pkg-config libx11-dev libxcursor-dev libxi-dev libxinerama-dev \
-            libxrandr-dev libwayland-dev libxkbcommon-dev wayland-protocols libgl1-mesa-dev \
-            libglu1-mesa-dev libxext-dev libxfixes-dev libxss-dev libxtst-dev libasound2-dev \
-            libpulse-dev libjack-dev libsndio-dev mesa-common-dev xorg-dev libxkbcommon-x11-dev
+          sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev libx11-dev
 
-      - name: Cache Static Library
-        id: build-cache
-        uses: actions/cache@v5
-        with:
-          path: upload_stage/
-          key: static-lib-v6-${{ matrix.library.name }}-${{ matrix.os }}-${{ matrix.library.tag }}
-
-      - name: Build and Package ${{ matrix.library.name }}
-        if: steps.build-cache.outputs.cache-hit != 'true'
+      - name: Build and Package tigr
         shell: bash
         run: |
           set -x
-          echo "--- START OF BUILD SCRIPT ---"
-          pwd
-          ls -la
-
           if [ "${{ runner.os }}" == "Windows" ]; then
             TARGET_DIR="windows-x64"
-          elif [ "${{ matrix.os }}" == "macos-latest" ]; then
+            LIB_NAME="tigr.lib"
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
             TARGET_DIR="macos-aarch64"
-          elif [ "${{ matrix.os }}" == "macos-wedontsupport_x64" ]; then
-            TARGET_DIR="macos-x64"
-          elif [ "${{ runner.os }}" == "Linux" ]; then
+            LIB_NAME="libtigr.a"
+          else
             TARGET_DIR="linux-x64"
+            LIB_NAME="libtigr.a"
           fi
 
-          TARGET_BASE="upload_stage/libraries/${{ matrix.library.c3l }}"
-          echo "CREATING DIRECTORIES: $TARGET_BASE/$TARGET_DIR"
+          TARGET_BASE="upload_stage/libraries/tigr.c3l"
           mkdir -p "$TARGET_BASE/$TARGET_DIR"
 
-          echo "--- VERIFYING CREATION ---"
-          ls -la upload_stage/ || echo "UPLOAD STAGE IS MISSING AFTER MKDIR"
-
-          # Generic binary download handler: select URL for current OS, download if available
-          BIN_URL=""
-          BIN_LIB=""
-          if [ "${{ runner.os }}" == "Windows" ]; then
-            BIN_URL="${{ matrix.library.win_url }}"
-            BIN_LIB="${{ matrix.library.win_lib }}"
-          elif [ "${{ matrix.os }}" == "macos-latest" ]; then
-            BIN_URL="${{ matrix.library.mac_url }}"
-            BIN_LIB="${{ matrix.library.mac_lib }}"
-          else
-            BIN_URL="${{ matrix.library.linux_url }}"
-            BIN_LIB="${{ matrix.library.linux_lib }}"
-          fi
-          if [ -n "$BIN_URL" ]; then
-            ARCHIVE=$(basename "$BIN_URL")
-            curl -fsSL -o "$ARCHIVE" "$BIN_URL"
-            if [[ "$ARCHIVE" == *.tar.gz ]]; then
-              tar -xzf "$ARCHIVE" "$BIN_LIB"
-              cp "$BIN_LIB" "$TARGET_BASE/$TARGET_DIR/"
-            else
-              unzip -j "$ARCHIVE" "$BIN_LIB" -d "$TARGET_BASE/$TARGET_DIR/"
-            fi
-            echo "=== STAGE ARTIFACTS PACKED EXACTLY FOR UPLOAD ==="
-            ls -R upload_stage/ || true
-            exit 0
-          fi
-
-          # Satellite build hook for items requiring SDL3 base installed locally
-          EXTRA_CMAKE=""
-          if [[ "${{ matrix.library.name }}" == "sdl3_image" || "${{ matrix.library.name }}" == "sdl3_ttf" ]]; then
-            echo "--- BUILDING INTERNAL SDL3 DEPENDENCY ---"
-            SDL_BASE="$(pwd)/sdl3_base"
-            mkdir -p "$SDL_BASE"
-            git clone https://github.com/libsdl-org/SDL.git -b release-3.4.2 internal_sdl3
-            cd internal_sdl3
-            git submodule update --init --recursive
-            mkdir -p c3_build_temp && cd c3_build_temp
-            cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DSDL_TESTS=OFF -DCMAKE_INSTALL_PREFIX="$SDL_BASE" ..
-            cmake --build . --config Release --parallel 4 --target install
-            cd ../..
-            # Point satellite to the internal build
-            EXTRA_CMAKE="-DSDL3_DIR=$SDL_BASE/lib/cmake/SDL3 -DCMAKE_PREFIX_PATH=$SDL_BASE"
-          fi
-
-          git clone ${{ matrix.library.repo }} -b ${{ matrix.library.tag }} build_src
+          git clone https://github.com/erkkah/tigr.git -b v3.2.2 build_src
           cd build_src
-          git submodule update --init --recursive
 
-          # Handle cases where the CMakeLists.txt is in a subdirectory (like lz4)
-          SRC_REL_PATH="${{ matrix.library.src_path }}"
-          if [ -z "$SRC_REL_PATH" ]; then SRC_REL_PATH="."; fi
+          gcc -c tigr.c -o tigr.o
+          ar rcs "$LIB_NAME" tigr.o
+          cp "$LIB_NAME" "../$TARGET_BASE/$TARGET_DIR/"
 
-          # Use a unique build folder name and -p to avoid "File exists" errors
-          mkdir -p c3_build_temp && cd c3_build_temp
-
-          cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release ${{ matrix.library.cmake }} $EXTRA_CMAKE "../$SRC_REL_PATH"
-          cmake --build . --config Release --parallel 4
-
-          find . -type f \( -name "*.a" -o -name "*.lib" \) -exec cp {} "../../$TARGET_BASE/$TARGET_DIR/" \;
-          cd ../..
-
-          # Normalize glfw3 names to match the C3 manifest.json expectations natively
-          if [ "${{ matrix.library.name }}" == "glfw34" ]; then
-            find "upload_stage/" -type f -name "libglfw3.a" -execdir mv libglfw3.a libglfw.a \; || true
-            find "upload_stage/" -type f -name "glfw3.lib" -execdir mv glfw3.lib glfw.lib \; || true
-          fi
-
-          # Normalize SDL names
-          if [[ "${{ matrix.library.name }}" == "sdl"* ]] && [ "${{ runner.os }}" == "Windows" ]; then
-            find "upload_stage/" -type f -name "SDL2-static.lib" -execdir mv SDL2-static.lib SDL2.lib \; || true
-            find "upload_stage/" -type f -name "SDL3-static.lib" -execdir mv SDL3-static.lib SDL3.lib \; || true
-            find "upload_stage/" -type f -name "SDL3_image-static.lib" -execdir mv SDL3_image-static.lib SDL3_image.lib \; || true
-            find "upload_stage/" -type f -name "SDL3_ttf-static.lib" -execdir mv SDL3_ttf-static.lib SDL3_ttf.lib \; || true
-          fi
-
-          echo "=== STAGE ARTIFACTS PACKED EXACTLY FOR UPLOAD ==="
-          ls -R upload_stage/ || true
-
-      - name: Upload ${{ matrix.library.name }} Artifact
+      - name: Upload tigr Artifact
         uses: actions/upload-artifact@v6
         with:
-          name: ${{ matrix.library.name }}-statics-${{ matrix.os }}
+          name: tigr-statics-${{ matrix.os }}
+          path: upload_stage/
+
+  build-raygui:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up MSVC
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install Linux Dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev libx11-dev
+
+      - name: Build and Package raygui
+        shell: bash
+        run: |
+          set -x
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            TARGET_DIR="windows-x64"
+            LIB_NAME="raygui.lib"
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            TARGET_DIR="macos-aarch64"
+            LIB_NAME="libraygui.a"
+          else
+            TARGET_DIR="linux-x64"
+            LIB_NAME="libraygui.a"
+          fi
+
+          TARGET_BASE="upload_stage/libraries/raygui.c3l"
+          mkdir -p "$TARGET_BASE/$TARGET_DIR"
+
+          git clone https://github.com/raysan5/raylib.git -b 5.0 build_raylib
+          git clone https://github.com/raysan5/raygui.git -b 4.0 build_raygui
+
+          echo '#define RAYGUI_IMPLEMENTATION' > raygui_impl.c
+          echo '#include "raylib.h"' >> raygui_impl.c
+          echo '#include "raygui.h"' >> raygui_impl.c
+
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            # Build with MSVC to match raylib5 binary
+            # Use MSYS2_ARG_CONV_EXCL to prevent Git Bash from 'fixing' the / flags
+            export MSYS2_ARG_CONV_EXCL="*"
+            cl -c -O2 -Ibuild_raylib/src -Ibuild_raygui/src raygui_impl.c
+            lib raygui_impl.obj -out:"$LIB_NAME"
+          else
+            gcc -c -O2 -I"build_raylib/src" -I"build_raygui/src" raygui_impl.c -o raygui_impl.o
+            ar rcs "$LIB_NAME" raygui_impl.o
+          fi
+          cp "$LIB_NAME" "$TARGET_BASE/$TARGET_DIR/"
+
+      - name: Upload raygui Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: raygui-statics-${{ matrix.os }}
+          path: upload_stage/
+
+  build-tinyfiledialogs:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up MSVC
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Build and Package tinyfiledialogs
+        shell: bash
+        run: |
+          set -x
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            TARGET_DIR="windows-x64"
+            LIB_NAME="tinyfiledialogs.lib"
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            TARGET_DIR="macos-aarch64"
+            LIB_NAME="libtinyfiledialogs.a"
+          else
+            TARGET_DIR="linux-x64"
+            LIB_NAME="libtinyfiledialogs.a"
+          fi
+
+          TARGET_BASE="upload_stage/libraries/tinyfiledialogs.c3l"
+          mkdir -p "$TARGET_BASE/$TARGET_DIR"
+
+          curl -fSL --retry 5 --retry-delay 30 https://sourceforge.net/projects/tinyfiledialogs/files/tinyfiledialogs-current.zip/download -o tinyfd.zip
+          unzip -j tinyfd.zip
+
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            export MSYS2_ARG_CONV_EXCL="*"
+            cl -c -O2 tinyfiledialogs.c
+            lib tinyfiledialogs.obj -out:"$LIB_NAME"
+          else
+            gcc -c -O2 tinyfiledialogs.c -o tinyfiledialogs.o
+            ar rcs "$LIB_NAME" tinyfiledialogs.o
+          fi
+          cp "$LIB_NAME" "$TARGET_BASE/$TARGET_DIR/"
+
+      - name: Upload tinyfiledialogs Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: tinyfiledialogs-statics-${{ matrix.os }}
+          path: upload_stage/
+
+  build-sqlite3:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up MSVC
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Build and Package sqlite3
+        shell: bash
+        run: |
+          set -x
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            TARGET_DIR="windows-x64"
+            LIB_NAME="sqlite3.lib"
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            TARGET_DIR="macos-aarch64"
+            LIB_NAME="libsqlite3.a"
+          else
+            TARGET_DIR="linux-x64"
+            LIB_NAME="libsqlite3.a"
+          fi
+
+          TARGET_BASE="upload_stage/libraries/sqlite3.c3l"
+          mkdir -p "$TARGET_BASE/$TARGET_DIR"
+
+          curl -fSL --retry 5 --retry-delay 30 https://sqlite.org/2026/sqlite-amalgamation-3510300.zip -o sqlite.zip
+          unzip -j sqlite.zip
+
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            cl -c -O2 sqlite3.c
+            lib sqlite3.obj -out:"$LIB_NAME"
+          else
+            gcc -c -O3 -fPIC sqlite3.c -o sqlite3.o
+            ar rcs "$LIB_NAME" sqlite3.o
+          fi
+          cp "$LIB_NAME" "$TARGET_BASE/$TARGET_DIR/"
+
+      - name: Upload sqlite3 Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: sqlite3-statics-${{ matrix.os }}
           path: upload_stage/
 
   build-and-release:
-    needs: [build-static-libs]
+    needs: [build-box2d, build-lz4, build-tree_sitter, build-glfw34, build-ktx, build-raylib, build-raylib5, build-sdl2, build-sdl3, build-sdl3_image, build-sdl3_ttf, build-webgpu, build-tigr, build-raygui, build-tinyfiledialogs, build-sqlite3]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
