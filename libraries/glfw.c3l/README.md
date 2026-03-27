@@ -6,16 +6,13 @@ Pure [glfw](https://github.com/glfw/glfw) bindings for [c3 programming language]
 
 ## Installation
 
-To include these bindings into your project, do:
-```console
-$ git clone https://github.com/vssukharev/glfw.c3l.git   # Clone repo somewhere
-$ make                                                   # Create archive (make sure 'zip' is installed)
-$ mv glfw.c3l /path/to/project/libraries                 # Move archive to libraries directory of your project
-```
+Download the latest `glfw.c3l` from the [Releases](https://github.com/c3lang/vendor/releases) and place it in your project's `libraries` directory.
 
-Or just:
+Alternatively, you can clone the repository directly:
+
 ```console
-$ git clone https://github.com/vssukharev/glfw.c3l.git /path/to/project/libraries/glfw.c3l # Add dependency without zip compression
+$ git clone https://github.com/c3lang/vendor.git
+$ cp -r vendor/libraries/glfw.c3l /path/to/project/libraries/
 ```
 
 Then you need to modify your `project.json`:

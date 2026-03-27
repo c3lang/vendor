@@ -497,6 +497,15 @@ jobs:
           merge-multiple: true
           path: .
 
+      - name: Link glfw to glfw34 binaries
+        run: |
+          mkdir -p libraries/glfw.c3l
+          # Locate the glfw34.c3l directory anywhere and copy its contents
+          SRC_DIR=$(find . -name "glfw34.c3l" -type d -print -quit)
+          if [ -n "$SRC_DIR" ]; then
+            cp -rn "$SRC_DIR/." libraries/glfw.c3l/ || true
+          fi
+
       - name: Install C3 Compiler
         run: |
           curl -L https://github.com/c3lang/c3c/releases/download/latest-prerelease-tag/c3-linux.tar.gz -o c3.tar.gz
