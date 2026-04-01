@@ -390,9 +390,9 @@ import sdl3::stdinc;
 
 // Types
 typedef Profile = uint;
-const Profile CONTEXT_PROFILE_CORE          = 0x0001;
-const Profile CONTEXT_PROFILE_COMPATIBILITY = 0x0002;
-const Profile CONTEXT_PROFILE_ES            = 0x0004;
+const Profile CONTEXT_PROFILE_CORE          = (Profile)0x0001;
+const Profile CONTEXT_PROFILE_COMPATIBILITY = (Profile)0x0002;
+const Profile CONTEXT_PROFILE_ES            = (Profile)0x0004;
 
 
 // Functions
