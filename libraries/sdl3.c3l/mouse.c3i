@@ -24,11 +24,11 @@ constdef SdlMouseButtonFlags : uint
 	X1,
 	X2,
 
-	LMASK = 1u << (LEFT-1),
-	MMASK = 1u << (MIDDLE-1),
-	RMASK = 1u << (RIGHT-1),
-	X1MASK = 1u << (X1-1),
-	X2MASK = 1u << (X2-1),
+	LMASK  = (SdlMouseButtonFlags)1 << (LEFT-1),
+	MMASK  = (SdlMouseButtonFlags)1 << (MIDDLE-1),
+	RMASK  = (SdlMouseButtonFlags)1 << (RIGHT-1),
+	X1MASK = (SdlMouseButtonFlags)1 << (X1-1),
+	X2MASK = (SdlMouseButtonFlags)1 << (X2-1),
 }
 
 enum SdlMouseWheelDirection
