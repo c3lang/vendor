@@ -1923,7 +1923,7 @@ macro void @vrMode(VrStereoConfig config ;@body)
 // NOTE: Every bit registers one state (use it with bit masks)
 // By default all flags are set to 0
 
-typedef ConfigFlag = uint;
+typedef ConfigFlag @constinit = uint;
 
 const ConfigFlag FLAG_VSYNC_HINT         = 0x00000040;   // Set to try enabling V-Sync on GPU
 const ConfigFlag FLAG_FULLSCREEN_MODE    = 0x00000002;   // Set to run program in fullscreen
@@ -1944,7 +1944,7 @@ const ConfigFlag FLAG_INTERLACED_HINT    = 0x00010000;   // Set to try enabling 
 // NOTE: Use GetKeyPressed() to allow redefining
 // required keys for alternative layouts
 
-typedef KeyboardKey = int;
+typedef KeyboardKey @constinit = int;
 
 const KeyboardKey KEY_NULL            = 0;        // Key: NULL; used for no key pressed
 // Alphanumeric keys
@@ -2061,7 +2061,7 @@ const KeyboardKey KEY_MENU            = 82;       // Key: Android menu button
 const KeyboardKey KEY_VOLUME_UP       = 24;       // Key: Android volume up button
 const KeyboardKey KEY_VOLUME_DOWN     = 25;       // Key: Android volume down button
 
-typedef Gesture = int;
+typedef Gesture @constinit = int;
 // Gesture
 // NOTE: It could be used as flags to enable only some gestures
 const Gesture GESTURE_NONE        = 0;      // No gesture
