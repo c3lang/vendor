@@ -1,6 +1,6 @@
 module webgpu;
 
-typedef Adapter = void*;
+typedef Adapter @constinit = void*;
 
 faultdef ADAPTER_REQUEST_FAILED;
 
