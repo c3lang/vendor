@@ -1,45 +1,50 @@
 {
-  "provides": "clang",
-  "targets": {
-    "macos-aarch64": {
-      "linked-libraries": [
-        "clang"
-      ]
-    },
-    "macos-x64": {
-      "linked-libraries": [
-        "clang"
-      ]
-    },
-    "linux-x64": {
-      "linked-libraries": [
-        "clang"
-      ]
-    },
-    "linux-x86": {
-      "linked-libraries": [
-        "clang"
-      ]
-    },
-    "openbsd-x86": {
-      "linked-libraries": [
-        "clang"
-      ]
-    },
-    "openbsd-x64": {
-      "linked-libraries": [
-        "clang"
-      ]
-    },
-    "freebsd-x64": {
-      "linked-libraries": [
-        "clang"
-      ]
-    },
-    "freebsd-x86": {
-      "linked-libraries": [
-        "clang"
-      ]
-    }
-  }
+	"provides": "clang",
+	"targets": {
+		"macos-aarch64": {
+			"linked-libraries": [
+				"clang"
+			]
+		},
+		"macos-x64": {
+			"linked-libraries": [
+				"clang"
+			]
+		},
+		"linux-x64": {
+			"linked-libraries": [
+				"clang"
+			]
+		},
+		"linux-x86": {
+			"linked-libraries": [
+				"clang"
+			]
+		},
+		"openbsd-x86": {
+			"linked-libraries": [
+				"clang"
+			]
+		},
+		"openbsd-x64": {
+			"linked-libraries": [
+				"clang"
+			]
+		},
+		"freebsd-x64": {
+			"linked-libraries": [
+				"clang"
+			]
+		},
+		"freebsd-x86": {
+			"linked-libraries": [
+				"clang"
+			]
+		},
+		"windows-x64": {
+			"linked-libraries": [
+				"clang"
+			]
+		}
+	}
 }
