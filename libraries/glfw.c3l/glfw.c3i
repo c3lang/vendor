@@ -528,6 +528,11 @@ module glfw @if($defined(env::GLFW_INCLUDE_VULKAN) &&& env::GLFW_INCLUDE_VULKAN)
 
 import vulkan;
 
+alias PFN_vkGetInstanceProcAddr = fn void(vk::VkInstance instance, ZString name);
+
+fn void initVulkanLoader(PFN_vkGetInstanceProcAddr loader)
+  @cname("glfwInitVulkanLoader");
+
 fn GlfwVkProc getInstanceProcAddress(vk::VkInstance instance, ZString procname) 
   @cname("glfwGetInstanceProcAddress");
 
