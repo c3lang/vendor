@@ -1,6 +1,16 @@
 
 module sdl3;
 
+// Constants
+const AUDIO_MASK_BITSIZE    = 0xFFu;
+const AUDIO_MASK_FLOAT      = 1u<<8;
+const AUDIO_MASK_BIG_ENDIAN = 1u<<12;
+const AUDIO_MASK_SIGNED     = 1u<<15;
+
+const AUDIO_DEVICE_DEFAULT_PLAYBACK  = (SdlAudioDeviceID)0xFFFFFFFFu;
+const AUDIO_DEVICE_DEFAULT_RECORDING = (SdlAudioDeviceID)0xFFFFFFFEu;
+
+
 // Types
 typedef SdlAudioDeviceID = uint;
 alias SdlAudioPostmixCallback = fn void(void* userdata, SdlAudioSpec* spec, float* buffer, int buflen);
@@ -8,33 +18,55 @@ typedef SdlAudioStream = void;
 alias SdlAudioStreamCallback = fn void(void* userdata, SdlAudioStream* stream, int additional_amount, int total_amount);
 alias SdlAudioStreamDataCompleteCallback = fn void(void* userdata, void* buf, int buflen);
 
+
 // Structs
-struct SdlAudioSpec {
-  SdlAudioFormat format; /**< Audio data format */
-  int channels;       /**< Number of channels: 1 mono, 2 stereo, etc */
-  int freq;           /**< sample rate: sample frames per second */
+struct SdlAudioSpec
+{
+	SdlAudioFormat format; /**< Audio data format */
+	int channels;       /**< Number of channels: 1 mono, 2 stereo, etc */
+	int freq;           /**< sample rate: sample frames per second */
 }
 
+
 // Enums
-constdef SdlAudioFormat : CInt {
-  UNKNOWN   = 0x0000u,  /**< Unspecified audio format */
-  U8        = 0x0008u,  /**< Unsigned 8-bit samples */
-    /* SDL_DEFINE_AUDIO_FORMAT(0, 0, 0, 8), */
-  S8        = 0x8008u,  /**< Signed 8-bit samples */
-    /* SDL_DEFINE_AUDIO_FORMAT(1, 0, 0, 8), */
-  S16LE     = 0x8010u,  /**< Signed 16-bit samples */
-    /* SDL_DEFINE_AUDIO_FORMAT(1, 0, 0, 16), */
-  S16BE     = 0x9010u,  /**< As above, but big-endian byte order */
-    /* SDL_DEFINE_AUDIO_FORMAT(1, 1, 0, 16), */
-  S32LE     = 0x8020u,  /**< 32-bit integer samples */
-    /* SDL_DEFINE_AUDIO_FORMAT(1, 0, 0, 32), */
-  S32BE     = 0x9020u,  /**< As above, but big-endian byte order */
-    /* SDL_DEFINE_AUDIO_FORMAT(1, 1, 0, 32), */
-  F32LE     = 0x8120u,  /**< 32-bit floating point samples */
-    /* SDL_DEFINE_AUDIO_FORMAT(1, 0, 1, 32), */
-  F32BE     = 0x9120u,  /**< As above, but big-endian byte order */
-    /* SDL_DEFINE_AUDIO_FORMAT(1, 1, 1, 32), */
+constdef SdlAudioFormat : CInt
+{
+	UNKNOWN   = 0x0000u,  /**< Unspecified audio format */
+	U8        = 0x0008u,  /**< Unsigned 8-bit samples */
+	    /* SDL_DEFINE_AUDIO_FORMAT(0, 0, 0, 8), */
+	S8        = 0x8008u,  /**< Signed 8-bit samples */
+	    /* SDL_DEFINE_AUDIO_FORMAT(1, 0, 0, 8), */
+	S16LE     = 0x8010u,  /**< Signed 16-bit samples */
+	    /* SDL_DEFINE_AUDIO_FORMAT(1, 0, 0, 16), */
+	S16BE     = 0x9010u,  /**< As above, but big-endian byte order */
+	    /* SDL_DEFINE_AUDIO_FORMAT(1, 1, 0, 16), */
+	S32LE     = 0x8020u,  /**< 32-bit integer samples */
+	    /* SDL_DEFINE_AUDIO_FORMAT(1, 0, 0, 32), */
+	S32BE     = 0x9020u,  /**< As above, but big-endian byte order */
+	    /* SDL_DEFINE_AUDIO_FORMAT(1, 1, 0, 32), */
+	F32LE     = 0x8120u,  /**< 32-bit floating point samples */
+	    /* SDL_DEFINE_AUDIO_FORMAT(1, 0, 1, 32), */
+	F32BE     = 0x9120u,  /**< As above, but big-endian byte order */
+	    /* SDL_DEFINE_AUDIO_FORMAT(1, 1, 1, 32), */
+
+	S16 = env::BIG_ENDIAN ??? S16BE : S16LE,
+	S32 = env::BIG_ENDIAN ??? S32BE : S32LE,
+	F32 = env::BIG_ENDIAN ??? F32BE : F32LE,
 }
+
+
+// Macros
+macro define_audio_format(signed, bigendian, flt, size) => ((ushort)signed << 15) | ((ushort)bigendian << 12) | ((ushort)flt << 8) | (size & SDL_AUDIO_MASK_BITSIZE);
+macro audio_bitsize(x) => x & SDL_AUDIO_MASK_BITSIZE;
+macro audio_bytesize(x) => audio_bitsize(x) / 8;
+macro audio_isfloat(x) => x & SDL_AUDIO_MASK_FLOAT;
+macro audio_isbigendian(x) => x & SDL_AUDIO_MASK_BIG_ENDIAN;
+macro audio_islittleendian(x) => !audio_isbigendian(x);
+macro audio_issigned(x) => x & SDL_AUDIO_MASK_SIGNED;
+macro audio_isint(x) => !audio_isfloat(x);
+macro audio_isunsigned(x) => !audio_issigned(x);
+macro audio_framesize(SdlAudioSpec x) => (int)audio_bytesize(x.format) * x.channels;
+
 
 // Functions
 extern fn bool audioDevicePaused(SdlAudioDeviceID devid) @cname("SDL_AudioDevicePaused");
@@ -71,7 +103,7 @@ extern fn int getSilenceValueForFormat(SdlAudioFormat format) @cname("SDL_GetSil
 extern fn bool isAudioDevicePhysical(SdlAudioDeviceID devid) @cname("SDL_IsAudioDevicePhysical");
 extern fn bool isAudioDevicePlayback(SdlAudioDeviceID devid) @cname("SDL_IsAudioDevicePlayback");
 extern fn bool loadWAV(char* path, SdlAudioSpec* spec, char** audio_buf, uint* audio_len) @cname("SDL_LoadWAV");
-extern fn bool loadWAV_IO(SdlIOStream* src, bool closeio, SdlAudioSpec* spec, char** audio_buf, uint *audio_len) @cname("SDL_LoadWAV_IO");
+extern fn bool loadWAV_IO(SdlIOStream* src, bool closeio, SdlAudioSpec* spec, char** audio_buf, uint* audio_len) @cname("SDL_LoadWAV_IO");
 extern fn bool lockAudioStream(SdlAudioStream* stream) @cname("SDL_LockAudioStream");
 extern fn bool mixAudio(char* dst, char* src, SdlAudioFormat format, uint len, float volume) @cname("SDL_MixAudio");
 extern fn SdlAudioDeviceID openAudioDevice(SdlAudioDeviceID devid, SdlAudioSpec* spec) @cname("SDL_OpenAudioDevice");

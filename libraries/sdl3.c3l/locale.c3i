@@ -2,10 +2,12 @@
 module sdl3;
 
 // Structs
-struct SdlLocale {
-  char* language;
-  char* country;
+struct SdlLocale
+{
+	char* language;
+	char* country;
 }
+
 
 // Functions
 extern fn SdlLocale** getPreferredLocales(int* count) @cname("SDL_GetPreferredLocales");

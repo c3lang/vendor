@@ -1,23 +1,23 @@
 { 
-  "provides" : "curl",
-  "targets" : {
-    "macos-x64" : {
-      "link-args" : [],
-      "dependencies" : [],
-      "linked-libraries" : ["curl"]
-    },
-    "macos-aarch64": {
-      "link-args": [],
-      "dependencies": [],
-      "linked-libraries": ["curl"]
-    },
-    "linux-x64" : {
-      "link-args" : [],
-      "dependencies" : [],
-      "linked-libraries" : ["curl"]
-    },
+	"provides" : "curl",
+	"targets" : {
+		"macos-x64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : ["curl"]
+		},
+		"macos-aarch64": {
+			"link-args": [],
+			"dependencies": [],
+			"linked-libraries": ["curl"]
+		},
+		"linux-x64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : ["curl"]
+		},
 	"windows-x64" : {
-      "linked-libraries" : ["curl"]
+			"linked-libraries" : ["curl"]
 	}
-  }
+	}
 }

@@ -1,18 +1,20 @@
 { 
-  "provides" : "tigr",
-  "targets" : {
-    "macos-x64" : {
-      "link-args" : [],
-      "dependencies" : [],
-      "linked-libraries" : ["tigr", "Cocoa.framework", "OpenGL.framework"]
-    },
-    "linux-x64" : {
-      "link-args" : [],
-      "dependencies" : [],
-      "linked-libraries" : [ "tigr", "GLU", "GL", "X11" ]
-    },
-	"windows-x64" : {
-		"linked-libraries" : [ "opengl32", "gdi32" ]
+	"provides" : "tigr",
+	"targets" : {
+		"macos-x64" : {
+			"linked-libraries" : ["tigr", "Cocoa.framework", "OpenGL.framework"]
+		},
+		"macos-aarch64" : {
+			"linked-libraries" : ["tigr", "Cocoa.framework", "OpenGL.framework"]
+		},
+		"linux-x64" : {
+			"linked-libraries" : ["tigr", "GLU", "GL", "X11"]
+		},
+		"linux-aarch64" : {
+			"linked-libraries" : ["tigr", "GLU", "GL", "X11"]
+		},
+		"windows-x64" : {
+			"linked-libraries" : ["tigr", "opengl32", "gdi32"]
+		}
 	}
-  }
 }

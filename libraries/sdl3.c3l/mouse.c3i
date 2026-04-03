@@ -6,57 +6,62 @@ typedef SdlCursor = void;
 typedef SdlMouseID = uint;
 alias SdlMouseMotionTransformCallback = fn void(void* userdata, ulong timestamp, SdlWindow* window, SdlMouseID mouseID, float* x, float* y);
 
-typedef SdlMouseButtonFlags = uint;
-
-const SdlMouseButtonFlags BUTTON_LEFT = 1;
-const SdlMouseButtonFlags BUTTON_MIDDLE = 2;
-const SdlMouseButtonFlags BUTTON_RIGHT = 3;
-const SdlMouseButtonFlags BUTTON_X1 = 4;
-const SdlMouseButtonFlags BUTTON_X2 = 5;
-
-macro SdlMouseButtonFlags @buttonMask(#a) {
-  return (SdlMouseButtonFlags)(1u << ((uint)(#a) - 1));
-}
-const BUTTON_LMASK   = @buttonMask(BUTTON_LEFT);
-const BUTTON_MMASK   = @buttonMask(BUTTON_MIDDLE);
-const BUTTON_RMASK   = @buttonMask(BUTTON_RIGHT);
-const BUTTON_X1MASK  = @buttonMask(BUTTON_X1);
-const BUTTON_X2MASK  = @buttonMask(BUTTON_X2);
 
 // Structs
-struct SdlCursorFrameInfo {
-  SdlSurface* surface; /**< The surface data for this frame */
-  uint duration;    /**< The frame duration in milliseconds (a duration of 0 is infinite) */
+struct SdlCursorFrameInfo
+{
+	SdlSurface* surface; /**< The surface data for this frame */
+	uint duration;    /**< The frame duration in milliseconds (a duration of 0 is infinite) */
 }
 
+
 // Enums
-enum SdlMouseWheelDirection {
-  NORMAL,    /**< The scroll direction is normal */
-  FLIPPED,   /**< The scroll direction is flipped / natural */
+constdef SdlMouseButtonFlags : uint
+{
+	LEFT = 1,
+	MIDDLE,
+	RIGHT,
+	X1,
+	X2,
+
+	LMASK  = (SdlMouseButtonFlags)1 << (LEFT-1),
+	MMASK  = (SdlMouseButtonFlags)1 << (MIDDLE-1),
+	RMASK  = (SdlMouseButtonFlags)1 << (RIGHT-1),
+	X1MASK = (SdlMouseButtonFlags)1 << (X1-1),
+	X2MASK = (SdlMouseButtonFlags)1 << (X2-1),
 }
-enum SdlSystemCursor {
-  DEFAULT,      /**< Default cursor. Usually an arrow. */
-  TEXT,         /**< Text selection. Usually an I-beam. */
-  WAIT,         /**< Wait. Usually an hourglass or watch or spinning ball. */
-  CROSSHAIR,    /**< Crosshair. */
-  PROGRESS,     /**< Program is busy but still interactive. Usually it's WAIT with an arrow. */
-  NWSE_RESIZE,  /**< Double arrow pointing northwest and southeast. */
-  NESW_RESIZE,  /**< Double arrow pointing northeast and southwest. */
-  EW_RESIZE,    /**< Double arrow pointing west and east. */
-  NS_RESIZE,    /**< Double arrow pointing north and south. */
-  MOVE,         /**< Four pointed arrow pointing north, south, east, and west. */
-  NOT_ALLOWED,  /**< Not permitted. Usually a slashed circle or crossbones. */
-  POINTER,      /**< Pointer that indicates a link. Usually a pointing hand. */
-  NW_RESIZE,    /**< SdlWindow resize top-left. This may be a single arrow or a double arrow like NWSE_RESIZE. */
-  N_RESIZE,     /**< SdlWindow resize top. May be NS_RESIZE. */
-  NE_RESIZE,    /**< SdlWindow resize top-right. May be NESW_RESIZE. */
-  E_RESIZE,     /**< SdlWindow resize right. May be EW_RESIZE. */
-  SE_RESIZE,    /**< SdlWindow resize bottom-right. May be NWSE_RESIZE. */
-  S_RESIZE,     /**< SdlWindow resize bottom. May be NS_RESIZE. */
-  SW_RESIZE,    /**< SdlWindow resize bottom-left. May be NESW_RESIZE. */
-  W_RESIZE,     /**< SdlWindow resize left. May be EW_RESIZE. */
-  COUNT,
+
+enum SdlMouseWheelDirection
+{
+	NORMAL,    /**< The scroll direction is normal */
+	FLIPPED,   /**< The scroll direction is flipped / natural */
 }
+
+enum SdlSystemCursor
+{
+	DEFAULT,      /**< Default cursor. Usually an arrow. */
+	TEXT,         /**< Text selection. Usually an I-beam. */
+	WAIT,         /**< Wait. Usually an hourglass or watch or spinning ball. */
+	CROSSHAIR,    /**< Crosshair. */
+	PROGRESS,     /**< Program is busy but still interactive. Usually it's WAIT with an arrow. */
+	NWSE_RESIZE,  /**< Double arrow pointing northwest and southeast. */
+	NESW_RESIZE,  /**< Double arrow pointing northeast and southwest. */
+	EW_RESIZE,    /**< Double arrow pointing west and east. */
+	NS_RESIZE,    /**< Double arrow pointing north and south. */
+	MOVE,         /**< Four pointed arrow pointing north, south, east, and west. */
+	NOT_ALLOWED,  /**< Not permitted. Usually a slashed circle or crossbones. */
+	POINTER,      /**< Pointer that indicates a link. Usually a pointing hand. */
+	NW_RESIZE,    /**< SdlWindow resize top-left. This may be a single arrow or a double arrow like NWSE_RESIZE. */
+	N_RESIZE,     /**< SdlWindow resize top. May be NS_RESIZE. */
+	NE_RESIZE,    /**< SdlWindow resize top-right. May be NESW_RESIZE. */
+	E_RESIZE,     /**< SdlWindow resize right. May be EW_RESIZE. */
+	SE_RESIZE,    /**< SdlWindow resize bottom-right. May be NWSE_RESIZE. */
+	S_RESIZE,     /**< SdlWindow resize bottom. May be NS_RESIZE. */
+	SW_RESIZE,    /**< SdlWindow resize bottom-left. May be NESW_RESIZE. */
+	W_RESIZE,     /**< SdlWindow resize left. May be EW_RESIZE. */
+	COUNT,
+}
+
 
 // Functions
 extern fn bool captureMouse(bool enabled) @cname("SDL_CaptureMouse");

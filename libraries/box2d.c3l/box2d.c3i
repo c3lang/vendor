@@ -31,7 +31,7 @@
 	Hello World Example at @ https://box2d.org/documentation/hello.html#autotoc_md21
 */
 
-module vendor::box2d::b2;
+module box2d::b2;
 
 
 // region BASE
@@ -684,8 +684,8 @@ alias B2CastResultCallback    = fn float(B2ShapeId shapeId, B2Vec2 point, B2Vec2
 //=====================================================================================================
 //                                  WORLD MODULE
 //=====================================================================================================
-module vendor::box2d::b2::b2world;
-import vendor::box2d::b2::b2math;
+module box2d::b2::b2world;
+import box2d::b2::b2math;
 
 fn B2WorldDef defaultDef() @cname("b2DefaultWorldDef");
 
@@ -739,8 +739,8 @@ fn void B2WorldId.debugDraw(B2WorldId worldId, B2DebugDraw* draw) @cname("b2Worl
 //=====================================================================================================
 //                                  BODY MODULE
 //=====================================================================================================
-module vendor::box2d::b2::b2body;
-import vendor::box2d::b2::b2math;
+module box2d::b2::b2body;
+import box2d::b2::b2math;
 
 // Use this to initialize your body definition.
 fn B2BodyDef defaultDef() @cname("b2DefaultBodyDef");
@@ -826,8 +826,8 @@ fn B2AABBox B2BodyId.computeAABB(B2BodyId bodyId) @cname("b2Body_ComputeAABB");
 //=====================================================================================================
 //                                  SHAPE MODULE
 //=====================================================================================================
-module vendor::box2d::b2::b2shape;
-import vendor::box2d::b2::b2math;
+module box2d::b2::b2shape;
+import box2d::b2::b2math;
 // Use this to initialize your shape definition.
 fn B2ShapeDef defaultDef() @cname("b2DefaultShapeDef");
 
@@ -888,7 +888,7 @@ fn B2Vec2 B2ShapeId.getClosestPoint(B2ShapeId shapeId, B2Vec2 target) @cname("b2
 //=====================================================================================================
 //                                  CHAIN MODULE
 //=====================================================================================================
-module vendor::box2d::b2::b2chain;
+module box2d::b2::b2chain;
 
 // Use this to initialize your chain definition.
 fn B2ChainDef defaultDef() @cname("b2DefaultChainDef");
@@ -911,8 +911,8 @@ fn bool B2ChainId.isValid(B2ChainId id) @cname("b2Chain_IsValid");
 //=====================================================================================================
 //                                  GLOBAL JOINT MODULE
 //=====================================================================================================
-module vendor::box2d::b2::b2joint;
-import vendor::box2d::b2::b2math;
+module box2d::b2::b2joint;
+import box2d::b2::b2math;
 
 <*
 	NOTE(HM):
@@ -949,7 +949,7 @@ fn float getConstraintTorque(B2JointId jointId) @cname("b2Joint_GetConstraintTor
 //=====================================================================================================
 //                                  DISTANCE JOINT MODULE
 //=====================================================================================================
-module vendor::box2d::b2::b2distjoint;
+module box2d::b2::b2distjoint;
 
 // Use this to initialize your distance joint definition.
 fn B2DistanceJointDef defaultDef() @cname("b2DefaultDistanceJointDef");
@@ -982,8 +982,8 @@ fn float getMotorForce(B2JointId jointId) @cname("b2DistanceJoint_GetMotorForce"
 //=====================================================================================================
 //                                  MOTOR JOINT MODULE
 //=====================================================================================================
-module vendor::box2d::b2::b2motorjoint;
-import vendor::box2d::b2::b2math;
+module box2d::b2::b2motorjoint;
+import box2d::b2::b2math;
 
 // Use this to initialize your motor joint definition.
 fn B2MotorJointDef defaultDef() @cname("b2DefaultMotorJointDef");
@@ -1004,8 +1004,8 @@ fn float getCorrectionFactor(B2JointId jointId) @cname("b2MotorJoint_GetCorrecti
 //=====================================================================================================
 //                                  MOUSE JOINT MODULE
 //=====================================================================================================
-module vendor::box2d::b2::b2mousejoint;
-import vendor::box2d::b2::b2math;
+module box2d::b2::b2mousejoint;
+import box2d::b2::b2math;
 
 // Use this to initialize your mouse joint definition.
 fn B2MouseJointDef defaultDef() @cname("b2DefaultMouseJointDef");
@@ -1024,7 +1024,7 @@ fn float getMaxForce(B2JointId jointId) @cname("b2MouseJoint_GetMaxForce");
 //=====================================================================================================
 //                                  PRISMATIC JOINT MODULE
 //=====================================================================================================
-module vendor::box2d::b2::b2prismaticjoint;
+module box2d::b2::b2prismaticjoint;
 
 // Use this to initialize your prismatic joint definition.
 fn B2PrismaticJointDef defaultDef() @cname("b2DefaultPrismaticJointDef");
@@ -1053,7 +1053,7 @@ fn float getMotorForce(B2JointId jointId) @cname("b2PrismaticJoint_GetMotorForce
 //=====================================================================================================
 //                                  REVOLUTE JOINT MODULE
 //=====================================================================================================
-module vendor::box2d::b2::b2revolutejoint;
+module box2d::b2::b2revolutejoint;
 
 // Use this to initialize your revolute joint definition.
 fn B2RevoluteJointDef defaultDef() @cname("b2DefaultRevoluteJointDef");
@@ -1083,7 +1083,7 @@ fn float getMaxMotorTorque(B2JointId jointId) @cname("b2RevoluteJoint_GetMaxMoto
 //=====================================================================================================
 //                                  WELD JOINT MODULE
 //=====================================================================================================
-module vendor::box2d::b2::b2weldjoint;
+module box2d::b2::b2weldjoint;
 
 // Use this to initialize your weld joint definition.
 fn B2WeldJointDef defaultDef() @cname("b2DefaultWeldJointDef");
@@ -1102,7 +1102,7 @@ fn float getAngularDampingRatio(B2JointId jointId) @cname("b2WeldJoint_GetAngula
 //=====================================================================================================
 //                                  WHEEL JOINT MODULE
 //=====================================================================================================
-module vendor::box2d::b2::b2wheeljoint;
+module box2d::b2::b2wheeljoint;
 
 // Use this to initialize your wheel joint definition.
 fn B2WheelJointDef defaultDef() @cname("b2DefaultWheelJointDef");
@@ -1135,7 +1135,7 @@ fn float getMotorTorque(B2JointId jointId) @cname("b2WheelJoint_GetMotorTorque")
 //=====================================================================================================
 //                                  B2 MODULE (B)
 //=====================================================================================================
-module vendor::box2d::b2;
+module box2d::b2;
 
 /// The maximum number of vertices on a convex polygon. Changing this affects performance even if you
 /// don't use more vertices.
@@ -1407,8 +1407,8 @@ struct B2Manifold
 //=====================================================================================================
 //                                  COLLIDE MODULE
 //=====================================================================================================
-module vendor::box2d::b2::b2collide;
-import vendor::box2d::b2::b2math;
+module box2d::b2::b2collide;
+import box2d::b2::b2math;
 
 fn B2Manifold circles(B2Circle* circleA, B2Transform xfA, B2Circle* circleB, B2Transform xfB) @cname("b2CollideCircles");
 fn B2Manifold capsuleAndCircle(B2Capsule* capsuleA, B2Transform xfA, B2Circle* circleB, B2Transform xfB) @cname("b2CollideCapsuleAndCircle");
@@ -1427,7 +1427,7 @@ fn B2Manifold chainSegmentAndPolygon(B2ChainSegment* segmentA, B2Transform xfA, 
 //=====================================================================================================
 //                                  B2 MODULE (C)
 //=====================================================================================================
-module vendor::box2d::b2;
+module box2d::b2;
 
 const DEFAULT_CATEGORY_BITS = 1;
 const DEFAULT_MASK_BITS     = ulong.max; //(UINT64_MAX )
@@ -1467,8 +1467,8 @@ struct B2DynamicTree
 //=====================================================================================================
 //                                  DYNAMIC TREE MODULE
 //=====================================================================================================
-module vendor::box2d::b2::b2dyntree;
-import vendor::box2d::b2::b2math;
+module box2d::b2::b2dyntree;
+import box2d::b2::b2math;
 
 fn B2DynamicTree create() @cname("b2DynamicTree_Create");
 
@@ -1506,7 +1506,7 @@ fn int B2DynamicTree.getByteCount(B2DynamicTree* tree) @cname("b2DynamicTree_Get
 //=====================================================================================================
 //                                  B2 MATH MODULE
 //=====================================================================================================
-module vendor::box2d::b2::b2math;
+module box2d::b2::b2math;
 
 alias B2Vec2 = float[2]; // NOTE(HM) to support C3 vector math using (float[<2>])
 
@@ -1567,7 +1567,7 @@ fn float getLengthUnitsPerMeter() @cname("b2GetLengthUnitsPerMeter");
 //=====================================================================================================
 //                                  B2 MODULE (D)
 //=====================================================================================================
-module vendor::box2d::b2;
+module box2d::b2;
 
 /// These colors are used for debug draw.
 /// See https://www.rapidtables.com/web/color/index.html

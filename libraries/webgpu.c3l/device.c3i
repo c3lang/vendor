@@ -1,6 +1,6 @@
 module webgpu;
 
-typedef Device = void*;
+typedef Device @constinit = void*;
 
 faultdef DEVICE_REQUEST_FAILED;
 

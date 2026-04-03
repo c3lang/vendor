@@ -1,0 +1,99 @@
+name: 'Build Static Library'
+description: 'Clones or downloads a library and builds it with CMake'
+
+inputs:
+  name: { required: true }
+  repo: { required: false }
+  tag: { required: false }
+  c3l: { required: true }
+  cmake_flags: { required: false, default: "" }
+  src_path: { required: false, default: "." }
+  # Downloadable Binary Options
+  linux_url: { required: false }
+  linux_lib: { required: false }
+  mac_url: { required: false }
+  mac_lib: { required: false }
+  win_url: { required: false }
+  win_lib: { required: false }
+  os: { required: true }
+  # Post-Processing Options
+  after_build: { required: false, default: "" }
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install Linux Dependencies
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y pkg-config libx11-dev libxcursor-dev libxi-dev libxinerama-dev \
+          libxrandr-dev libwayland-dev libxkbcommon-dev wayland-protocols libgl1-mesa-dev \
+          libglu1-mesa-dev libxext-dev libxfixes-dev libxss-dev libxtst-dev libasound2-dev \
+          libpulse-dev libjack-dev libsndio-dev mesa-common-dev xorg-dev libxkbcommon-x11-dev
+
+    - name: Build and Package
+      shell: bash
+      env:
+        HOOK_SCRIPT: ${{ inputs.after_build }}
+      run: |
+        set -x
+        if [ "${{ runner.os }}" == "Windows" ]; then
+          TARGET_DIR="windows-x64"
+        elif [[ "${{ inputs.os }}" == "macos-latest" ]]; then
+          TARGET_DIR="macos-aarch64"
+        else
+          TARGET_DIR="linux-x64"
+        fi
+
+        TARGET_BASE="upload_stage/libraries/${{ inputs.c3l }}"
+        mkdir -p "$TARGET_BASE/$TARGET_DIR"
+
+        # Handle pre-compiled binaries if URLs are provided
+        BIN_URL=""
+        BIN_LIB=""
+        if [ "${{ runner.os }}" == "Windows" ]; then
+          BIN_URL="${{ inputs.win_url }}"
+          BIN_LIB="${{ inputs.win_lib }}"
+        elif [[ "${{ inputs.os }}" == "macos-latest" ]]; then
+          BIN_URL="${{ inputs.mac_url }}"
+          BIN_LIB="${{ inputs.mac_lib }}"
+        else
+          BIN_URL="${{ inputs.linux_url }}"
+          BIN_LIB="${{ inputs.linux_lib }}"
+        fi
+
+        if [ -n "$BIN_URL" ] && [ -n "$BIN_LIB" ]; then
+          ARCHIVE=$(basename "$BIN_URL")
+          curl -fsSL -o "$ARCHIVE" "$BIN_URL"
+          if [[ "$ARCHIVE" == *.tar.gz ]]; then
+            tar -xzf "$ARCHIVE" "$BIN_LIB"
+            cp "$BIN_LIB" "$TARGET_BASE/$TARGET_DIR/"
+          else
+            unzip -j "$ARCHIVE" "$BIN_LIB" -d "$TARGET_BASE/$TARGET_DIR/"
+          fi
+        else
+          # Otherwise build from source
+          git clone ${{ inputs.repo }} -b ${{ inputs.tag }} build_src
+          cd build_src
+          git submodule update --init --recursive
+          mkdir -p c3_build_temp && cd c3_build_temp
+
+          cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release ${{ inputs.cmake_flags }} "../${{ inputs.src_path }}"
+          cmake --build . --config Release --parallel 4
+
+          find . -type f \( -name "*.a" -o -name "*.lib" \) -exec cp {} "../../$TARGET_BASE/$TARGET_DIR/" \;
+          cd ../..
+        fi
+
+        # After Build Hook
+        if [ -n "$HOOK_SCRIPT" ]; then
+           printf "%s" "$HOOK_SCRIPT" > run_hook.sh
+           bash run_hook.sh
+        fi
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v6
+      with:
+        name: ${{ inputs.name }}-statics-${{ inputs.os }}
+        path: upload_stage/
