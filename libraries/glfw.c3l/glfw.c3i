@@ -589,7 +589,7 @@ fn GlfwVkProc getInstanceProcAddress(vk::VkInstance instance, ZString procname)
 fn int getPhysicalDevicePresentationSupport(vk::VkInstance instance, vk::VkPhysicalDevice device, uint queuefamily) 
   @cname("glfwGetPhysicalDevicePresentationSupport");
 
-fn vk::VkResult createWindowSurface(vk::VkInstance instance, GlfwWindow* window, vk::VkAllocationCallbacks* allocator, vk::VkSurface surface) 
+fn vk::VkResult createWindowSurface(vk::VkInstance instance, GlfwWindow* window, vk::VkAllocationCallbacks* allocator, vk::VkSurface* surface) 
   @cname("glfwCreateWindowSurface");
 
  
