@@ -1,6 +1,22 @@
 
 module sdl3;
 
+// Constants
+const LIL_ENDIAN = 1234;
+const BIG_ENDIAN = 4321;
+
+
+// Macros
+macro ushort swap16LE(ushort x)   => env::BIG_ENDIAN ??? swap16(x) : x;
+macro uint   swap32LE(uint x)     => env::BIG_ENDIAN ??? swap32(x) : x;
+macro ulong  swap64LE(ulong x)    => env::BIG_ENDIAN ??? swap64(x) : x;
+macro float  swapFloatLE(float x) => env::BIG_ENDIAN ??? swapFloat(x) : x;
+macro ushort swap16BE(ushort x)   => env::BIG_ENDIAN ??? x : swap16(x);
+macro uint   swap32BE(uint x)     => env::BIG_ENDIAN ??? x : swap32(x);
+macro ulong  swap64BE(ulong x)    => env::BIG_ENDIAN ??? x : swap64(x);
+macro float  swapFloatBE(float x) => env::BIG_ENDIAN ??? x : swapFloat(x);
+
+
 // Functions
 extern fn ushort swap16(ushort x) @cname("SDL_Swap16");
 extern fn uint swap32(uint x) @cname("SDL_Swap32");

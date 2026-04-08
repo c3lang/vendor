@@ -1,14 +1,32 @@
 
 module sdl3;
 
+// Constants
+const MS_PER_SECOND = 1000;
+const US_PER_SECOND = 1000000;
+const NS_PER_SECOND = 1000000000;
+const NS_PER_MS     = 1000000;
+const NS_PER_US     = 1000;
+
+
 // Types
-typedef TimerID = uint;
-alias NSTimerCallback = fn ulong(void* userdata, TimerID timerID, ulong interval);
-alias TimerCallback = fn uint(void* usedata, TimerID timerID, uint interval);
+typedef SdlTimerID = uint;
+alias SdlNSTimerCallback = fn ulong(void* userdata, SdlTimerID timerID, ulong interval);
+alias SdlTimerCallback = fn uint(void* usedata, SdlTimerID timerID, uint interval);
+
+
+// Macros
+macro seconds_to_ns(s)  => (ulong)s * NS_PER_SECOND;
+macro ns_to_seconds(ns) => ns / NS_PER_SECOND;
+macro ms_to_ns(ms)      => (ulong)ms * NS_PER_MS;
+macro ns_to_ms(ns)      => ns / NS_PER_MS;
+macro us_to_ns(us)      => (ulong)us * NS_PER_US;
+macro ns_to_us(ns)      => ns / NS_PER_US;
+
 
 // Functions
-extern fn TimerID addTimer(uint interval, TimerCallback callback, void* userdata) @cname("SDL_AddTimer");
-extern fn TimerID addTimerNS(ulong interval, NSTimerCallback callback, void* userdata) @cname("SDL_AddTimerNS");
+extern fn SdlTimerID addTimer(uint interval, SdlTimerCallback callback, void* userdata) @cname("SDL_AddTimer");
+extern fn SdlTimerID addTimerNS(ulong interval, SdlNSTimerCallback callback, void* userdata) @cname("SDL_AddTimerNS");
 extern fn void delay(uint ms) @cname("SDL_Delay");
 extern fn void delayNS(ulong ns) @cname("SDL_DelayNS");
 extern fn void delayPrecise(ulong ns) @cname("SDL_DelayPrecise");
@@ -16,4 +34,4 @@ extern fn ulong getPerformanceCounter() @cname("SDL_GetPerformanceCounter");
 extern fn ulong getPerformanceFrequency() @cname("SDL_GetPerformanceFrequency");
 extern fn ulong getTicks() @cname("SDL_GetTicks");
 extern fn ulong getTicksNS() @cname("SDL_GetTicksNS");
-extern fn bool removeTimer(TimerID id) @cname("SDL_RemoveTimer");
+extern fn bool removeTimer(SdlTimerID id) @cname("SDL_RemoveTimer");

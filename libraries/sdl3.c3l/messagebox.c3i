@@ -2,50 +2,64 @@
 module sdl3;
 
 // Bitstructs
-bitstruct SdlMessageBoxButtonFlags : uint {
-  bool returnkey;
-  bool escapekey;
+bitstruct SdlMessageBoxButtonFlags : uint
+{
+	bool returnkey;
+	bool escapekey;
 }
-bitstruct SdlMessageBoxFlags : uint {
-  bool error:   5;
-  bool warning: 6;
-  bool info:    7;
-  bool buttonsLeftToRight: 8;
-  bool buttonsRightToLeft: 9;
+
+bitstruct SdlMessageBoxFlags : uint
+{
+	bool error                 : 5;
+	bool warning               : 6;
+	bool information           : 7;
+	bool buttons_left_to_right : 8;
+	bool buttons_right_to_left : 9;
 }
+
 
 // Structs
-struct SdlMessageBoxButtonData {
-  SdlMessageBoxButtonFlags flags;
-  int buttonID; /**< User defined button id (value returned via SDL_ShowMessageBox) */
-  char* text;   /**< The UTF-8 button text */
+struct SdlMessageBoxButtonData
+{
+	SdlMessageBoxButtonFlags flags;
+	int buttonID; /**< User defined button id (value returned via SDL_ShowMessageBox) */
+	char* text;   /**< The UTF-8 button text */
 }
-struct SdlMessageBoxColor {
-  char r, g, b;
-}
-struct SdlMessageBoxColorScheme {
-  SdlMessageBoxColor[SdlMessageBoxColorType.COLOR_COUNT.ordinal] colors;
-}
-struct SdlMessageBoxData {
-  SdlMessageBoxFlags flags;
-  SdlWindow* window;        /**< Parent window, can be NULL */
-  char* title;           /**< UTF-8 title */
-  char* message;         /**< UTF-8 message text */
 
-  int numbuttons;
-  SdlMessageBoxButtonData* buttons;
-  SdlMessageBoxColorScheme* colorScheme; /**< SDL_MessageBoxColorScheme, can be NULL to use system settings */
+struct SdlMessageBoxColor
+{
+	char r, g, b;
 }
+
+struct SdlMessageBoxColorScheme
+{
+	SdlMessageBoxColor[SdlMessageBoxColorType.COUNT.ordinal] colors;
+}
+
+struct SdlMessageBoxData
+{
+	SdlMessageBoxFlags flags;
+	SdlWindow* window;        /**< Parent window, can be NULL */
+	char* title;           /**< UTF-8 title */
+	char* message;         /**< UTF-8 message text */
+
+	int numbuttons;
+	SdlMessageBoxButtonData* buttons;
+	SdlMessageBoxColorScheme* colorScheme; /**< SDL_MessageBoxColorScheme, can be NULL to use system settings */
+}
+
 
 // Enums
-enum SdlMessageBoxColorType {
-  BACKGROUND,
-  TEXT,
-  BUTTON_BORDER,
-  BUTTON_BACKGROUND,
-  BUTTON_SELECTED,
-  COLOR_COUNT,       /**< Size of the colors array of SDL_MessageBoxColorScheme. */
+enum SdlMessageBoxColorType
+{
+	BACKGROUND,
+	TEXT,
+	BUTTON_BORDER,
+	BUTTON_BACKGROUND,
+	BUTTON_SELECTED,
+	COUNT,       /**< Size of the colors array of SDL_MessageBoxColorScheme. */
 }
+
 
 // Functions
 extern fn bool showMessageBox(SdlMessageBoxData* messageboxdata, int* buttonid) @cname("SDL_ShowMessageBox");

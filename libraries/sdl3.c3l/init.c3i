@@ -2,30 +2,46 @@
 module sdl3;
 
 // Types
-alias SdlAppEvent_func = fn SdlAppResult(void* appstate, SdlEvent* event);
-alias SdlAppInit_func = fn SdlAppResult(void** appstate, int argc, char* argv);
-alias SdlAppIterate_func = fn SdlAppResult(void* appstate);
-alias SdlAppQuit_func = fn void(void* appstate, SdlAppResult result);
+alias SdlAppEventFunc = fn SdlAppResult(void* appstate, SdlEvent* event);
+alias SdlAppInitFunc = fn SdlAppResult(void** appstate, int argc, char** argv);
+alias SdlAppIterateFunc = fn SdlAppResult(void* appstate);
+alias SdlAppQuitFunc = fn void(void* appstate, SdlAppResult result);
 alias SdlMainThreadCallback = fn void(void* userdata);
 
+
 // Bitstructs
-bitstruct SdlInitFlags : uint {
-  bool audio    :  4;
-  bool video    :  5;
-  bool joystick :  9;
-  bool haptic   : 12;
-  bool gamepad  : 13;
-  bool events   : 14;
-  bool sensor   : 15;
-  bool camera   : 16;
+bitstruct SdlInitFlags : uint
+{
+	bool audio    :  4;
+	bool video    :  5;
+	bool joystick :  9;
+	bool haptic   : 12;
+	bool gamepad  : 13;
+	bool events   : 14;
+	bool sensor   : 15;
+	bool camera   : 16;
 }
 
+
 // Enums
-enum SdlAppResult {
-  CONTINUE,   /**< Value that requests that the app continue from the main callbacks. */
-  SUCCESS,    /**< Value that requests termination with success from the main callbacks. */
-  FAILURE,    /**< Value that requests termination with error from the main callbacks. */
+enum SdlAppResult
+{
+	CONTINUE,   /**< Value that requests that the app continue from the main callbacks. */
+	SUCCESS,    /**< Value that requests termination with success from the main callbacks. */
+	FAILURE,    /**< Value that requests termination with error from the main callbacks. */
 }
+
+constdef AppMetadataProperties : ZString
+{
+	NAME_STRING       = "SDL.app.metadata.name",
+	VERSION_STRING    = "SDL.app.metadata.version",
+	IDENTIFIER_STRING = "SDL.app.metadata.identifier",
+	CREATOR_STRING    = "SDL.app.metadata.creator",
+	COPYRIGHT_STRING  = "SDL.app.metadata.copyright",
+	URL_STRING        = "SDL.app.metadata.url",
+	TYPE_STRING       = "SDL.app.metadata.type",
+}
+
 
 // Functions
 extern fn char* getAppMetadataProperty(char* name) @cname("SDL_GetAppMetadataProperty");

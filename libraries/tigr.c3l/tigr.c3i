@@ -213,8 +213,8 @@ struct Font
 
 constdef TCodepage : int
 {
-	ASCII = 0;
-	WIN1252 = 1252;
+	ASCII = 0,
+	WIN1252 = 1252,
 	UTF32 = 12001
 }
 

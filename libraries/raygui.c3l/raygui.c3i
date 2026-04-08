@@ -458,7 +458,7 @@ const  TEXT_WRAP_MODE = 22;              // Text wrap-mode inside text bounds
 // TEXT_INDENT                  // Text indentation -> Now using TEXT_PADDING...
 
 
-typedef GuiControlProperty = CInt;
+typedef GuiControlProperty @constinit = CInt;
 module raygui::rg::property_element;
 
 const GuiControlProperty BORDER = 0;

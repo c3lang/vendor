@@ -5,6 +5,7 @@ module sdl3;
 alias SdlClipboardCleanupCallback = fn void(void* userdata);
 alias SdlClipboardDataCallback = fn void*(void *userdata, char* mime_type, usz* size);
 
+
 // Functions
 extern fn bool clearClipboardData() @cname("SDL_ClearClipboardData");
 extern fn void* getClipboardData(char* mime_type, usz* size) @cname("SDL_GetClipboardData");

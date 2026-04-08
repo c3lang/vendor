@@ -7,20 +7,25 @@ typedef SdlMutex = void;
 typedef SdlRWLock = void;
 typedef SdlSemaphore = void;
 
+
 // Structs
-struct SdlInitState {
-  SdlAtomicInt status;
-  SdlThreadID thread;
-  void* reserved;
+struct SdlInitState
+{
+	SdlAtomicInt status;
+	SdlThreadID thread;
+	void* reserved;
 }
 
+
 // Enums
-enum SdlInitStatus {
-  UNINITIALIZED,
-  INITIALIZING,
-  INITIALIZED,
-  UNINITIALIZING,
+enum SdlInitStatus
+{
+	UNINITIALIZED,
+	INITIALIZING,
+	INITIALIZED,
+	UNINITIALIZING,
 }
+
 
 // Functions
 extern fn void broadcastCondition(SdlCondition* cond) @cname("SDL_BroadcastCondition");

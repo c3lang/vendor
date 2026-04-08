@@ -4,13 +4,41 @@ module sdl3;
 // Types
 typedef SdlProcess = void;
 
+
 // Enums
-enum SdlProcessIO {
-  INHERITED,    /**< The I/O stream is inherited from the application. */
-  NULL,         /**< The I/O stream is ignored. */
-  APP,          /**< The I/O stream is connected to a new SDL_IOStream that the application can read or write */
-  REDIRECT,     /**< The I/O stream is redirected to an existing SDL_IOStream. */
+enum SdlProcessIO
+{
+	INHERITED,    /**< The I/O stream is inherited from the application. */
+	NULL,         /**< The I/O stream is ignored. */
+	APP,          /**< The I/O stream is connected to a new SDL_IOStream that the application can read or write */
+	REDIRECT,     /**< The I/O stream is redirected to an existing SDL_IOStream. */
 }
+
+constdef SdlProcessCreateProperties : ZString
+{
+	ARGS_POINTER              = "SDL.process.create.args",
+	ENVIRONMENT_POINTER       = "SDL.process.create.environment",
+	WORKING_DIRECTORY_STRING  = "SDL.process.create.working_directory",
+	STDIN_NUMBER              = "SDL.process.create.stdin_option",
+	STDIN_POINTER             = "SDL.process.create.stdin_source",
+	STDOUT_NUMBER             = "SDL.process.create.stdout_option",
+	STDOUT_POINTER            = "SDL.process.create.stdout_source",
+	STDERR_NUMBER             = "SDL.process.create.stderr_option",
+	STDERR_POINTER            = "SDL.process.create.stderr_source",
+	STDERR_TO_STDOUT_BOOLEAN  = "SDL.process.create.stderr_to_stdout",
+	BACKGROUND_BOOLEAN        = "SDL.process.create.background",
+	CMDLINE_STRING            = "SDL.process.create.cmdline",
+}
+
+constdef SdlProcessProperties : ZString
+{
+	PID_NUMBER         = "SDL.process.pid",
+	STDIN_POINTER      = "SDL.process.stdin",
+	STDOUT_POINTER     = "SDL.process.stdout",
+	STDERR_POINTER     = "SDL.process.stderr",
+	BACKGROUND_BOOLEAN = "SDL.process.background",
+}
+
 
 // Functions
 extern fn SdlProcess* createProcess(char** args, bool pipe_stdio) @cname("SDL_CreateProcess");

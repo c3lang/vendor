@@ -1,30 +1,23 @@
 {
-  "provides" : "tinyfiledialogs",
-  "targets" : {
-    "linux-x86" : {
-      "link-args" : [],
-      "dependencies" : [],
-      "linked-libraries" : ["tinyfiledialogsLinux86"]
-    },
-    "linux-x64" : {
-      "link-args" : [],
-      "dependencies" : [],
-      "linked-libraries" : ["tinyfiledialogsLinux64"]
-    },
-    "linux-aarch64": {
-      "link-args": [],
-      "dependencies": [],
-      "linked-libraries": ["tinyfiledialogsLinuxAarch64"]
-    },
-    "macos-x64" : {
-      "link-args" : [],
-      "dependencies" : [],
-      "linked-libraries" : ["tinyfiledialogsIntel"]
-    },
-    "windows-x64" : {
-      "link-args" : [],
-      "dependencies" : [],
-      "linked-libraries" : ["tinyfiledialogs64", "comdlg32", "ole32"]
-    }
-  }
+	"provides" : "tinyfiledialogs",
+	"targets" : {
+		"linux-x86" : {
+			"linked-libraries" : ["tinyfiledialogs"]
+		},
+		"linux-x64" : {
+			"linked-libraries" : ["tinyfiledialogs"]
+		},
+		"linux-aarch64": {
+			"linked-libraries" : ["tinyfiledialogs"]
+		},
+		"macos-x64" : {
+			"linked-libraries" : ["tinyfiledialogs"]
+		},
+		"macos-aarch64": {
+			"linked-libraries" : ["tinyfiledialogs"]
+		},
+		"windows-x64" : {
+			"linked-libraries" : ["tinyfiledialogs", "comdlg32", "ole32"]
+		}
+	}
 }
