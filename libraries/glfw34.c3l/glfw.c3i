@@ -583,18 +583,18 @@ module glfw34 @if($defined(env::GLFW_INCLUDE_VULKAN) &&& env::GLFW_INCLUDE_VULKA
 
 import vulkan;
 
-alias PFN_vkGetInstanceProcAddr = fn void(vk::Instance instance, ZString name);
+alias PFN_vkGetInstanceProcAddr = fn void(vk::VkInstance instance, ZString name);
 
 fn void initVulkanLoader(PFN_vkGetInstanceProcAddr loader)
   @cname("glfwInitVulkanLoader");
 
-fn GlfwVkProc getInstanceProcAddress(vk::Instance instance, ZString procname) 
+fn GlfwVkProc getInstanceProcAddress(vk::VkInstance instance, ZString procname) 
   @cname("glfwGetInstanceProcAddress");
 
-fn int getPhysicalDevicePresentationSupport(vk::Instance instance, vk::PhysicalDevice device, uint queuefamily) 
+fn int getPhysicalDevicePresentationSupport(vk::VkInstance instance, vk::VkPhysicalDevice device, uint queuefamily) 
   @cname("glfwGetPhysicalDevicePresentationSupport");
 
-fn vk::Result createWindowSurface(vk::Instance instance, GlfwWindow* window, vk::AllocationCallbacks* allocator, vk::SurfaceKHR* surface) 
+fn vk::VkResult createWindowSurface(vk::VkInstance instance, GlfwWindow* window, vk::VkAllocationCallbacks* allocator, vk::VkSurface* surface) 
   @cname("glfwCreateWindowSurface");
 
  
