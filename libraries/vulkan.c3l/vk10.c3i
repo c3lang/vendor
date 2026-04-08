@@ -511,9 +511,9 @@ constdef VkImageTiling : int
 }
 constdef VkImageType : int
 {
-    ONE_D = 0,
-    TWO_D = 1,
-    THREE_D = 2,
+    TYPE_1D = 0,
+    TYPE_2D = 1,
+    TYPE_3D = 2,
     MAX_ENUM = 0x7FFFFFFF
 }
 constdef VkImageUsageFlagBits : int
@@ -530,12 +530,12 @@ constdef VkImageUsageFlagBits : int
 }
 constdef VkImageViewType : int
 {
-    ONE_D = 0,
-    TWO_D = 1,
-    THREE_D = 2,
+    TYPE_1D = 0,
+    TYPE_2D = 1,
+    TYPE_3D = 2,
     CUBE = 3,
-    ONE_D_ARRAY = 4,
-    TWO_D_ARRAY = 5,
+    TYPE_1D_ARRAY = 4,
+    TYPE_2D_ARRAY = 5,
     CUBE_ARRAY = 6,
     MAX_ENUM = 0x7FFFFFFF
 }
@@ -665,7 +665,7 @@ constdef VkQueryPipelineStatisticFlagBits : int
 }
 constdef VkQueryResultFlagBits : int
 {
-    SIXTY_FOUR_BIT = 1,
+    RESULT_64_BIT = 1,
     WAIT_BIT = 2,
     WITH_AVAILABILITY_BIT = 4,
     PARTIAL_BIT = 8,
@@ -875,13 +875,13 @@ constdef VkSparseImageFormatFlagBits : int
 }
 constdef VkSampleCountFlagBits : int
 {
-    ONE_BIT = 1,
-    TWO_BIT = 2,
-    FOUR_BIT = 4,
-    EIGHT_BIT = 8,
-    SIXTEEN_BIT = 16,
-    THIRTY_TWO_BIT = 32,
-    SIXTY_FOUR_BIT = 64,
+    COUNT_1_BIT = 1,
+    COUNT_2_BIT = 2,
+    COUNT_4_BIT = 4,
+    COUNT_8_BIT = 8,
+    COUNT_16_BIT = 16,
+    COUNT_32_BIT = 32,
+    COUNT_64_BIT = 64,
     MAX_ENUM = 0x7FFFFFFF
 }
 constdef VkAttachmentDescriptionFlagBits : int
