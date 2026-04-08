@@ -563,7 +563,7 @@ constdef VkImageCreateFlagBits : int
     CUBE_COMPATIBLE_BIT = 16,
     ALIAS_BIT = 1024,
     SPLIT_INSTANCE_BIND_REGIONS_BIT = 64,
-    TWO_D_ARRAY_COMPATIBLE_BIT = 32,
+    CREATE_2D_ARRAY_COMPATIBLE_BIT = 32,
     BLOCK_TEXEL_VIEW_COMPATIBLE_BIT = 128,
     EXTENDED_USAGE_BIT = 256,
     PROTECTED_BIT = 2048,
@@ -597,9 +597,9 @@ constdef VkImageTiling : int
 }
 constdef VkImageType : int
 {
-    ONE_D = 0,
-    TWO_D = 1,
-    THREE_D = 2,
+    TYPE_1D = 0,
+    TYPE_2D = 1,
+    TYPE_3D = 2,
     MAX_ENUM = 0x7FFFFFFF
 }
 constdef VkImageUsageFlagBits : int
@@ -616,12 +616,12 @@ constdef VkImageUsageFlagBits : int
 }
 constdef VkImageViewType : int
 {
-    ONE_D = 0,
-    TWO_D = 1,
-    THREE_D = 2,
+    TYPE_1D = 0,
+    TYPE_2D = 1,
+    TYPE_3D = 2,
     CUBE = 3,
-    ONE_D_ARRAY = 4,
-    TWO_D_ARRAY = 5,
+    TYPE_1D_ARRAY = 4,
+    TYPE_2D_ARRAY = 5,
     CUBE_ARRAY = 6,
     MAX_ENUM = 0x7FFFFFFF
 }
@@ -756,7 +756,7 @@ constdef VkQueryPipelineStatisticFlagBits : int
 }
 constdef VkQueryResultFlagBits : int
 {
-    SIXTY_FOUR_BIT = 1,
+    RESULT_64_BIT = 1,
     WAIT_BIT = 2,
     WITH_AVAILABILITY_BIT = 4,
     PARTIAL_BIT = 8,
@@ -833,7 +833,7 @@ constdef VkStencilFaceFlagBits : int
     FRONT_BIT = 1,
     BACK_BIT = 2,
     FRONT_AND_BACK = 0x00000003,
-    STENCIL_FRONT_AND_BACK = FRONT_AND_BACK,
+    STENCIL_FRONT_AND_BACK = 0x00000003,
     MAX_ENUM = 0x7FFFFFFF
 }
 constdef VkStencilOp : int
@@ -1089,13 +1089,13 @@ constdef VkSparseImageFormatFlagBits : int
 }
 constdef VkSampleCountFlagBits : int
 {
-    ONE_BIT = 1,
-    TWO_BIT = 2,
-    FOUR_BIT = 4,
-    EIGHT_BIT = 8,
-    SIXTEEN_BIT = 16,
-    THIRTY_TWO_BIT = 32,
-    SIXTY_FOUR_BIT = 64,
+    COUNT_1_BIT = 1,
+    COUNT_2_BIT = 2,
+    COUNT_4_BIT = 4,
+    COUNT_8_BIT = 8,
+    COUNT_16_BIT = 16,
+    COUNT_32_BIT = 32,
+    COUNT_64_BIT = 64,
     MAX_ENUM = 0x7FFFFFFF
 }
 constdef VkAttachmentDescriptionFlagBits : int
