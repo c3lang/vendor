@@ -506,10 +506,11 @@ jobs:
             cp -rn "$SRC_DIR/." libraries/glfw.c3l/ || true
           fi
 
-      - name: Install C3 Compiler
+      - name: Install latest C3 Compiler
         run: |
           #curl -L https://github.com/c3lang/c3c/releases/download/latest-prerelease-tag/c3-linux.tar.gz -o c3.tar.gz
-          curl -L https://github.com/c3lang/c3c/releases/download/v0.7.11/c3-linux.tar.gz -o c3.tar.gz
+          #curl -L https://github.com/c3lang/c3c/releases/download/v0.7.11/c3-linux.tar.gz -o c3.tar.gz
+          curl -L https://github.com/c3lang/c3c/releases/latest/download/c3-linux.tar.gz -o c3.tar.gz
           tar -xzf c3.tar.gz
           echo "$(pwd)/c3" >> $GITHUB_PATH
 
