@@ -557,7 +557,7 @@ fn int joystickIsGamepad(int jid) @cname("glfwJoystickIsGamepad");
 fn GlfwJoystickFn setJoystickCallback(GlfwJoystickFn callback) @cname("glfwSetJoystickCallback");
 fn int updateGamepadMappings(ZString string) @cname("glfwUpdateGamepadMappings");
 fn ZString getGamepadName(int jid) @cname("glfwGetGamepadName");
-fn int getGlfwGamepadState(int jid, GlfwGamepadState* state) @cname("glfwGetGlfwGamepadState");
+fn int getGamepadState(int jid, GlfwGamepadState* state) @cname("glfwGetGamepadState");
  
 fn void setClipboardString(GlfwWindow* window, ZString string) @cname("glfwSetClipboardString");
 fn ZString getClipboardString(GlfwWindow* window) @cname("glfwGetClipboardString");
