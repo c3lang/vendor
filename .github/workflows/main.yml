@@ -506,7 +506,7 @@ jobs:
           path: upload_stage/
 
   build-and-release:
-    needs: [build-box2d, build-lz4, build-tree_sitter, build-glfw34, build-ktx, build-raylib, build-raylib5, build-sdl2, build-sdl3, build-sdl3_image, build-sdl3_ttf, build-webgpu, build-tigr, build-raygui, build-tinyfiledialogs, build-sqlite3]
+    needs: [build-box2d, build-lz4, build-tree_sitter, build-glfw34, build-ktx, build-raylib6, build-raylib55, build-raylib5, build-sdl2, build-sdl3, build-sdl3_image, build-sdl3_ttf, build-webgpu, build-tigr, build-raygui, build-tinyfiledialogs, build-sqlite3]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
