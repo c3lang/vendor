@@ -12,8 +12,6 @@
 				"sqlite3",
 				"curl",
 				"lz4",
-				"raylib5",
-				"raylib55",
 			  	"raylib6",
 				"glfw",
 				"glfw34",

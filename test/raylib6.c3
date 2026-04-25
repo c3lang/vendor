@@ -1,5 +1,5 @@
 module raylib6_test;
-import raylib6::rl;
+import raylib6;
 
 fn void test_log() @test
 {
