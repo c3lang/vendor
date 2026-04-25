@@ -1,0 +1,1970 @@
+// This file requires 0.7.10 or later.
+module raylib6::rl;
+import std::math;
+
+const float PI = 3.14159265358979323846f;
+const float DEG2RAD = PI / 180.0f;
+const float RAD2DEG = 180.0f / PI;
+
+// Some Basic Colors
+// NOTE: Custom raylib color palette for amazing visuals on WHITE background
+const RLColor LIGHTGRAY   = { 200, 200, 200, 255 }; // Light Gray
+const RLColor GRAY        = { 130, 130, 130, 255 }; // Gray
+const RLColor DARKGRAY    = { 80, 80, 80, 255 };    // Dark Gray
+const RLColor YELLOW      = { 253, 249, 0, 255 };   // Yellow
+const RLColor GOLD        = { 255, 203, 0, 255 };   // Gold
+const RLColor ORANGE      = { 255, 161, 0, 255 };   // Orange
+const RLColor PINK        = { 255, 109, 194, 255 }; // Pink
+const RLColor RED         = { 230, 41, 55, 255 };   // Red
+const RLColor MAROON      = { 190, 33, 55, 255 };   // Maroon
+const RLColor GREEN       = { 0, 228, 48, 255 };    // Green
+const RLColor LIME        = { 0, 158, 47, 255 };    // Lime
+const RLColor DARKGREEN   = { 0, 117, 44, 255 };    // Dark Green
+const RLColor SKYBLUE     = { 102, 191, 255, 255 }; // Sky Blue
+const RLColor BLUE        = { 0, 121, 241, 255 };   // Blue
+const RLColor DARKBLUE    = { 0, 82, 172, 255 };    // Dark Blue
+const RLColor PURPLE      = { 200, 122, 255, 255 }; // Purple
+const RLColor VIOLET      = { 135, 60, 190, 255 };  // Violet
+const RLColor DARKPURPLE  = { 112, 31, 126, 255 };  // Dark Purple
+const RLColor BEIGE       = { 211, 176, 131, 255 }; // Beige
+const RLColor BROWN       = { 127, 106, 79, 255 };  // Brown
+const RLColor DARKBROWN   = { 76, 63, 47, 255 };    // Dark Brown
+
+const RLColor WHITE       = { 255, 255, 255, 255 }; // White
+const RLColor BLACK       = { 0, 0, 0, 255 };       // Black
+const RLColor BLANK       = { 0, 0, 0, 0 };         // Blank (Transparent)
+const RLColor MAGENTA     = { 255, 0, 255, 255 };   // Magenta
+const RLColor RAYWHITE    = { 245, 245, 245, 255 }; // My own White (raylib logo)
+
+alias RLVector2 = float[<2>];
+alias RLVector3 = float[<3>];
+alias RLVector4 = float[<4>];
+
+// Color, 4 components, R8G8B8A8 (32bit)
+alias RLColor = char[<4>];
+
+// Image, pixel data stored in CPU memory (RAM)
+struct RLImage
+{
+	void* data;           // Image raw data
+	int width;           // Image base width
+	int height;          // Image base height
+	int mipmaps;         // Mipmap levels, 1 by default
+	RLPixelFormat format; // Data format (PixelFormat type)
+}
+
+// Texture, tex data stored in GPU memory (VRAM)
+struct RLTexture
+{
+	uint id;             // OpenGL texture id
+	int width;           // Texture base width
+	int height;          // Texture base height
+	int mipmaps;         // Mipmap levels, 1 by default
+	RLPixelFormat format; // Data format (RLPixelFormat type)
+}
+
+// Texture2D, same as Texture
+alias RLTexture2D = RLTexture;
+
+// TextureCubemap, same as Texture
+alias RLTextureCubemap = RLTexture;
+
+// RLRenderTexture, fbo for texture rendering
+struct RLRenderTexture
+{
+	uint id;          // OpenGL framebuffer object id
+	RLTexture texture; // Color buffer attachment texture
+	RLTexture depth;   // Depth buffer attachment texture
+}
+
+// RLRenderTexture2D, same as RenderTexture
+alias RLRenderTexture2D = RLRenderTexture;
+
+// RLNPatchInfo, n-patch layout info
+struct RLNPatchInfo
+{
+	Rect source;    // Texture source rectangle
+	int left;             // Left border offset
+	int top;              // Top border offset
+	int right;            // Right border offset
+	int bottom;           // Bottom border offset
+	RLNPatchLayout layout; // Layout of the n-patch: 3x3, 1x3 or 3x1
+}
+
+// RLGlyphInfo, font characters glyphs info
+struct RLGlyphInfo
+{
+	int value;         // Character value (Unicode)
+	int[<2>] offset_x; // Character offset when drawing
+	int advance_x;     // Character advance position X
+	RLImage image;      // Character image data
+}
+
+// RLFont, font texture and GlyphInfo array data
+struct RLFont
+{
+	int base_size;      // Base size (default chars height)
+	int glyph_count;    // Number of glyph characters
+	int glyph_padding;  // Padding around the glyph characters
+	RLTexture2D texture; // Texture atlas containing the glyphs
+	Rect* recs;   // Rectangles in texture for the glyphs
+	RLGlyphInfo* glyphs; // Glyphs info data
+}
+
+// RLCamera3D, defines position/orientation in 3d space
+struct RLCamera3D
+{
+	RLVector3 position;            // Camera position
+	RLVector3 target;              // Camera target it looks-at
+	RLVector3 up;                  // Camera up vector (rotation over its axis)
+	float fovy;                    // Camera field-of-view aperture in Y (degrees) in perspective, used as near plane height in world units in orthographic
+	RLCameraProjection projection; // Camera projection: CAMERA_PERSPECTIVE or CAMERA_ORTHOGRAPHIC
+}
+
+alias RLCamera = RLCamera3D; // Camera type fallback, defaults to Camera3D
+
+// RLCamera2D, defines position/orientation in 2d space
+struct RLCamera2D
+{
+	RLVector2 offset;  // Camera offset (screen space offset from window origin)
+	RLVector2 target;  // Camera target (world space target point that is mapped to screen space offset)
+	float rotation;    // Camera rotation in degrees (pivots around target)
+	float zoom;        // Camera zoom (scaling around target), must not be set to 0, set to 1.0f for no scale
+}
+
+// RLMesh, vertex data and vao/vbo
+struct RLMesh
+{
+	int vertex_count;   // Number of vertices stored in arrays
+	int triangle_count; // Number of triangles stored (indexed or not)
+
+	// Vertex attributes data
+	float* vertices;         // Vertex position (XYZ - 3 components per vertex) (shader-location = 0)
+	float* texcoords;        // Vertex texture coordinates (UV - 2 components per vertex) (shader-location = 1)
+	float* texcoords2;       // Vertex second texture coordinates (useful for lightmaps) (shader-location = 5)
+	float* normals;          // Vertex normals (XYZ - 3 components per vertex) (shader-location = 2)
+	float* tangents;         // Vertex tangents (XYZW - 4 components per vertex) (shader-location = 4)
+	char* colors;            // Vertex colors (RGBA - 4 components per vertex) (shader-location = 3)
+	CUShort* indices;        // Vertex indices (in case vertex data comes indexed)
+
+    // Skin data for animation
+    int bone_count;          // Number of bones (MAX: 256 bones)
+    char* bone_indices;      // Vertex bone indices, up to 4 bones influence by vertex (skinning) (shader-location = 6)
+    float *bone_weights;     // Vertex bone weight, up to 4 bones influence by vertex (skinning) (shader-location = 7)
+
+    // Runtime animation vertex data (CPU skinning)
+    // NOTE: In case of GPU skinning, not used, pointers are NULL
+    float *anim_vertices;    // Animated vertex positions (after bones transformations)
+    float *anim_normals;     // Animated normals (after bones transformations)
+
+	// OpenGL identifiers
+	uint vao_id;  // OpenGL Vertex Array Object id
+	uint* vbo_id; // OpenGL Vertex Buffer Objects id (default vertex data)
+}
+
+// RLShader
+struct RLShader
+{
+	uint id;   // Shader program id
+	int* locs; // Shader locations array (RL_MAX_SHADER_LOCATIONS)
+}
+
+// RLMaterialMap
+struct RLMaterialMap
+{
+	RLTexture2D texture; // Material map texture
+	RLColor color;       // Material map color
+	float value;         // Material map value
+}
+
+// RLMaterial, includes shader and maps
+struct RLMaterial
+{
+	RLShader shader;     // Material shader
+	RLMaterialMap* maps; // Material maps array (MAX_MATERIAL_MAPS)
+	float[4] params;     // Material generic parameters (if required)
+}
+
+// Transform, vectex transformation data
+struct RLTransform
+{
+	RLVector3 translation; // Translation
+	Quat rotation; // Rotation
+	RLVector3 scale;       // Scale
+}
+
+// Anim pose, an array of Transform[]
+alias RLModelAnimPose = RLTransform*;
+
+// RLBoneInfo, skeletal animation bone
+struct RLBoneInfo
+{
+	char[32] name; // Bone name
+	int parent;    // Bone parent
+}
+
+// Skeleton, animation bones hierarchy
+struct RLModelSkeleton
+{
+    int bone_count;            // Number of bones
+    RLBoneInfo* bones;         // Bones information (skeleton)
+    RLModelAnimPose bind_pose; // Bones base transformation (Transform[])
+}
+
+// RLModel, meshes, materials and animation data
+struct RLModel
+{
+	Mat4 transform;           // Local transform matrix
+	int mesh_count;               // Number of meshes
+	int material_count;           // Number of materials
+	RLMesh* meshes;               // Meshes array
+	RLMaterial* materials;        // Materials array
+	int* mesh_material;           // Mesh material number
+
+	// Animation data
+    RLModelSkeleton skeleton;     // Skeleton for animation
+
+    // Runtime animation data (CPU/GPU skinning)
+    RLModelAnimPose current_pose; // Current animation pose (Transform[])
+    Mat4*bone_matrices;       // Bones animated transformation matrices
+}
+
+// RLModelAnimation, contains a full animation sequence
+struct RLModelAnimation
+{
+	char[32] name;                   // Animation name
+
+    int bone_count;                  // Number of bones (per pose)
+    int keyframe_count;              // Number of animation key frames
+    RLModelAnimPose *keyframe_poses; // Animation sequence keyframe poses [keyframe][pose]
+}
+
+// RLRay, ray for raycasting
+struct RLRay
+{
+	RLVector3 position;  // Ray position (origin)
+	RLVector3 direction; // Ray direction (normalized)
+}
+
+// RLRayCollision, ray hit information
+struct RLRayCollision
+{
+	bool hit;         // Did the ray hit something?
+	float distance;   // Distance to nearest hit
+	RLVector3 point;  // Point of nearest hit
+	RLVector3 normal; // Surface normal of hit
+}
+
+// RLBoundingBox
+struct RLBoundingBox
+{
+	RLVector3 min; // Minimum vertex box-corner
+	RLVector3 max; // Maximum vertex box-corner
+}
+
+// RLWave, audio wave data
+struct RLWave
+{
+	uint frameCount;  // Total number of frames (considering channels)
+	uint sample_rate; // Frequency (samples per second)
+	uint sample_size; // Bit depth (bits per sample): 8, 16, 32 (24 not supported)
+	uint channels;    // Number of channels (1-mono, 2-stereo, ...)
+	void* data;        // Buffer data pointer
+}
+
+alias RLAudioBufferRef = void*;
+alias RLAudioProcessorRef = void*;
+
+// RLAudioStream, custom audio stream
+struct RLAudioStream
+{
+	RLAudioBufferRef buffer;       // Pointer to internal data used by the audio system
+	RLAudioProcessorRef processor; // Pointer to internal data processor, useful for audio effects
+
+	uint sample_rate;             // Frequency (samples per second)
+	uint sample_size;             // Bit depth (bits per sample): 8, 16, 32 (24 not supported)
+	uint channels;                // Number of channels (1-mono, 2-stereo, ...)
+}
+
+
+// RLSound
+struct RLSound
+{
+	RLAudioStream stream; // Audio stream
+	uint frame_count;    // Total number of frames (considering channels)
+}
+
+// RLMusic, audio stream, anything longer than ~10 seconds should be streamed
+struct RLMusic
+{
+	RLAudioStream stream; // Audio stream
+	uint frame_count;    // Total number of frames (considering channels)
+	bool looping;         // Music looping enable
+
+	int ctx_type;        // Type of music context (audio filetype)
+	void* ctx_data;       // Audio context data, depends on type
+}
+
+// RLVrDeviceInfo, Head-Mounted-Display device parameters
+struct RLVrDeviceInfo
+{
+	int h_resolution;               // Horizontal resolution in pixels
+	int v_resolution;               // Vertical resolution in pixels
+	float h_screen_size;             // Horizontal size in meters
+	float v_screen_size;             // Vertical size in meters
+	float v_screen_center;           // Screen center in meters
+	float eye_to_screen_distance;    // Distance between eye and display in meters
+	float lens_separation_distance;  // Lens separation distance in meters
+	float interpupillary_distance;   // IPD (distance between pupils) in meters
+	float[4] lens_distortion_values; // Lens distortion constant parameters
+	float[4] chroma_ab_correction;   // Chromatic aberration correction parameters
+}
+
+// RLVrStereoConfig, VR stereo rendering configuration for simulator
+struct RLVrStereoConfig
+{
+	Mat4[2] projection;       // VR projection matrices (per eye)
+	Mat4[2] view_offset;      // VR view offset matrices (per eye)
+	float[2] left_lens_center;    // VR left lens center
+	float[2] right_lens_center;   // VR right lens center
+	float[2] left_screen_center;  // VR left screen center
+	float[2] right_screen_center; // VR right screen center
+	float[2] scale;               // VR distortion scale
+	float[2] scaleIn;             // VR distortion scale in
+}
+
+struct RLFilePathList
+{
+	uint count;     // Filepaths entries count
+	ZString* paths; // Filepaths entries
+}
+
+// Automation event
+struct RLAutomationEvent
+{
+	uint frame;    // Event frame
+	uint type;     // Event type (AutomationEventType)
+	int[4] params; // Event parameters (if required)
+}
+
+// Automation event list
+struct RLAutomationEventList
+{
+	uint capacity;            // Events max entries (MAX_AUTOMATION_EVENTS)
+	uint count;               // Events entries count
+	RLAutomationEvent* events; // Events entries
+}
+
+// Trace log level
+// NOTE: Organized by priority level
+constdef RLTraceLogLevel : int
+{
+	ALL = 0, // Display all logs
+	TRACE,   // Trace logging, intended for internal use only
+	DEBUG,   // Debug logging, used for internal debugging, it should be disabled on release builds
+	INFO,    // Info logging, used for program execution info
+	WARNING, // Warning logging, used on recoverable failures
+	ERROR,   // Error logging, used on unrecoverable failures
+	FATAL,   // Fatal logging, used to abort program: exit(EXIT_FAILURE)
+	NONE     // Disable logging
+}
+
+// Mouse buttons
+enum RLMouseButton : int
+{
+	LEFT,    // Mouse button left
+	RIGHT,   // Mouse button right
+	MIDDLE,  // Mouse button middle (pressed wheel)
+	SIDE,    // Mouse button side (advanced mouse device)
+	EXTRA,   // Mouse button extra (advanced mouse device)
+	FORWARD, // Mouse button forward (advanced mouse device)
+	BACK     // Mouse button back (advanced mouse device)
+}
+
+// Mouse cursor
+enum RLMouseCursor : int
+{
+	DEFAULT,       // Default pointer shape
+	ARROW,         // Arrow shape
+	IBEAM,         // Text writing cursor shape
+	CROSSHAIR,     // Cross shape
+	POINTING_HAND, // Pointing hand cursor
+	RESIZE_EW,     // Horizontal resize/move arrow shape
+	RESIZE_NS,     // Vertical resize/move arrow shape
+	RESIZE_NWSE,   // Top-left to bottom-right diagonal resize/move arrow shape
+	RESIZE_NESW,   // The top-right to bottom-left diagonal resize/move arrow shape
+	RESIZE_ALL,    // The omnidirectional resize/move cursor shape
+	NOT_ALLOWED    // The operation-not-allowed shape
+}
+
+// Gamepad buttons
+enum RLGamepadButton : int
+{
+	UNKNOWN,          // Unknown button, just for error checking
+	LEFT_FACE_UP,     // Gamepad left DPAD up button
+	LEFT_FACE_RIGHT,  // Gamepad left DPAD right button
+	LEFT_FACE_DOWN,   // Gamepad left DPAD down button
+	LEFT_FACE_LEFT,   // Gamepad left DPAD left button
+	RIGHT_FACE_UP,    // Gamepad right button up (i.e. PS3: Triangle, Xbox: Y)
+	RIGHT_FACE_RIGHT, // Gamepad right button right (i.e. PS3: Circle, Xbox: B)
+	RIGHT_FACE_DOWN,  // Gamepad right button down (i.e. PS3: Cross, Xbox: A)
+	RIGHT_FACE_LEFT,  // Gamepad right button left (i.e. PS3: Square, Xbox: X)
+	LEFT_TRIGGER_1,   // Gamepad top/back trigger left (first), it could be a trailing button
+	LEFT_TRIGGER_2,   // Gamepad top/back trigger left (second), it could be a trailing button
+	RIGHT_TRIGGER_1,  // Gamepad top/back trigger right (first), it could be a trailing button
+	RIGHT_TRIGGER_2,  // Gamepad top/back trigger right (second), it could be a trailing button
+	MIDDLE_LEFT,      // Gamepad center buttons, left one (i.e. PS3: Select)
+	MIDDLE,           // Gamepad center buttons, middle one (i.e. PS3: PS, Xbox: XBOX)
+	MIDDLE_RIGHT,     // Gamepad center buttons, right one (i.e. PS3: Start)
+	LEFT_THUMB,       // Gamepad joystick pressed button left
+	RIGHT_THUMB       // Gamepad joystick pressed button right
+}
+
+enum RLGamepadAxis : int
+{
+	LEFT_X,       // Gamepad left stick X axis
+	LEFT_Y,       // Gamepad left stick Y axis
+	RIGHT_X,      // Gamepad right stick X axis
+	RIGHT_Y,      // Gamepad right stick Y axis
+	LEFT_TRIGGER, // Gamepad back trigger left, pressure level: [1..-1]
+	RIGHT_TRIGGER // Gamepad back trigger right, pressure level: [1..-1]
+}
+
+// RLMaterial map index
+constdef RLMaterialMapIndex : inline int
+{
+	ALBEDO = 0, // Albedo material (same as: MATERIAL_MAP_DIFFUSE)
+	METALNESS,  // Metalness material (same as: MATERIAL_MAP_SPECULAR)
+	NORMAL,     // Normal material
+	ROUGHNESS,  // Roughness material
+	OCCLUSION,  // Ambient occlusion material
+	EMISSION,   // Emission material
+	HEIGHT,     // Heightmap material
+	CUBEMAP,    // Cubemap material (NOTE: Uses GL_TEXTURE_CUBE_MAP)
+	IRRADIANCE, // Irradiance material (NOTE: Uses GL_TEXTURE_CUBE_MAP)
+	PREFILTER,  // Prefilter material (NOTE: Uses GL_TEXTURE_CUBE_MAP)
+	BRDF,       // Brdf material
+
+	// Aliases
+	DIFFUSE = ALBEDO,    // #define MATERIAL_MAP_DIFFUSE MATERIAL_MAP_ALBEDO
+	SPECULAR = METALNESS // #define MATERIAL_MAP_SPECULAR MATERIAL_MAP_METALNESS
+}
+
+// Shader location index
+constdef RLShaderLocationIndex
+{
+	VERTEX_POSITION = 0,      // Shader location: vertex attribute: position
+	VERTEX_TEXCOORD01,        // Shader location: vertex attribute: texcoord01
+	VERTEX_TEXCOORD02,        // Shader location: vertex attribute: texcoord02
+	VERTEX_NORMAL,            // Shader location: vertex attribute: normal
+	VERTEX_TANGENT,           // Shader location: vertex attribute: tangent
+	VERTEX_COLOR,             // Shader location: vertex attribute: color
+	MATRIX_MVP,               // Shader location: matrix uniform: model-view-projection
+	MATRIX_VIEW,              // Shader location: matrix uniform: view (camera transform)
+	MATRIX_PROJECTION,        // Shader location: matrix uniform: projection
+	MATRIX_MODEL,             // Shader location: matrix uniform: model (transform)
+	MATRIX_NORMAL,            // Shader location: matrix uniform: normal
+	VECTOR_VIEW,              // Shader location: vector uniform: view
+	COLOR_DIFFUSE,            // Shader location: vector uniform: diffuse color
+	COLOR_SPECULAR,           // Shader location: vector uniform: specular color
+	COLOR_AMBIENT,            // Shader location: vector uniform: ambient color
+	MAP_ALBEDO,               // Shader location: sampler2d texture: albedo (same as: SHADER_LOC_MAP_DIFFUSE)
+	MAP_METALNESS,            // Shader location: sampler2d texture: metalness (same as: SHADER_LOC_MAP_SPECULAR)
+	MAP_NORMAL,               // Shader location: sampler2d texture: normal
+	MAP_ROUGHNESS,            // Shader location: sampler2d texture: roughness
+	MAP_OCCLUSION,            // Shader location: sampler2d texture: occlusion
+	MAP_EMISSION,             // Shader location: sampler2d texture: emission
+	MAP_HEIGHT,               // Shader location: sampler2d texture: heightmap
+	MAP_CUBEMAP,              // Shader location: samplerCube texture: cubemap
+	MAP_IRRADIANCE,           // Shader location: samplerCube texture: irradiance
+	MAP_PREFILTER,            // Shader location: samplerCube texture: prefilter
+	MAP_BRDF,                 // Shader location: sampler2d texture: brdf
+	VERTEX_BONEIDS,           // Shader location: vertex attribute: bone indices
+    VERTEX_BONEWEIGHTS,       // Shader location: vertex attribute: bone weights
+    MATRIX_BONETRANSFORMS,    // Shader location: matrix attribute: bone transforms (animation)
+    VERTEX_INSTANCETRANSFORM, // Shader location: vertex attribute: instance transforms
+
+	// Aliases
+	MAP_DIFFUSE = MAP_ALBEDO,     // #define SHADER_LOC_MAP_DIFFUSE SHADER_LOC_MAP_ALBEDO
+	MAP_SPECULAR = MAP_METALNESS, // #define SHADER_LOC_MAP_SPECULAR SHADER_LOC_MAP_METALNESS
+}
+
+// Shader uniform data type
+enum RLShaderUniformDataType
+{
+	FLOAT,    // Shader uniform type: float
+	VEC2,     // Shader uniform type: vec2 (2 float)
+	VEC3,     // Shader uniform type: vec3 (3 float)
+	VEC4,     // Shader uniform type: vec4 (4 float)
+	INT,      // Shader uniform type: int
+	IVEC2,    // Shader uniform type: ivec2 (2 int)
+	IVEC3,    // Shader uniform type: ivec3 (3 int)
+	IVEC4,    // Shader uniform type: ivec4 (4 int)
+    UINT,     // Shader uniform type: unsigned int
+    UIVEC2,   // Shader uniform type: uivec2 (2 unsigned int)
+    UIVEC3,   // Shader uniform type: uivec3 (3 unsigned int)
+    UIVEC4,   // Shader uniform type: uivec4 (4 unsigned int)
+	SAMPLER2D // Shader uniform type: sampler2d
+}
+
+// Shader attribute data types
+enum RLShaderAttributeDataType
+{
+	FLOAT, // Shader attribute type: float
+	VEC2,  // Shader attribute type: vec2 (2 float)
+	VEC3,  // Shader attribute type: vec3 (3 float)
+	VEC4   // Shader attribute type: vec4 (4 float)
+}
+
+// Pixel formats
+// NOTE: Support depends on OpenGL version and platform
+constdef RLPixelFormat
+{
+	UNCOMPRESSED_GRAYSCALE = 1, // 8 bit per pixel (no alpha)
+	UNCOMPRESSED_GRAY_ALPHA,    // 8*2 bpp (2 channels)
+	UNCOMPRESSED_R5G6B5,        // 16 bpp
+	UNCOMPRESSED_R8G8B8,        // 24 bpp
+	UNCOMPRESSED_R5G5B5A1,      // 16 bpp (1 bit alpha)
+	UNCOMPRESSED_R4G4B4A4,      // 16 bpp (4 bit alpha)
+	UNCOMPRESSED_R8G8B8A8,      // 32 bpp
+	UNCOMPRESSED_R32,           // 32 bpp (1 channel - float)
+	UNCOMPRESSED_R32G32B32,     // 32*3 bpp (3 channels - float)
+	UNCOMPRESSED_R32G32B32A32,  // 32*4 bpp (4 channels - float)
+	UNCOMPRESSED_R16,           // 16 bpp (1 channel - half float)
+	UNCOMPRESSED_R16G16B16,     // 16*3 bpp (3 channels - half float)
+	UNCOMPRESSED_R16G16B16A16,  // 16*4 bpp (4 channels - half float)
+	COMPRESSED_DXT1_RGB,        // 4 bpp (no alpha)
+	COMPRESSED_DXT1_RGBA,       // 4 bpp (1 bit alpha)
+	COMPRESSED_DXT3_RGBA,       // 8 bpp
+	COMPRESSED_DXT5_RGBA,       // 8 bpp
+	COMPRESSED_ETC1_RGB,        // 4 bpp
+	COMPRESSED_ETC2_RGB,        // 4 bpp
+	COMPRESSED_ETC2_EAC_RGBA,   // 8 bpp
+	COMPRESSED_PVRT_RGB,        // 4 bpp
+	COMPRESSED_PVRT_RGBA,       // 4 bpp
+	COMPRESSED_ASTC_4X4_RGBA,   // 8 bpp
+	COMPRESSED_ASTC_8X8_RGBA    // 2 bpp
+}
+
+// Texture parameters: filter mode
+// NOTE 1: Filtering considers mipmaps if available in the texture
+// NOTE 2: Filter is accordingly set for minification and magnification
+enum RLTextureFilter
+{
+	POINT,          // No filter, just pixel approximation
+	BILINEAR,       // Linear filtering
+	TRILINEAR,      // Trilinear filtering (linear with mipmaps)
+	ANISOTROPIC_4X, // Anisotropic filtering 4x
+	ANISOTROPIC_8X, // Anisotropic filtering 8x
+	ANISOTROPIC_16X // Anisotropic filtering 16x
+}
+
+// Texture parameters: wrap mode
+enum RLTextureWrap
+{
+	REPEAT,        // Repeats texture in tiled mode
+	CLAMP,         // Clamps texture to edge pixel in tiled mode
+	MIRROR_REPEAT, // Mirrors and repeats the texture in tiled mode
+	MIRROR_CLAMP   // Mirrors and clamps to border the texture in tiled mode
+}
+
+// Cubemap layouts
+enum RLCubemapLayout
+{
+	AUTO_DETECT,         // Automatically detect layout type
+	LINE_VERTICAL,       // Layout is defined by a vertical line with faces
+	LINE_HORIZONTAL,     // Layout is defined by a horizontal line with faces
+	CROSS_THREE_BY_FOUR, // Layout is defined by a 3x4 cross with cubemap faces
+	CROSS_FOUR_BY_THREE  // Layout is defined by a 4x3 cross with cubemap faces
+}
+
+// Font type, defines generation method
+enum RLFontType
+{
+	DEFAULT, // Default font generation, anti-aliased
+	BITMAP,  // Bitmap font generation, no anti-aliasing
+	SDF      // SDF font generation, requires external shader
+}
+
+// Color blending modes (pre-defined)
+enum RLBlendMode
+{
+	ALPHA,             // Blend textures considering alpha (default)
+	ADDITIVE,          // Blend textures adding colors
+	MULTIPLIED,        // Blend textures multiplying colors
+	ADD_COLORS,        // Blend textures adding colors (alternative)
+	SUBTRACT_COLORS,   // Blend textures subtracting colors (alternative)
+	ALPHA_PREMULTIPLY, // Blend premultiplied textures considering alpha
+	CUSTOM,            // Blend textures using custom src/dst factors (use setBlendFactors())
+	CUSTOM_SEPARATE    // Blend textures using custom rgb/alpha separate src/dst factors (use setBlendFactorsSeparate())
+}
+
+$assert(RLBlendMode.ALPHA.ordinal == 0);
+
+
+// Camera system modes
+enum RLCameraMode
+{
+	CUSTOM,       // Camera custom, controlled by user (UpdateCamera() does nothing)
+	FREE,         // Camera free mode
+	ORBITAL,      // Camera orbital, around target, zoom supported
+	FIRST_PERSON, // Camera first person
+	THIRD_PERSON  // Camera third person
+}
+
+// Camera projection
+enum RLCameraProjection
+{
+	PERSPECTIVE, // Perspective projection
+	ORTHOGRAPHIC // Orthographic projection
+}
+
+// N-patch layout
+enum RLNPatchLayout
+{
+	NINE_PATCH,            // Npatch layout: 3x3 tiles
+	THREE_PATCH_VERTICAL,  // Npatch layout: 1x3 tiles
+	THREE_PATCH_HORIZONTAL // Npatch layout: 3x1 tiles
+}
+
+// Callbacks to hook some internal functions
+// WARNING: This callbacks are intended for advance users
+alias RLTraceLogCallback @if($defined(CVaList)) = fn void(RLTraceLogLevel logLevel, ZString text, CVaList args); // Logging: Redirect trace log messages
+alias RLLoadFileDataCallback = fn char*(ZString file_name, int* data_size);           // FileIO: Load binary data
+alias RLSaveFileDataCallback = fn bool(ZString file_name, void* data, int data_size); // FileIO: Save binary data
+alias RLLoadFileTextCallback = fn char*(ZString file_name);              // FileIO: Load text data
+alias RLSaveFileTextCallback = fn bool(ZString file_name, ZString text); // FileIO: Save text data
+
+// Window-related functions
+fn void init_window(int width, int height, ZString title) @cname("InitWindow");     // Initialize window and OpenGL context
+fn void close_window() @cname("CloseWindow");                                         // Close window and unload OpenGL context
+fn bool window_should_close() @cname("WindowShouldClose");                            // Check if application should close (KEY_ESCAPE pressed or windows close icon clicked)
+fn bool is_window_ready() @cname("IsWindowReady");                                    // Check if window has been initialized successfully
+fn bool is_window_fullscreen() @cname("IsWindowFullscreen");                          // Check if window is currently fullscreen
+fn bool is_window_hidden() @cname("IsWindowHidden");                                  // Check if window is currently hidden
+fn bool is_window_minimized() @cname("IsWindowMinimized");                            // Check if window is currently minimized
+fn bool is_window_maximized() @cname("IsWindowMaximized");                            // Check if window is currently maximized
+fn bool is_window_focused() @cname("IsWindowFocused");                                // Check if window is currently focused
+fn bool is_window_resized() @cname("IsWindowResized");                                // Check if window has been resized last frame
+fn bool is_window_state(RLConfigFlag flag) @cname("IsWindowState");                     // Check if one specific window flag is enabled
+fn void set_window_state(RLConfigFlag flags) @cname("SetWindowState");                  // Set window configuration state using flags
+fn void clear_window_state(RLConfigFlag flags) @cname("ClearWindowState");              // Clear window configuration state flags
+fn void toggle_fullscreen() @cname("ToggleFullscreen");                               // Toggle window state: fullscreen/windowed, resizes monitor to match window resolution
+fn void toggle_borderless_windowed() @cname("ToggleBorderlessWindowed");              // Toggle window state: borderless windowed, resizes window to match monitor resolution
+fn void maximize_window() @cname("MaximizeWindow");                                   // Set window state: maximized, if resizable
+fn void minimize_window() @cname("MinimizeWindow");                                   // Set window state: minimized, if resizable
+fn void restore_window() @cname("RestoreWindow");                                     // Restore window from being minimized/maximized
+fn void set_window_icon(RLImage image) @cname("SetWindowIcon");                       // Set icon for window (single image, RGBA 32bit)
+fn void set_window_icons(RLImage* images, int count) @cname("SetWindowIcons");       // Set icon for window (multiple images, RGBA 32bit)
+fn void set_window_title(ZString title) @cname("SetWindowTitle");                     // Set title for window
+fn void set_window_position(int x, int y) @cname("SetWindowPosition");              // Set window position on screen
+fn void set_window_monitor(int monitor) @cname("SetWindowMonitor");                  // Set monitor for the current window
+fn void set_window_min_size(int width, int height) @cname("SetWindowMinSize");      // Set window minimum dimensions (for FLAG_WINDOW_RESIZABLE)
+fn void set_window_max_size(int width, int height) @cname("SetWindowMaxSize");      // Set window maximum dimensions (for FLAG_WINDOW_RESIZABLE)
+fn void set_window_size(int width, int height) @cname("SetWindowSize");             // Set window dimensions
+fn void set_window_opacity(float opacity) @cname("SetWindowOpacity");                 // Set window opacity [0.0f..1.0f]
+fn void set_window_focused() @cname("SetWindowFocused");                              // Set window focused
+fn void* get_window_handle() @cname("GetWindowHandle");                               // Get native window handle
+fn int get_screen_width() @cname("GetScreenWidth");                                  // Get current screen width
+fn int get_screen_height() @cname("GetScreenHeight");                                // Get current screen height
+fn int get_render_width() @cname("GetRenderWidth");                                  // Get current render width (it considers HiDPI)
+fn int get_render_height() @cname("GetRenderHeight");                                // Get current render height (it considers HiDPI)
+fn int get_monitor_count() @cname("GetMonitorCount");                                // Get number of connected monitors
+fn int get_current_monitor() @cname("GetCurrentMonitor");                            // Get current monitor where window is placed
+fn RLVector2 get_monitor_position(int monitor) @cname("GetMonitorPosition");         // Get specified monitor position
+fn int get_monitor_width(int monitor) @cname("GetMonitorWidth");                    // Get specified monitor width (current video mode used by monitor)
+fn int get_monitor_height(int monitor) @cname("GetMonitorHeight");                  // Get specified monitor height (current video mode used by monitor)
+fn int get_monitor_physical_width(int monitor) @cname("GetMonitorPhysicalWidth");   // Get specified monitor physical width in millimetres
+fn int get_monitor_physical_height(int monitor) @cname("GetMonitorPhysicalHeight"); // Get specified monitor physical height in millimetres
+fn int get_monitor_refresh_rate(int monitor) @cname("GetMonitorRefreshRate");       // Get specified monitor refresh rate
+fn RLVector2 get_window_position() @cname("GetWindowPosition");                       // Get window position XY on monitor
+fn RLVector2 get_window_scale_d_p_i() @cname("GetWindowScaleDPI");                    // Get window scale DPI factor
+fn ZString get_monitor_name(int monitor) @cname("GetMonitorName");                   // Get the human-readable, UTF-8 encoded name of the specified monitor
+fn void set_clipboard_text(ZString text) @cname("SetClipboardText");                  // Set clipboard text content
+fn ZString get_clipboard_text() @cname("GetClipboardText");                           // Get clipboard text content
+fn RLImage get_clipboard_image() @cname("GetClipboardImage");                         // Get clipboard image content
+fn void enable_event_waiting() @cname("EnableEventWaiting");                          // Enable waiting for events on EndDrawing(), no automatic event polling
+fn void disable_event_waiting() @cname("DisableEventWaiting");                        // Disable waiting for events on EndDrawing(), automatic events polling
+
+// Cursor-related functions
+fn void show_cursor() @cname("ShowCursor");               // Shows cursor
+fn void hide_cursor() @cname("HideCursor");               // Hides cursor
+fn bool is_cursor_hidden() @cname("IsCursorHidden");      // Check if cursor is not visible
+fn void enable_cursor() @cname("EnableCursor");           // Enables cursor (unlock cursor)
+fn void disable_cursor() @cname("DisableCursor");         // Disables cursor (lock cursor)
+fn bool is_cursor_on_screen() @cname("IsCursorOnScreen"); // Check if cursor is on the screen
+
+// Drawing-related functions
+fn void clear_background(RLColor color) @cname("ClearBackground");                              // Set background color (framebuffer clear color)
+fn void begin_drawing() @cname("BeginDrawing");                                                 // Setup canvas (framebuffer) to start drawing
+fn void end_drawing() @cname("EndDrawing");                                                     // End canvas drawing and swap buffers (double buffering)
+fn void begin_mode2d(RLCamera2D camera) @cname("BeginMode2D");                                  // Begin 2D mode with custom camera (2D)
+fn void end_mode2d() @cname("EndMode2D");                                                       // Ends 2D mode with custom camera
+fn void begin_mode3d(RLCamera3D camera) @cname("BeginMode3D");                                  // Begin 3D mode with custom camera (3D)
+fn void end_mode3d() @cname("EndMode3D");                                                       // Ends 3D mode and returns to default 2D orthographic mode
+fn void begin_texture_mode(RLRenderTexture2D target) @cname("BeginTextureMode");                // Begin drawing to render texture
+fn void end_texture_mode() @cname("EndTextureMode");                                            // Ends drawing to render texture
+fn void begin_shader_mode(RLShader shader) @cname("BeginShaderMode");                           // Begin custom shader drawing
+fn void end_shader_mode() @cname("EndShaderMode");                                              // End custom shader drawing (use default shader)
+fn void begin_blend_mode(RLBlendMode mode) @cname("BeginBlendMode");                            // Begin blending mode (alpha, additive, multiplied, subtract, custom)
+fn void end_blend_mode() @cname("EndBlendMode");                                                // End blending mode (reset to default: alpha blending)
+fn void begin_scissor_mode(int x, int y, int width, int height) @cname("BeginScissorMode"); // Begin scissor mode (define screen area for following drawing)
+fn void end_scissor_mode() @cname("EndScissorMode");                                            // End scissor mode
+fn void begin_vr_stereo_mode(RLVrStereoConfig config) @cname("BeginVrStereoMode");              // Begin stereo rendering (requires VR simulator)
+fn void end_vr_stereo_mode() @cname("EndVrStereoMode");                                         // End stereo rendering (requires VR simulator)
+
+// VR stereo config functions for VR simulator
+fn RLVrStereoConfig load_vr_stereo_config(RLVrDeviceInfo device) @cname("LoadVrStereoConfig"); // Load VR stereo config for VR simulator device parameters
+fn void unload_vr_stereo_config(RLVrStereoConfig config) @cname("UnloadVrStereoConfig");       // Unload VR stereo config
+
+// Shader management functions
+// NOTE: Shader functionality is not available on OpenGL 1.1
+fn RLShader load_shader(ZString vs_file_name, ZString fs_file_name) @cname("LoadShader");                     // Load shader from files and bind default locations
+fn RLShader load_shader_from_memory(ZString vs_code, ZString fs_code) @cname("LoadShaderFromMemory");         // Load shader from code strings and bind default locations
+fn bool RLShader.is_valid(RLShader shader) @cname("IsShaderValid");                                           // Check if a shader is valid (loaded on GPU)
+fn int RLShader.get_location(RLShader shader, ZString uniform_name) @cname("GetShaderLocation");             // Get shader uniform location
+fn int RLShader.get_location_attrib(RLShader shader, ZString attrib_name) @cname("GetShaderLocationAttrib"); // Get shader attribute location
+fn void RLShader.set_value(RLShader shader, int loc_index, void* value, RLShaderUniformDataType uniform_type) @cname("SetShaderValue"); // Set shader uniform value
+fn void RLShader.set_value_v(RLShader shader, int loc_index, void* value, RLShaderUniformDataType uniform_type, int count) @cname("SetShaderValueV"); // Set shader uniform value vector
+fn void RLShader.set_value_matrix(RLShader shader, int loc_index, Mat4 mat) @cname("SetShaderValueMatrix");          // Set shader uniform value (matrix 4x4)
+fn void RLShader.set_value_texture(RLShader shader, int loc_index, RLTexture2D texture) @cname("SetShaderValueTexture"); // Set shader uniform value and bind the texture (sampler2d)
+fn void unload_shader(RLShader shader) @cname("UnloadShader");                                                            // Unload shader from GPU memory (VRAM)
+
+// Screen-space-related functions
+fn RLRay get_screen_to_world_ray(RLVector2 position, RLCamera camera) @cname("GetScreenToWorldRay");                               // Get a ray trace from screen position (i.e mouse)
+fn RLRay get_screen_to_world_ray_ex(RLVector2 position, RLCamera camera, int width, int height) @cname("GetScreenToWorldRayEx"); // Get a ray trace from screen position (i.e mouse) in a viewport
+fn RLVector2 get_world_to_screen(RLVector3 position, RLCamera camera) @cname("GetWorldToScreen");                                  // Get the screen space position for a 3d world space position
+fn RLVector2 get_world_to_screen_ex(RLVector3 position, RLCamera camera, int width, int height) @cname("GetWorldToScreenEx");    // Get size position for a 3d world space position
+fn RLVector2 get_world_to_screen2d(RLVector2 position, RLCamera2D camera) @cname("GetWorldToScreen2D"); // Get the screen space position for a 2d camera world space position
+fn RLVector2 get_screen_to_world2d(RLVector2 position, RLCamera2D camera) @cname("GetScreenToWorld2D"); // Get the world space position for a 2d camera screen space position
+fn Mat4 get_camera_matrix(RLCamera camera) @cname("GetCameraMatrix");       // Get camera transform matrix (view matrix)
+fn Mat4 get_camera_matrix2d(RLCamera2D camera) @cname("GetCameraMatrix2D"); // Get camera 2d transform matrix
+
+// Timing-related functions
+fn void set_target_fps(int fps) @cname("SetTargetFPS"); // Set target FPS (maximum)
+fn float get_frame_time() @cname("GetFrameTime");        // Get time in seconds for last frame drawn (delta time)
+fn double get_time() @cname("GetTime");                  // Get elapsed time in seconds since InitWindow()
+fn int get_fps() @cname("GetFPS");                      // Get current FPS
+
+// Custom frame control functions
+// NOTE: Those functions are intended for advanced users that want full control over the frame processing
+// By default EndDrawing() does this job: draws everything + SwapScreenBuffer() + manage frame timing + PollInputEvents()
+// To avoid that behaviour and control frame processes manually, enable in config.h: SUPPORT_CUSTOM_FRAME_CONTROL
+fn void swap_screen_buffer() @cname("SwapScreenBuffer"); // Swap back buffer with front buffer (screen drawing)
+fn void poll_input_events() @cname("PollInputEvents");   // Register all input events
+fn void wait_time(double seconds) @cname("WaitTime");    // Wait for some time (halt program execution)
+
+// Random values generation functions
+fn void set_random_seed(uint seed) @cname("SetRandomSeed");                                 // Set the seed for the random number generator
+fn int get_random_value(int min, int max) @cname("GetRandomValue");                       // Get a random value between min and max (both included)
+fn int* load_random_sequence(uint count, int min, int max) @cname("LoadRandomSequence"); // Load random values sequence, no values repeated
+fn void unload_random_sequence(int* sequence) @cname("UnloadRandomSequence");               // Unload random values sequence
+
+// Misc. functions
+fn void take_screenshot(ZString file_name) @cname("TakeScreenshot"); // Takes a screenshot of current screen (filename extension defines format)
+fn void set_config_flags(RLConfigFlag flags) @cname("SetConfigFlags"); // Setup init configuration flags (view FLAGS)
+fn void open_u_r_l(ZString url) @cname("OpenURL");                   // Open URL with default system browser (if available)
+
+// NOTE: Following functions implemented in module [utils]
+//------------------------------------------------------------------
+fn void set_trace_log_level(RLTraceLogLevel log_level) @cname("SetTraceLogLevel");         // Set the current threshold (minimum) log level
+fn void trace_log(RLTraceLogLevel log_level, ZString text, ...) @cname("TraceLog");        // Show trace log messages (LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR...)
+fn void set_trace_log_callback(RLTraceLogCallback callback) @cname("SetTraceLogCallback"); // Set custom trace log
+fn void* mem_alloc(uint size) @cname("MemAlloc");                                         // Internal memory allocator
+fn void* mem_realloc(void* ptr, uint size) @cname("MemRealloc");                          // Internal memory reallocator
+fn void mem_free(void* ptr) @cname("MemFree");                                             // Internal memory free
+
+// Files management functions
+fn char* load_file_data(ZString file_name, int* data_size) @cname("LoadFileData");                    // Load file data as byte array (read)
+fn void unload_file_data(char* data) @cname("UnloadFileData");                                         // Unload file data allocated by LoadFileData()
+fn bool save_file_data(ZString file_name, void* data, int data_size) @cname("SaveFileData");          // Save data to file from byte array (write), returns true on success
+fn bool export_data_as_code(char* data, int data_size, ZString file_name) @cname("ExportDataAsCode"); // Export data to code (.h), returns true on success
+fn ZString load_file_text(ZString file_name) @cname("LoadFileText");                                   // Load text data from file (read), returns a '\0' terminated string
+fn void unload_file_text(ZString file_name) @cname("UnloadFileText");                                  // Unload file text data allocated by LoadFileText()
+fn bool save_file_text(ZString file_name, ZString text) @cname("SaveFileText");                        // Save text data to file (write), string must be '\0' terminated, returns true on success
+//------------------------------------------------------------------
+
+fn void set_load_file_data_callback(RLLoadFileDataCallback callback) @cname("SetLoadFileDataCallback"); // Set custom file binary data loader
+fn void set_save_file_data_callback(RLSaveFileDataCallback callback) @cname("SetSaveFileDataCallback"); // Set custom file binary data saver
+fn void set_load_file_text_callback(RLLoadFileTextCallback callback) @cname("SetLoadFileTextCallback"); // Set custom file text data loader
+fn void set_save_file_text_callback(RLSaveFileTextCallback callback) @cname("SetSaveFileTextCallback"); // Set custom file text data saver
+
+// File system functions
+fn int file_rename(ZString file_name, ZString file_rename) @cname("FileRename");                            // Rename file (if exists)
+fn int file_remove(ZString file_name) @cname("FileRemove");                                                 // Remove file (if exists)
+fn int file_copy(ZString src_path, ZString dst_path) @cname("FileCopy");                                    // Copy file from one path to another, dstPath created if it doesn't exist
+fn int file_move(ZString src_path, ZString dst_path) @cname("FileMove");                                    // Move file from one directory to another, dstPath created if it doesn't exist
+fn int file_text_replace(ZString file_name, ZString search, ZString replacement) @cname("FileTextReplace"); // Replace text in an existing file
+fn int file_text_find_index(ZString file_name, ZString search) @cname("FileTextFindIndex");                 // Find text in existing file
+
+fn bool file_exists(ZString file_name) @cname("FileExists");                             // Check if file exists
+fn bool directory_exists(ZString dir_path) @cname("DirectoryExists");                    // Check if a directory path exists
+fn bool is_file_extension(ZString file_name, ZString ext) @cname("IsFileExtension");     // Check file extension (recommended include point: .png, .wav)
+fn int get_file_length(ZString file_name) @cname("GetFileLength");                       // Get file length in bytes (NOTE: GetFileSize() conflicts with windows.h)
+fn CLong get_file_mod_time(ZString file_name) @cname("GetFileModTime");                  // Get file modification time (last write time)
+fn ZString get_file_extension(ZString file_name) @cname("GetFileExtension");             // Get pointer to extension for a filename string (includes dot: '.png')
+fn ZString get_file_name(ZString file_path) @cname("GetFileName");                       // Get pointer to filename for a path string
+fn ZString get_file_name_without_ext(ZString file_path) @cname("GetFileNameWithoutExt"); // Get filename string without extension (uses static string)
+fn ZString get_directory_path(ZString file_path) @cname("GetDirectoryPath");             // Get full path for a given file_name with path (uses static string)
+fn ZString get_prev_directory_path(ZString dir_path) @cname("GetPrevDirectoryPath");     // Get previous directory path for a given path (uses static string)
+fn ZString get_working_directory() @cname("GetWorkingDirectory");                        // Get current working directory (uses static string)
+fn ZString get_application_directory() @cname("GetApplicationDirectory");                // Get the directory of the running application (uses static string)
+fn int make_directory(ZString dir_path) @cname("MakeDirectory");                        // Create directories (including full path requested), returns 0 on success
+fn bool change_directory(ZString dir_path) @cname("ChangeDirectory");                    // Change working directory, return true on success
+fn bool is_path_file(ZString path) @cname("IsPathFile");                                 // Check if a given path is a file or a directory
+fn bool is_file_name_valid(ZString file_name) @cname("IsFileNameValid");                 // Check if file_name is valid for the platform/OS
+fn RLFilePathList load_directory_files(ZString dir_path) @cname("LoadDirectoryFiles");   // Load directory filepaths
+fn RLFilePathList load_directory_files_ex(ZString base_path, ZString filter, bool scan_subdirs) @cname("LoadDirectoryFilesEx"); // Load directory filepaths with extension filtering and recursive directory scan. Use 'DIR' in the filter string to include directories in the result
+fn void unload_directory_files(RLFilePathList files) @cname("UnloadDirectoryFiles");     // Unload filepaths
+fn bool is_file_dropped() @cname("IsFileDropped");                                       // Check if a file has been dropped into window
+fn RLFilePathList load_dropped_files() @cname("LoadDroppedFiles");                       // Load dropped filepaths
+fn void unload_dropped_files(RLFilePathList files) @cname("UnloadDroppedFiles");         // Unload dropped filepaths
+fn uint get_directory_file_count(ZString dir_path) @cname("GetDirectoryFileCount");      // Get the file count in a directory
+fn uint get_directory_file_count_ex(ZString base_path, ZString filter, bool scan_subdirs) @cname("GetDirectoryFileCountEx"); // Get the file count in a directory with extension filtering and recursive directory scan. Use 'DIR' in the filter string to include directories in the result
+
+// Compression/Encoding functionality
+fn char* compress_data(char* data, int data_size, int* comp_data_size) @cname("CompressData");          // Compress data (DEFLATE algorithm), memory must be MemFree()
+fn char* decompress_data(char* comp_data, int comp_data_size, int* data_size) @cname("DecompressData"); // Decompress data (DEFLATE algorithm), memory must be MemFree()
+fn char* encode_data_base64(char* data, int data_size, int* output_size) @cname("EncodeDataBase64");    // Encode data to Base64 string, memory must be MemFree()
+fn char* decode_data_base64(ZString data, int* output_size) @cname("DecodeDataBase64");                 // Decode Base64 string data, memory must be MemFree()
+fn uint compute_crc32(char* data, int data_size) @cname("ComputeCRC32");                                // Compute CRC32 hash code
+fn uint[4]* compute_md5(char* data, int data_size) @cname("ComputeMD5");                                // Compute MD5 hash code, returns static uint[4] (16 bytes)
+fn uint[5]* compute_sha1(char* data, int data_size) @cname("ComputeSHA1");                              // Compute SHA1 hash code, returns static uint[5] (20 bytes)
+fn uint[8]* compute_sha256(char* data, int data_size) @cname("ComputeSHA256");                          // Compute SHA256 hash code, returns static int[8] (32 bytes)
+
+// Automation events functionality
+fn RLAutomationEventList load_automation_event_list(ZString file_name) @cname("LoadAutomationEventList");                // Load automation events list from file, NULL for empty list, capacity = MAX_AUTOMATION_EVENTS
+fn void unload_automation_event_list(RLAutomationEventList list) @cname("UnloadAutomationEventList");                    // Unload automation events list from file
+fn bool export_automation_event_list(RLAutomationEventList list, ZString file_name) @cname("ExportAutomationEventList"); // Export automation events list as text file
+fn void set_automation_event_list(RLAutomationEventList* list) @cname("SetAutomationEventList"); // Set automation event list to record to
+fn void set_automation_event_base_frame(int frame) @cname("SetAutomationEventBaseFrame");       // Set automation event internal base frame to start recording
+fn void start_automation_event_recording() @cname("StartAutomationEventRecording");              // Start recording automation events (RLAutomationEventList must be set)
+fn void stop_automation_event_recording() @cname("StopAutomationEventRecording");                // Stop recording automation events
+fn void play_automation_event(RLAutomationEvent event) @cname("PlayAutomationEvent");            // Play a recorded automation event
+
+//------------------------------------------------------------------------------------
+// Input Handling Functions (Module: core)
+//------------------------------------------------------------------------------------
+
+// Input-related functions: keyboard
+fn bool is_key_pressed(RLKeyboardKey key) @cname("IsKeyPressed");              // Check if a key has been pressed once
+fn bool is_key_pressed_repeat(RLKeyboardKey key) @cname("IsKeyPressedRepeat"); // Check if a key has been pressed again
+fn bool is_key_down(RLKeyboardKey key) @cname("IsKeyDown");                    // Check if a key is being pressed
+fn bool is_key_released(RLKeyboardKey key) @cname("IsKeyReleased");            // Check if a key has been released once
+fn bool is_key_up(RLKeyboardKey key) @cname("IsKeyUp");                        // Check if a key is NOT being pressed
+fn RLKeyboardKey get_key_pressed() @cname("GetKeyPressed");                    // Get key pressed (keycode), call it multiple times for keys queued, returns 0 when the queue is empty
+fn int get_char_pressed() @cname("GetCharPressed");                            // Get char pressed (unicode), call it multiple times for chars queued, returns 0 when the queue is empty
+fn ZString get_key_name(int key) @cname("GetKeyName");                         // Get name of a QWERTY key on the current keyboard layout (eg returns string 'q' for KEY_A on an AZERTY keyboard)
+fn void set_exit_key(RLKeyboardKey key) @cname("SetExitKey");                  // Set a custom key to exit program (default is ESC)
+
+// Input-related functions: gamepads
+fn bool is_gamepad_available(int gamepad) @cname("IsGamepadAvailable");                                    // Check if a gamepad is available
+fn ZString get_gamepad_name(int gamepad) @cname("GetGamepadName");                                         // Get gamepad internal name id
+fn bool is_gamepad_button_pressed(int gamepad, RLGamepadButton button) @cname("IsGamepadButtonPressed");   // Check if a gamepad button has been pressed once
+fn bool is_gamepad_button_down(int gamepad, RLGamepadButton button) @cname("IsGamepadButtonDown");         // Check if a gamepad button is being pressed
+fn bool is_gamepad_button_released(int gamepad, RLGamepadButton button) @cname("IsGamepadButtonReleased"); // Check if a gamepad button has been released once
+fn bool is_gamepad_button_up(int gamepad, RLGamepadButton button) @cname("IsGamepadButtonUp");             // Check if a gamepad button is NOT being pressed
+fn RLGamepadButton get_gamepad_button_pressed() @cname("GetGamepadButtonPressed");                          // Get the last gamepad button pressed
+fn int get_gamepad_axis_count(int gamepad) @cname("GetGamepadAxisCount");                                 // Get axis count for a gamepad
+fn float get_gamepad_axis_movement(int gamepad, RLGamepadAxis axis) @cname("GetGamepadAxisMovement");      // Get movement value for a gamepad axis
+fn int set_gamepad_mappings(ZString mappings) @cname("SetGamepadMappings");                                // Set internal gamepad mappings (SDL_GameControllerDB)
+fn void set_gamepad_vibration(int gamepad, float left_motor, float right_motor, float duration) @cname("SetGamepadVibration"); // Set gamepad vibration for both motors (duration in seconds)
+
+// Input-related functions: mouse
+fn bool is_mouse_button_pressed(RLMouseButton button) @cname("IsMouseButtonPressed");   // Check if a mouse button has been pressed once
+fn bool is_mouse_button_down(RLMouseButton button) @cname("IsMouseButtonDown");         // Check if a mouse button is being pressed
+fn bool is_mouse_button_released(RLMouseButton button) @cname("IsMouseButtonReleased"); // Check if a mouse button has been released once
+fn bool is_mouse_button_up(RLMouseButton button) @cname("IsMouseButtonUp");             // Check if a mouse button is NOT being pressed
+fn int get_mouse_x() @cname("GetMouseX");                                              // Get mouse position X
+fn int get_mouse_y() @cname("GetMouseY");                                              // Get mouse position Y
+fn RLVector2 get_mouse_position() @cname("GetMousePosition");                           // Get mouse position XY
+fn RLVector2 get_mouse_delta() @cname("GetMouseDelta");                                 // Get mouse delta between frames
+fn void set_mouse_position(int x, int y) @cname("SetMousePosition");                  // Set mouse position XY
+fn void set_mouse_offset(int offset_x, int offset_y) @cname("SetMouseOffset");        // Set mouse offset
+fn void set_mouse_scale(float scale_x, float scale_y) @cname("SetMouseScale");          // Set mouse scaling
+fn float get_mouse_wheel_move() @cname("GetMouseWheelMove");                            // Get mouse wheel movement for X or Y, whichever is larger
+fn RLVector2 get_mouse_wheel_move_v() @cname("GetMouseWheelMoveV");                     // Get mouse wheel movement for both X and Y
+fn void set_mouse_cursor(RLMouseCursor cursor) @cname("SetMouseCursor");                // Set mouse cursor
+
+// Input-related functions: touch
+fn int get_touch_x() @cname("GetTouchX");                              // Get touch position X for touch point 0 (relative to screen size)
+fn int get_touch_y() @cname("GetTouchY");                              // Get touch position Y for touch point 0 (relative to screen size)
+fn RLVector2 get_touch_position(int index) @cname("GetTouchPosition"); // Get touch position XY for a touch point index (relative to screen size)
+fn int get_touch_point_id(int index) @cname("GetTouchPointId");       // Get touch point identifier for given index
+fn int get_touch_point_count() @cname("GetTouchPointCount");           // Get number of touch points
+
+//------------------------------------------------------------------------------------
+// Gestures and Touch Handling Functions (Module: rgestures)
+//------------------------------------------------------------------------------------
+fn void set_gestures_enabled(RLGesture flags) @cname("SetGesturesEnabled"); // Enable a set of gestures using flags
+fn bool is_gesture_detected(RLGesture gesture) @cname("IsGestureDetected"); // Check if a gesture have been detected
+fn RLGesture get_gesture_detected() @cname("GetGestureDetected");           // Get latest detected gesture
+fn float get_gesture_hold_duration() @cname("GetGestureHoldDuration");    // Get gesture hold time in seconds
+fn RLVector2 get_gesture_drag_vector() @cname("GetGestureDragVector");    // Get gesture drag vector
+fn float get_gesture_drag_angle() @cname("GetGestureDragAngle");          // Get gesture drag angle
+fn RLVector2 get_gesture_pinch_vector() @cname("GetGesturePinchVector");  // Get gesture pinch delta
+fn float get_gesture_pinch_angle() @cname("GetGesturePinchAngle");        // Get gesture pinch angle
+
+//------------------------------------------------------------------------------------
+// Camera System Functions (Module: rcamera)
+//------------------------------------------------------------------------------------
+fn void update_camera(RLCamera* camera, RLCameraMode mode) @cname("UpdateCamera"); // Update camera position for selected mode
+fn void update_camera_pro(RLCamera* camera, RLVector3 movement, RLVector3 rotation, float zoom) @cname("UpdateCameraPro"); // Update camera movement/rotation
+
+//------------------------------------------------------------------------------------
+// Basic Shapes Drawing Functions (Module: shapes)
+//------------------------------------------------------------------------------------
+// Set texture and rectangle to be used on shapes drawing
+// NOTE: It can be useful when using basic shapes and one single font,
+// defining a font char white rectangle would allow drawing everything in a single draw call
+fn void set_shapes_texture(RLTexture2D texture, Rect source) @cname("SetShapesTexture"); // Set texture and rectangle to be used on shapes drawing
+fn RLTexture2D get_shapes_texture() @cname("GetShapesTexture");                    // Get texture that is used for shapes drawing
+fn Rect get_shapes_texture_rectangle() @cname("GetShapesTextureRectangle"); // Get texture source rectangle that is used for shapes drawing
+
+// Basic shapes drawing functions
+fn void draw_pixel(int pos_x, int pos_y, RLColor color) @cname("DrawPixel");                                             // Draw a pixel using geometry [Can be slow, use with care]
+fn void draw_pixel_v(RLVector2 position, RLColor color) @cname("DrawPixelV");                                            // Draw a pixel using geometry (Vector version) [Can be slow, use with care]
+fn void draw_line(int start_pos_x, int start_pos_y, int end_pos_x, int end_pos_y, RLColor color) @cname("DrawLine");     // Draw a line
+fn void draw_line_v(RLVector2 start_pos, RLVector2 end_pos, RLColor color) @cname("DrawLineV");                          // Draw a line (using gl lines)
+fn void draw_line_ex(RLVector2 start_pos, RLVector2 end_pos, float thick, RLColor color) @cname("DrawLineEx");           // Draw a line (using triangles/quads)
+fn void draw_line_strip(RLVector2* points, int point_count, RLColor color) @cname("DrawLineStrip");                     // Draw lines sequence (using gl lines)
+fn void draw_line_bezier(RLVector2 start_pos, RLVector2 end_pos, float thick, RLColor color) @cname("DrawLineBezier");   // Draw line segment cubic-bezier in-out interpolation
+fn void draw_line_dashed(RLVector2 start_pos, RLVector2 end_pos, int dashSize, int spaceSize, RLColor color) @cname("DrawLineDashed");   // Draw a dashed line
+
+fn void draw_circle(int center_x, int center_y, float radius, RLColor color) @cname("DrawCircle");                       // Draw a color-filled circle
+fn void draw_circle_sector(RLVector2 center, float radius, float start_angle, float end_angle, int segments, RLColor color) @cname("DrawCircleSector");            // Draw a piece of a circle
+fn void draw_circle_sector_lines(RLVector2 center, float radius, float start_angle, float end_angle, int segments, RLColor color) @cname("DrawCircleSectorLines"); // Draw circle sector outline
+fn void draw_circle_gradient(int center_x, int center_y, float radius, RLColor inner, RLColor outer) @cname("DrawCircleGradient"); // Draw a gradient-filled circle
+fn void draw_circle_v(RLVector2 center, float radius, RLColor color) @cname("DrawCircleV");                                        // Draw a color-filled circle (Vector version)
+fn void draw_circle_lines(int center_x, int center_y, float radius, RLColor color) @cname("DrawCircleLines");                      // Draw circle outline
+fn void draw_circle_lines_v(RLVector2 center, float radius, RLColor color) @cname("DrawCircleLinesV");                             // Draw circle outline (Vector version)
+fn void draw_ellipse(int center_x, int center_y, float radius_h, float radius_v, RLColor color) @cname("DrawEllipse");             // Draw ellipse
+fn void draw_ellipse_v(RLVector2 center, float radius_h, float radius_v, RLColor color) @cname("DrawEllipseV");                    // Draw ellipse (Vector version)
+fn void draw_ellipse_lines(int center_x, int center_y, float radius_h, float radius_v, RLColor color) @cname("DrawEllipseLines");  // Draw ellipse outline
+fn void draw_ellipse_lines_v(RLVector2 center, float radius_h, float radius_v, RLColor color) @cname("DrawEllipseLinesV");         // Draw ellipse outline (Vector version)
+
+fn void draw_ring(RLVector2 center, float inner_radius, float outer_radius, float start_angle, float end_angle, int segments, RLColor color) @cname("DrawRing");            // Draw ring
+fn void draw_ring_lines(RLVector2 center, float inner_radius, float outer_radius, float start_angle, float end_angle, int segments, RLColor color) @cname("DrawRingLines"); // Draw ring outline
+fn void draw_rectangle(int pos_x, int pos_y, int width, int height, RLColor color) @cname("DrawRectangle");                                                        // Draw a color-filled rectangle
+fn void draw_rectangle_v(RLVector2 position, RLVector2 size, RLColor color) @cname("DrawRectangleV");                                                                  // Draw a color-filled rectangle (Vector version)
+fn void draw_rectangle_rec(Rect rec, RLColor color) @cname("DrawRectangleRec");                                                                                 // Draw a color-filled rectangle
+fn void draw_rectangle_pro(Rect rec, RLVector2 origin, float rotation, RLColor color) @cname("DrawRectanglePro");                                               // Draw a color-filled rectangle with pro parameters
+fn void draw_rectangle_gradient_v(int pos_x, int pos_y, int width, int height, RLColor top, RLColor bottom) @cname("DrawRectangleGradientV");                          // Draw a vertical-gradient-filled rectangle
+fn void draw_rectangle_gradient_h(int pos_x, int pos_y, int width, int height, RLColor left, RLColor right) @cname("DrawRectangleGradientH");                          // Draw a horizontal-gradient-filled rectangle
+fn void draw_rectangle_gradient_ex(Rect rec, RLColor top_left, RLColor bottom_left, RLColor bottom_right, RLColor top_right) @cname("DrawRectangleGradientEx"); // Draw a gradient-filled rectangle with custom vertex colors
+fn void draw_rectangle_lines(int pos_x, int pos_y, int width, int height, RLColor color) @cname("DrawRectangleLines");                                                 // Draw rectangle outline
+fn void draw_rectangle_lines_ex(Rect rec, float line_thick, RLColor color) @cname("DrawRectangleLinesEx");                                                      // Draw rectangle outline with extended parameters
+fn void draw_rectangle_rounded(Rect rec, float roundness, int segments, RLColor color) @cname("DrawRectangleRounded");                                         // Draw rectangle with rounded edges
+fn void draw_rectangle_rounded_lines(Rect rec, float roundness, int segments, RLColor color) @cname("DrawRectangleRoundedLines");                              // Draw rectangle lines with rounded edges
+fn void draw_rectangle_rounded_lines_ex(Rect rec, float roundness, int segments, float line_thick, RLColor color) @cname("DrawRectangleRoundedLinesEx");       // Draw rectangle with rounded edges outline
+fn void draw_triangle(RLVector2 v1, RLVector2 v2, RLVector2 v3, RLColor color) @cname("DrawTriangle");                                                                 // Draw a color-filled triangle (vertex in counter-clockwise order!)
+fn void draw_triangle_lines(RLVector2 v1, RLVector2 v2, RLVector2 v3, RLColor color) @cname("DrawTriangleLines");                                                      // Draw triangle outline (vertex in counter-clockwise order!)
+fn void draw_triangle_fan(RLVector2* points, int point_count, RLColor color) @cname("DrawTriangleFan");                                                                // Draw a triangle fan defined by points (first vertex is the center)
+fn void draw_triangle_strip(RLVector2* points, int point_count, RLColor color) @cname("DrawTriangleStrip");                                                            // Draw a triangle strip defined by points
+fn void draw_poly(RLVector2 center, int sides, float radius, float rotation, RLColor color) @cname("DrawPoly");                                                       // Draw a regular polygon (Vector version)
+fn void draw_poly_lines(RLVector2 center, int sides, float radius, float rotation, RLColor color) @cname("DrawPolyLines");                                            // Draw a polygon outline of n sides
+fn void draw_poly_lines_ex(RLVector2 center, int sides, float radius, float rotation, float line_thick, RLColor color) @cname("DrawPolyLinesEx");                     // Draw a polygon outline of n sides with extended parameters
+
+// Splines drawing functions
+fn void draw_spline_linear(RLVector2* points, int point_count, float thick, RLColor color) @cname("DrawSplineLinear");                    // Draw spline: Linear, minimum 2 points
+fn void draw_spline_basis(RLVector2* points, int point_count, float thick, RLColor color) @cname("DrawSplineBasis");                      // Draw spline: B-Spline, minimum 4 points
+fn void draw_spline_catmull_rom(RLVector2* points, int point_count, float thick, RLColor color) @cname("DrawSplineCatmullRom");           // Draw spline: Catmull-Rom, minimum 4 points
+fn void draw_spline_bezier_quadratic(RLVector2* points, int point_count, float thick, RLColor color) @cname("DrawSplineBezierQuadratic"); // Draw spline: Quadratic Bezier, minimum 3 points (1 control point): [p1, c2, p3, c4...]
+fn void draw_spline_bezier_cubic(RLVector2* points, int point_count, float thick, RLColor color) @cname("DrawSplineBezierCubic");         // Draw spline: Cubic Bezier, minimum 4 points (2 control points): [p1, c2, c3, p4, c5, c6...]
+fn void draw_spline_segment_linear(RLVector2 p1, RLVector2 p2, float thick, RLColor color) @cname("DrawSplineSegmentLinear");              // Draw spline segment: Linear, 2 points
+fn void draw_spline_segment_basis(RLVector2 p1, RLVector2 p2, RLVector2 p3, RLVector2 p4, float thick, RLColor color) @cname("DrawSplineSegmentBasis");              // Draw spline segment: B-Spline, 4 points
+fn void draw_spline_segment_catmull_rom(RLVector2 p1, RLVector2 p2, RLVector2 p3, RLVector2 p4, float thick, RLColor color) @cname("DrawSplineSegmentCatmullRom");   // Draw spline segment: Catmull-Rom, 4 points
+fn void draw_spline_segment_bezier_quadratic(RLVector2 p1, RLVector2 c2, RLVector2 p3, float thick, RLColor color) @cname("DrawSplineSegmentBezierQuadratic");       // Draw spline segment: Quadratic Bezier, 2 points, 1 control point
+fn void draw_spline_segment_bezier_cubic(RLVector2 p1, RLVector2 c2, RLVector2 c3, RLVector2 p4, float thick, RLColor color) @cname("DrawSplineSegmentBezierCubic"); // Draw spline segment: Cubic Bezier, 2 points, 2 control points
+
+// Spline segment point evaluation functions, for a given t [0.0f .. 1.0f]
+fn RLVector2 get_spline_point_linear(RLVector2 start_pos, RLVector2 end_pos, float t) @cname("GetSplinePointLinear");                            // Get (evaluate) spline point: Linear
+fn RLVector2 get_spline_point_basis(RLVector2 p1, RLVector2 p2, RLVector2 p3, RLVector2 p4, float t) @cname("GetSplinePointBasis");              // Get (evaluate) spline point: B-Spline
+fn RLVector2 get_spline_point_catmull_rom(RLVector2 p1, RLVector2 p2, RLVector2 p3, RLVector2 p4, float t) @cname("GetSplinePointCatmullRom");   // Get (evaluate) spline point: Catmull-Rom
+fn RLVector2 get_spline_point_bezier_quad(RLVector2 p1, RLVector2 c2, RLVector2 p3, float t) @cname("GetSplinePointBezierQuad");                 // Get (evaluate) spline point: Quadratic Bezier
+fn RLVector2 get_spline_point_bezier_cubic(RLVector2 p1, RLVector2 c2, RLVector2 c3, RLVector2 p4, float t) @cname("GetSplinePointBezierCubic"); // Get (evaluate) spline point: Cubic Bezier
+
+// Basic shapes collision detection functions
+fn bool check_collision_recs(Rect rec1, Rect rec2) @cname("CheckCollisionRecs");                                           // Check collision between two rectangles
+fn bool check_collision_circles(RLVector2 center1, float radius1, RLVector2 center2, float radius2) @cname("CheckCollisionCircles");     // Check collision between two circles
+fn bool check_collision_circle_rec(RLVector2 center, float radius, Rect rec) @cname("CheckCollisionCircleRec");                   // Check collision between circle and rectangle
+fn bool check_collision_circle_line(RLVector2 center, float radius, RLVector2 p1, RLVector2 p2) @cname("CheckCollisionCircleLine");      // Check if circle collides with a line created betweeen two points [p1] and [p2]
+fn bool check_collision_point_rec(RLVector2 point, Rect rec) @cname("CheckCollisionPointRec");                                    // Check if point is inside rectangle
+fn bool check_collision_point_circle(RLVector2 point, RLVector2 center, float radius) @cname("CheckCollisionPointCircle");               // Check if point is inside circle
+fn bool check_collision_point_triangle(RLVector2 point, RLVector2 p1, RLVector2 p2, RLVector2 p3) @cname("CheckCollisionPointTriangle"); // Check if point is inside a triangle
+fn bool check_collision_point_line(RLVector2 point, RLVector2 p1, RLVector2 p2, int threshold) @cname("CheckCollisionPointLine");       // Check if point belongs to line created between two points [p1] and [p2] with defined margin in pixels [threshold]
+fn bool check_collision_point_poly(RLVector2 point, RLVector2* points, int point_count) @cname("CheckCollisionPointPoly");              // Check if point is within a polygon described by array of vertices
+fn bool check_collision_lines(RLVector2 start_pos1, RLVector2 end_pos1, RLVector2 start_pos2, RLVector2 end_pos2, RLVector2* collision_point) @cname("CheckCollisionLines"); // Check the collision between two lines defined by two points each, returns collision point by reference
+fn Rect get_collision_rec(Rect rec1, Rect rec2) @cname("GetCollisionRec"); // Get collision rectangle for two rectangles collision
+
+//------------------------------------------------------------------------------------
+// Texture Loading and Drawing Functions (Module: textures)
+//------------------------------------------------------------------------------------
+
+// Image loading functions
+// NOTE: These functions do not require GPU access
+fn RLImage load_image(ZString file_name) @cname("LoadImage");                                                               // Load image from file into CPU memory (RAM)
+fn RLImage load_image_raw(ZString file_name, int width, int height, int format, int headerSize) @cname("LoadImageRaw"); // Load image from RAW file data
+fn RLImage load_image_anim(ZString file_name, int* frames) @cname("LoadImageAnim");                                        // Load image sequence from file (frames appended to image.data)
+fn RLImage load_image_anim_from_memory(ZString file_type, char* file_data, int data_size, int* frames) @cname("LoadImageAnimFromMemory"); // Load image sequence from memory buffer
+fn RLImage load_image_from_memory(ZString file_type, char* file_data, int data_size) @cname("LoadImageFromMemory"); // Load image from memory buffer, file_type refers to extension: i.e. '.png'
+fn RLImage load_image_from_texture(RLTexture2D texture) @cname("LoadImageFromTexture");                              // Load image from GPU texture data
+fn RLImage load_image_from_screen() @cname("LoadImageFromScreen");                                                   // Load image from screen buffer and (screenshot)
+fn bool RLImage.is_valid(RLImage image) @cname("IsImageValid");                                                      // Check if an image is valid (data and parameters)
+fn void unload_image(RLImage image) @cname("UnloadImage");                                                           // Unload image from CPU memory (RAM)
+fn bool export_image(RLImage image, ZString file_name) @cname("ExportImage");                                        // Export image data to file, returns true on success
+fn char* export_image_to_memory(RLImage image, ZString file_type, int* file_size) @cname("ExportImageToMemory");    // Export image to memory buffer
+fn bool export_image_as_code(RLImage image, ZString file_name) @cname("ExportImageAsCode");                          // Export image as code file defining an array of bytes, returns true on success
+
+// Image generation functions
+fn RLImage gen_image_color(int width, int height, RLColor color) @cname("GenImageColor");                                                  // Generate image: plain color
+fn RLImage gen_image_gradient_linear(int width, int height, int direction, RLColor start, RLColor end) @cname("GenImageGradientLinear");  // Generate image: linear gradient, direction in degrees [0..360], 0=Vertical gradient
+fn RLImage gen_image_gradient_radial(int width, int height, float density, RLColor inner, RLColor outer) @cname("GenImageGradientRadial"); // Generate image: radial gradient
+fn RLImage gen_image_gradient_square(int width, int height, float density, RLColor inner, RLColor outer) @cname("GenImageGradientSquare"); // Generate image: square gradient
+fn RLImage gen_image_checked(int width, int height, int checksX, int checksY, RLColor col1, RLColor col2) @cname("GenImageChecked");     // Generate image: checked
+fn RLImage gen_image_white_noise(int width, int height, float factor) @cname("GenImageWhiteNoise");                                        // Generate image: white noise
+fn RLImage gen_image_perlin_noise(int width, int height, int offset_x, int offset_y, float scale) @cname("GenImagePerlinNoise");         // Generate image: perlin noise
+fn RLImage gen_image_cellular(int width, int height, int tile_size) @cname("GenImageCellular");                                           // Generate image: cellular algorithm, bigger tile_size means bigger cells
+fn RLImage gen_image_text(int width, int height, ZString text) @cname("GenImageText");                                                     // Generate image: grayscale image from text data
+
+// Image manipulation functions
+fn RLImage image_copy(RLImage image) @cname("ImageCopy");                                                                // Create an image duplicate (useful for transformations)
+fn RLImage image_from_image(RLImage image, Rect rec) @cname("ImageFromImage");                                    // Create an image from another image piece
+fn RLImage image_from_channel(RLImage image, int selected_channel) @cname("ImageFromChannel");                          // Create an image from a selected channel of another image (GRAYSCALE)
+fn RLImage image_text(ZString text, int font_size, RLColor color) @cname("ImageText");                                  // Create an image from text (default font)
+fn RLImage image_text_ex(RLFont font, ZString text, float font_size, float spacing, RLColor tint) @cname("ImageTextEx"); // Create an image from text (custom sprite font)
+fn void image_format(RLImage* image, RLPixelFormat newFormat) @cname("ImageFormat");                                     // Convert image data to desired format
+fn void image_to_pot(RLImage* image, RLColor fill) @cname("ImageToPOT");                                                 // Convert image to POT (power-of-two)
+fn void image_crop(RLImage* image, Rect crop) @cname("ImageCrop");                                                // Crop an image to a defined rectangle
+fn void image_alpha_crop(RLImage* image, float threshold) @cname("ImageAlphaCrop");                                      // Crop image depending on alpha value
+fn void image_alpha_clear(RLImage* image, RLColor color, float threshold) @cname("ImageAlphaClear");                     // Clear alpha channel to desired color
+fn void image_alpha_mask(RLImage* image, RLImage alpha_mask) @cname("ImageAlphaMask");                                   // Apply alpha mask to image
+fn void image_alpha_premultiply(RLImage* image) @cname("ImageAlphaPremultiply");                                         // Premultiply alpha channel
+fn void image_blur_gaussian(RLImage* image, int blur_size) @cname("ImageBlurGaussian");                                 // Apply Gaussian blur using a box blur approximation
+fn void image_kernel_convolution(RLImage* image, float* kernel, int kernel_size) @cname("ImageKernelConvolution");      // Apply custom square convolution kernel to image
+fn void image_resize(RLImage* image, int new_width, int new_height) @cname("ImageResize");                             // Resize image (Bicubic scaling algorithm)
+fn void image_resize_nn(RLImage* image, int new_width,int new_height) @cname("ImageResizeNN");                         // Resize image (Nearest-Neighbor scaling algorithm)
+fn void image_resize_canvas(RLImage* image, int new_width, int new_height, int offset_x, int offset_y, RLColor fill) @cname("ImageResizeCanvas"); // Resize canvas and fill with color
+fn void image_mipmaps(RLImage* image) @cname("ImageMipmaps");                                                       // Compute all mipmap levels for a provided image
+fn void image_dither(RLImage* image, int rBpp, int gBpp, int bBpp, int aBpp) @cname("ImageDither");             // Dither image data to 16bpp or lower (Floyd-Steinberg dithering)
+fn void image_flip_vertical(RLImage* image) @cname("ImageFlipVertical");                                            // Flip image vertically
+fn void image_flip_horizontal(RLImage* image) @cname("ImageFlipHorizontal");                                        // Flip image horizontally
+fn void image_rotate(RLImage* image, int degrees) @cname("ImageRotate");                                           // Rotate image by input angle in degrees (-359 to 359)
+fn void image_rotate_cw(RLImage* image) @cname("ImageRotateCW");                                                    // Rotate image clockwise 90deg
+fn void image_rotate_ccw(RLImage* image) @cname("ImageRotateCCW");                                                  // Rotate image counter-clockwise 90deg
+fn void image_color_tint(RLImage* image, RLColor color) @cname("ImageColorTint");                                   // Modify image color: tint
+fn void image_color_invert(RLImage* image) @cname("ImageColorInvert");                                              // Modify image color: invert
+fn void image_color_grayscale(RLImage* image) @cname("ImageColorGrayscale");                                        // Modify image color: grayscale
+fn void image_color_contrast(RLImage* image, float contrast) @cname("ImageColorContrast");                          // Modify image color: contrast (-100 to 100)
+fn void image_color_brightness(RLImage* image, int brightness) @cname("ImageColorBrightness");                     // Modify image color: brightness (-255 to 255)
+fn void image_color_replace(RLImage* image, RLColor color, RLColor replace) @cname("ImageColorReplace");            // Modify image color: replace color
+fn RLColor* load_image_colors(RLImage image) @cname("LoadImageColors");                                             // Load color data from image as a RLColor array (RGBA - 32bit)
+fn RLColor* load_image_palette(RLImage image, int max_palette_size, int* color_count) @cname("LoadImagePalette"); // Load colors palette from image as a RLColor array (RGBA - 32bit)
+fn void unload_image_colors(RLColor* colors) @cname("UnloadImageColors");                                           // Unload color data loaded with LoadImageColors()
+fn void unload_image_palette(RLColor* colors) @cname("UnloadImagePalette");                                         // Unload colors palette loaded with LoadImagePalette()
+fn Rect get_image_alpha_border(RLImage image, float threshold) @cname("GetImageAlphaBorder");                // Get image alpha border rectangle
+fn RLColor get_image_color(RLImage image, int x, int y) @cname("GetImageColor");                                  // Get image pixel color at (x, y) position
+
+// Image drawing functions
+// NOTE: RLImage software-rendering functions (CPU)
+fn void image_clear_background(RLImage* dst, RLColor color) @cname("ImageClearBackground");             // Clear image background with given color
+fn void image_draw_pixel(RLImage* dst, int pos_x, int pos_y, RLColor color) @cname("ImageDrawPixel"); // Draw pixel within an image
+fn void image_draw_pixel_v(RLImage* dst, RLVector2 position, RLColor color) @cname("ImageDrawPixelV");  // Draw pixel within an image (Vector version)
+fn void image_draw_line(RLImage* dst, int start_pos_x, int start_pos_y, int end_pos_x, int end_pos_y, RLColor color) @cname("ImageDrawLine"); // Draw line within an image
+fn void image_draw_line_v(RLImage* dst, RLVector2 start, RLVector2 end, RLColor color) @cname("ImageDrawLineV");                         // Draw line within an image (Vector version)
+fn void image_draw_line_ex(RLImage* dst, RLVector2 start, RLVector2 end, int thick, RLColor color) @cname("ImageDrawLineEx");           // Draw a line defining thickness within an image
+fn void image_draw_circle(RLImage* dst, int center_x, int center_y, int radius, RLColor color) @cname("ImageDrawCircle");             // Draw a filled circle within an image
+fn void image_draw_circle_v(RLImage* dst, RLVector2 center, int radius, RLColor color) @cname("ImageDrawCircleV");                      // Draw a filled circle within an image (Vector version)
+fn void image_draw_circle_lines(RLImage* dst, int center_x, int center_y, int radius, RLColor color) @cname("ImageDrawCircleLines");  // Draw circle outline within an image
+fn void image_draw_circle_lines_v(RLImage* dst, RLVector2 center, int radius, RLColor color) @cname("ImageDrawCircleLinesV");           // Draw circle outline within an image (Vector version)
+fn void image_draw_rectangle(RLImage* dst, int pos_x, int pos_y, int width, int height, RLColor color) @cname("ImageDrawRectangle"); // Draw rectangle within an image
+fn void image_draw_rectangle_v(RLImage* dst, RLVector2 position, RLVector2 size, RLColor color) @cname("ImageDrawRectangleV");           // Draw rectangle within an image (Vector version)
+fn void image_draw_rectangle_rec(RLImage* dst, Rect rec, RLColor color) @cname("ImageDrawRectangleRec");                          // Draw rectangle within an image
+fn void image_draw_rectangle_lines(RLImage* dst, Rect rec, int thick, RLColor color) @cname("ImageDrawRectangleLines");          // Draw rectangle lines within an image
+fn void image_draw_triangle(RLImage* dst, RLVector2 v1, RLVector2 v2, RLVector2 v3, RLColor color) @cname("ImageDrawTriangle");          // Draw triangle within an image
+fn void image_draw_triangle_ex(RLImage* dst, RLVector2 v1, RLVector2 v2, RLVector2 v3, RLColor c1, RLColor c2, RLColor c3) @cname("ImageDrawTriangleEx");        // Draw triangle with interpolated colors within an image
+fn void image_draw_triangle_lines(RLImage* dst, RLVector2 v1, RLVector2 v2, RLVector2 v3, RLColor color) @cname("ImageDrawTriangleLines");                       // Draw triangle outline within an image
+fn void image_draw_triangle_fan(RLImage* dst, RLVector2* points, int point_count, RLColor color) @cname("ImageDrawTriangleFan");                                // Draw a triangle fan defined by points within an image (first vertex is the center)
+fn void image_draw_triangle_strip(RLImage* dst, RLVector2* points, int point_count, RLColor color) @cname("ImageDrawTriangleStrip");                            // Draw a triangle strip defined by points within an image
+fn void image_draw(RLImage* dst, RLImage src, Rect srcRec, Rect dstRec, RLColor tint) @cname("ImageDraw");                                         // Draw a source image within a destination image (tint applied to source)
+fn void image_draw_text(RLImage* dst, ZString text, int pos_x, int pos_y, int font_size, RLColor color) @cname("ImageDrawText");                              // Draw text (using default font) within an image (destination)
+fn void image_draw_text_ex(RLImage* dst, RLFont font, ZString text, RLVector2 position, float font_size, float spacing, RLColor tint) @cname("ImageDrawTextEx"); // Draw text (custom sprite font) within an image (destination)
+
+// Texture loading functions
+// NOTE: These functions require GPU access
+fn RLTexture2D load_texture(ZString file_name) @cname("LoadTexture");                                          // Load texture from file into GPU memory (VRAM)
+fn RLTexture2D load_texture_from_image(RLImage image) @cname("LoadTextureFromImage");                          // Load texture from image data
+fn RLTextureCubemap load_texture_cubemap(RLImage image, RLCubemapLayout layout) @cname("LoadTextureCubemap");  // Load cubemap from image, multiple image cubemap layouts supported
+fn RLRenderTexture2D load_render_texture(int width, int height) @cname("LoadRenderTexture");                 // Load texture for rendering (framebuffer)
+fn bool RLTexture2D.is_valid(RLTexture2D texture) @cname("IsTextureValid");                                    // Check if a texture is valid (loaded in GPU)
+fn void unload_texture(RLTexture2D texture) @cname("UnloadTexture");                                           // Unload texture from GPU memory (VRAM)
+fn bool RLRenderTexture2D.is_valid(RLRenderTexture2D target) @cname("IsRenderTextureValid");                   // Check if a render texture is valid (loaded in GPU)
+fn void unload_render_texture(RLRenderTexture2D target) @cname("UnloadRenderTexture");                         // Unload render texture from GPU memory (VRAM)
+fn void RLTexture2D.update(RLTexture2D texture, void* pixels) @cname("UpdateTexture");                         // Update GPU texture with new data (pixels should be able to fill texture)
+fn void RLTexture2D.update_rec(RLTexture2D texture, Rect rec, void* pixels) @cname("UpdateTextureRec"); // Update GPU texture rectangle with new data (pixels and rec should fit in texture)
+
+// Texture configuration functions
+fn void gen_texture_mipmaps(RLTexture2D* texture) @cname("GenTextureMipmaps");                          // Generate GPU mipmaps for a texture
+fn void RLTexture2D.set_filter(RLTexture2D texture, RLTextureFilter filter) @cname("SetTextureFilter"); // Set texture scaling filter mode
+fn void RLTexture2D.set_wrap(RLTexture2D texture, RLTextureWrap wrap) @cname("SetTextureWrap");         // Set texture wrapping mode
+
+// Texture drawing functions
+fn void draw_texture(RLTexture2D texture, int pos_x, int pos_y, RLColor tint) @cname("DrawTexture"); // Draw a RLTexture2D
+fn void draw_texture_v(RLTexture2D texture, RLVector2 position, RLColor tint) @cname("DrawTextureV");  // Draw a RLTexture2D with position defined as RLVector2
+fn void draw_texture_ex(RLTexture2D texture, RLVector2 position, float rotation, float scale, RLColor tint) @cname("DrawTextureEx"); // Draw a RLTexture2D with extended parameters
+fn void draw_texture_rec(RLTexture2D texture, Rect source, RLVector2 position, RLColor tint) @cname("DrawTextureRec");        // Draw a part of a texture defined by a rectangle
+fn void draw_texture_pro(RLTexture2D texture, Rect source, Rect dest, RLVector2 origin, float rotation, RLColor tint) @cname("DrawTexturePro");               // Draw a part of a texture defined by a rectangle with 'pro' parameters
+fn void draw_texture_n_patch(RLTexture2D texture, RLNPatchInfo n_patch_info, Rect dest, RLVector2 origin, float rotation, RLColor tint) @cname("DrawTextureNPatch"); // Draws a texture (or part of it) that stretches or shrinks nicely
+
+// Color/pixel related functions
+fn bool RLColor.is_equal(RLColor col1, RLColor col2) @cname("ColorIsEqual");                           // Check if two colors are equal
+fn RLColor RLColor.fade(RLColor color, float alpha) @cname("Fade");                                    // Get color with alpha applied, alpha goes from 0.0f to 1.0f
+fn int RLColor.to_int(RLColor color) @cname("ColorToInt");                                            // Get hexadecimal value for a RLColor (0xRRGGBBAA)
+fn RLVector4 RLColor.normalize(RLColor color) @cname("ColorNormalize");                                // Get RLColor normalized as float [0..1]
+fn RLColor color_from_normalized(RLVector4 normalized) @cname("ColorFromNormalized");                  // Get RLColor from normalized values [0..1]
+fn RLVector3 RLColor.to_h_s_v(RLColor color) @cname("ColorToHSV");                                     // Get HSV values for a RLColor, hue [0..360], saturation/value [0..1]
+fn RLColor color_from_h_s_v(float hue, float saturation, float value) @cname("ColorFromHSV");          // Get a RLColor from HSV values, hue [0..360], saturation/value [0..1]
+fn RLColor RLColor.tint(RLColor color, RLColor tint) @cname("ColorTint");                              // Get color multiplied with another color
+fn RLColor RLColor.brightness(RLColor color, float factor) @cname("ColorBrightness");                  // Get color with brightness correction, brightness factor goes from -1.0f to 1.0f
+fn RLColor RLColor.contrast(RLColor color, float contrast) @cname("ColorContrast");                    // Get color with contrast correction, contrast values between -1.0f and 1.0f
+fn RLColor RLColor.alpha(RLColor color, float alpha) @cname("ColorAlpha");                             // Get color with alpha applied, alpha goes from 0.0f to 1.0f
+fn RLColor RLColor.alpha_blend(RLColor dst, RLColor src, RLColor tint) @cname("ColorAlphaBlend");      // Get src alpha-blended into dst color with tint
+fn RLColor RLColor.lerp(RLColor color1, RLColor color2, float factor) @cname("ColorLerp");             // Get color lerp interpolation between two colors, factor [0.0f..1.0f]
+fn RLColor get_color(uint hex_value) @cname("GetColor");                                              // Get RLColor structure from hexadecimal value
+fn RLColor get_pixel_color(void* src_ptr, RLPixelFormat format) @cname("GetPixelColor");               // Get RLColor from a source pixel pointer of certain format
+fn void set_pixel_color(void* dst_ptr, RLColor color, RLPixelFormat format) @cname("SetPixelColor");   // Set color formatted into destination pixel pointer
+fn int get_pixel_data_size(int width, int height, RLPixelFormat format) @cname("GetPixelDataSize"); // Get pixel data size in bytes for certain format
+
+//------------------------------------------------------------------------------------
+// Font Loading and Text Drawing Functions (Module: text)
+//------------------------------------------------------------------------------------
+
+// Font loading/unloading functions
+fn RLFont get_font_default() @cname("GetFontDefault");     // Get the default RLFont
+fn RLFont load_font(ZString file_name) @cname("LoadFont"); // Load font from file into GPU memory (VRAM)
+fn RLFont load_font_ex(ZString file_name, int font_size, int* codepoints, int codepoint_count) @cname("LoadFontEx"); // Load font from file with extended parameters, use NULL for codepoints and 0 for codepoint_count to load the default character set, font size is provided in pixels height
+fn RLFont load_font_from_image(RLImage image, RLColor key, int firstChar) @cname("LoadFontFromImage");                 // Load font from RLImage (XNA style)
+fn RLFont load_font_from_memory(ZString file_type, char* file_data, int data_size, int font_size, int* codepoints, int codepoint_count) @cname("LoadFontFromMemory"); // Load font from memory buffer, file_type refers to extension: i.e. '.ttf'
+fn bool RLFont.is_valid(RLFont font) @cname("IsFontValid"); // Check if a font is valid (font data loaded, WARNING: GPU texture not checked)
+fn RLGlyphInfo* load_font_data(char* file_data, int data_size, int font_size, int* codepoints, int codepoint_count, RLFontType type, int *glyph_count) @cname("LoadFontData");             // Load font data for further use
+fn RLImage gen_image_font_atlas(RLGlyphInfo* glyphs, Rect* *glyphRecs, int glyph_count, int font_size, int padding, int pack_method) @cname("GenImageFontAtlas"); // Generate image font atlas using chars info
+fn void unload_font_data(RLGlyphInfo* glyphs, int glyph_count) @cname("UnloadFontData"); // Unload font chars info data (RAM)
+fn void unload_font(RLFont font) @cname("UnloadFont");                                    // Unload font from GPU memory (VRAM)
+fn bool export_font_as_code(RLFont font, ZString file_name) @cname("ExportFontAsCode");   // Export font as code file, returns true on success
+
+// Text drawing functions
+fn void draw_fps(int pos_x, int pos_y) @cname("DrawFPS"); // Draw current FPS
+fn void draw_text(ZString text, int pos_x, int pos_y, int font_size, RLColor color) @cname("DrawText"); // Draw text (using default font)
+fn void draw_text_ex(RLFont font, ZString text, RLVector2 position, float font_size, float spacing, RLColor tint) @cname("DrawTextEx");                                           // Draw text using font and additional parameters
+fn void draw_text_pro(RLFont font, ZString text, RLVector2 position, RLVector2 origin, float rotation, float font_size, float spacing, RLColor tint) @cname("DrawTextPro");       // Draw text using RLFont and pro parameters (rotation)
+fn void draw_text_codepoint(RLFont font, int codepoint, RLVector2 position, float font_size, RLColor tint) @cname("DrawTextCodepoint");                                          // Draw one character (codepoint)
+fn void draw_text_codepoints(RLFont font, int* codepoints, int codepoint_count, RLVector2 position, float font_size, float spacing, RLColor tint) @cname("DrawTextCodepoints"); // Draw multiple character (codepoint)
+
+// Text font info functions
+fn void set_text_line_spacing(int spacing) @cname("SetTextLineSpacing"); // Set vertical line spacing when drawing with line-breaks
+fn int measure_text(ZString text, int font_size) @cname("MeasureText"); // Measure string width for default font
+fn RLVector2 measure_text_ex(RLFont font, ZString text, float font_size, float spacing) @cname("MeasureTextEx"); // Measure string size for RLFont
+fn RLVector2 measure_text_codepoints(RLFont font, int* codepoints, int length, float font_size, float spacing) @cname("MeasureTextCodepoints"); // Measure string size for an existing array of codepoints for Font
+
+fn int get_glyph_index(RLFont font, int codepoint) @cname("GetGlyphIndex");               // Get glyph index position in font for a codepoint (unicode character), fallback to '?' if not found
+fn RLGlyphInfo get_glyph_info(RLFont font, int codepoint) @cname("GetGlyphInfo");          // Get glyph font info data for a codepoint (unicode character), fallback to '?' if not found
+fn Rect get_glyph_atlas_rec(RLFont font, int codepoint) @cname("GetGlyphAtlasRec"); // Get glyph rectangle in font atlas for a codepoint (unicode character), fallback to '?' if not found
+
+// Text codepoints management functions (unicode characters)
+fn char* load_utf8(int* codepoints, int length) @cname("LoadUTF8");                              // Load UTF-8 text encoded from codepoints array
+fn void unload_utf8(char* text) @cname("UnloadUTF8");                                              // Unload UTF-8 text encoded from codepoints array
+fn int* load_codepoints(ZString text, int* count) @cname("LoadCodepoints");                      // Load all codepoints from a UTF-8 text string, codepoints count returned by parameter
+fn void unload_codepoints(int* codepoints) @cname("UnloadCodepoints");                            // Unload codepoints data from memory
+fn int get_codepoint_count(ZString text) @cname("GetCodepointCount");                             // Get total number of codepoints in a UTF-8 encoded string
+fn int get_codepoint(ZString text, int* codepoint_size) @cname("GetCodepoint");                  // Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
+fn int get_codepoint_next(ZString text, int* codepoint_size) @cname("GetCodepointNext");         // Get next codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
+fn int get_codepoint_previous(ZString text, int* codepoint_size) @cname("GetCodepointPrevious"); // Get previous codepoint in a UTF-8 encoded string, 0x3f('?') is returned on failure
+fn ZString codepoint_to_utf8(int codepoint, int* utf8_size) @cname("CodepointToUTF8");           // Encode one codepoint into UTF-8 byte array (array length returned as parameter)
+
+// Text strings management functions (no UTF-8 strings, only byte chars)
+// WARNING 1: Most of these functions use internal static buffers[], it's recommended to store returned data on user-side for re-use
+// WARNING 2: Some strings allocate memory internally for the returned strings, those strings must be free by user using MemFree()
+fn ZString* load_text_lines(ZString text, int* count) @cname("LoadTextLines");                     // Load text as separate lines ('\n')
+fn void unload_text_lines(ZString *text, int line_count) @cname("UnloadTextLines");                // Unload text lines
+fn int text_copy(ZString dst, ZString src) @cname("TextCopy");                                     // Copy one string to another, returns bytes copied
+fn bool text_is_equal(ZString text1, ZString text2) @cname("TextIsEqual");                         // Check if two text string are equal
+fn uint text_length(ZString text) @cname("TextLength");                                            // Get text length, checks for '\0' ending
+fn ZString text_format(ZString text, ...) @cname("TextFormat");                                    // Text formatting with variables (sprintf() style)
+fn ZString text_subtext(ZString text, int position, int length) @cname("TextSubtext");             // Get a piece of a text string
+fn ZString text_remove_spaces(ZString text) @cname("TextRemoveSpaces");                            // Remove text spaces, concat words
+fn ZString get_text_between(ZString text, ZString begin, ZString end) @cname("GetTextBetween");    // Get text between two strings
+fn char* text_replace(ZString text, ZString replace, ZString by) @cname("TextReplace");            // Replace text string
+fn char* text_replace_alloc(ZString text, ZString replace, ZString by) @cname("TextReplaceAlloc"); // Replace text string (WARNING: memory must be freed!)
+fn ZString text_replace_between(ZString text, ZString begin, ZString end, ZString replacement) @cname("TextReplaceBetween"); // Replace text between two specific strings
+fn ZString text_replace_between_alloc(ZString text, ZString begin, ZString end, ZString replacement) @cname("TextReplaceBetweenAlloc"); // Replace text between two specific strings (WARNING: memory must be freed!)
+fn char* text_insert(ZString text, ZString insert, int position) @cname("TextInsert");            // Insert text in a position
+fn char* text_insert_alloc(ZString text, ZString insert, int position) @cname("TextInsertAlloc");  // Insert text in a position (WARNING: memory must be freed!)
+fn ZString text_join(ZString* textList, int count, ZString delimiter) @cname("TextJoin");         // Join text strings with delimiter
+fn ZString* text_split(ZString text, char delimiter, int* count) @cname("TextSplit");             // Split text into multiple strings, using MAX_TEXTSPLIT_COUNT static strings
+fn void text_append(char* text, ZString append, int* position) @cname("TextAppend");              // Append text at specific position and move cursor!
+fn int text_find_index(ZString text, ZString search) @cname("TextFindIndex");                     // Find first text occurrence within a string, -1 if not found
+fn ZString text_to_upper(ZString text) @cname("TextToUpper");   // Get upper case version of provided string
+fn ZString text_to_lower(ZString text) @cname("TextToLower");   // Get lower case version of provided string
+fn ZString text_to_pascal(ZString text) @cname("TextToPascal"); // Get Pascal case notation version of provided string
+fn ZString text_to_snake(ZString text) @cname("TextToSnake");   // Get Snake case notation version of provided string
+fn ZString text_to_camel(ZString text) @cname("TextToCamel");   // Get Camel case notation version of provided string
+
+fn int text_to_integer(ZString text) @cname("TextToInteger"); // Get integer value from text
+fn float text_to_float(ZString text) @cname("TextToFloat");    // Get float value from text
+
+//------------------------------------------------------------------------------------
+// Basic 3d Shapes Drawing Functions (Module: models)
+//------------------------------------------------------------------------------------
+
+// Basic geometric 3D shapes drawing functions
+fn void draw_line3d(RLVector3 start_pos, RLVector3 end_pos, RLColor color) @cname("DrawLine3D");                                            // Draw a line in 3D world space
+fn void draw_point3d(RLVector3 position, RLColor color) @cname("DrawPoint3D");                                                              // Draw a point in 3D space, actually a small line
+fn void draw_circle3d(RLVector3 center, float radius, RLVector3 rotation_axis, float rotation_angle, RLColor color) @cname("DrawCircle3D"); // Draw a circle in 3D world space
+fn void draw_triangle3d(RLVector3 v1, RLVector3 v2, RLVector3 v3, RLColor color) @cname("DrawTriangle3D");                      // Draw a color-filled triangle (vertex in counter-clockwise order!)
+fn void draw_triangle_strip3d(RLVector3* points, int point_count, RLColor color) @cname("DrawTriangleStrip3D");                // Draw a triangle strip defined by points
+fn void draw_cube(RLVector3 position, float width, float height, float length, RLColor color) @cname("DrawCube");               // Draw cube
+fn void draw_cube_v(RLVector3 position, RLVector3 size, RLColor color) @cname("DrawCubeV");                                     // Draw cube (Vector version)
+fn void draw_cube_wires(RLVector3 position, float width, float height, float length, RLColor color) @cname("DrawCubeWires");    // Draw cube wires
+fn void draw_cube_wires_v(RLVector3 position, RLVector3 size, RLColor color) @cname("DrawCubeWiresV");                          // Draw cube wires (Vector version)
+fn void draw_sphere(RLVector3 centerPos, float radius, RLColor color) @cname("DrawSphere");                                     // Draw sphere
+fn void draw_sphere_ex(RLVector3 centerPos, float radius, int rings, int slices, RLColor color) @cname("DrawSphereEx");       // Draw sphere with extended parameters
+fn void draw_sphere_wires(RLVector3 centerPos, float radius, int rings, int slices, RLColor color) @cname("DrawSphereWires"); // Draw sphere wires
+fn void draw_cylinder(RLVector3 position, float radius_top, float radius_bottom, float height, int slices, RLColor color) @cname("DrawCylinder");            // Draw a cylinder/cone
+fn void draw_cylinder_ex(RLVector3 start_pos, RLVector3 end_pos, float start_radius, float end_radius, int sides, RLColor color) @cname("DrawCylinderEx");   // Draw a cylinder with base at start_pos and top at end_pos
+fn void draw_cylinder_wires(RLVector3 position, float radius_top, float radius_bottom, float height, int slices, RLColor color) @cname("DrawCylinderWires"); // Draw a cylinder/cone wires
+fn void draw_cylinder_wires_ex(RLVector3 start_pos, RLVector3 end_pos, float start_radius, float end_radius, int sides, RLColor color) @cname("DrawCylinderWiresEx"); // Draw a cylinder wires with base at start_pos and top at end_pos
+fn void draw_capsule(RLVector3 start_pos, RLVector3 end_pos, float radius, int slices, int rings, RLColor color) @cname("DrawCapsule");            // Draw a capsule with the center of its sphere caps at start_pos and end_pos
+fn void draw_capsule_wires(RLVector3 start_pos, RLVector3 end_pos, float radius, int slices, int rings, RLColor color) @cname("DrawCapsuleWires"); // Draw capsule wireframe with the center of its sphere caps at start_pos and end_pos
+fn void draw_plane(RLVector3 centerPos, RLVector2 size, RLColor color) @cname("DrawPlane"); // Draw a plane XZ
+fn void draw_ray(RLRay ray, RLColor color) @cname("DrawRay");                               // Draw a ray line
+fn void draw_grid(int slices, float spacing) @cname("DrawGrid");                           // Draw a grid (centered at (0, 0, 0))
+
+//------------------------------------------------------------------------------------
+// Model 3d Loading and Drawing Functions (Module: models)
+//------------------------------------------------------------------------------------
+
+// Model management functions
+fn RLModel load_model(ZString file_name) @cname("LoadModel");             // Load model from files (meshes and materials)
+fn RLModel load_model_from_mesh(RLMesh mesh) @cname("LoadModelFromMesh"); // Load model from generated mesh (default material)
+fn bool RLModel.is_valid(RLModel model) @cname("IsModelValid");           // Check if a model is valid (loaded in GPU, VAO/VBOs)
+fn void unload_model(RLModel model) @cname("UnloadModel");                // Unload model (including meshes) from memory (RAM and/or VRAM)
+fn RLBoundingBox RLModel.get_bounding_box(RLModel model) @cname("GetModelBoundingBox"); // Compute model bounding box limits (considers all meshes)
+
+// Model drawing functions
+fn void draw_model(RLModel model, RLVector3 position, float scale, RLColor tint) @cname("DrawModel");                                                                      // Draw a model (with texture if set)
+fn void draw_model_ex(RLModel model, RLVector3 position, RLVector3 rotation_axis, float rotation_angle, RLVector3 scale, RLColor tint) @cname("DrawModelEx");              // Draw a model with extended parameters
+fn void draw_model_wires(RLModel model, RLVector3 position, float scale, RLColor tint) @cname("DrawModelWires");                                                           // Draw a model wires (with texture if set)
+fn void draw_model_wires_ex(RLModel model, RLVector3 position, RLVector3 rotation_axis, float rotation_angle, RLVector3 scale, RLColor tint) @cname("DrawModelWiresEx");   // Draw a model wires (with texture if set) with extended parameters
+fn void draw_bounding_box(RLBoundingBox box, RLColor color) @cname("DrawBoundingBox");                                                                                     // Draw bounding box (wires)
+fn void draw_billboard(RLCamera camera, RLTexture2D texture, RLVector3 position, float scale, RLColor tint) @cname("DrawBillboard");                                       // Draw a billboard texture
+fn void draw_billboard_rec(RLCamera camera, RLTexture2D texture, Rect source, RLVector3 position, RLVector2 size, RLColor tint) @cname("DrawBillboardRec");         // Draw a billboard texture defined by source
+fn void draw_billboard_pro(RLCamera camera, RLTexture2D texture, Rect source, RLVector3 position, RLVector3 up, RLVector2 size, RLVector2 origin, float rotation, RLColor tint) @cname("DrawBillboardPro"); // Draw a billboard texture defined by source and rotation
+
+// Mesh management functions
+fn void upload_mesh(RLMesh* mesh, bool dynamic) @cname("UploadMesh");                                                            // Upload mesh vertex data in GPU and provide VAO/VBO ids
+fn void update_mesh_buffer(RLMesh mesh, int index, void* data, int data_size, int offset) @cname("UpdateMeshBuffer");         // Update mesh vertex data in GPU for a specific buffer index
+fn void unload_mesh(RLMesh mesh) @cname("UnloadMesh");                                                                           // Unload mesh data from CPU and GPU
+fn void draw_mesh(RLMesh mesh, RLMaterial material, Mat4 transform) @cname("DrawMesh");                                      // Draw a 3d mesh with material and transform
+fn void draw_mesh_instanced(RLMesh mesh, RLMaterial material, Mat4* transforms, int instances) @cname("DrawMeshInstanced"); // Draw multiple mesh instances with material and different transforms
+fn RLBoundingBox get_mesh_bounding_box(RLMesh mesh) @cname("GetMeshBoundingBox");       // Compute mesh bounding box limits
+fn void gen_mesh_tangents(RLMesh* mesh) @cname("GenMeshTangents");                      // Compute mesh tangents
+fn bool export_mesh(RLMesh mesh, ZString file_name) @cname("ExportMesh");               // Export mesh data to file, returns true on success
+fn bool export_mesh_as_code(RLMesh mesh, ZString file_name) @cname("ExportMeshAsCode"); // Export mesh as code file (.h) defining multiple arrays of vertex attributes
+
+// Mesh generation functions
+fn RLMesh gen_mesh_poly(int sides, float radius) @cname("GenMeshPoly");                             // Generate polygonal mesh
+fn RLMesh gen_mesh_plane(float width, float length, int res_x, int res_z) @cname("GenMeshPlane");  // Generate plane mesh (with subdivisions)
+fn RLMesh gen_mesh_cube(float width, float height, float length) @cname("GenMeshCube");              // Generate cuboid mesh
+fn RLMesh gen_mesh_sphere(float radius, int rings, int slices) @cname("GenMeshSphere");            // Generate sphere mesh (standard sphere)
+fn RLMesh gen_mesh_hemi_sphere(float radius, int rings, int slices) @cname("GenMeshHemiSphere");   // Generate half-sphere mesh (no bottom cap)
+fn RLMesh gen_mesh_cylinder(float radius, float height, int slices) @cname("GenMeshCylinder");      // Generate cylinder mesh
+fn RLMesh gen_mesh_cone(float radius, float height, int slices) @cname("GenMeshCone");              // Generate cone/pyramid mesh
+fn RLMesh gen_mesh_torus(float radius, float size, int rad_seg, int sides) @cname("GenMeshTorus"); // Generate torus mesh
+fn RLMesh gen_mesh_knot(float radius, float size, int rad_seg, int sides) @cname("GenMeshKnot");   // Generate trefoil knot mesh
+fn RLMesh gen_mesh_heightmap(RLImage heightmap, RLVector3 size) @cname("GenMeshHeightmap");          // Generate heightmap mesh from image data
+fn RLMesh gen_mesh_cubicmap(RLImage cubicmap, RLVector3 cube_size) @cname("GenMeshCubicmap");        // Generate cubes-based map mesh from image data
+
+// Material loading/unloading functions
+fn RLMaterial* load_materials(ZString file_name, int* materialCount) @cname("LoadMaterials"); // Load materials from model file
+fn RLMaterial load_material_default() @cname("LoadMaterialDefault");                           // Load default material (Supports: DIFFUSE, SPECULAR, NORMAL maps)
+fn bool RLMaterial.is_valid(RLMaterial material) @cname("IsMaterialValid");                    // Check if a material is valid (shader assigned, map textures loaded in GPU)
+fn void unload_material(RLMaterial material) @cname("UnloadMaterial");                         // Unload material from GPU memory (VRAM)
+fn void RLMaterial.set_texture(RLMaterial* material, RLMaterialMapIndex mapType, RLTexture2D texture) @cname("SetMaterialTexture"); // Set texture for a material map type (MATERIAL_MAP_DIFFUSE, MATERIAL_MAP_SPECULAR...)
+fn void RLModel.set_mesh_material(RLModel* model, int meshId, int materialId) @cname("SetModelMeshMaterial");                     // Set material for a mesh
+
+// Model animations loading/unloading functions
+fn RLModelAnimation* load_model_animations_(ZString file_name, int* anim_count) @cname("LoadModelAnimations");                 // Load model animations from file
+macro RLModelAnimation[] load_model_animations(ZString file_name) { int count; return load_model_animations_(file_name, &count)[:count]; }
+fn void update_model_animation(RLModel model, RLModelAnimation anim, float frame) @cname("UpdateModelAnimation");               // Update model animation pose (vertex buffers and bone matrices)
+fn void update_model_animation_ex(RLModel model, RLModelAnimation anim_a, float frame_a, RLModelAnimation anim_b, float frame_b, float blend) @cname("UpdateModelAnimationEx"); // Update model animation pose, blending two animations
+fn void unload_model_animation(RLModelAnimation anim) @cname("UnloadModelAnimation");                                       // Unload animation data
+fn void unload_model_animations_(RLModelAnimation* animations, int anim_count) @cname("UnloadModelAnimations");             // Unload animation array data
+macro void unload_model_animations(RLModelAnimation[] animations) { unload_model_animations_(animations.ptr, (int)animations.len); }
+fn bool is_model_animation_valid(RLModel model, RLModelAnimation anim) @cname("IsModelAnimationValid");                     // Check model animation skeleton match
+
+// Collision detection functions
+fn bool check_collision_spheres(RLVector3 center1, float radius1, RLVector3 center2, float radius2) @cname("CheckCollisionSpheres");         // Check collision between two spheres
+fn bool check_collision_boxes(RLBoundingBox box1, RLBoundingBox box2) @cname("CheckCollisionBoxes");                                         // Check collision between two bounding boxes
+fn bool check_collision_box_sphere(RLBoundingBox box, RLVector3 center, float radius) @cname("CheckCollisionBoxSphere");                     // Check collision between box and sphere
+fn RLRayCollision RLRay.get_collision_sphere(RLRay ray, RLVector3 center, float radius) @cname("GetRayCollisionSphere");                     // Get collision info between ray and sphere
+fn RLRayCollision RLRay.get_collision_box(RLRay ray, RLBoundingBox box) @cname("GetRayCollisionBox");                                        // Get collision info between ray and box
+fn RLRayCollision RLRay.get_collision_mesh(RLRay ray, RLMesh mesh, Mat4 transform) @cname("GetRayCollisionMesh");                        // Get collision info between ray and mesh
+fn RLRayCollision RLRay.get_collision_triangle(RLRay ray, RLVector3 p1, RLVector3 p2, RLVector3 p3) @cname("GetRayCollisionTriangle");       // Get collision info between ray and triangle
+fn RLRayCollision RLRay.get_collision_quad(RLRay ray, RLVector3 p1, RLVector3 p2, RLVector3 p3, RLVector3 p4) @cname("GetRayCollisionQuad"); // Get collision info between ray and quad
+
+//------------------------------------------------------------------------------------
+// Audio Loading and Playing Functions (Module: audio)
+//------------------------------------------------------------------------------------
+alias RLAudioCallback = fn void(void* bufferData, uint frames);
+
+// Audio device management functions
+fn void init_audio_device() @cname("InitAudioDevice");             // Initialize audio device and context
+fn void close_audio_device() @cname("CloseAudioDevice");           // Close the audio device and context
+fn bool is_audio_device_ready() @cname("IsAudioDeviceReady");      // Check if audio device has been initialized successfully
+fn void set_master_volume(float volume) @cname("SetMasterVolume"); // Set master volume (listener)
+fn float get_master_volume() @cname("GetMasterVolume");            // Get master volume (listener)
+
+// Wave/Sound loading/unloading functions
+fn RLWave load_wave(ZString file_name) @cname("LoadWave"); // Load wave data from file
+fn RLWave load_wave_from_memory(ZString file_type, char* file_data, int data_size) @cname("LoadWaveFromMemory"); // Load wave from memory buffer, file_type refers to extension: i.e. '.wav'
+fn bool RLWave.is_valid(RLWave wave) @cname("IsWaveValid");                                // Checks if wave data is valid (data loaded and parameters)
+fn RLSound load_sound(ZString file_name) @cname("LoadSound");                              // Load sound from file
+fn RLSound load_sound_from_wave(RLWave wave) @cname("LoadSoundFromWave");                  // Load sound from wave data
+fn RLSound load_sound_alias(RLSound source) @cname("LoadSoundAlias");                      // Create a new sound that shares the same sample data as the source sound, does not own the sound data
+fn bool RLSound.is_valid(RLSound sound) @cname("IsSoundValid");                            // Checks if a sound is valid (data loaded and buffers initialized)
+fn void RLSound.update(RLSound sound, void* data, int sampleCount) @cname("UpdateSound");  // Update sound buffer with new data  (default data format: 32 bit float, stereo)
+fn void unload_wave(RLWave wave) @cname("UnloadWave");                                     // Unload wave data
+fn void unload_sound(RLSound sound) @cname("UnloadSound");                                 // Unload sound
+fn void unload_sound_alias(RLSound alias_) @cname("UnloadSoundAlias");                     // Unload a sound alias (does not deallocate sample data)
+fn bool export_wave(RLWave wave, ZString file_name) @cname("ExportWave");                  // Export wave data to file, returns true on success
+fn bool export_wave_as_code(RLWave wave, ZString file_name) @cname("ExportWaveAsCode");    // Export wave sample data to code (.h), returns true on success
+
+// Wave/Sound management functions
+fn void play_sound(RLSound sound) @cname("PlaySound");                               // Play a sound
+fn void stop_sound(RLSound sound) @cname("StopSound");                               // Stop playing a sound
+fn void pause_sound(RLSound sound) @cname("PauseSound");                             // Pause a sound
+fn void resume_sound(RLSound sound) @cname("ResumeSound");                           // Resume a paused sound
+fn bool is_sound_playing(RLSound sound) @cname("IsSoundPlaying");                    // Check if a sound is currently playing
+fn void set_sound_volume(RLSound sound, float volume) @cname("SetSoundVolume");      // Set volume for a sound (1.0 is max level)
+fn void set_sound_pitch(RLSound sound, float pitch) @cname("SetSoundPitch");         // Set pitch for a sound (1.0 is base level)
+fn void set_sound_pan(RLSound sound, float pan) @cname("SetSoundPan");               // Set pan for a sound (-1.0 left, 0.0 center, 1.0 right)
+fn RLWave wave_copy(RLWave wave) @cname("WaveCopy");                                 // Copy a wave to a new wave
+fn void wave_crop(RLWave* wave, int initFrame, int finalFrame) @cname("WaveCrop"); // Crop a wave to defined frames range
+fn void wave_format(RLWave* wave, int sample_rate, int sample_size, int channels) @cname("WaveFormat"); // Convert wave data to desired format
+fn float* load_wave_samples(RLWave wave) @cname("LoadWaveSamples");      // Load samples data from wave as a 32bit float data array
+fn void unload_wave_samples(float* samples) @cname("UnloadWaveSamples"); // Unload samples data loaded with LoadWaveSamples()
+
+// Music management functions
+fn RLMusic load_music_stream(ZString file_name) @cname("LoadMusicStream"); // Load music stream from file
+fn RLMusic load_music_stream_from_memory(ZString file_type, char* data, int data_size) @cname("LoadMusicStreamFromMemory"); // Load music stream from data
+fn bool RLMusic.is_valid(RLMusic music) @cname("IsMusicValid");                     // Checks if a music stream is valid (context and buffers initialized)
+fn void unload_music_stream(RLMusic music) @cname("UnloadMusicStream");             // Unload music stream
+fn void play_music_stream(RLMusic music) @cname("PlayMusicStream");                 // Start music playing
+fn bool is_music_stream_playing(RLMusic music) @cname("IsMusicStreamPlaying");      // Check if music is playing
+fn void update_music_stream(RLMusic music) @cname("UpdateMusicStream");             // Updates buffers for music streaming
+fn void stop_music_stream(RLMusic music) @cname("StopMusicStream");                 // Stop music playing
+fn void pause_music_stream(RLMusic music) @cname("PauseMusicStream");               // Pause music playing
+fn void resume_music_stream(RLMusic music) @cname("ResumeMusicStream");             // Resume playing paused music
+fn void seek_music_stream(RLMusic music, float position) @cname("SeekMusicStream"); // Seek music to a position (in seconds)
+fn void set_music_volume(RLMusic music, float volume) @cname("SetMusicVolume");     // Set volume for music (1.0 is max level)
+fn void set_music_pitch(RLMusic music, float pitch) @cname("SetMusicPitch");        // Set pitch for a music (1.0 is base level)
+fn void set_music_pan(RLMusic music, float pan) @cname("SetMusicPan");              // Set pan for a music (-1.0 left, 0.0 center, 1.0 right)
+fn float RLMusic.get_time_length(RLMusic music) @cname("GetMusicTimeLength");       // Get music time length (in seconds)
+fn float RLMusic.get_time_played(RLMusic music) @cname("GetMusicTimePlayed");       // Get current music time played (in seconds)
+
+// AudioStream management functions
+fn RLAudioStream load_audio_stream(uint sample_rate, uint sample_size, uint channels) @cname("LoadAudioStream");  // Load audio stream (to stream raw audio pcm data)
+fn bool RLAudioStream.is_valid(RLAudioStream stream) @cname("IsAudioStreamValid");                                   // Checks if an audio stream is valid (buffers initialized)
+fn void unload_audio_stream(RLAudioStream stream) @cname("UnloadAudioStream");                                       // Unload audio stream and free memory
+fn void update_audio_stream(RLAudioStream stream, void* data, int frameCount) @cname("UpdateAudioStream");          // Update audio stream buffers with data
+fn bool RLAudioStream.is_processed(RLAudioStream stream) @cname("IsAudioStreamProcessed");                           // Check if any audio stream buffers requires refill
+fn void play_audio_stream(RLAudioStream stream) @cname("PlayAudioStream");                                           // Play audio stream
+fn void pause_audio_stream(RLAudioStream stream) @cname("PauseAudioStream");                                         // Pause audio stream
+fn void resume_audio_stream(RLAudioStream stream) @cname("ResumeAudioStream");                                       // Resume audio stream
+fn bool is_audio_stream_playing(RLAudioStream stream) @cname("IsAudioStreamPlaying");                                // Check if audio stream is playing
+fn void stop_audio_stream(RLAudioStream stream) @cname("StopAudioStream");                                           // Stop audio stream
+fn void RLAudioStream.set_volume(RLAudioStream stream, float volume) @cname("SetAudioStreamVolume");                 // Set volume for audio stream (1.0 is max level)
+fn void RLAudioStream.set_pitch(RLAudioStream stream, float pitch) @cname("SetAudioStreamPitch");                    // Set pitch for audio stream (1.0 is base level)
+fn void RLAudioStream.set_pan(RLAudioStream stream, float pan) @cname("SetAudioStreamPan");                          // Set pan for audio stream (0.5 is centered)
+fn void set_audio_stream_buffer_size_default(int size) @cname("SetAudioStreamBufferSizeDefault");                   // Default size for new audio streams
+fn void RLAudioStream.set_callback(RLAudioStream stream, RLAudioCallback callback) @cname("SetAudioStreamCallback"); // Audio thread callback to request new data
+
+fn void attach_audio_stream_processor(RLAudioStream stream, RLAudioCallback processor) @cname("AttachAudioStreamProcessor"); // Attach audio stream processor to stream, receives frames x 2 samples as 'float' (stereo)
+fn void detach_audio_stream_processor(RLAudioStream stream, RLAudioCallback processor) @cname("DetachAudioStreamProcessor"); // Detach audio stream processor from stream
+
+fn void attach_audio_mixed_processor(RLAudioCallback processor) @cname("AttachAudioMixedProcessor"); // Attach audio stream processor to the entire audio pipeline, receives frames x 2 samples as 'float' (stereo)
+fn void detach_audio_mixed_processor(RLAudioCallback processor) @cname("DetachAudioMixedProcessor"); // Detach audio stream processor from the entire audio pipeline
+
+
+//----------------------------------------------------------------------------------
+// Additional Raylib.c3 Mode helper macros
+//----------------------------------------------------------------------------------
+
+<*
+ Setup canvas (framebuffer) to start drawing, then calls [block].
+ Drawing will end after [block] has finished.
+*>
+macro void @drawing(;@body)
+{
+	begin_drawing();
+	defer end_drawing();
+	@body();
+}
+
+<*
+ Setup 2D mode with custom camera to start 2D Mode, then calls [block].
+ Mode2D will end after [block] has finished.
+*>
+macro void @mode2d(RLCamera2D camera ;@body)
+{
+	begin_mode2d(camera);
+	defer end_mode2d();
+	@body();
+}
+
+<*
+ Setup 3D mode with custom camera to start 2D Mode, then calls [block].
+ Mode2D will end after [block] has finished.
+*>
+macro void @mode3d(RLCamera3D camera ;@body)
+{
+	begin_mode3d(camera);
+	defer end_mode3d();
+	@body();
+}
+
+<*
+ Setup texture mode to draw to render texture, then calls [block].
+ texture mode will end after [block] has finished.
+*>
+macro void @texture_mode(RLRenderTexture2D texture ;@body)
+{
+	begin_texture_mode(texture);
+	defer end_texture_mode();
+	@body();
+}
+
+
+<*
+ Setup custom shqder mode then calls [block].
+ shader mode will end after [block] has finished.
+*>
+macro void @shader_mode(RLShader shader ;@body)
+{
+	begin_shader_mode(shader);
+	defer end_shader_mode();
+	@body();
+}
+
+<*
+ Setup blending mode, then calls [block].
+ blend mode will end after [block] has finished.
+*>
+macro void @blend_mode(RLBlendMode mode ;@body)
+{
+	begin_blend_mode(mode);
+	defer end_blend_mode();
+	@body();
+}
+
+<*
+ Setup scissor mode then calls [block].
+ scissor mode will end after [block] has finished.
+*>
+macro void @scissor_mode(int x, int y, int width, int height ;@body)
+{
+	begin_scissor_mode(x, y, width, height);
+	defer end_scissor_mode();
+	@body();
+}
+
+<*
+ Setup stereo rendering mode, then calls [block].
+ stereo rendering mode will end after [block] has finished.
+*>
+macro void @vr_mode(RLVrStereoConfig config ;@body)
+{
+	begin_vr_stereo_mode(config);
+	defer end_vr_stereo_mode();
+	@body();
+}
+
+
+<*
+ Setup rl drawing mode, then calls [block].
+ rl_begin will end after [block] has finished.
+*>
+macro void @rl_mode(int mode ;@body)
+{
+	rl_begin(mode);
+	defer rl_end();
+	@body();
+}
+
+//----------------------------------------------------------------------------------
+// Enumerators Definition
+//----------------------------------------------------------------------------------
+
+// System/Window config flags
+// NOTE: Every bit registers one state (use it with bit masks)
+// By default all flags are set to 0
+constdef RLConfigFlag : uint
+{
+	VSYNC_HINT         = 0x00000040, // Set to try enabling V-Sync on GPU
+	FULLSCREEN_MODE    = 0x00000002, // Set to run program in fullscreen
+	WINDOW_RESIZABLE   = 0x00000004, // Set to allow resizable window
+	WINDOW_UNDECORATED = 0x00000008, // Set to disable window decoration (frame and buttons)
+	WINDOW_HIDDEN      = 0x00000080, // Set to hide window
+	WINDOW_MINIMIZED   = 0x00000200, // Set to minimize window (iconify)
+	WINDOW_MAXIMIZED   = 0x00000400, // Set to maximize window (expanded to monitor)
+	WINDOW_UNFOCUSED   = 0x00000800, // Set to window non focused
+	WINDOW_TOPMOST     = 0x00001000, // Set to window always on top
+	WINDOW_ALWAYS_RUN  = 0x00000100, // Set to allow windows running while minimized
+	WINDOW_TRANSPARENT = 0x00000010, // Set to allow transparent framebuffer
+	WINDOW_HIGHDPI     = 0x00002000, // Set to support HighDPI
+	MSAA_4X_HINT       = 0x00000020, // Set to try enabling MSAA 4X
+	INTERLACED_HINT    = 0x00010000  // Set to try enabling interlaced video format (for V3D)
+}
+
+// Keyboard keys (US keyboard layout)
+// NOTE: Use GetKeyPressed() to allow redefining
+// required keys for alternative layouts
+constdef RLKeyboardKey : int
+{
+	NONE            = 0,   // Key: NONE; used for no key pressed
+	// Alphanumeric keys
+	APOSTROPHE      = 39,  // Key: '
+	COMMA           = 44,  // Key: ;
+	MINUS           = 45,  // Key: -
+	PERIOD          = 46,  // Key: .
+	SLASH           = 47,  // Key: /
+	ZERO            = 48,  // Key: 0
+	ONE             = 49,  // Key: 1
+	TWO             = 50,  // Key: 2
+	THREE           = 51,  // Key: 3
+	FOUR            = 52,  // Key: 4
+	FIVE            = 53,  // Key: 5
+	SIX             = 54,  // Key: 6
+	SEVEN           = 55,  // Key: 7
+	EIGHT           = 56,  // Key: 8
+	NINE            = 57,  // Key: 9
+	SEMICOLON       = 59,  // Key: ,
+	EQUAL           = 61,  // Key: =
+	A               = 65,  // Key: A | a
+	B               = 66,  // Key: B | b
+	C               = 67,  // Key: C | c
+	D               = 68,  // Key: D | d
+	E               = 69,  // Key: E | e
+	F               = 70,  // Key: F | f
+	G               = 71,  // Key: G | g
+	H               = 72,  // Key: H | h
+	I               = 73,  // Key: I | i
+	J               = 74,  // Key: J | j
+	K               = 75,  // Key: K | k
+	L               = 76,  // Key: L | l
+	M               = 77,  // Key: M | m
+	N               = 78,  // Key: N | n
+	O               = 79,  // Key: O | o
+	P               = 80,  // Key: P | p
+	Q               = 81,  // Key: Q | q
+	R               = 82,  // Key: R | r
+	S               = 83,  // Key: S | s
+	T               = 84,  // Key: T | t
+	U               = 85,  // Key: U | u
+	V               = 86,  // Key: V | v
+	W               = 87,  // Key: W | w
+	X               = 88,  // Key: X | x
+	Y               = 89,  // Key: Y | y
+	Z               = 90,  // Key: Z | z
+	LEFT_BRACKET    = 91,  // Key: [
+	BACKSLASH       = 92,  // Key: '\'
+	RIGHT_BRACKET   = 93,  // Key: ]
+	GRAVE           = 96,  // Key: `
+	// Function keys
+	SPACE           = 32,  // Key: Space
+	ESCAPE          = 256, // Key: Esc
+	ENTER           = 257, // Key: Enter
+	TAB             = 258, // Key: Tab
+	BACKSPACE       = 259, // Key: Backspace
+	INSERT          = 260, // Key: Ins
+	DELETE          = 261, // Key: Del
+	RIGHT           = 262, // Key: Cursor right
+	LEFT            = 263, // Key: Cursor left
+	DOWN            = 264, // Key: Cursor down
+	UP              = 265, // Key: Cursor up
+	PAGE_UP         = 266, // Key: Page up
+	PAGE_DOWN       = 267, // Key: Page down
+	HOME            = 268, // Key: Home
+	END             = 269, // Key: End
+	CAPS_LOCK       = 280, // Key: Caps lock
+	SCROLL_LOCK     = 281, // Key: Scroll down
+	NUM_LOCK        = 282, // Key: Num lock
+	PRINT_SCREEN    = 283, // Key: Print screen
+	PAUSE           = 284, // Key: Pause
+	F1              = 290, // Key: F1
+	F2              = 291, // Key: F2
+	F3              = 292, // Key: F3
+	F4              = 293, // Key: F4
+	F5              = 294, // Key: F5
+	F6              = 295, // Key: F6
+	F7              = 296, // Key: F7
+	F8              = 297, // Key: F8
+	F9              = 298, // Key: F9
+	F10             = 299, // Key: F10
+	F11             = 300, // Key: F11
+	F12             = 301, // Key: F12
+	LEFT_SHIFT      = 340, // Key: Shift left
+	LEFT_CONTROL    = 341, // Key: Control left
+	LEFT_ALT        = 342, // Key: Alt left
+	LEFT_SUPER      = 343, // Key: Super left
+	RIGHT_SHIFT     = 344, // Key: Shift right
+	RIGHT_CONTROL   = 345, // Key: Control right
+	RIGHT_ALT       = 346, // Key: Alt right
+	RIGHT_SUPER     = 347, // Key: Super right
+	KB_MENU         = 348, // Key: KB menu
+	// Keypad keys
+	KP_0            = 320, // Key: Keypad 0
+	KP_1            = 321, // Key: Keypad 1
+	KP_2            = 322, // Key: Keypad 2
+	KP_3            = 323, // Key: Keypad 3
+	KP_4            = 324, // Key: Keypad 4
+	KP_5            = 325, // Key: Keypad 5
+	KP_6            = 326, // Key: Keypad 6
+	KP_7            = 327, // Key: Keypad 7
+	KP_8            = 328, // Key: Keypad 8
+	KP_9            = 329, // Key: Keypad 9
+	KP_DECIMAL      = 330, // Key: Keypad .
+	KP_DIVIDE       = 331, // Key: Keypad /
+	KP_MULTIPLY     = 332, // Key: Keypad*
+	KP_SUBTRACT     = 333, // Key: Keypad -
+	KP_ADD          = 334, // Key: Keypad +
+	KP_ENTER        = 335, // Key: Keypad Enter
+	KP_EQUAL        = 336, // Key: Keypad =
+	// Android key buttons
+	BACK            = 4,   // Key: Android back button
+	MENU            = 82,  // Key: Android menu button
+	VOLUME_UP       = 24,  // Key: Android volume up button
+	VOLUME_DOWN     = 25,  // Key: Android volume down button
+}
+
+// Gesture
+// NOTE: It could be used as flags to enable only some gestures
+constdef RLGesture : int
+{
+	NONE        = 0,   // No gesture
+	TAP         = 1,   // Tap gesture
+	DOUBLETAP   = 2,   // Double tap gesture
+	HOLD        = 4,   // Hold gesture
+	DRAG        = 8,   // Drag gesture
+	SWIPE_RIGHT = 16,  // Swipe right gesture
+	SWIPE_LEFT  = 32,  // Swipe left gesture
+	SWIPE_UP    = 64,  // Swipe up gesture
+	SWIPE_DOWN  = 128, // Swipe down gesture
+	PINCH_IN    = 256, // Pinch in gesture
+	PINCH_OUT   = 512, // Pinch out gesture
+}
+
+// rlgl.h
+
+// OpenGL version
+constdef RLGlVersion
+{
+   OPENGL_11 = 1,           // OpenGL 1.1
+   OPENGL_21,               // OpenGL 2.1 (GLSL 120)
+   OPENGL_33,               // OpenGL 3.3 (GLSL 330)
+   OPENGL_43,               // OpenGL 4.3 (using GLSL 330)
+   OPENGL_ES_20,            // OpenGL ES 2.0 (GLSL 100)
+   OPENGL_ES_30             // OpenGL ES 3.0 (GLSL 300 es)
+}
+
+constdef RLFramebufferAttachType : int
+{
+	COLOR_CHANNEL0 = 0, // Framebuffer attachment type: color 0
+	COLOR_CHANNEL1 = 1, // Framebuffer attachment type: color 1
+	COLOR_CHANNEL2 = 2, // Framebuffer attachment type: color 2
+	COLOR_CHANNEL3 = 3, // Framebuffer attachment type: color 3
+	COLOR_CHANNEL4 = 4, // Framebuffer attachment type: color 4
+	COLOR_CHANNEL5 = 5, // Framebuffer attachment type: color 5
+	COLOR_CHANNEL6 = 6, // Framebuffer attachment type: color 6
+	COLOR_CHANNEL7 = 7, // Framebuffer attachment type: color 7
+	DEPTH = 100,        // Framebuffer attachment type: depth
+	STENCIL = 200,      // Framebuffer attachment type: stencil
+}
+
+
+constdef RLFramebufferAttachTextureType : int
+{
+	CUBEMAP_POSITIVE_X = 0, // Framebuffer texture attachment type: cubemap, +X side
+	CUBEMAP_NEGATIVE_X = 1, // Framebuffer texture attachment type: cubemap, -X side
+	CUBEMAP_POSITIVE_Y = 2, // Framebuffer texture attachment type: cubemap, +Y side
+	CUBEMAP_NEGATIVE_Y = 3, // Framebuffer texture attachment type: cubemap, -Y side
+	CUBEMAP_POSITIVE_Z = 4, // Framebuffer texture attachment type: cubemap, +Z side
+	CUBEMAP_NEGATIVE_Z = 5, // Framebuffer texture attachment type: cubemap, -Z side
+	TEXTURE2D = 100,        // Framebuffer texture attachment type: texture2d
+	RENDERBUFFER = 200,     // Framebuffer texture attachment type: renderbuffer
+}
+
+
+const RL_LINES = 0x0001;     // GL_LINES
+const RL_TRIANGLES = 0x0004; // GL_TRIANGLES
+const RL_QUADS = 0x0007;     // GL_QUADS
+
+//------------------------------------------------------------------------------------
+// Functions Declaration - Mat4 operations
+//------------------------------------------------------------------------------------
+fn void gl_matrix_mode(int mode) @cname("rlMatrixMode");                       // Choose the current matrix to be transformed
+fn void gl_push_matrix() @cname("rlPushMatrix");                                // Push the current matrix to stack
+fn void gl_pop_matrix() @cname("rlPopMatrix");                                  // Pop latest inserted matrix from stack
+fn void gl_load_identity() @cname("rlLoadIdentity");                            // Reset current matrix to identity matrix
+fn void gl_translatef(float x, float y, float z) @cname("rlTranslatef");        // Multiply the current matrix by a translation matrix
+fn void gl_rotatef(float angle, float x, float y, float z) @cname("rlRotatef"); // Multiply the current matrix by a rotation matrix
+fn void gl_scalef(float x, float y, float z) @cname("rlScalef");                // Multiply the current matrix by a scaling matrix
+fn void gl_mult_matrixf(float* matf) @cname("rlMultMatrixf");                   // Multiply the current matrix by another matrix
+fn void gl_frustum(double left, double right, double bottom, double top, double znear, double zfar) @cname("rlFrustum");
+fn void gl_ortho(double left, double right, double bottom, double top, double znear, double zfar) @cname("rlOrtho");
+fn void gl_viewport(int x, int y, int width, int height) @cname("rlViewport");  // Set the viewport area
+fn void gl_set_clip_planes(double near_plane, double far_plane) @cname("rlSetClipPlanes"); // Set clip planes distances
+fn double gl_get_cull_distance_near() @cname("rlGetCullDistanceNear");                        // Get cull plane distance near
+fn double gl_get_cull_distance_far() @cname("rlGetCullDistanceFar");                    // Get cull plane distance far
+
+//------------------------------------------------------------------------------------
+// Functions Declaration - Vertex level operations
+//------------------------------------------------------------------------------------
+fn void gl_begin(int mode) @cname("rlBegin");                 // Initialize drawing mode (how to organize vertex)
+fn void gl_end() @cname("rlEnd");                             // Finish vertex providing
+fn void gl_vertex2i(int x, int y) @cname("rlVertex2i");                       // Define one vertex (position) - 2 int
+fn void gl_vertex2f(float x, float y) @cname("rlVertex2f");                       // Define one vertex (position) - 2 float
+fn void gl_vertex3f(float x, float y, float z) @cname("rlVertex3f");         // Define one vertex (position) - 3 float
+fn void gl_tex_coord2f(float x, float y) @cname("rlTexCoord2f");               // Define one vertex (texture coordinate) - 2 float
+fn void gl_normal3f(float x, float y, float z) @cname("rlNormal3f");         // Define one vertex (normal) - 3 float
+fn void gl_color4ub(char r, char g, char b, char a) @cname("rlColor4ub");  // Define one vertex (color) - 4 byte
+fn void gl_color3f(float x, float y, float z) @cname("rlColor3f");          // Define one vertex (color) - 3 float
+fn void gl_color4f(float x, float y, float z, float w) @cname("rlColor4f"); // Define one vertex (color) - 4 float
+
+//------------------------------------------------------------------------------------
+// Functions Declaration - OpenGL style functions (common to 1.1, 3.3+, ES2)
+// NOTE: This functions are used to completely abstract raylib code from OpenGL layer,
+// some of them are direct wrappers over OpenGL calls, some others are custom
+//------------------------------------------------------------------------------------
+
+// Vertex buffers state
+fn bool gl_enable_vertex_array(uint vaoId) @cname("rlEnableVertexArray");                           // Enable vertex array (VAO, if supported)
+fn void gl_disable_vertex_array() @cname("rlDisableVertexArray");                                   // Disable vertex array (VAO, if supported)
+fn void gl_enable_vertex_buffer(uint id) @cname("rlEnableVertexBuffer");                 // Enable vertex buffer (VBO)
+fn void gl_disable_vertex_buffer() @cname("rlDisableVertexBuffer");                       // Disable vertex buffer (VBO)
+fn void gl_enable_vertex_buffer_element(uint id) @cname("rlEnableVertexBufferElement");        // Enable vertex buffer element (VBO element)
+fn void gl_disable_vertex_buffer_element() @cname("rlDisableVertexBufferElement");              // Disable vertex buffer element (VBO element)
+fn void gl_enable_vertex_attribute(uint index) @cname("rlEnableVertexAttribute");   // Enable vertex attribute index
+fn void gl_disable_vertex_attribute(uint index) @cname("rlDisableVertexAttribute"); // Disable vertex attribute index
+fn void gl_enable_state_pointer(RLShaderAttributeDataType vertex_attrib_type, void* buffer) @cname("rlEnableStatePointer"); // Enable attribute state pointer
+fn void gl_disable_state_pointer(RLShaderAttributeDataType vertex_attrib_type) @cname("rlDisableStatePointer");             // Disable attribute state pointer
+
+// Textures state
+fn void gl_active_texture_slot(int slot) @cname("rlActiveTextureSlot"); // Select and active a texture slot
+fn void gl_enable_texture(uint id) @cname("rlEnableTexture");      // Enable texture
+fn void gl_disable_texture() @cname("rlDisableTexture");               // Disable texture
+fn void gl_enable_texture_cubemap(uint id) @cname("rlEnableTextureCubemap");    // Enable texture cubemap
+fn void gl_disable_texture_cubemap() @cname("rlDisableTextureCubemap");          // Disable texture cubemap
+fn void gl_texture_parameters(uint id, int param, int value) @cname("rlTextureParameters");  // Set texture parameters (filter, wrap)
+fn void gl_cubemap_parameters(uint id, int param, int value) @cname("rlCubemapParameters"); // Set cubemap parameters (filter, wrap)
+
+// Shader state
+fn void gl_enable_shader(uint id) @cname("rlEnableShader"); // Enable shader program
+fn void gl_disable_shader() @cname("rlDisableShader");        // Disable shader program
+
+// Framebuffer state
+fn void gl_enable_framebuffer(uint id) @cname("rlEnableFramebuffer");          // Enable render texture (fbo)
+fn void gl_disable_framebuffer() @cname("rlDisableFramebuffer");                // Disable render texture (fbo), return to default framebuffer
+fn uint gl_get_active_framebuffer() @cname("rlGetActiveFramebuffer");        // Get the currently active render texture (fbo), 0 for default framebuffer
+fn void gl_active_draw_buffers(int count) @cname("rlActiveDrawBuffers"); // Activate multiple draw color buffers
+fn void gl_blit_framebuffer(int src_x, int src_y, int src_width, int src_height, int dst_x, int dst_y, int dst_width, int dst_height, int buffer_mask) @cname("rlBlitFramebuffer"); // Blit active framebuffer to main framebuffer
+fn void gl_bind_framebuffer(uint target, uint framebuffer) @cname("rlBindFramebuffer"); // Bind framebuffer (FBO)
+
+// General render state
+fn void gl_enable_color_blend() @cname("rlEnableColorBlend");        // Enable color blending
+fn void gl_disable_color_blend() @cname("rlDisableColorBlend");       // Disable color blending
+fn void gl_enable_depth_test() @cname("rlEnableDepthTest");        // Enable depth test
+fn void gl_disable_depth_test() @cname("rlDisableDepthTest");      // Disable depth test
+fn void gl_enable_depth_mask() @cname("rlEnableDepthMask");         // Enable depth write
+fn void gl_disable_depth_mask() @cname("rlDisableDepthMask");       // Disable depth write
+fn void gl_enable_backface_culling() @cname("rlEnableBackfaceCulling");   // Enable backface culling
+fn void gl_disable_backface_culling() @cname("rlDisableBackfaceCulling"); // Disable backface culling
+fn void gl_color_mask(bool r, bool g, bool b, bool a) @cname("rlColorMask"); // Color mask control
+fn void gl_set_cull_face(int mode) @cname("rlSetCullFace"); // Set face culling mode
+fn void gl_enable_scissor_test() @cname("rlEnableScissorTest");                 // Enable scissor test
+fn void gl_disable_scissor_test() @cname("rlDisableScissorTest");              // Disable scissor test
+fn void gl_scissor(int x, int y, int width, int height) @cname("rlScissor"); // Scissor test
+fn void gl_enable_wire_mode() @cname("rlEnableWireMode");               // Enable wire mode
+fn void gl_enable_point_mode() @cname("rlEnablePointMode");        // Enable point mode
+fn void gl_disable_point_mode() @cname("rlDisablePointMode");                  // Disable point mode
+fn void gl_disable_wire_mode() @cname("rlDisableWireMode");              // Disable wire mode
+fn void gl_set_line_width(float width) @cname("rlSetLineWidth");    // Set the line drawing width
+fn float gl_get_line_width() @cname("rlGetLineWidth");             // Get the line drawing width
+fn void gl_enable_smooth_lines() @cname("rlEnableSmoothLines");            // Enable line aliasing
+fn void gl_disable_smooth_lines() @cname("rlDisableSmoothLines");           // Disable line aliasing
+fn void gl_enable_stereo_render() @cname("rlEnableStereoRender");      // Enable stereo rendering
+fn void gl_disable_stereo_render() @cname("rlDisableStereoRender");    // Disable stereo rendering
+fn bool gl_is_stereo_render_enabled() @cname("rlIsStereoRenderEnabled"); // Check if stereo render is enabled
+
+fn void gl_clear_color(char r, char g, char b, char a) @cname("rlClearColor"); // Clear color buffer with color
+fn void gl_clear_screen_buffers() @cname("rlClearScreenBuffers");                    // Clear used screen buffers (color and depth)
+fn void gl_check_errors() @cname("rlCheckErrors");                                       // Check and log OpenGL error codes
+fn void gl_set_blend_mode(RLBlendMode mode) @cname("rlSetBlendMode");             // Set blending mode
+fn void gl_set_blend_factors(int gl_src_factor, int gl_dst_factor, int gl_equation) @cname("rlSetBlendFactors"); // Set blending mode factor and equation (using OpenGL factors)
+fn void gl_set_blend_factors_separate(int gl_src_rgb, int gl_dst_rgb, int gl_src_alpha, int gl_dst_alpha, int gl_eq_rgb, int gl_eq_alpha) @cname("rlSetBlendFactorsSeparate"); // Set blending mode factors and equations separately (using OpenGL factors)
+
+
+//------------------------------------------------------------------------------------
+// Functions Declaration - rlgl functionality
+//------------------------------------------------------------------------------------
+// rlgl initialization functions
+fn void gl_init(int width, int height) @cname("rlglInit");         // Initialize rlgl (buffers, shaders, textures, states)
+fn void gl_close() @cname("rlglClose");                       // De-initialize rlgl (buffers, shaders, textures)
+fn void gl_load_extensions(void* loader) @cname("rlglInit");                    // Load OpenGL extensions (loader function required)
+fn int gl_get_version() @cname("rlGetVersion");                            // Get current OpenGL version
+fn void gl_set_framebuffer_width(int width) @cname("rlSetFramebufferWidth");        // Set current framebuffer width
+fn int gl_get_framebuffer_width() @cname("rlGetFramebufferWidth");                      // Get default framebuffer width
+fn void gl_set_framebuffer_height(int height) @cname("rlSetFramebufferHeight"); // Set current framebuffer height
+fn int gl_get_framebuffer_height() @cname("rlGetFramebufferHeight");            // Get default framebuffer height
+
+fn uint gl_get_texture_id_default() @cname("rlGetTextureIdDefault"); // Get default texture id
+fn uint gl_get_shader_id_default() @cname("rlGetShaderIdDefault");  // Get default shader id
+fn int* gl_get_shader_locs_default() @cname("rlGetShaderLocsDefault"); // Get default shader locations
+
+// Render batch management
+// NOTE: rlgl provides a default render batch to behave like OpenGL 1.1 immediate mode
+// but this render batch API is exposed in case of custom batches are required
+fn void gl_set_texture(uint id) @cname("rlSetTexture"); // Set current texture for render batch and check buffers limits
+
+// Vertex buffers management
+fn uint gl_load_vertex_array() @cname("rlLoadVertexArray");             // Load vertex array (vao) if supported
+fn uint gl_load_vertex_buffer(void* buffer, int size, bool dynamic) @cname("rlLoadVertexBuffer"); // Load a vertex buffer object
+fn uint gl_load_vertex_buffer_element(void* buffer, int size, bool is_dynamic) @cname("rlLoadVertexBufferElement"); // Load vertex buffer elements object
+fn void gl_update_vertex_buffer(uint buffer_id, void* data, int data_size, int offset) @cname("rlUpdateVertexBuffer"); // Update vertex buffer object data on GPU buffer
+fn void gl_update_vertex_buffer_elements(uint id, void* data, int data_size, int offset) @cname("rlUpdateVertexBufferElements"); // Update vertex buffer elements data on GPU buffer
+fn void gl_unload_vertex_array(uint vao_id) @cname("rlUnloadVertexArray");     // Unload vertex array (vao)
+fn void gl_unload_vertex_buffer(uint vbo_id) @cname("rlUnloadVertexBuffer");    // Unload vertex buffer object
+fn void gl_set_vertex_attribute(uint index, int comp_size, int type, bool normalized, int stride, int offset) @cname("rlSetVertexAttribute"); // Set vertex attribute data configuration
+fn void gl_set_vertex_attribute_divisor(uint index, int divisor) @cname("rlSetVertexAttributeDivisor"); // Set vertex attribute data divisor
+fn void gl_set_vertex_attribute_default(int loc_index, void* value, int attrib_type, int count) @cname("rlSetVertexAttributeDefault"); // Set vertex attribute default value, when attribute to provided
+fn void gl_draw_vertex_array(int offset, int count) @cname("rlDrawVertexArray");    // Draw vertex array (currently active vao)
+fn void gl_draw_vertex_array_elements(int offset, int count, void* buffer) @cname("rlDrawVertexArrayElements"); // Draw vertex array elements
+fn void gl_draw_vertex_array_instanced(int offset, int count, int instances) @cname("rlDrawVertexArrayInstanced"); // Draw vertex array (currently active vao) with instancing
+fn void gl_draw_vertex_array_elements_instanced(int offset, int count, void* buffer, int instances) @cname("rlDrawVertexArrayElementsInstanced"); // Draw vertex array elements with instancing
+
+// Textures management
+fn uint gl_load_texture(void* data, int width, int height, int format, int mipmap_count) @cname("rlLoadTexture"); // Load texture data
+fn uint gl_load_texture_depth(int width, int height, bool use_render_buffer) @cname("rlLoadTextureDepth"); // Load depth texture/renderbuffer (to be attached to fbo)
+fn uint gl_load_texture_cubemap(void* data, int size, int format, int mipmap_count) @cname("rlLoadTextureCubemap"); // Load texture cubemap data
+fn void gl_update_texture(uint id, int offset_x, int offset_y, int width, int height, int format, void* data) @cname("rlUpdateTexture"); // Update texture with new data on GPU
+fn void gl_get_gl_texture_formats(int format, uint* gl_internal_format, uint* gl_format, uint* gl_type) @cname("rlGetGlTextureFormats"); // Get OpenGL internal formats
+fn char* gl_get_pixel_format_name(uint format) @cname("rlGetPixelFormatName");              // Get name string for pixel format
+fn void gl_unload_texture(uint id) @cname("rlUnloadTexture");                              // Unload texture from GPU memory
+fn void gl_gen_texture_mipmaps(uint id, int width, int height, int format, int *mipmaps) @cname("rlGenTextureMipmaps"); // Generate mipmap data for selected texture
+fn void* gl_read_texture_pixels(uint id, int width, int height, int format) @cname("rlReadTexturePixels"); // Read texture pixel data
+fn char* gl_read_screen_pixels(int width, int height) @cname("rlReadScreenPixels");           // Read screen pixel data (color buffer)
+
+// Framebuffer management (fbo)
+fn uint gl_load_framebuffer() @cname("rlLoadFramebuffer");                               // Load an empty framebuffer
+fn void gl_framebuffer_attach(uint fbo_id, uint tex_id, int attach_type, int tex_type, int mip_level) @cname("rlFramebufferAttach"); // Attach texture/renderbuffer to a framebuffer
+fn bool gl_framebuffer_complete(uint id) @cname("rlFramebufferComplete");                        // Verify framebuffer is complete
+fn void gl_unload_framebuffer(uint id) @cname("rlUnloadFramebuffer");                          // Delete framebuffer from GPU
+
+// Shaders management
+fn uint gl_load_shader_code(char* vs_code, char* fs_code) @cname("rlLoadShaderCode");    // Load shader from code strings
+fn uint gl_compile_shader(char* shader_code, int type) @cname("rlCompileShader");           // Compile custom shader and return shader id (type: RL_VERTEX_SHADER, RL_FRAGMENT_SHADER, RL_COMPUTE_SHADER)
+fn uint gl_load_shader_program(uint vshader_id, uint fshader_id) @cname("rlLoadShaderProgram"); // Load custom shader program
+fn void gl_unload_shader_program(uint id) @cname("rlUnloadShaderProgram");                              // Unload shader program
+fn int gl_get_location_uniform(uint shader_id, char* uniform_name) @cname("rlGetLocationUniform"); // Get shader location uniform
+fn int gl_get_location_attrib(uint shader_id, char* attrib_name) @cname("rlGetLocationAttrib");   // Get shader location attribute
+fn void gl_set_uniform(int loc_index, void* value, int uniform_type, int count) @cname("rlSetUniform"); // Set shader value uniform
+fn void gl_set_uniform_matrix(int loc_index, Mat4 mat) @cname("rlSetUniformMatrix");                        // Set shader value Mat4
+fn void gl_set_uniform_matrices(int loc_index, Mat4* mat, int count) @cname("rlSetUniformMatrices");    // Set shader value matrices
+fn void gl_set_uniform_sampler(int loc_index, uint texture_id) @cname("rlSetUniformSampler");           // Set shader value sampler
+fn void gl_set_shader(uint id, int* locs) @cname("rlSetShader");                             // Set shader currently active (id and locations)
+
+// Compute shader management
+fn uint gl_load_compute_shader_program(uint shader_id) @cname("rlLoadComputeShaderProgram");           // Load compute shader program
+fn void gl_compute_shader_dispatch(uint group_x, uint group_y, uint group_z) @cname("rlComputeShaderDispatch"); // Dispatch compute shader (equivalent to *draw* for graphics pipeline)
+
+// Shader buffer storage object management (ssbo)
+fn uint gl_load_shader_buffer(uint size, void* data, int usage_hint) @cname("rlLoadShaderBuffer"); // Load shader storage buffer object (SSBO)
+fn void gl_unload_shader_buffer(uint ssbo_id) @cname("rlUnloadShaderBuffer");                           // Unload shader storage buffer object (SSBO)
+fn void gl_update_shader_buffer(uint id, void* data, uint data_size, uint offset) @cname("rlUpdateShaderBuffer"); // Update SSBO buffer data
+fn void gl_bind_shader_buffer(uint id, uint index) @cname("rlBindShaderBuffer");             // Bind SSBO buffer
+fn void gl_read_shader_buffer(uint id, void *dest, uint count, uint offset) @cname("rlReadShaderBuffer"); // Read SSBO buffer data (GPU->CPU)
+fn void gl_copy_shader_buffer(uint dest_id, uint src_id, uint dest_offset, uint src_offset, uint count) @cname("rlCopyShaderBuffer"); // Copy SSBO data between buffers
+fn uint gl_get_shader_buffer_size(uint id) @cname("rlGetShaderBufferSize");                      // Get SSBO buffer size
+
+// Buffer management
+fn void gl_bind_image_texture(uint id, uint index, int format, bool is_readonly) @cname("rlBindImageTexture");  // Bind image texture
+
+// Mat4 state management
+fn Mat4 gl_get_matrix_modelview() @cname("rlGetMatrixModelview");                                  // Get internal modelview matrix
+fn Mat4 gl_get_matrix_projection() @cname("rlGetMatrixProjection");                                 // Get internal projection matrix
+fn Mat4 gl_get_matrix_transform() @cname("rlGetMatrixTransform");                                  // Get internal accumulated transform matrix
+fn Mat4 gl_get_matrix_projection_stereo(int eye) @cname("rlGetMatrixProjectionStereo");                        // Get internal projection matrix for stereo render (selected eye)
+fn Mat4 gl_get_matrix_view_offset_stereo(int eye) @cname("rlGetMatrixViewOffsetStereo");                        // Get internal view offset matrix for stereo render (selected eye)
+fn void gl_set_matrix_projection(Mat4 proj) @cname("rlSetMatrixProjection");                            // Set a custom projection matrix (replaces internal projection matrix)
+fn void gl_set_matrix_modelview(Mat4 view) @cname("rlSetMatrixModelview");                             // Set a custom modelview matrix (replaces internal modelview matrix)
+fn void gl_set_matrix_projection_stereo(Mat4 right, Mat4 left) @cname("rlSetMatrixProjectionStereo");        // Set eyes projection matrices for stereo rendering
+fn void gl_set_matrix_view_offset_stereo(Mat4 right, Mat4 left) @cname("rlSetMatrixViewOffsetStereo");        // Set eyes view offsets matrices for stereo rendering
+
+// Quick and dirty cube/quad buffers load->draw->unload
+fn void gl_load_draw_cube() @cname("rlLoadDrawCube");     // Load and draw a cube
+fn void gl_load_draw_quad() @cname("rlLoadDrawQuad");     // Load and draw a quad
+
+
+// raymath.h
+
+// Decompose a transformation Mat4 into its rotational, translational and scaling components
+fn void matrix_decompose(Mat4 mat, RLVector3* translation, Quat* rotation, RLVector3* scale) @cname("MatrixDecompose");
+// Get perspective projection Mat4
+
+// Get identity Mat4
+// Get x-rotation Mat4
+// NOTE: Angle must be provided in radians
+fn Mat4 matrix_rotate_x(float angle) @cname("MatrixRotateX");
+// Get zyx-rotation Mat4
+// NOTE: Angle must be provided in radians
+fn Mat4 matrix_rotate_x_y_z(RLVector3 angle) @cname("MatrixRotateXYZ");
+// Get zyx-rotation Mat4
+// NOTE: Angle must be provided in radians
+fn Mat4 matrix_rotate_z_y_x(RLVector3 angle) @cname("MatrixRotateZYX");
+// Get scaling Mat4
+
+// Calculate quaternion cubic spline interpolation using Cubic Hermite Spline algorithm
+// as described in the GLTF 2.0 specification: https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#interpolation-cubic
+fn Quat quaternion_cubic_hermite_spline(Quat q1, Quat out_tangent1, Quat q2, Quat in_tangent2, float t) @cname("QuaternionCubicHermiteSpline");
+
+// Get a quaternion for a given rotation Mat4
+fn Quat quaternion_from_matrix(Mat4 mat) @cname("QuaternionFromMatrix");
+// Calculate quaternion based on the rotation from one vector to another
+
+
+
+
+// rcamera.h
+// Moves the camera in its forward direction
+fn void camera_move_forward(RLCamera* camera, float distance, bool move_in_world_plane) @cname("CameraMoveForward");
+// Moves the camera target in its current right direction
+fn void camera_move_right(RLCamera* camera, float distance, bool move_in_world_plane) @cname("CameraMoveRight");
+// Moves the camera position closer/farther to/from the camera target
+fn void camera_move_to_target(RLCamera* camera, float delta) @cname("CameraMoveToTarget");
+// Moves the camera in its up direction
+fn void camera_move_up(RLCamera* camera, float distance) @cname("CameraMoveUp");
+// Rotates the camera around its right vector, pitch is "looking up and down"
+//  - lockView prevents camera overrotation (aka "somersaults")
+//  - rotate_around_target defines if rotation is around target or around its position
+//  - rotateUp rotates the up direction as well (typically only usefull in CAMERA_FREE)
+// NOTE: angle must be provided in radians
+fn void camera_pitch(RLCamera* camera, float angle, bool lockView, bool rotate_around_target, bool rotate_up) @cname("CameraPitch");
+// Rotates the camera around its forward vector
+// Roll is "turning your head sideways to the left or right"
+// Note: angle must be provided in radians
+fn void camera_roll(RLCamera* camera, float angle) @cname("CameraRoll");
+// Rotates the camera around its up vector
+// Yaw is "looking left and right"
+// If rotate_around_target is false, the camera rotates around its position
+// Note: angle must be provided in radians
+fn void camera_yaw(RLCamera* camera, float angle, bool rotate_around_target) @cname("CameraYaw");
