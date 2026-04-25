@@ -3,7 +3,7 @@ import raylib6;
 
 fn void test_log() @test
 {
-	rl::setTraceLogLevel(NONE);
+	rl::set_trace_log_level(NONE);
 }
 
 fn void test_struct_layout() @test
