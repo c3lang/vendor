@@ -234,12 +234,12 @@ jobs:
           name: raylib6
           tag: "6"
           c3l: raylib6.c3l
-          linux_url: "https://github.com/raysan6/raylib/releases/download/6/raylib-6_linux_amd64.tar.gz"
-          linux_lib: "raylib-6_linux_amd64/lib/libraylib.a"
-          mac_url: "https://github.com/raysan6/raylib/releases/download/6/raylib-6_macos.tar.gz"
-          mac_lib: "raylib-6_macos/lib/libraylib.a"
-          win_url: "https://github.com/raysan6/raylib/releases/download/6/raylib-6_win64_msvc16.zip"
-          win_lib: "raylib-6_win64_msvc16/lib/raylib.lib"
+          linux_url: "https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_linux_amd64.tar.gz"
+          linux_lib: "raylib-6.0_linux_amd64/lib/libraylib.a"
+          mac_url: "https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_macos.tar.gz"
+          mac_lib: "raylib-6.0_macos/lib/libraylib.a"
+          win_url: "https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_win64_msvc16.zip"
+          win_lib: "raylib-6.0_win64_msvc16/lib/raylib.lib"
           os: ${{ matrix.os }}
 
   build-raylib55:
