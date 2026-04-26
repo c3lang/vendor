@@ -29,6 +29,7 @@
 	  "link-args": [],
 	  "dependencies": [],
 	  "linked-libraries": [
+		"X11",
 		"raylib",
 		"m"
 	  ]
@@ -37,6 +38,7 @@
 	  "link-args": [],
 	  "dependencies": [],
 	  "linked-libraries": [
+		"X11",
 		"raylib",
 		"m"
 	  ]
