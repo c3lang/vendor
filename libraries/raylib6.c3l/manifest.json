@@ -30,6 +30,11 @@
 	  "dependencies": [],
 	  "linked-libraries": [
 		"X11",
+		"Xrandr",
+		"Xinerama",
+		"Xi",
+		"Xxf86vm",
+		"Xcursor",
 		"raylib",
 		"m"
 	  ]
@@ -39,6 +44,11 @@
 	  "dependencies": [],
 	  "linked-libraries": [
 		"X11",
+		"Xrandr",
+		"Xinerama",
+		"Xi",
+		"Xxf86vm",
+		"Xcursor",
 		"raylib",
 		"m"
 	  ]
