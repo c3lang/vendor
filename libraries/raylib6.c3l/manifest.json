@@ -29,13 +29,13 @@
 	  "link-args": [],
 	  "dependencies": [],
 	  "linked-libraries": [
+		"raylib",
 		"X11",
 		"Xrandr",
 		"Xinerama",
 		"Xi",
 		"Xxf86vm",
 		"Xcursor",
-		"raylib",
 		"m"
 	  ]
 	},
@@ -43,13 +43,13 @@
 	  "link-args": [],
 	  "dependencies": [],
 	  "linked-libraries": [
+		"raylib",
 		"X11",
 		"Xrandr",
 		"Xinerama",
 		"Xi",
 		"Xxf86vm",
 		"Xcursor",
-		"raylib",
 		"m"
 	  ]
 	},
