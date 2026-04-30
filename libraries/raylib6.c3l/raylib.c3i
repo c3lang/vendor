@@ -43,6 +43,9 @@ alias Vector4 = float[<4>];
 // Color, 4 components, R8G8B8A8 (32bit)
 alias Color = char[<4>];
 
+// Rectangle, 4 components
+alias Rectangle = math::Rect;
+
 // Image, pixel data stored in CPU memory (RAM)
 struct Image
 {
