@@ -86,7 +86,7 @@ alias RenderTexture2D = RenderTexture;
 // NPatchInfo, n-patch layout info
 struct NPatchInfo
 {
-	Rect source;    // Texture source rectangle
+	Rectangle source;    // Texture source rectangle
 	int left;             // Left border offset
 	int top;              // Top border offset
 	int right;            // Right border offset
@@ -110,7 +110,7 @@ struct Font
 	int glyph_count;    // Number of glyph characters
 	int glyph_padding;  // Padding around the glyph characters
 	Texture2D texture; // Texture atlas containing the glyphs
-	Rect* recs;   // Rectangles in texture for the glyphs
+	Rectangle* recs;   // Rectangles in texture for the glyphs
 	GlyphInfo* glyphs; // Glyphs info data
 }
 
@@ -920,9 +920,9 @@ fn void update_camera_pro(Camera* camera, Vector3 movement, Vector3 rotation, fl
 // Set texture and rectangle to be used on shapes drawing
 // NOTE: It can be useful when using basic shapes and one single font,
 // defining a font char white rectangle would allow drawing everything in a single draw call
-fn void set_shapes_texture(Texture2D texture, Rect source) @cname("SetShapesTexture"); // Set texture and rectangle to be used on shapes drawing
+fn void set_shapes_texture(Texture2D texture, Rectangle source) @cname("SetShapesTexture"); // Set texture and rectangle to be used on shapes drawing
 fn Texture2D get_shapes_texture() @cname("GetShapesTexture");                    // Get texture that is used for shapes drawing
-fn Rect get_shapes_texture_rectangle() @cname("GetShapesTextureRectangle"); // Get texture source rectangle that is used for shapes drawing
+fn Rectangle get_shapes_texture_rectangle() @cname("GetShapesTextureRectangle"); // Get texture source rectangle that is used for shapes drawing
 
 // Basic shapes drawing functions
 fn void draw_pixel(int pos_x, int pos_y, Color color) @cname("DrawPixel");                                             // Draw a pixel using geometry [Can be slow, use with care]
@@ -950,16 +950,16 @@ fn void draw_ring(Vector2 center, float inner_radius, float outer_radius, float 
 fn void draw_ring_lines(Vector2 center, float inner_radius, float outer_radius, float start_angle, float end_angle, int segments, Color color) @cname("DrawRingLines"); // Draw ring outline
 fn void draw_rectangle(int pos_x, int pos_y, int width, int height, Color color) @cname("DrawRectangle");                                                        // Draw a color-filled rectangle
 fn void draw_rectangle_v(Vector2 position, Vector2 size, Color color) @cname("DrawRectangleV");                                                                  // Draw a color-filled rectangle (Vector version)
-fn void draw_rectangle_rec(Rect rec, Color color) @cname("DrawRectangleRec");                                                                                 // Draw a color-filled rectangle
-fn void draw_rectangle_pro(Rect rec, Vector2 origin, float rotation, Color color) @cname("DrawRectanglePro");                                               // Draw a color-filled rectangle with pro parameters
+fn void draw_rectangle_rec(Rectangle rec, Color color) @cname("DrawRectangleRec");                                                                                 // Draw a color-filled rectangle
+fn void draw_rectangle_pro(Rectangle rec, Vector2 origin, float rotation, Color color) @cname("DrawRectanglePro");                                               // Draw a color-filled rectangle with pro parameters
 fn void draw_rectangle_gradient_v(int pos_x, int pos_y, int width, int height, Color top, Color bottom) @cname("DrawRectangleGradientV");                          // Draw a vertical-gradient-filled rectangle
 fn void draw_rectangle_gradient_h(int pos_x, int pos_y, int width, int height, Color left, Color right) @cname("DrawRectangleGradientH");                          // Draw a horizontal-gradient-filled rectangle
-fn void draw_rectangle_gradient_ex(Rect rec, Color top_left, Color bottom_left, Color bottom_right, Color top_right) @cname("DrawRectangleGradientEx"); // Draw a gradient-filled rectangle with custom vertex colors
+fn void draw_rectangle_gradient_ex(Rectangle rec, Color top_left, Color bottom_left, Color bottom_right, Color top_right) @cname("DrawRectangleGradientEx"); // Draw a gradient-filled rectangle with custom vertex colors
 fn void draw_rectangle_lines(int pos_x, int pos_y, int width, int height, Color color) @cname("DrawRectangleLines");                                                 // Draw rectangle outline
-fn void draw_rectangle_lines_ex(Rect rec, float line_thick, Color color) @cname("DrawRectangleLinesEx");                                                      // Draw rectangle outline with extended parameters
-fn void draw_rectangle_rounded(Rect rec, float roundness, int segments, Color color) @cname("DrawRectangleRounded");                                         // Draw rectangle with rounded edges
-fn void draw_rectangle_rounded_lines(Rect rec, float roundness, int segments, Color color) @cname("DrawRectangleRoundedLines");                              // Draw rectangle lines with rounded edges
-fn void draw_rectangle_rounded_lines_ex(Rect rec, float roundness, int segments, float line_thick, Color color) @cname("DrawRectangleRoundedLinesEx");       // Draw rectangle with rounded edges outline
+fn void draw_rectangle_lines_ex(Rectangle rec, float line_thick, Color color) @cname("DrawRectangleLinesEx");                                                      // Draw rectangle outline with extended parameters
+fn void draw_rectangle_rounded(Rectangle rec, float roundness, int segments, Color color) @cname("DrawRectangleRounded");                                         // Draw rectangle with rounded edges
+fn void draw_rectangle_rounded_lines(Rectangle rec, float roundness, int segments, Color color) @cname("DrawRectangleRoundedLines");                              // Draw rectangle lines with rounded edges
+fn void draw_rectangle_rounded_lines_ex(Rectangle rec, float roundness, int segments, float line_thick, Color color) @cname("DrawRectangleRoundedLinesEx");       // Draw rectangle with rounded edges outline
 fn void draw_triangle(Vector2 v1, Vector2 v2, Vector2 v3, Color color) @cname("DrawTriangle");                                                                 // Draw a color-filled triangle (vertex in counter-clockwise order!)
 fn void draw_triangle_lines(Vector2 v1, Vector2 v2, Vector2 v3, Color color) @cname("DrawTriangleLines");                                                      // Draw triangle outline (vertex in counter-clockwise order!)
 fn void draw_triangle_fan(Vector2* points, int point_count, Color color) @cname("DrawTriangleFan");                                                                // Draw a triangle fan defined by points (first vertex is the center)
@@ -988,17 +988,17 @@ fn Vector2 get_spline_point_bezier_quad(Vector2 p1, Vector2 c2, Vector2 p3, floa
 fn Vector2 get_spline_point_bezier_cubic(Vector2 p1, Vector2 c2, Vector2 c3, Vector2 p4, float t) @cname("GetSplinePointBezierCubic"); // Get (evaluate) spline point: Cubic Bezier
 
 // Basic shapes collision detection functions
-fn bool check_collision_recs(Rect rec1, Rect rec2) @cname("CheckCollisionRecs");                                           // Check collision between two rectangles
+fn bool check_collision_recs(Rectangle rec1, Rectangle rec2) @cname("CheckCollisionRecs");                                           // Check collision between two rectangles
 fn bool check_collision_circles(Vector2 center1, float radius1, Vector2 center2, float radius2) @cname("CheckCollisionCircles");     // Check collision between two circles
-fn bool check_collision_circle_rec(Vector2 center, float radius, Rect rec) @cname("CheckCollisionCircleRec");                   // Check collision between circle and rectangle
+fn bool check_collision_circle_rec(Vector2 center, float radius, Rectangle rec) @cname("CheckCollisionCircleRec");                   // Check collision between circle and rectangle
 fn bool check_collision_circle_line(Vector2 center, float radius, Vector2 p1, Vector2 p2) @cname("CheckCollisionCircleLine");      // Check if circle collides with a line created betweeen two points [p1] and [p2]
-fn bool check_collision_point_rec(Vector2 point, Rect rec) @cname("CheckCollisionPointRec");                                    // Check if point is inside rectangle
+fn bool check_collision_point_rec(Vector2 point, Rectangle rec) @cname("CheckCollisionPointRec");                                    // Check if point is inside rectangle
 fn bool check_collision_point_circle(Vector2 point, Vector2 center, float radius) @cname("CheckCollisionPointCircle");               // Check if point is inside circle
 fn bool check_collision_point_triangle(Vector2 point, Vector2 p1, Vector2 p2, Vector2 p3) @cname("CheckCollisionPointTriangle"); // Check if point is inside a triangle
 fn bool check_collision_point_line(Vector2 point, Vector2 p1, Vector2 p2, int threshold) @cname("CheckCollisionPointLine");       // Check if point belongs to line created between two points [p1] and [p2] with defined margin in pixels [threshold]
 fn bool check_collision_point_poly(Vector2 point, Vector2* points, int point_count) @cname("CheckCollisionPointPoly");              // Check if point is within a polygon described by array of vertices
 fn bool check_collision_lines(Vector2 start_pos1, Vector2 end_pos1, Vector2 start_pos2, Vector2 end_pos2, Vector2* collision_point) @cname("CheckCollisionLines"); // Check the collision between two lines defined by two points each, returns collision point by reference
-fn Rect get_collision_rec(Rect rec1, Rect rec2) @cname("GetCollisionRec"); // Get collision rectangle for two rectangles collision
+fn Rectangle get_collision_rec(Rectangle rec1, Rectangle rec2) @cname("GetCollisionRec"); // Get collision rectangle for two rectangles collision
 
 //------------------------------------------------------------------------------------
 // Texture Loading and Drawing Functions (Module: textures)
@@ -1032,13 +1032,13 @@ fn Image gen_image_text(int width, int height, ZString text) @cname("GenImageTex
 
 // Image manipulation functions
 fn Image image_copy(Image image) @cname("ImageCopy");                                                                // Create an image duplicate (useful for transformations)
-fn Image image_from_image(Image image, Rect rec) @cname("ImageFromImage");                                    // Create an image from another image piece
+fn Image image_from_image(Image image, Rectangle rec) @cname("ImageFromImage");                                    // Create an image from another image piece
 fn Image image_from_channel(Image image, int selected_channel) @cname("ImageFromChannel");                          // Create an image from a selected channel of another image (GRAYSCALE)
 fn Image image_text(ZString text, int font_size, Color color) @cname("ImageText");                                  // Create an image from text (default font)
 fn Image image_text_ex(Font font, ZString text, float font_size, float spacing, Color tint) @cname("ImageTextEx"); // Create an image from text (custom sprite font)
 fn void image_format(Image* image, PixelFormat newFormat) @cname("ImageFormat");                                     // Convert image data to desired format
 fn void image_to_pot(Image* image, Color fill) @cname("ImageToPOT");                                                 // Convert image to POT (power-of-two)
-fn void image_crop(Image* image, Rect crop) @cname("ImageCrop");                                                // Crop an image to a defined rectangle
+fn void image_crop(Image* image, Rectangle crop) @cname("ImageCrop");                                                // Crop an image to a defined rectangle
 fn void image_alpha_crop(Image* image, float threshold) @cname("ImageAlphaCrop");                                      // Crop image depending on alpha value
 fn void image_alpha_clear(Image* image, Color color, float threshold) @cname("ImageAlphaClear");                     // Clear alpha channel to desired color
 fn void image_alpha_mask(Image* image, Image alpha_mask) @cname("ImageAlphaMask");                                   // Apply alpha mask to image
@@ -1065,7 +1065,7 @@ fn Color* load_image_colors(Image image) @cname("LoadImageColors");             
 fn Color* load_image_palette(Image image, int max_palette_size, int* color_count) @cname("LoadImagePalette"); // Load colors palette from image as a Color array (RGBA - 32bit)
 fn void unload_image_colors(Color* colors) @cname("UnloadImageColors");                                           // Unload color data loaded with LoadImageColors()
 fn void unload_image_palette(Color* colors) @cname("UnloadImagePalette");                                         // Unload colors palette loaded with LoadImagePalette()
-fn Rect get_image_alpha_border(Image image, float threshold) @cname("GetImageAlphaBorder");                // Get image alpha border rectangle
+fn Rectangle get_image_alpha_border(Image image, float threshold) @cname("GetImageAlphaBorder");                // Get image alpha border rectangle
 fn Color get_image_color(Image image, int x, int y) @cname("GetImageColor");                                  // Get image pixel color at (x, y) position
 
 // Image drawing functions
@@ -1082,14 +1082,14 @@ fn void image_draw_circle_lines(Image* dst, int center_x, int center_y, int radi
 fn void image_draw_circle_lines_v(Image* dst, Vector2 center, int radius, Color color) @cname("ImageDrawCircleLinesV");           // Draw circle outline within an image (Vector version)
 fn void image_draw_rectangle(Image* dst, int pos_x, int pos_y, int width, int height, Color color) @cname("ImageDrawRectangle"); // Draw rectangle within an image
 fn void image_draw_rectangle_v(Image* dst, Vector2 position, Vector2 size, Color color) @cname("ImageDrawRectangleV");           // Draw rectangle within an image (Vector version)
-fn void image_draw_rectangle_rec(Image* dst, Rect rec, Color color) @cname("ImageDrawRectangleRec");                          // Draw rectangle within an image
-fn void image_draw_rectangle_lines(Image* dst, Rect rec, int thick, Color color) @cname("ImageDrawRectangleLines");          // Draw rectangle lines within an image
+fn void image_draw_rectangle_rec(Image* dst, Rectangle rec, Color color) @cname("ImageDrawRectangleRec");                          // Draw rectangle within an image
+fn void image_draw_rectangle_lines(Image* dst, Rectangle rec, int thick, Color color) @cname("ImageDrawRectangleLines");          // Draw rectangle lines within an image
 fn void image_draw_triangle(Image* dst, Vector2 v1, Vector2 v2, Vector2 v3, Color color) @cname("ImageDrawTriangle");          // Draw triangle within an image
 fn void image_draw_triangle_ex(Image* dst, Vector2 v1, Vector2 v2, Vector2 v3, Color c1, Color c2, Color c3) @cname("ImageDrawTriangleEx");        // Draw triangle with interpolated colors within an image
 fn void image_draw_triangle_lines(Image* dst, Vector2 v1, Vector2 v2, Vector2 v3, Color color) @cname("ImageDrawTriangleLines");                       // Draw triangle outline within an image
 fn void image_draw_triangle_fan(Image* dst, Vector2* points, int point_count, Color color) @cname("ImageDrawTriangleFan");                                // Draw a triangle fan defined by points within an image (first vertex is the center)
 fn void image_draw_triangle_strip(Image* dst, Vector2* points, int point_count, Color color) @cname("ImageDrawTriangleStrip");                            // Draw a triangle strip defined by points within an image
-fn void image_draw(Image* dst, Image src, Rect srcRec, Rect dstRec, Color tint) @cname("ImageDraw");                                         // Draw a source image within a destination image (tint applied to source)
+fn void image_draw(Image* dst, Image src, Rectangle srcRec, Rectangle dstRec, Color tint) @cname("ImageDraw");                                         // Draw a source image within a destination image (tint applied to source)
 fn void image_draw_text(Image* dst, ZString text, int pos_x, int pos_y, int font_size, Color color) @cname("ImageDrawText");                              // Draw text (using default font) within an image (destination)
 fn void image_draw_text_ex(Image* dst, Font font, ZString text, Vector2 position, float font_size, float spacing, Color tint) @cname("ImageDrawTextEx"); // Draw text (custom sprite font) within an image (destination)
 
@@ -1104,7 +1104,7 @@ fn void unload_texture(Texture2D texture) @cname("UnloadTexture");              
 fn bool RenderTexture2D.is_valid(RenderTexture2D target) @cname("IsRenderTextureValid");                   // Check if a render texture is valid (loaded in GPU)
 fn void unload_render_texture(RenderTexture2D target) @cname("UnloadRenderTexture");                         // Unload render texture from GPU memory (VRAM)
 fn void Texture2D.update(Texture2D texture, void* pixels) @cname("UpdateTexture");                         // Update GPU texture with new data (pixels should be able to fill texture)
-fn void Texture2D.update_rec(Texture2D texture, Rect rec, void* pixels) @cname("UpdateTextureRec"); // Update GPU texture rectangle with new data (pixels and rec should fit in texture)
+fn void Texture2D.update_rec(Texture2D texture, Rectangle rec, void* pixels) @cname("UpdateTextureRec"); // Update GPU texture rectangle with new data (pixels and rec should fit in texture)
 
 // Texture configuration functions
 fn void gen_texture_mipmaps(Texture2D* texture) @cname("GenTextureMipmaps");                          // Generate GPU mipmaps for a texture
@@ -1115,9 +1115,9 @@ fn void Texture2D.set_wrap(Texture2D texture, TextureWrap wrap) @cname("SetTextu
 fn void draw_texture(Texture2D texture, int pos_x, int pos_y, Color tint) @cname("DrawTexture"); // Draw a Texture2D
 fn void draw_texture_v(Texture2D texture, Vector2 position, Color tint) @cname("DrawTextureV");  // Draw a Texture2D with position defined as Vector2
 fn void draw_texture_ex(Texture2D texture, Vector2 position, float rotation, float scale, Color tint) @cname("DrawTextureEx"); // Draw a Texture2D with extended parameters
-fn void draw_texture_rec(Texture2D texture, Rect source, Vector2 position, Color tint) @cname("DrawTextureRec");        // Draw a part of a texture defined by a rectangle
-fn void draw_texture_pro(Texture2D texture, Rect source, Rect dest, Vector2 origin, float rotation, Color tint) @cname("DrawTexturePro");               // Draw a part of a texture defined by a rectangle with 'pro' parameters
-fn void draw_texture_n_patch(Texture2D texture, NPatchInfo n_patch_info, Rect dest, Vector2 origin, float rotation, Color tint) @cname("DrawTextureNPatch"); // Draws a texture (or part of it) that stretches or shrinks nicely
+fn void draw_texture_rec(Texture2D texture, Rectangle source, Vector2 position, Color tint) @cname("DrawTextureRec");        // Draw a part of a texture defined by a rectangle
+fn void draw_texture_pro(Texture2D texture, Rectangle source, Rectangle dest, Vector2 origin, float rotation, Color tint) @cname("DrawTexturePro");               // Draw a part of a texture defined by a rectangle with 'pro' parameters
+fn void draw_texture_n_patch(Texture2D texture, NPatchInfo n_patch_info, Rectangle dest, Vector2 origin, float rotation, Color tint) @cname("DrawTextureNPatch"); // Draws a texture (or part of it) that stretches or shrinks nicely
 
 // Color/pixel related functions
 fn bool Color.is_equal(Color col1, Color col2) @cname("ColorIsEqual");                           // Check if two colors are equal
@@ -1150,7 +1150,7 @@ fn Font load_font_from_image(Image image, Color key, int firstChar) @cname("Load
 fn Font load_font_from_memory(ZString file_type, char* file_data, int data_size, int font_size, int* codepoints, int codepoint_count) @cname("LoadFontFromMemory"); // Load font from memory buffer, file_type refers to extension: i.e. '.ttf'
 fn bool Font.is_valid(Font font) @cname("IsFontValid"); // Check if a font is valid (font data loaded, WARNING: GPU texture not checked)
 fn GlyphInfo* load_font_data(char* file_data, int data_size, int font_size, int* codepoints, int codepoint_count, FontType type, int *glyph_count) @cname("LoadFontData");             // Load font data for further use
-fn Image gen_image_font_atlas(GlyphInfo* glyphs, Rect* *glyphRecs, int glyph_count, int font_size, int padding, int pack_method) @cname("GenImageFontAtlas"); // Generate image font atlas using chars info
+fn Image gen_image_font_atlas(GlyphInfo* glyphs, Rectangle* *glyphRecs, int glyph_count, int font_size, int padding, int pack_method) @cname("GenImageFontAtlas"); // Generate image font atlas using chars info
 fn void unload_font_data(GlyphInfo* glyphs, int glyph_count) @cname("UnloadFontData"); // Unload font chars info data (RAM)
 fn void unload_font(Font font) @cname("UnloadFont");                                    // Unload font from GPU memory (VRAM)
 fn bool export_font_as_code(Font font, ZString file_name) @cname("ExportFontAsCode");   // Export font as code file, returns true on success
@@ -1171,7 +1171,7 @@ fn Vector2 measure_text_codepoints(Font font, int* codepoints, int length, float
 
 fn int get_glyph_index(Font font, int codepoint) @cname("GetGlyphIndex");               // Get glyph index position in font for a codepoint (unicode character), fallback to '?' if not found
 fn GlyphInfo get_glyph_info(Font font, int codepoint) @cname("GetGlyphInfo");          // Get glyph font info data for a codepoint (unicode character), fallback to '?' if not found
-fn Rect get_glyph_atlas_rec(Font font, int codepoint) @cname("GetGlyphAtlasRec"); // Get glyph rectangle in font atlas for a codepoint (unicode character), fallback to '?' if not found
+fn Rectangle get_glyph_atlas_rec(Font font, int codepoint) @cname("GetGlyphAtlasRec"); // Get glyph rectangle in font atlas for a codepoint (unicode character), fallback to '?' if not found
 
 // Text codepoints management functions (unicode characters)
 fn char* load_utf8(int* codepoints, int length) @cname("LoadUTF8");                              // Load UTF-8 text encoded from codepoints array
@@ -1260,8 +1260,8 @@ fn void draw_model_wires(Model model, Vector3 position, float scale, Color tint)
 fn void draw_model_wires_ex(Model model, Vector3 position, Vector3 rotation_axis, float rotation_angle, Vector3 scale, Color tint) @cname("DrawModelWiresEx");   // Draw a model wires (with texture if set) with extended parameters
 fn void draw_bounding_box(BoundingBox box, Color color) @cname("DrawBoundingBox");                                                                                     // Draw bounding box (wires)
 fn void draw_billboard(Camera camera, Texture2D texture, Vector3 position, float scale, Color tint) @cname("DrawBillboard");                                       // Draw a billboard texture
-fn void draw_billboard_rec(Camera camera, Texture2D texture, Rect source, Vector3 position, Vector2 size, Color tint) @cname("DrawBillboardRec");         // Draw a billboard texture defined by source
-fn void draw_billboard_pro(Camera camera, Texture2D texture, Rect source, Vector3 position, Vector3 up, Vector2 size, Vector2 origin, float rotation, Color tint) @cname("DrawBillboardPro"); // Draw a billboard texture defined by source and rotation
+fn void draw_billboard_rec(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector2 size, Color tint) @cname("DrawBillboardRec");         // Draw a billboard texture defined by source
+fn void draw_billboard_pro(Camera camera, Texture2D texture, Rectangle source, Vector3 position, Vector3 up, Vector2 size, Vector2 origin, float rotation, Color tint) @cname("DrawBillboardPro"); // Draw a billboard texture defined by source and rotation
 
 // Mesh management functions
 fn void upload_mesh(Mesh* mesh, bool dynamic) @cname("UploadMesh");                                                            // Upload mesh vertex data in GPU and provide VAO/VBO ids
