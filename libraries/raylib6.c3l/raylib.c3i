@@ -678,7 +678,7 @@ fn int get_monitor_physical_width(int monitor) @cname("GetMonitorPhysicalWidth")
 fn int get_monitor_physical_height(int monitor) @cname("GetMonitorPhysicalHeight"); // Get specified monitor physical height in millimetres
 fn int get_monitor_refresh_rate(int monitor) @cname("GetMonitorRefreshRate");       // Get specified monitor refresh rate
 fn RLVector2 get_window_position() @cname("GetWindowPosition");                       // Get window position XY on monitor
-fn RLVector2 get_window_scale_d_p_i() @cname("GetWindowScaleDPI");                    // Get window scale DPI factor
+fn RLVector2 get_window_scale_dpi() @cname("GetWindowScaleDPI");                    // Get window scale DPI factor
 fn ZString get_monitor_name(int monitor) @cname("GetMonitorName");                   // Get the human-readable, UTF-8 encoded name of the specified monitor
 fn void set_clipboard_text(ZString text) @cname("SetClipboardText");                  // Set clipboard text content
 fn ZString get_clipboard_text() @cname("GetClipboardText");                           // Get clipboard text content
@@ -763,7 +763,7 @@ fn void unload_random_sequence(int* sequence) @cname("UnloadRandomSequence");   
 // Misc. functions
 fn void take_screenshot(ZString file_name) @cname("TakeScreenshot"); // Takes a screenshot of current screen (filename extension defines format)
 fn void set_config_flags(RLConfigFlag flags) @cname("SetConfigFlags"); // Setup init configuration flags (view FLAGS)
-fn void open_u_r_l(ZString url) @cname("OpenURL");                   // Open URL with default system browser (if available)
+fn void open_url(ZString url) @cname("OpenURL");                   // Open URL with default system browser (if available)
 
 // NOTE: Following functions implemented in module [utils]
 //------------------------------------------------------------------
@@ -1122,8 +1122,8 @@ fn RLColor RLColor.fade(RLColor color, float alpha) @cname("Fade");             
 fn int RLColor.to_int(RLColor color) @cname("ColorToInt");                                            // Get hexadecimal value for a RLColor (0xRRGGBBAA)
 fn RLVector4 RLColor.normalize(RLColor color) @cname("ColorNormalize");                                // Get RLColor normalized as float [0..1]
 fn RLColor color_from_normalized(RLVector4 normalized) @cname("ColorFromNormalized");                  // Get RLColor from normalized values [0..1]
-fn RLVector3 RLColor.to_h_s_v(RLColor color) @cname("ColorToHSV");                                     // Get HSV values for a RLColor, hue [0..360], saturation/value [0..1]
-fn RLColor color_from_h_s_v(float hue, float saturation, float value) @cname("ColorFromHSV");          // Get a RLColor from HSV values, hue [0..360], saturation/value [0..1]
+fn RLVector3 RLColor.to_hsv(RLColor color) @cname("ColorToHSV");                                     // Get HSV values for a RLColor, hue [0..360], saturation/value [0..1]
+fn RLColor color_from_hsv(float hue, float saturation, float value) @cname("ColorFromHSV");          // Get a RLColor from HSV values, hue [0..360], saturation/value [0..1]
 fn RLColor RLColor.tint(RLColor color, RLColor tint) @cname("ColorTint");                              // Get color multiplied with another color
 fn RLColor RLColor.brightness(RLColor color, float factor) @cname("ColorBrightness");                  // Get color with brightness correction, brightness factor goes from -1.0f to 1.0f
 fn RLColor RLColor.contrast(RLColor color, float contrast) @cname("ColorContrast");                    // Get color with contrast correction, contrast values between -1.0f and 1.0f
@@ -1927,10 +1927,10 @@ fn void matrix_decompose(Mat4 mat, RLVector3* translation, Quat* rotation, RLVec
 fn Mat4 matrix_rotate_x(float angle) @cname("MatrixRotateX");
 // Get zyx-rotation Mat4
 // NOTE: Angle must be provided in radians
-fn Mat4 matrix_rotate_x_y_z(RLVector3 angle) @cname("MatrixRotateXYZ");
+fn Mat4 matrix_rotate_xyz(RLVector3 angle) @cname("MatrixRotateXYZ");
 // Get zyx-rotation Mat4
 // NOTE: Angle must be provided in radians
-fn Mat4 matrix_rotate_z_y_x(RLVector3 angle) @cname("MatrixRotateZYX");
+fn Mat4 matrix_rotate_zyx(RLVector3 angle) @cname("MatrixRotateZYX");
 // Get scaling Mat4
 
 // Calculate quaternion cubic spline interpolation using Cubic Hermite Spline algorithm
