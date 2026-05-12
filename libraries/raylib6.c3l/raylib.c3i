@@ -39,6 +39,7 @@ const RLColor RAYWHITE    = { 245, 245, 245, 255 }; // My own White (raylib logo
 alias RLVector2 = float[<2>];
 alias RLVector3 = float[<3>];
 alias RLVector4 = float[<4>];
+alias RLRectangle = Rect;
 
 // Color, 4 components, R8G8B8A8 (32bit)
 alias RLColor = char[<4>];
