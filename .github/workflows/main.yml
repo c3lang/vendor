@@ -527,6 +527,15 @@ jobs:
             cp -rn "$SRC_DIR/." libraries/glfw.c3l/ || true
           fi
 
+      - name: Link raylib to raylib6 binaries (so we alias `raylib` to be `raylib6`)
+        run: |
+          mkdir -p libraries/raylib.c3l
+          # Locate the raylib6.c3l directory anywhere and copy its contents
+          SRC_DIR=$(find . -name "raylib6.c3l" -type d -print -quit)
+          if [ -n "$SRC_DIR" ]; then
+            cp -rn "$SRC_DIR/." libraries/raylib.c3l/ || true
+          fi
+
       - name: Install latest C3 Compiler
         run: |
           #curl -L https://github.com/c3lang/c3c/releases/download/latest-prerelease-tag/c3-linux.tar.gz -o c3.tar.gz
@@ -560,14 +569,13 @@ jobs:
       - name: Package Libraries
         run: |
           mkdir -p temp
-          for lib in $(jq -r '.targets.all_tests.dependencies | .[]' project.json); do
-            folder="${lib}.c3l"
-            if [ -d "libraries/$folder" ]; then
-              cd "libraries/$folder"
-              zip -r "../../temp/$folder" * -x "*.DS_Store"
+          for folder in libraries/*.c3l; do
+            if [ -d "$folder" ]; then
+              libname=$(basename "$folder")
+              echo "Packaging $libname..."
+              cd "$folder"
+              zip -r "../../temp/$libname" * -x "*.DS_Store"
               cd ../..
-            else
-              echo "Warning: $folder not found"
             fi
           done
 
