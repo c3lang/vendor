@@ -1,3 +1,4 @@
+
 module sdl3;
 
 // Types
@@ -11,23 +12,23 @@ alias SdlMainThreadCallback = fn void(void* userdata);
 // Bitstructs
 bitstruct SdlInitFlags : uint
 {
-	bool audio : 4;
-	bool video : 5;
-	bool joystick : 9;
-	bool haptic : 12;
-	bool gamepad : 13;
-	bool events : 14;
-	bool sensor : 15;
-	bool camera : 16;
+	bool audio    :  4;
+	bool video    :  5;
+	bool joystick :  9;
+	bool haptic   : 12;
+	bool gamepad  : 13;
+	bool events   : 14;
+	bool sensor   : 15;
+	bool camera   : 16;
 }
 
 
 // Enums
 enum SdlAppResult
 {
-	CONTINUE, /* *< Value that requests that the app continue from the main callbacks. */
-	SUCCESS,  /* *< Value that requests termination with success from the main callbacks. */
-	FAILURE,  /* *< Value that requests termination with error from the main callbacks. */
+	CONTINUE,   /**< Value that requests that the app continue from the main callbacks. */
+	SUCCESS,    /**< Value that requests termination with success from the main callbacks. */
+	FAILURE,    /**< Value that requests termination with error from the main callbacks. */
 }
 
 constdef AppMetadataProperties : ZString
@@ -47,14 +48,9 @@ extern fn char* getAppMetadataProperty(char* name) @cname("SDL_GetAppMetadataPro
 extern fn bool init(SdlInitFlags flags) @cname("SDL_Init");
 extern fn bool initSubSystem(SdlInitFlags flags) @cname("SDL_InitSubSystem");
 extern fn bool isMainThread() @cname("SDL_IsMainThread");
-extern fn void setMainReady() @cname("SDL_SetMainReady");
 extern fn void quit() @cname("SDL_Quit");
 extern fn void quitSubSystem(SdlInitFlags flags) @cname("SDL_QuitSubSystem");
-extern fn bool runOnMainThread(
-	SdlMainThreadCallback callback,
-	void* userdata,
-	bool wait_complete
-) @cname("SDL_RunOnMainThread");
+extern fn bool runOnMainThread(SdlMainThreadCallback callback, void* userdata, bool wait_complete) @cname("SDL_RunOnMainThread");
 extern fn bool setAppMetadata(char* appname, char* appversion, char* appidentifier) @cname("SDL_SetAppMetadata");
 extern fn bool setAppMetadataProperty(char* name, char* value) @cname("SDL_SetAppMetadataProperty");
 extern fn SdlInitFlags wasInit(SdlInitFlags flags) @cname("SDL_WasInit");
