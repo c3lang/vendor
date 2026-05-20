@@ -241,6 +241,10 @@ jobs:
           win_url: "https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_win64_msvc16.zip"
           win_lib: "raylib-6.0_win64_msvc16/lib/raylib.lib"
           os: ${{ matrix.os }}
+      - uses: actions/checkout@v6
+      - name: Set up MSVC
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
       - name: Build raygui
         shell: bash
         run: |
