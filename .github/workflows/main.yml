@@ -231,6 +231,9 @@ jobs:
       - name: Set up MSVC
         if: runner.os == 'Windows'
         uses: TheMrMilchmann/setup-msvc-dev@v4
+        with:
+          arch: x64
+
       - name: Download raylib6
         uses: ./.github/actions/build-static-lib
         with:
