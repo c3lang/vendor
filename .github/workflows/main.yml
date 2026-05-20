@@ -257,6 +257,7 @@ jobs:
           fi
 
           TARGET_BASE="upload_stage/libraries/raylib.c3l"
+          mkdir -p "$TARGET_BASE/$TARGET_DIR"
 
           curl -fsSLO https://github.com/raysan5/raylib/raw/refs/tags/6.0/src/raylib.h
           git clone https://github.com/raysan5/raygui.git build_raygui
