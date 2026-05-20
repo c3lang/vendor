@@ -242,6 +242,7 @@ jobs:
           win_lib: "raylib-6.0_win64_msvc16/lib/raylib.lib"
           os: ${{ matrix.os }}
       - name: Build raygui
+        shell: bash
         run: |
           set -x
           if [ "${{ runner.os }}" == "Windows" ]; then
