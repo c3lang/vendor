@@ -277,7 +277,7 @@ extern fn int color_picker_hsv(Rect bounds, ZString text, RLVector3* color_hsv) 
 extern fn int color_panel_hsv(Rect bounds, ZString text, RLVector3* color_hsv) @cname("GuiColorPanelHSV");                 // Cor Panel control that updates Hue-Saturation-Value color value, used by GuiColorPickerHSV()
 
 <*
- @require text.len <= int::max;
+ @require text.len <= int::max
 *>
 macro int list_view_ex(Rect bounds, ZString[] text, int* scroll_index, int* active, int* focus)
 {
