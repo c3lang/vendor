@@ -1430,7 +1430,7 @@ fn B2Manifold chainSegmentAndPolygon(B2ChainSegment* segmentA, B2Transform xfA, 
 module box2d::b2;
 
 const DEFAULT_CATEGORY_BITS = 1;
-const DEFAULT_MASK_BITS     = ulong.max; //(UINT64_MAX )
+const DEFAULT_MASK_BITS     = ulong::max; //(UINT64_MAX )
 
 struct B2TreeNode
 {
