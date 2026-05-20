@@ -1,5 +1,6 @@
 module raylib6_test;
 import raylib6;
+import raygui;
 
 fn void test_log() @test
 {
@@ -15,4 +16,10 @@ fn void test_struct_layout() @test
 	RLVector2 v = { 10.0f, 20.0f };
 	assert (v.x == 10.0f);
 	assert (v.y == 20.0f);
+}
+
+fn void test_raygui_lock() @test
+{
+	rg::lock();
+	rg::unlock();
 }

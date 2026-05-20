@@ -241,6 +241,50 @@ jobs:
           win_url: "https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_win64_msvc16.zip"
           win_lib: "raylib-6.0_win64_msvc16/lib/raylib.lib"
           os: ${{ matrix.os }}
+      - name: Build raygui
+        run: |
+          set -x
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            TARGET_DIR="windows-x64"
+            LIB_NAME="raygui.lib"
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            TARGET_DIR="macos-aarch64"
+            LIB_NAME="libraygui.a"
+          else
+            TARGET_DIR="linux-x64"
+            LIB_NAME="libraygui.a"
+          fi
+
+          TARGET_BASE="upload_stage/libraries/raylib.c3l"
+
+          curl -fsSLO https://github.com/raysan5/raylib/raw/refs/tags/6.0/src/raylib.h
+          git clone https://github.com/raysan5/raygui.git build_raygui
+          cd build_raygui
+          git checkout b256d4552b4105912d0556541a03862bdc5c0777
+          cd ..
+
+          echo '#define RAYGUI_IMPLEMENTATION' > raygui_impl.c
+          echo '#include "raylib.h"' >> raygui_impl.c
+          echo '#include "raygui.h"' >> raygui_impl.c
+
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            # Build with MSVC to match raylib binary
+            # Use MSYS2_ARG_CONV_EXCL to prevent Git Bash from 'fixing' the / flags
+            export MSYS2_ARG_CONV_EXCL="*"
+            cl -c -O2 -I. -Ibuild_raygui/src raygui_impl.c
+            lib raygui_impl.obj -out:"$LIB_NAME"
+          else
+            gcc -c -O2 -I"." -I"build_raygui/src" raygui_impl.c -o raygui_impl.o
+            ar rcs "$LIB_NAME" raygui_impl.o
+          fi
+          cp "$LIB_NAME" "$TARGET_BASE/$TARGET_DIR/"
+
+      - name: Upload raygui Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: raylib6-raygui-statics-${{ matrix.os }}
+          path: upload_stage/
+
 
   build-raylib55:
     strategy:
