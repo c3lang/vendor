@@ -394,66 +394,6 @@ jobs:
           name: tigr-statics-${{ matrix.os }}
           path: upload_stage/
 
-  build-raygui:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v6
-      - name: Set up MSVC
-        if: runner.os == 'Windows'
-        uses: ilammy/msvc-dev-cmd@v1
-
-      - name: Install Linux Dependencies
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgl1-mesa-dev libglu1-mesa-dev libx11-dev
-
-      - name: Build and Package raygui
-        shell: bash
-        run: |
-          set -x
-          if [ "${{ runner.os }}" == "Windows" ]; then
-            TARGET_DIR="windows-x64"
-            LIB_NAME="raygui.lib"
-          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-            TARGET_DIR="macos-aarch64"
-            LIB_NAME="libraygui.a"
-          else
-            TARGET_DIR="linux-x64"
-            LIB_NAME="libraygui.a"
-          fi
-
-          TARGET_BASE="upload_stage/libraries/raygui.c3l"
-          mkdir -p "$TARGET_BASE/$TARGET_DIR"
-
-          git clone https://github.com/raysan5/raylib.git -b 5.0 build_raylib
-          git clone https://github.com/raysan5/raygui.git -b 4.0 build_raygui
-
-          echo '#define RAYGUI_IMPLEMENTATION' > raygui_impl.c
-          echo '#include "raylib.h"' >> raygui_impl.c
-          echo '#include "raygui.h"' >> raygui_impl.c
-
-          if [ "${{ runner.os }}" == "Windows" ]; then
-            # Build with MSVC to match raylib5 binary
-            # Use MSYS2_ARG_CONV_EXCL to prevent Git Bash from 'fixing' the / flags
-            export MSYS2_ARG_CONV_EXCL="*"
-            cl -c -O2 -Ibuild_raylib/src -Ibuild_raygui/src raygui_impl.c
-            lib raygui_impl.obj -out:"$LIB_NAME"
-          else
-            gcc -c -O2 -I"build_raylib/src" -I"build_raygui/src" raygui_impl.c -o raygui_impl.o
-            ar rcs "$LIB_NAME" raygui_impl.o
-          fi
-          cp "$LIB_NAME" "$TARGET_BASE/$TARGET_DIR/"
-
-      - name: Upload raygui Artifact
-        uses: actions/upload-artifact@v6
-        with:
-          name: raygui-statics-${{ matrix.os }}
-          path: upload_stage/
-
   build-tinyfiledialogs:
     strategy:
       matrix:
@@ -550,7 +490,7 @@ jobs:
           path: upload_stage/
 
   build-and-release:
-    needs: [build-box2d, build-lz4, build-tree_sitter, build-glfw34, build-ktx, build-raylib6, build-raylib55, build-raylib5, build-sdl2, build-sdl3, build-sdl3_image, build-sdl3_ttf, build-webgpu, build-tigr, build-raygui, build-tinyfiledialogs, build-sqlite3]
+    needs: [build-box2d, build-lz4, build-tree_sitter, build-glfw34, build-ktx, build-raylib6, build-raylib55, build-raylib5, build-sdl2, build-sdl3, build-sdl3_image, build-sdl3_ttf, build-webgpu, build-tigr, build-tinyfiledialogs, build-sqlite3]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
