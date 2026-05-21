@@ -1492,13 +1492,13 @@ macro void @vr_mode(RLVrStereoConfig config ;@body)
 
 
 <*
- Setup rl drawing mode, then calls [block].
- rl_begin will end after [block] has finished.
+ Setup gl drawing mode, then calls [block].
+ gl_begin will end after [block] has finished.
 *>
-macro void @rl_mode(int mode ;@body)
+macro void @gl_mode(int mode ;@body)
 {
-	rl_begin(mode);
-	defer rl_end();
+	gl_begin(mode);
+	defer gl_end();
 	@body();
 }
 
