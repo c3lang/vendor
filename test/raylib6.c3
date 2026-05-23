@@ -23,3 +23,17 @@ fn void test_raygui_lock() @test
 	rg::lock();
 	rg::unlock();
 }
+
+fn void test_window() @test
+{
+	rl::set_trace_log_level(NONE);
+	rl::init_window(800, 600, "Raylib Test");
+	assert (rl::is_window_ready());
+
+	rl::begin_drawing();
+	rl::clear_background(rl::RAYWHITE);
+	rl::draw_text("Congrats! You created your first window!", 190, 200, 20, rl::LIGHTGRAY);
+	rl::end_drawing();
+
+	rl::close_window();
+}

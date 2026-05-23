@@ -403,7 +403,9 @@ jobs:
       - uses: actions/checkout@v6
       - name: Set up MSVC
         if: runner.os == 'Windows'
-        uses: ilammy/msvc-dev-cmd@v1
+        uses: TheMrMilchmann/setup-msvc-dev@v4
+        with:
+          arch: x64
 
       - name: Build and Package tinyfiledialogs
         shell: bash
@@ -451,7 +453,9 @@ jobs:
       - uses: actions/checkout@v6
       - name: Set up MSVC
         if: runner.os == 'Windows'
-        uses: ilammy/msvc-dev-cmd@v1
+        uses: TheMrMilchmann/setup-msvc-dev@v4
+        with:
+          arch: x64
 
       - name: Build and Package sqlite3
         shell: bash
@@ -530,7 +534,8 @@ jobs:
             libx11-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev \
             libwayland-dev libxkbcommon-dev wayland-protocols \
             libasound2-dev libpulse-dev libjack-dev libsndio-dev \
-            xorg-dev libxkbcommon-x11-dev
+            xorg-dev libxkbcommon-x11-dev \
+            xvfb libgl1-mesa-dri
 
       - name: Prepare System Libraries
         run: |
@@ -540,7 +545,7 @@ jobs:
           sudo ldconfig
 
       - name: Run Tests
-        run: c3c test
+        run: LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a c3c test
 
       - name: Package Libraries
         run: |
@@ -554,6 +559,12 @@ jobs:
               cd ../..
             fi
           done
+
+      - name: Upload Packaged Libraries
+        uses: actions/upload-artifact@v6
+        with:
+          name: packaged-c3l-libraries
+          path: temp/
 
       - name: Delete Old Release and Tag
         if: github.ref == 'refs/heads/main'
@@ -577,7 +588,7 @@ jobs:
 
       - name: Create or Update Release
         if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: latest
           name: Latest
