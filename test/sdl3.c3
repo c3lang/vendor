@@ -10,3 +10,8 @@ fn void test_init_quit() @test
 		sdl3::quit();
 	}
 }
+
+fn void test_set_main_ready() @test
+{
+	sdl3::setMainReady();
+}
