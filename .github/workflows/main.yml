@@ -496,6 +496,9 @@ jobs:
   build-and-release:
     needs: [build-box2d, build-lz4, build-tree_sitter, build-glfw34, build-ktx, build-raylib6, build-raylib55, build-raylib5, build-sdl2, build-sdl3, build-sdl3_image, build-sdl3_ttf, build-webgpu, build-tigr, build-tinyfiledialogs, build-sqlite3]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
     steps:
       - uses: actions/checkout@v6
 
@@ -597,3 +600,10 @@ jobs:
           files: temp/*.c3l
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cleanup Intermediate Artifacts
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts --jq '.artifacts[] | select(.name != "packaged-c3l-libraries") | .id' | xargs -r -I {} gh api -X DELETE repos/${{ github.repository }}/actions/artifacts/{} || true
