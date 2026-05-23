@@ -3,7 +3,7 @@ module sdl3;
 
 // Types
 alias SdlAppEventFunc = fn SdlAppResult(void* appstate, SdlEvent* event);
-alias SdlAppInitFunc = fn SdlAppResult(void** appstate, int argc, char** argv);
+alias SdlAppInitFunc = fn SdlAppResult(void** appstate, int argc, ZString* argv);
 alias SdlAppIterateFunc = fn SdlAppResult(void* appstate);
 alias SdlAppQuitFunc = fn void(void* appstate, SdlAppResult result);
 alias SdlMainThreadCallback = fn void(void* userdata);
@@ -48,7 +48,6 @@ extern fn char* getAppMetadataProperty(char* name) @cname("SDL_GetAppMetadataPro
 extern fn bool init(SdlInitFlags flags) @cname("SDL_Init");
 extern fn bool initSubSystem(SdlInitFlags flags) @cname("SDL_InitSubSystem");
 extern fn bool isMainThread() @cname("SDL_IsMainThread");
-extern fn void setMainReady() @cname("SDL_SetMainReady");
 extern fn void quit() @cname("SDL_Quit");
 extern fn void quitSubSystem(SdlInitFlags flags) @cname("SDL_QuitSubSystem");
 extern fn bool runOnMainThread(SdlMainThreadCallback callback, void* userdata, bool wait_complete) @cname("SDL_RunOnMainThread");

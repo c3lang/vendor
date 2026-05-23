@@ -1,0 +1,10 @@
+module sdl3;
+
+alias SdlMainFunc = fn int(int argc, ZString* argv);
+
+extern fn void setMainReady() @cname("SDL_SetMainReady");
+extern fn int runApp(int argc, ZString* argv, SdlMainFunc mainFunction, void* reserved) @cname("SDL_RunApp");
+extern fn int enterAppMainCallbacks(int argc, ZString* argv, SdlAppInitFunc appinit, SdlAppIterateFunc appiter, SdlAppEventFunc appevent, SdlAppQuitFunc appquit) @cname("SDL_EnterAppMainCallbacks");
+extern fn bool registerApp(ZString name, uint style, void* hInst) @cname("SDL_RegisterApp");
+extern fn void unregisterApp() @cname("SDL_UnregisterApp");
+extern fn void gdkSuspendComplete() @cname("SDL_GDKSuspendComplete");
