@@ -21,6 +21,7 @@ This repository contains external libraries for use with C3.
 - LibClang https://clang.llvm.org/docs/LibClang.html
 - tinyfiledialogs http://tinyfiledialogs.sourceforge.net
 - KTX https://github.com/KhronosGroup/KTX-Software
+- libSpng https://libspng.org/
 
 ## Installing libraries from vendor
 
