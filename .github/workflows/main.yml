@@ -569,37 +569,40 @@ jobs:
           name: packaged-c3l-libraries
           path: temp/
 
-      - name: Delete Old Release and Tag
-        if: github.ref == 'refs/heads/main'
-        continue-on-error: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release delete latest --cleanup-tag -y || true
-
-      - name: Create New Tag
+      - name: Create or Update Tag
         if: github.ref == 'refs/heads/main'
         uses: actions/github-script@v8
         with:
           script: |
-            github.rest.git.createRef({
+            try {
+              await github.rest.git.deleteRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: 'tags/latest'
+              });
+            } catch (error) {
+              console.log("Note: tag/latest did not exist or could not be deleted: " + error.message);
+            }
+            await github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
               ref: 'refs/tags/latest',
               sha: context.sha
-            })
+            });
 
       - name: Create or Update Release
         if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v3
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: latest
+          tag: latest
           name: Latest
           draft: false
           prerelease: false
-          files: temp/*.c3l
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: "temp/*.c3l"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          allowUpdates: true
+          replacesArtifacts: true
+          removeArtifacts: true
 
       - name: Cleanup Intermediate Artifacts
         if: always()
