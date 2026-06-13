@@ -75,6 +75,15 @@
 	  ],
 	  "wincrt": "none"
 	},
+	"windows-aarch64": {
+	  "linked-libraries": [
+		"raylib",
+		"raygui",
+		"gdi32",
+		"winmm"
+	  ],
+	  "wincrt": "none"
+	},
 	"wasm32": {
 	  "linked-libraries": [
 		"raylib",
