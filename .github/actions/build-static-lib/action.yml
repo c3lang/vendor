@@ -11,10 +11,14 @@ inputs:
   # Downloadable Binary Options
   linux_url: { required: false }
   linux_lib: { required: false }
+  linux_aarch64_url: { required: false }
+  linux_aarch64_lib: { required: false }
   mac_url: { required: false }
   mac_lib: { required: false }
   win_url: { required: false }
   win_lib: { required: false }
+  win_aarch64_url: { required: false }
+  win_aarch64_lib: { required: false }
   os: { required: true }
   # Post-Processing Options
   after_build: { required: false, default: "" }
@@ -38,10 +42,14 @@ runs:
         HOOK_SCRIPT: ${{ inputs.after_build }}
       run: |
         set -x
-        if [ "${{ runner.os }}" == "Windows" ]; then
+        if [ "${{ runner.os }}" == "Windows" ] && [[ "${{ inputs.os }}" == "windows-aarch64" ]]; then
+          TARGET_DIR="windows-aarch64"
+        elif [ "${{ runner.os }}" == "Windows" ]; then
           TARGET_DIR="windows-x64"
         elif [[ "${{ inputs.os }}" == "macos-latest" ]]; then
           TARGET_DIR="macos-aarch64"
+        elif [[ "${{ inputs.os }}" == "linux-aarch64" ]]; then
+          TARGET_DIR="linux-aarch64"
         else
           TARGET_DIR="linux-x64"
         fi
@@ -52,12 +60,18 @@ runs:
         # Handle pre-compiled binaries if URLs are provided
         BIN_URL=""
         BIN_LIB=""
-        if [ "${{ runner.os }}" == "Windows" ]; then
+        if [ "${{ runner.os }}" == "Windows" ] && [[ "${{ inputs.os }}" == "windows-aarch64" ]]; then
+          BIN_URL="${{ inputs.win_aarch64_url }}"
+          BIN_LIB="${{ inputs.win_aarch64_lib }}"
+        elif [ "${{ runner.os }}" == "Windows" ]; then
           BIN_URL="${{ inputs.win_url }}"
           BIN_LIB="${{ inputs.win_lib }}"
         elif [[ "${{ inputs.os }}" == "macos-latest" ]]; then
           BIN_URL="${{ inputs.mac_url }}"
           BIN_LIB="${{ inputs.mac_lib }}"
+        elif [[ "${{ inputs.os }}" == "linux-aarch64" ]]; then
+          BIN_URL="${{ inputs.linux_aarch64_url }}"
+          BIN_LIB="${{ inputs.linux_aarch64_lib }}"
         else
           BIN_URL="${{ inputs.linux_url }}"
           BIN_LIB="${{ inputs.linux_lib }}"

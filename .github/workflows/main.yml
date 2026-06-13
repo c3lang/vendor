@@ -224,15 +224,33 @@ jobs:
   build-raylib6:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+        os: [ubuntu-latest, macos-latest, windows-latest, linux-aarch64, windows-aarch64]
+        include:
+          - os: ubuntu-latest
+            runner: ubuntu-latest
+          - os: macos-latest
+            runner: macos-latest
+          - os: windows-latest
+            runner: windows-latest
+          - os: linux-aarch64
+            runner: ubuntu-24.04-arm
+          - os: windows-aarch64
+            runner: windows-11-arm
+    runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v6
-      - name: Set up MSVC
-        if: runner.os == 'Windows'
+
+      - name: Set up MSVC (x64)
+        if: matrix.os == 'windows-latest'
         uses: TheMrMilchmann/setup-msvc-dev@v4
         with:
           arch: x64
+
+      - name: Set up MSVC (aarch64)
+        if: matrix.os == 'windows-aarch64'
+        uses: TheMrMilchmann/setup-msvc-dev@v4
+        with:
+          arch: amd64_arm64
 
       - name: Download raylib6
         uses: ./.github/actions/build-static-lib
@@ -242,18 +260,28 @@ jobs:
           c3l: raylib6.c3l
           linux_url: "https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_linux_amd64.tar.gz"
           linux_lib: "raylib-6.0_linux_amd64/lib/libraylib.a"
+          linux_aarch64_url: "https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_linux_arm64.tar.gz"
+          linux_aarch64_lib: "raylib-6.0_linux_arm64/lib/libraylib.a"
           mac_url: "https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_macos.tar.gz"
           mac_lib: "raylib-6.0_macos/lib/libraylib.a"
           win_url: "https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_win64_msvc16.zip"
           win_lib: "raylib-6.0_win64_msvc16/lib/raylib.lib"
+          win_aarch64_url: "https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_winarm64_msvc16.zip"
+          win_aarch64_lib: "raylib-6.0_winarm64_msvc16/lib/raylib.lib"
           os: ${{ matrix.os }}
           after_build: |
             set -x
-            if [ "${{ runner.os }}" == "Windows" ]; then
+            if [[ "${{ matrix.os }}" == "windows-aarch64" ]]; then
+              TARGET_DIR="windows-aarch64"
+              LIB_NAME="raygui.lib"
+            elif [ "${{ matrix.os }}" == "windows-latest" ]; then
               TARGET_DIR="windows-x64"
               LIB_NAME="raygui.lib"
             elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
               TARGET_DIR="macos-aarch64"
+              LIB_NAME="libraygui.a"
+            elif [[ "${{ matrix.os }}" == "linux-aarch64" ]]; then
+              TARGET_DIR="linux-aarch64"
               LIB_NAME="libraygui.a"
             else
               TARGET_DIR="linux-x64"
