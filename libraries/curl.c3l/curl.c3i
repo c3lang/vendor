@@ -221,13 +221,12 @@ enum CurlProxyType : int
 	SOCKS5_HOSTNAME
 }
 
-enum CurlUseSslType : int
+constdef CurlUseSsl : inline CLong
 {
-	NONE,
-	TRY,
-	CONTROL,
-	ALL,
-	LAST
+	NONE = 0,
+	TRY = 1,
+	CONTROL = 2,
+	ALL = 3,
 }
 
 enum CurlKhStatType : int
