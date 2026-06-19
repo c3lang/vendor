@@ -6,13 +6,14 @@
 module curl;
 import libc, std::io;
 
-constdef CurlGlobal : inline CLong {
-    SSL = 1 << 0, /* no purpose since 7.57.0 */
-    WIN32 = 1 << 1,
-    ALL = SSL | WIN32,
-    NOTHING = 0,
-    DEFAULT = ALL,
-    ACK_EINTR = 1 << 2
+constdef CurlGlobal : inline CLong
+{
+	SSL = 1 << 0, /* no purpose since 7.57.0 */
+	WIN32 = 1 << 1,
+	ALL = SSL | WIN32,
+	NOTHING = 0,
+	DEFAULT = ALL,
+	ACK_EINTR = 1 << 2
 }
 
 enum CurlSslBackendType : int
