@@ -6,6 +6,16 @@
 module curl;
 import libc, std::io;
 
+constdef CurlGlobal : inline CLong
+{
+	SSL = 1 << 0, /* no purpose since 7.57.0 */
+	WIN32 = 1 << 1,
+	ALL = SSL | WIN32,
+	NOTHING = 0,
+	DEFAULT = ALL,
+	ACK_EINTR = 1 << 2
+}
+
 enum CurlSslBackendType : int
 {
 	NONE,
@@ -211,13 +221,12 @@ enum CurlProxyType : int
 	SOCKS5_HOSTNAME
 }
 
-enum CurlUseSslType : int
+constdef CurlUseSsl : inline CLong
 {
-	NONE,
-	TRY,
-	CONTROL,
-	ALL,
-	LAST
+	NONE = 0,
+	TRY = 1,
+	CONTROL = 2,
+	ALL = 3,
 }
 
 enum CurlKhStatType : int
@@ -1335,8 +1344,8 @@ extern fn ZString escape(char* string, int length) @cname("curl_escape");
 extern fn char* easy_unescape(Curl* handle, char* string, int length, int* outlength) @cname("curl_easy_unescape");
 extern fn ZString unescape(char* string, int length) @cname("curl_unescape");
 extern fn void free(void* p) @cname("curl_free");
-extern fn CurlResult global_init(long flags) @cname("curl_global_init");
-extern fn CurlResult global_init_mem(long flags, CurlMallocCallback m, CurlFreeCallback f, CurlReallocCallback r, CurlStrdupCallback s, CurlCallocCallback c) @cname("curl_global_init_mem");
+extern fn CurlResult global_init(CurlGlobal flags) @cname("curl_global_init");
+extern fn CurlResult global_init_mem(CurlGlobal flags, CurlMallocCallback m, CurlFreeCallback f, CurlReallocCallback r, CurlStrdupCallback s, CurlCallocCallback c) @cname("curl_global_init_mem");
 extern fn void global_cleanup() @cname("curl_global_cleanup");
 extern fn CurlSslSetResult global_sslset(CurlSslBackendType id, char* name, CurlSslBackend ***avail) @cname("curl_global_sslset");
 extern fn CurlSlist* slist_append(CurlSlist* list, char* data) @cname("curl_slist_append");
