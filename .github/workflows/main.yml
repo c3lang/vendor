@@ -285,6 +285,16 @@ jobs:
             fi
             cp "$LIB_NAME" "$TARGET_BASE/$TARGET_DIR/"
 
+            # Fetch the WebAssembly build and install to emscripten & wasm-32
+            if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+              curl -fsSL -o raylib_webassembly.zip https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_webassembly.zip
+              unzip -j raylib_webassembly.zip raylib-6.0_webassembly/lib/libraylib.web.a
+              mkdir -p "$TARGET_BASE/emscripten" "$TARGET_BASE/wasm-32"
+              cp libraylib.web.a "$TARGET_BASE/emscripten/libraylib.a"
+              cp libraylib.web.a "$TARGET_BASE/wasm-32/libraylib.a"
+              rm -f raylib_webassembly.zip libraylib.web.a
+            fi
+
 
   build-raylib55:
     strategy:
