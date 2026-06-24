@@ -77,8 +77,12 @@
 	},
 	"wasm32": {
 	  "linked-libraries": [
-		"raylib",
-		"raygui"
+		"raylib"
+	  ]
+	},
+	"emscripten": {
+	  "linked-libraries": [
+		"raylib"
 	  ]
 	}
   }
