@@ -234,6 +234,12 @@ jobs:
         with:
           arch: x64
 
+      - name: Setup emsdk
+        if: runner.os == 'Linux'
+        uses: emscripten-core/setup-emsdk@v16
+        with:
+          actions-cache-folder: 'emsdk-cache'
+
       - name: Download raylib6
         uses: ./.github/actions/build-static-lib
         with:
@@ -293,6 +299,16 @@ jobs:
               cp libraylib.web.a "$TARGET_BASE/emscripten/libraylib.a"
               cp libraylib.web.a "$TARGET_BASE/wasm-32/libraylib.a"
               rm -f raylib_webassembly.zip libraylib.web.a
+
+              # Build raygui for WebAssembly
+              # emcc/emar are on PATH via the setup-emsdk step above
+              # raylib.h is already in CWD; raygui.h is in build_raygui/src/
+              emcc -c -O2 -I"." -I"build_raygui/src" raygui_impl.c -o raygui_impl_wasm.o
+              emar rcs libraygui_wasm.a raygui_impl_wasm.o
+
+              cp libraygui_wasm.a "$TARGET_BASE/emscripten/libraygui.a"
+              cp libraygui_wasm.a "$TARGET_BASE/wasm-32/libraygui.a"
+              rm -f libraygui_wasm.a raygui_impl_wasm.o
             fi
 
 
