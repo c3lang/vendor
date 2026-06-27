@@ -280,11 +280,11 @@ constdef SdlWindowProperties : ZString
 
 // Macros
 macro windowpos_undefined_display(x) => WINDOWPOS_UNDEFINED_MASK | x;
-macro windowpos_undefined()          => WINDOWPOS_UNDEFINED_DISPLAY(0);
-macro windowpos_isundefined(x)       => (x & 0xFFFF0000) == WINDOWPOS_UNDEFINED_MASK;
-macro windowpos_centered_display(x)  => WINDOWPOS_CENTERED_MASK|x;
-macro windowpos_centered()           => WINDOWPOS_CENTERED_DISPLAY(0);
-macro windowpos_iscentered(x)        => (x & 0xFFFF0000) == WINDOWPOS_CENTERED_MASK;
+macro windowpos_undefined()          => windowpos_undefined_display(0);
+macro windowpos_isundefined(x)       => x & 0xFFFF0000 == WINDOWPOS_UNDEFINED_MASK;
+macro windowpos_centered_display(x)  => WINDOWPOS_CENTERED_MASK | x;
+macro windowpos_centered()           => windowpos_centered_display(0);
+macro windowpos_iscentered(x)        => x & 0xFFFF0000 == WINDOWPOS_CENTERED_MASK;
 
 
 // Functions
