@@ -1,6 +1,11 @@
 {
 	"provides" : "opengl",
 	"targets" : {
+		"emscripten" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : []
+		},
 		"freebsd-x64" : {
 			"link-args" : [],
 			"dependencies" : [],

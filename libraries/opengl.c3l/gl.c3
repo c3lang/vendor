@@ -13734,12 +13734,21 @@ fn void load_all_gl(GLLoadFn load, int version) {
 
 fn int load_gl_internal(GLLoadFn load)
 {
-    getIntegerv = load("glGetIntegerv");
-    if (getIntegerv == null) return 0;
-    int major, minor;
-    getIntegerv((GLenum)GL_MAJOR_VERSION, &major);
-    getIntegerv((GLenum)GL_MINOR_VERSION, &minor);
-    int version = (major * 10) + minor;
-    load_all_gl(load, version);
-    return version;
+	getIntegerv = load("glGetIntegerv");
+	if (getIntegerv == null) return 0;
+	int major, minor;
+	getIntegerv((GLenum)GL_MAJOR_VERSION, &major);
+	getIntegerv((GLenum)GL_MINOR_VERSION, &minor);
+	if (major == 3 && minor == 0)
+	{
+		getString = load("glGetString");
+		String version_str = ((ZString)getString((GLenum)GL_VERSION)).str_view();
+		if (version_str.contains("WebGL 2.0"))
+		{
+			minor = 3;
+		}
+	}
+	int version = (major * 10) + minor;
+	load_all_gl(load, version);
+	return version;
 }
