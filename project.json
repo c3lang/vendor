@@ -29,7 +29,8 @@
 				"ktx",
 				"clang",
 				"tigr",
-				"webgpu"
+				"webgpu",
+				"spng"
 			],
 			"link-args": ["-Wl,--allow-multiple-definition"]
 		}

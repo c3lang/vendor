@@ -564,7 +564,8 @@ jobs:
             libwayland-dev libxkbcommon-dev wayland-protocols \
             libasound2-dev libpulse-dev libjack-dev libsndio-dev \
             xorg-dev libxkbcommon-x11-dev \
-            xvfb libgl1-mesa-dri
+            xvfb libgl1-mesa-dri \
+            libspng-dev
 
       - name: Prepare System Libraries
         run: |
