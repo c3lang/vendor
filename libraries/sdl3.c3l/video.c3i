@@ -2,8 +2,8 @@
 module sdl3;
 
 // Constants
-const WINDOWPOS_UNDEFINED_MASK = 0x1FFF0000u;
-const WINDOWPOS_CENTERED_MASK = 0x2FFF0000u;
+const WINDOWPOS_UNDEFINED_MASK = 0x1FFF0000;
+const WINDOWPOS_CENTERED_MASK = 0x2FFF0000;
 
 
 // Types
@@ -279,12 +279,12 @@ constdef SdlWindowProperties : ZString
 
 
 // Macros
-macro windowpos_undefined_display(x) => WINDOWPOS_UNDEFINED_MASK | x;
-macro windowpos_undefined()          => windowpos_undefined_display(0);
-macro windowpos_isundefined(x)       => x & 0xFFFF0000 == WINDOWPOS_UNDEFINED_MASK;
-macro windowpos_centered_display(x)  => WINDOWPOS_CENTERED_MASK | x;
-macro windowpos_centered()           => windowpos_centered_display(0);
-macro windowpos_iscentered(x)        => x & 0xFFFF0000 == WINDOWPOS_CENTERED_MASK;
+macro int windowpos_undefined_display(int x) => WINDOWPOS_UNDEFINED_MASK | x;
+macro int windowpos_undefined()              => windowpos_undefined_display(0);
+macro int windowpos_isundefined(int x)       => ((uint)x & 0xFFFF0000U) == (uint)WINDOWPOS_UNDEFINED_MASK;
+macro int windowpos_centered_display(int x)  => WINDOWPOS_CENTERED_MASK | x;
+macro int windowpos_centered()               => windowpos_centered_display(0);
+macro int windowpos_iscentered(int x)        => ((uint)x & 0xFFFF0000U) == (uint)WINDOWPOS_CENTERED_MASK;
 
 
 // Functions
