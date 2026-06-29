@@ -7,9 +7,13 @@
 			"linked-libraries" : []
 		},
 		"macos-aarch64" : {
-			"link-args" : [],
+			"link-args" : [ "-L /opt/homebrew/Cellar/glfw/3.4/lib" ],
 			"dependencies" : [],
-			"linked-libraries" : []
+			"linked-libraries" : [ 
+				"glfw3",
+				"Cocoa.framework",
+				"IOKit.framework"
+			]
 		},
 		"linux-x64" : {
 			"link-args" : [],
