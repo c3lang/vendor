@@ -13739,6 +13739,9 @@ fn int load_gl_internal(GLLoadFn load)
 	int major, minor;
 	getIntegerv((GLenum)GL_MAJOR_VERSION, &major);
 	getIntegerv((GLenum)GL_MINOR_VERSION, &minor);
+	// Treating WebGL 2.0 like OpenGL 3.3 in order to load as many of the
+	// functions defined for WebGL 2.0 as possible. Not all OpenGL 3.1 to 3.3
+	// functions are supported in WebGL 2.0, but there is overlap.
 	if (major == 3 && minor == 0)
 	{
 		getString = load("glGetString");
