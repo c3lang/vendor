@@ -82,9 +82,12 @@
 	  ]
 	},
 	"emscripten": {
-	  "linked-libraries": [
-		"raylib",
-		"raygui"
+		"link-args": [
+			"-sUSE_GLFW=3"
+		],
+		"linked-libraries": [
+			"raylib",
+			"raygui"
 	  ]
 	}
   }
