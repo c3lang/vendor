@@ -1,8 +1,6 @@
 ## c3-tracy 
 
-https://github.com/wolfpld/tracy <br>
-
-checkout tracy docs for building the server https://github.com/wolfpld/tracy/releases/latest/download/tracy.pdf
+https://github.com/wolfpld/tracy
 
 ## Usage
 
@@ -13,14 +11,24 @@ Alternatively build the client with it already enabled and replace the lib file
 
 There is a dedicated `TracyAllocator` to profile all `acquire, realloc, free` used with it.
 
-## Building
-
-the source for c3-tracy is in `lib/tracy-0.13.1`
-
-build the cmake project 
-
+## Example code
+```
+	fn void test() => @tracy("test")
+	{
+	  TracyAllocator alloc; alloc.init(tmem);
+	  Allocator allocator = &alloc;
+	
+	  for (int i = 0; i < 100; i++)
+	  {
+		    tracy::frame_mark(string::tformat_zstr("Frame %d", i));
+		    void* ptr = alloc::alloc(allocator, void*);
+	  }
+	}
+```
 ## Features
 
 | Features   | description
 | --------   | --------
 | TRACY_ENABLE | wether tracy is enabled. When disabled all calls are ignored
+| TRACY_FIBERS | 
+| TRACY_ON_DEMAND |
