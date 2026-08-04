@@ -12,11 +12,6 @@ macro int gl_version() @public
 module opengl::gl;
 
 /* Global type definitions */
-typedef GLenum = uint;
-typedef GLbitfield = uint;
-typedef GLclampx = int;
-typedef GLclampf = float;
-typedef GLclampd = double;
 typedef GLsync = uptr;
 typedef GLeglClientBufferEXT = void*;
 typedef GLeglImageOES = void*;
@@ -27,14 +22,19 @@ alias GLshort = short;
 alias GLushort = ushort;
 alias GLint = int;
 alias GLuint = uint;
+alias GLenum = uint;
+alias GLbitfield = uint;
 alias GLfloat = float;
+alias GLclampf = float;
 alias GLdouble = double;
+alias GLclampd = double;
 alias GLchar = char;
 alias GLcharARB = char;
 alias GLboolean = char;
 alias GLhalf = ushort;
 alias GLhalfARB = ushort;
 alias GLfixed = int;
+alias GLclampx = int;
 alias GLintptr = iptr;
 alias GLintptrARB = iptr;
 alias GLsizeiptr = sz;
