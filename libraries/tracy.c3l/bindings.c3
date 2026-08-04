@@ -31,7 +31,7 @@ struct ZoneContext
 {
 	uint id;
 	int active;
-	ulong connectionId @if($feat(TRACY_ON_DEMAND));
+	ulong connectionId @feat(TRACY_ON_DEMAND);
 }
 
 struct GpuTimeData
