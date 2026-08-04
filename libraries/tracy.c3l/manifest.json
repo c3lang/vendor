@@ -1,0 +1,19 @@
+{
+  "provides" : "tracy",
+  "targets" : {
+    "windows-x64" : {
+    		"wincrt": "static",
+        "linked-libraries" : ["TracyClient"]
+    	},
+    "macos-x64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : ["TracyClient"]
+		},
+		"linux-x64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : ["TracyClient"]
+		}
+  }
+}
