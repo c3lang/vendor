@@ -9,7 +9,7 @@ Checkout the tracy docs for more information on cmake options.
 For short lived programs, add the option `-DTRACY_NO_EXIT=ON`. Alternatively that can be set via env to dynamically change it.
 
 ```
-git clone https://github.com/wolfpld/tracy
+git clone -b v0.13.1 --depth 1 https://github.com/wolfpld/tracy
 cd tracy
 cmake -B build -DTRACY_ENABLE=ON -DTRACY_STATIC=ON
 ```
