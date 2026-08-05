@@ -2,17 +2,26 @@
 
 https://github.com/wolfpld/tracy
 
-## Usage
+## Building
 
-For short lived programs, set the environment variable `TRACY_NO_EXIT` which means tracy is going to freeze the program until a connection is established.
-Alternatively build the client with it already enabled and replace the lib file
+Checkout the tracy docs for more information on cmake options.
+
+For short lived programs, add the option `-DTRACY_NO_EXIT=ON`. Alternatively that can be set via env to dynamically change it.
+
+```
+git clone https://github.com/wolfpld/tracy
+cd tracy
+cmake -B build -DTRACY_ENABLE=ON -DTRACY_STATIC=ON
+```
+
+NOTE: you should have a file named something.something under some/path, you can add the search path with `-L <library-dir>` or in your project.json with `dependency-search-paths`
 
 ## Profiling allocations
 
 There is a dedicated `TracyAllocator` to profile all `acquire, realloc, free` used with it.
 
 ## Example code
-```
+```C3
 	fn void test() => @tracy("test")
 	{
 	  TracyAllocator alloc; alloc.init(tmem);
@@ -25,10 +34,3 @@ There is a dedicated `TracyAllocator` to profile all `acquire, realloc, free` us
 	  }
 	}
 ```
-## Features
-
-| Features   | description
-| --------   | --------
-| TRACY_ENABLE | wether tracy is enabled. When disabled all calls are ignored
-| TRACY_FIBERS | 
-| TRACY_ON_DEMAND |
