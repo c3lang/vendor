@@ -8,16 +8,6 @@ constdef PlotFormatEnum
 	TRACY_PLOT_FORMAT_WATT
 }
 
-constdef MessageSeverity
-{
-	TRACY_MESSAGE_SEVERITY_TRACE,   // Broadly track variable states and events in the software program.
-	TRACY_MESSAGE_SEVERITY_DEBUG,   // Describes variable states and details about specific internal events in the software, that are useful for investigations.
-	TRACY_MESSAGE_SEVERITY_INFO,    // Describes normal events, which inform on the expected progress and state of your software.
-	TRACY_MESSAGE_SEVERITY_WARNING, // Describes potentially dangerous situations caused by unexpected events and states.
-	TRACY_MESSAGE_SEVERITY_ERROR,   // Describes the occurance of unexpected behavior. Does not interrupt the execution of the software.
-	TRACY_MESSAGE_SEVERITY_FATAL,   // Describes a critical event that will lead to a software failure/crash.
-}
-
 struct SourceLocationData
 {
 	ZString name;
