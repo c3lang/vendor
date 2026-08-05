@@ -81,6 +81,10 @@ struct GpuTimeSyncData
 	char context;
 }
 
+extern fn void startup_profiler() @cname("___tracy_startup_profiler");
+extern fn void shutdown_profiler() @cname("___tracy_shutdown_profiler");
+extern fn int profiler_started() @cname("___tracy_profiler_started");
+
 extern fn void set_thread_name(ZString name) @cname("___tracy_set_thread_name");
 
 extern fn ulong alloc_srcloc(uint line, ZString source, usz sourceSz, ZString function, usz functionSz, uint color) @cname("___tracy_alloc_srcloc");
