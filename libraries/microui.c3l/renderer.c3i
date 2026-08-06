@@ -1,0 +1,12 @@
+module renderer::r;
+import microui::mu;
+
+extern fn void init() @cname("r_init");
+extern fn void draw_rect(MuRect rect, MuColor color) @cname("r_draw_rect");
+extern fn void draw_text(char* text, MuVec2 pos, MuColor color) @cname("r_draw_text");
+extern fn void draw_icon(int id, MuRect rect, MuColor color) @cname("r_draw_icon");
+extern fn int get_text_width(char* text, int len) @cname("r_get_text_width");
+extern fn int get_text_height() @cname("r_get_text_height");
+extern fn void set_clip_rect(MuRect rect) @cname("r_set_clip_rect");
+extern fn void clear(MuColor color) @cname("r_clear");
+extern fn void present() @cname("r_present");
