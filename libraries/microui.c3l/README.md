@@ -1,11 +1,10 @@
 # ![microui](https://user-images.githubusercontent.com/3920290/75171571-be83c500-5723-11ea-8a50-504cc2ae1109.png)
-A *tiny*, portable, immediate-mode UI library bindings written in C3.
+C3 bindings for the *tiny*, portable, immediate-mode UI library — **microui**.
 
 ## Features
-* Tiny: around `1100 sloc` of C3
 * Works within a fixed-sized memory region: no additional memory is allocated
 * Built-in controls: window, scrollable panel, button, slider, textbox, label,
-  checkbox, wordwrapped text
+  checkbox, word-wrapped text
 * Works with any rendering system that can draw rectangles and text
 * Designed to allow the user to easily add custom controls
 * Simple layout system
@@ -41,4 +40,4 @@ if (mu::begin_window(ctx, "My Window", mu::rect(10, 10, 140, 86)))
 
 ## Notes
 The library expects the user to provide input and handle the resultant drawing
-commands, it does not do any drawing itself.
+commands; it does not do any drawing itself.
