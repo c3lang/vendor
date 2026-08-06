@@ -42,5 +42,3 @@ if (mu::begin_window(ctx, "My Window", mu::rect(10, 10, 140, 86)))
 ## Notes
 The library expects the user to provide input and handle the resultant drawing
 commands, it does not do any drawing itself.
-
-The user can do so by utilizing the functions from renderer.c3i for rendering the drawings of the components such as text, windows, buttons etc. The functions in microui.c3i provide the necessary functionalities to the components.
