@@ -18,7 +18,7 @@ cmake -B build -DTRACY_ENABLE=ON -DTRACY_STATIC=ON -DTRACY_MANUAL_LIFETIME=ON
 
 NOTE: you should have a file named something.something under some/path, you can add the search path with `-L <library-dir>` or in your project.json with `dependency-search-paths`
 
-When compiling with `-DTRACY_ON_DEMAND` set `TRACY_ON_DEMAND` as a feature, same for `-DTRACY_FIBER` set `TRACY_FIBER`
+When compiling with `-DTRACY_ON_DEMAND` set `TRACY_ON_DEMAND` as a feature
 
 ## Profiling allocations
 

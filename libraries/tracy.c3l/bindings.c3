@@ -155,7 +155,5 @@ extern fn void end_sampling_profiling() @cname("___tracy_end_sampling_profiling"
 
 extern fn long get_time() @cname("___tracy_get_time");
 
-module tracy @feat(TRACY_FIBERS);
-
 extern fn void fiber_enter(ZString fiber) @cname("___tracy_fiber_enter");
 extern fn void fiber_leave() @cname("___tracy_fiber_leave");
