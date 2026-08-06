@@ -14,8 +14,8 @@
     },
     "linux-aarch64" : {
       "link-args" : [],
-      "dependencies" : [ "sdl2" ],
-      "linked-libraries" : [ "SDL2", "SDL2main" ]
+      "dependencies" : [],
+      "linked-libraries" : [ "microui" ]
     },
     "linux-riscv32" : {
       "link-args" : [],
@@ -34,18 +34,18 @@
     },
     "linux-x64" : {
       "link-args" : [],
-      "dependencies" : [ "sdl2" ],
-      "linked-libraries" : [ "SDL2", "SDL2main" ]
+      "dependencies" : [],
+      "linked-libraries" : [ "microui" ]
     },
     "macos-aarch64" : {
       "link-args" : [],
-      "dependencies" : [ "sdl2" ],
-      "linked-libraries" : [ "SDL2", "SDL2main" ]
+      "dependencies" : [],
+      "linked-libraries" : [ "microui" ]
     },
     "macos-x64" : {
       "link-args" : [],
-      "dependencies" : [ "sdl2" ],
-      "linked-libraries" : [ "SDL2", "SDL2main" ]
+      "dependencies" : [],
+      "linked-libraries" : [ "microui" ]
     },
     "netbsd-aarch64" : {
       "link-args" : [],
@@ -74,13 +74,13 @@
     },
     "windows-aarch64" : {
       "link-args" : [],
-      "dependencies" : [ "sdl2" ],
-      "linked-libraries" : [ "SDL2", "SDL2main" ]
+      "dependencies" : [],
+      "linked-libraries" : [ "microui" ]
     },
     "windows-x64" : {
       "link-args" : [],
-      "dependencies" : [ "sdl2" ],
-      "linked-libraries" : [ "SDL2", "SDL2main" ]
+      "dependencies" : [],
+      "linked-libraries" : [ "microui" ]
     }
   }
 }
