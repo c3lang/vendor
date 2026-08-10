@@ -16,7 +16,15 @@
 			"dependencies" : [],
 			"linked-libraries" : ["lz4"]
 		},
+		"linux-aarch64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : ["lz4"]
+		},
 		"windows-x64" : {
+			"linked-libraries" : ["lz4"]
+		},
+		"windows-aarch64" : {
 			"linked-libraries" : ["lz4"]
 		}
 	}

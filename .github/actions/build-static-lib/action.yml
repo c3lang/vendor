@@ -8,14 +8,14 @@ inputs:
   c3l: { required: true }
   cmake_flags: { required: false, default: "" }
   src_path: { required: false, default: "." }
-  # Downloadable Binary Options
-  linux_url: { required: false }
-  linux_lib: { required: false }
-  mac_url: { required: false }
-  mac_lib: { required: false }
-  win_url: { required: false }
-  win_lib: { required: false }
-  os: { required: true }
+  # C3 target folder, e.g. linux-x64, macos-aarch64, windows-x64
+  target: { required: true }
+  # Optional prebuilt binary for this exact target
+  bin_url: { required: false }
+  bin_lib: { required: false }
+  # macOS cross-compile / lipo thinning (e.g. x86_64 or arm64)
+  cmake_osx_arch: { required: false, default: "" }
+  lipo_arch: { required: false, default: "" }
   # Post-Processing Options
   after_build: { required: false, default: "" }
 
@@ -38,30 +38,14 @@ runs:
         HOOK_SCRIPT: ${{ inputs.after_build }}
       run: |
         set -x
-        if [ "${{ runner.os }}" == "Windows" ]; then
-          TARGET_DIR="windows-x64"
-        elif [[ "${{ inputs.os }}" == "macos-latest" ]]; then
-          TARGET_DIR="macos-aarch64"
-        else
-          TARGET_DIR="linux-x64"
-        fi
-
+        TARGET_DIR="${{ inputs.target }}"
         TARGET_BASE="upload_stage/libraries/${{ inputs.c3l }}"
         mkdir -p "$TARGET_BASE/$TARGET_DIR"
 
-        # Handle pre-compiled binaries if URLs are provided
-        BIN_URL=""
-        BIN_LIB=""
-        if [ "${{ runner.os }}" == "Windows" ]; then
-          BIN_URL="${{ inputs.win_url }}"
-          BIN_LIB="${{ inputs.win_lib }}"
-        elif [[ "${{ inputs.os }}" == "macos-latest" ]]; then
-          BIN_URL="${{ inputs.mac_url }}"
-          BIN_LIB="${{ inputs.mac_lib }}"
-        else
-          BIN_URL="${{ inputs.linux_url }}"
-          BIN_LIB="${{ inputs.linux_lib }}"
-        fi
+        BIN_URL="${{ inputs.bin_url }}"
+        BIN_LIB="${{ inputs.bin_lib }}"
+        CMAKE_OSX_ARCH="${{ inputs.cmake_osx_arch }}"
+        LIPO_ARCH="${{ inputs.lipo_arch }}"
 
         if [ -n "$BIN_URL" ] && [ -n "$BIN_LIB" ]; then
           ARCHIVE=$(basename "$BIN_URL")
@@ -69,8 +53,25 @@ runs:
           if [[ "$ARCHIVE" == *.tar.gz ]]; then
             tar -xzf "$ARCHIVE" "$BIN_LIB"
             cp "$BIN_LIB" "$TARGET_BASE/$TARGET_DIR/"
+            DEST="$TARGET_BASE/$TARGET_DIR/$(basename "$BIN_LIB")"
           else
             unzip -j "$ARCHIVE" "$BIN_LIB" -d "$TARGET_BASE/$TARGET_DIR/"
+            DEST="$TARGET_BASE/$TARGET_DIR/$(basename "$BIN_LIB")"
+          fi
+
+          if [ -n "$LIPO_ARCH" ] && [ -f "$DEST" ]; then
+            ARCHES=$(lipo -archs "$DEST" 2>/dev/null || true)
+            if [ -n "$ARCHES" ]; then
+              if ! echo " $ARCHES " | grep -q " $LIPO_ARCH "; then
+                echo "ERROR: $DEST does not contain architecture $LIPO_ARCH (has: $ARCHES)"
+                exit 1
+              fi
+              COUNT=$(echo "$ARCHES" | wc -w | tr -d ' ')
+              if [ "$COUNT" -gt 1 ]; then
+                lipo -thin "$LIPO_ARCH" "$DEST" -output "$DEST.thin"
+                mv "$DEST.thin" "$DEST"
+              fi
+            fi
           fi
         else
           # Otherwise build from source
@@ -79,7 +80,12 @@ runs:
           git submodule update --init --recursive
           mkdir -p c3_build_temp && cd c3_build_temp
 
-          cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release ${{ inputs.cmake_flags }} "../${{ inputs.src_path }}"
+          OSX_ARCH_FLAG=""
+          if [ -n "$CMAKE_OSX_ARCH" ]; then
+            OSX_ARCH_FLAG="-DCMAKE_OSX_ARCHITECTURES=$CMAKE_OSX_ARCH"
+          fi
+
+          cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release $OSX_ARCH_FLAG ${{ inputs.cmake_flags }} "../${{ inputs.src_path }}"
           cmake --build . --config Release --parallel 4
 
           find . -type f \( -name "*.a" -o -name "*.lib" \) -exec cp {} "../../$TARGET_BASE/$TARGET_DIR/" \;
@@ -95,5 +101,5 @@ runs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v6
       with:
-        name: ${{ inputs.name }}-statics-${{ inputs.os }}
+        name: ${{ inputs.name }}-statics-${{ inputs.target }}
         path: upload_stage/

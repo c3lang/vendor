@@ -15,6 +15,9 @@
 		},
 		"windows-x64" : {
 			"linked-libraries" : ["tigr", "opengl32", "gdi32"]
+		},
+		"windows-aarch64" : {
+			"linked-libraries" : ["tigr", "opengl32", "gdi32"]
 		}
 	}
 }

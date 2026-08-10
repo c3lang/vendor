@@ -21,12 +21,20 @@
 			"dependencies" : [],
 			"linked-libraries" : [ "glfw" ]
 		},
+		"linux-aarch64" : {
+			"link-args" : [],
+			"dependencies" : [],
+			"linked-libraries" : [ "glfw" ]
+		},
 		"freebsd-x64" : {
 			"link-args" : [ "-L /usr/local/lib" ],
 			"dependencies" : [],
 			"linked-libraries" : [ "glfw" ]
 		},
 		"windows-x64" : {
+			"linked-libraries" : []
+		},
+		"windows-aarch64" : {
 			"linked-libraries" : []
 		}
 	}

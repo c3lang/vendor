@@ -18,6 +18,9 @@
 		},
 		"windows-x64" : {
 			"linked-libraries" : ["tinyfiledialogs", "comdlg32", "ole32"]
+		},
+		"windows-aarch64" : {
+			"linked-libraries" : ["tinyfiledialogs", "comdlg32", "ole32"]
 		}
 	}
 }
