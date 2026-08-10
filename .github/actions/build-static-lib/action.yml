@@ -50,48 +50,47 @@ runs:
 
         TARGET_BASE="$GITHUB_WORKSPACE/upload_stage/libraries/${{ inputs.c3l }}"
         mkdir -p "$TARGET_BASE/$TARGET_DIR"
-        IS_MAC=0; [[ "${{ inputs.os }}" == "macos-latest" ]] && IS_MAC=1
-
-        run_hook() {
-          [ -z "$HOOK_SCRIPT" ] && return
-          export TARGET_DIR="$1"
-          ( cd "$GITHUB_WORKSPACE" && printf "%s" "$HOOK_SCRIPT" > run_hook.sh && bash run_hook.sh )
-        }
-
-        fetch_lib() {
-          local url="$1" lib="$2" dest="$3" archive
-          archive=$(basename "$url")
-          curl -fsSL -o "$archive" "$url"
-          mkdir -p "$TARGET_BASE/$dest"
-          if [[ "$archive" == *.tar.gz ]]; then
-            tar -xzf "$archive" "$lib" && cp "$lib" "$TARGET_BASE/$dest/"
-          else
-            unzip -j "$archive" "$lib" -d "$TARGET_BASE/$dest/"
-          fi
-        }
 
         # Handle pre-compiled binaries if URLs are provided
+        BIN_URL=""
+        BIN_LIB=""
         if [ "${{ runner.os }}" == "Windows" ]; then
-          BIN_URL="${{ inputs.win_url }}"; BIN_LIB="${{ inputs.win_lib }}"
-        elif [ "$IS_MAC" = 1 ]; then
-          BIN_URL="${{ inputs.mac_url }}"; BIN_LIB="${{ inputs.mac_lib }}"
+          BIN_URL="${{ inputs.win_url }}"
+          BIN_LIB="${{ inputs.win_lib }}"
+        elif [[ "${{ inputs.os }}" == "macos-latest" ]]; then
+          BIN_URL="${{ inputs.mac_url }}"
+          BIN_LIB="${{ inputs.mac_lib }}"
         else
-          BIN_URL="${{ inputs.linux_url }}"; BIN_LIB="${{ inputs.linux_lib }}"
+          BIN_URL="${{ inputs.linux_url }}"
+          BIN_LIB="${{ inputs.linux_lib }}"
         fi
 
         if [ -n "$BIN_URL" ] && [ -n "$BIN_LIB" ]; then
-          fetch_lib "$BIN_URL" "$BIN_LIB" "$TARGET_DIR"
-          if [ "$IS_MAC" = 1 ]; then
+          ARCHIVE=$(basename "$BIN_URL")
+          curl -fsSL -o "$ARCHIVE" "$BIN_URL"
+          if [[ "$ARCHIVE" == *.tar.gz ]]; then
+            tar -xzf "$ARCHIVE" "$BIN_LIB"
+            cp "$BIN_LIB" "$TARGET_BASE/$TARGET_DIR/"
+          else
+            unzip -j "$ARCHIVE" "$BIN_LIB" -d "$TARGET_BASE/$TARGET_DIR/"
+          fi
+          if [[ "${{ inputs.os }}" == "macos-latest" ]]; then
+            mkdir -p "$TARGET_BASE/macos-x64"
             if [ -n "${{ inputs.mac_x64_url }}" ]; then
-              fetch_lib "${{ inputs.mac_x64_url }}" "${{ inputs.mac_x64_lib }}" "macos-x64"
+              ARCHIVE=$(basename "${{ inputs.mac_x64_url }}")
+              curl -fsSL -o "$ARCHIVE" "${{ inputs.mac_x64_url }}"
+              if [[ "$ARCHIVE" == *.tar.gz ]]; then
+                tar -xzf "$ARCHIVE" "${{ inputs.mac_x64_lib }}"
+                cp "${{ inputs.mac_x64_lib }}" "$TARGET_BASE/macos-x64/"
+              else
+                unzip -j "$ARCHIVE" "${{ inputs.mac_x64_lib }}" -d "$TARGET_BASE/macos-x64/"
+              fi
             else
-              mkdir -p "$TARGET_BASE/macos-x64"
               cp "$TARGET_BASE/$TARGET_DIR/$(basename "$BIN_LIB")" "$TARGET_BASE/macos-x64/"
             fi
           fi
-          run_hook "$TARGET_DIR"
         else
-          # Otherwise build from source
+          # Otherwise build from source (macOS: once per arch)
           git clone ${{ inputs.repo }} -b ${{ inputs.tag }} build_src
           cd build_src
           git submodule update --init --recursive
@@ -99,7 +98,6 @@ runs:
           build_one() {
             local dest="$1" arch="${2:-}" flags
             flags="${{ inputs.cmake_flags }}"
-            # Point dependent builds (sdl3_image/ttf) at the matching arch install
             flags="${flags//sdl3_install/sdl3_install/$dest}"
             rm -rf c3_build_temp && mkdir c3_build_temp && cd c3_build_temp
             if [ -n "$arch" ]; then
@@ -111,16 +109,25 @@ runs:
             mkdir -p "$TARGET_BASE/$dest"
             find . -type f \( -name "*.a" -o -name "*.lib" \) -exec cp {} "$TARGET_BASE/$dest/" \;
             cd ..
-            run_hook "$dest"
+            if [ -n "$HOOK_SCRIPT" ]; then
+              export TARGET_DIR="$dest"
+              ( cd "$GITHUB_WORKSPACE" && printf "%s" "$HOOK_SCRIPT" > run_hook.sh && bash run_hook.sh )
+            fi
           }
 
-          if [ "$IS_MAC" = 1 ]; then
+          if [[ "${{ inputs.os }}" == "macos-latest" ]]; then
             build_one macos-aarch64 arm64
             build_one macos-x64 x86_64
           else
             build_one "$TARGET_DIR"
           fi
           cd ..
+        fi
+
+        # After Build Hook (prebuilt path; source builds run the hook per-arch above)
+        if [ -n "$BIN_URL" ] && [ -n "$HOOK_SCRIPT" ]; then
+           printf "%s" "$HOOK_SCRIPT" > run_hook.sh
+           bash run_hook.sh
         fi
 
     - name: Upload Artifact
