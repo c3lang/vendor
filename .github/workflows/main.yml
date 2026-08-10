@@ -20,22 +20,7 @@ jobs:
   build-box2d:
     strategy:
       matrix:
-        include: &dual-arch-include
-          - os: ubuntu-latest
-            target: linux-x64
-          - os: ubuntu-24.04-arm
-            target: linux-aarch64
-          - os: macos-latest
-            target: macos-aarch64
-            lipo_arch: arm64
-          - os: macos-latest
-            target: macos-x64
-            cmake_osx_arch: x86_64
-            lipo_arch: x86_64
-          - os: windows-latest
-            target: windows-x64
-          - os: windows-11-arm
-            target: windows-aarch64
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -47,13 +32,12 @@ jobs:
           tag: v3.1.1
           c3l: box2d.c3l
           cmake_flags: "-DBOX2D_SAMPLES=OFF -DBOX2D_UNIT_TESTS=OFF"
-          target: ${{ matrix.target }}
-          cmake_osx_arch: ${{ matrix.cmake_osx_arch }}
+          os: ${{ matrix.os }}
 
   build-sdl2:
     strategy:
       matrix:
-        include: *dual-arch-include
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -65,8 +49,7 @@ jobs:
           tag: release-2.32.10
           c3l: sdl2.c3l
           cmake_flags: "-DSDL_STATIC=ON -DSDL_SHARED=OFF -DSDL_TESTS=OFF -DSDL_DISABLE_INSTALL=OFF"
-          target: ${{ matrix.target }}
-          cmake_osx_arch: ${{ matrix.cmake_osx_arch }}
+          os: ${{ matrix.os }}
           after_build: |
              # Normalize SDL2-static.lib -> SDL2.lib on Windows
              if [ "${{ runner.os }}" == "Windows" ]; then
@@ -76,7 +59,7 @@ jobs:
   build-sdl3:
     strategy:
       matrix:
-        include: *dual-arch-include
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -88,8 +71,7 @@ jobs:
           tag: release-3.4.2
           c3l: sdl3.c3l
           cmake_flags: "-DSDL_TESTS=OFF -DSDL_DISABLE_INSTALL=OFF"
-          target: ${{ matrix.target }}
-          cmake_osx_arch: ${{ matrix.cmake_osx_arch }}
+          os: ${{ matrix.os }}
           after_build: |
              # Normalize SDL3-static.lib -> SDL3.lib on Windows
              if [ "${{ runner.os }}" == "Windows" ]; then
@@ -99,21 +81,21 @@ jobs:
       - name: Upload sdl3 Installation Artifact
         uses: actions/upload-artifact@v6
         with:
-          name: sdl3-install-${{ matrix.target }}
+          name: sdl3-install-${{ matrix.os }}
           path: sdl3_install/
 
   build-sdl3_image:
     needs: [build-sdl3]
     strategy:
       matrix:
-        include: *dual-arch-include
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
       - name: Download sdl3 Installation
         uses: actions/download-artifact@v8
         with:
-          name: sdl3-install-${{ matrix.target }}
+          name: sdl3-install-${{ matrix.os }}
           path: sdl3_install
       - name: Build sdl3_image
         uses: ./.github/actions/build-static-lib
@@ -123,8 +105,7 @@ jobs:
           tag: release-3.4.0
           c3l: sdl3_image.c3l
           cmake_flags: "-DSDLIMAGE_SAMPLES=OFF -DSDLIMAGE_TESTS=OFF -DSDLIMAGE_AVIF=OFF -DSDLIMAGE_VENDORED=ON -DCMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/sdl3_install"
-          target: ${{ matrix.target }}
-          cmake_osx_arch: ${{ matrix.cmake_osx_arch }}
+          os: ${{ matrix.os }}
           after_build: |
              # Normalize SDL3_image-static.lib -> SDL3_image.lib on Windows
              if [ "${{ runner.os }}" == "Windows" ]; then
@@ -135,14 +116,14 @@ jobs:
     needs: [build-sdl3]
     strategy:
       matrix:
-        include: *dual-arch-include
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
       - name: Download sdl3 Installation
         uses: actions/download-artifact@v8
         with:
-          name: sdl3-install-${{ matrix.target }}
+          name: sdl3-install-${{ matrix.os }}
           path: sdl3_install
       - name: Build sdl3_ttf
         uses: ./.github/actions/build-static-lib
@@ -152,8 +133,7 @@ jobs:
           tag: release-3.2.2
           c3l: sdl3_ttf.c3l
           cmake_flags: "-DSDLTTF_SAMPLES=OFF -DSDLTTF_VENDORED=ON -DCMAKE_PREFIX_PATH=$GITHUB_WORKSPACE/sdl3_install"
-          target: ${{ matrix.target }}
-          cmake_osx_arch: ${{ matrix.cmake_osx_arch }}
+          os: ${{ matrix.os }}
           after_build: |
              # Normalize SDL3_ttf-static.lib -> SDL3_ttf.lib on Windows
              if [ "${{ runner.os }}" == "Windows" ]; then
@@ -163,7 +143,7 @@ jobs:
   build-lz4:
     strategy:
       matrix:
-        include: *dual-arch-include
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -176,13 +156,12 @@ jobs:
           c3l: lz4.c3l
           cmake_flags: "-DLZ4_BUILD_CLI=OFF -DLZ4_BUILD_LEGACY_LZ4C=OFF"
           src_path: "build/cmake"
-          target: ${{ matrix.target }}
-          cmake_osx_arch: ${{ matrix.cmake_osx_arch }}
+          os: ${{ matrix.os }}
 
   build-tree_sitter:
     strategy:
       matrix:
-        include: *dual-arch-include
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -194,34 +173,12 @@ jobs:
           tag: v0.26.7
           c3l: tree_sitter.c3l
           cmake_flags: "-DBUILD_SHARED_LIBS=OFF"
-          target: ${{ matrix.target }}
-          cmake_osx_arch: ${{ matrix.cmake_osx_arch }}
+          os: ${{ matrix.os }}
 
   build-glfw34:
     strategy:
       matrix:
-        include:
-          - os: ubuntu-latest
-            target: linux-x64
-          - os: ubuntu-24.04-arm
-            target: linux-aarch64
-          - os: macos-latest
-            target: macos-aarch64
-            lipo_arch: arm64
-            bin_url: "https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.bin.MACOS.zip"
-            bin_lib: "glfw-3.4.bin.MACOS/lib-universal/libglfw3.a"
-          - os: macos-latest
-            target: macos-x64
-            cmake_osx_arch: x86_64
-            lipo_arch: x86_64
-            bin_url: "https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.bin.MACOS.zip"
-            bin_lib: "glfw-3.4.bin.MACOS/lib-universal/libglfw3.a"
-          - os: windows-latest
-            target: windows-x64
-            bin_url: "https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.bin.WIN64.zip"
-            bin_lib: "glfw-3.4.bin.WIN64/lib-vc2022/glfw3.lib"
-          - os: windows-11-arm
-            target: windows-aarch64
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -233,11 +190,11 @@ jobs:
           tag: "3.4"
           c3l: glfw34.c3l
           cmake_flags: "-DGLFW_BUILD_EXAMPLES=OFF -DGLFW_BUILD_TESTS=OFF -DGLFW_BUILD_DOCS=OFF"
-          target: ${{ matrix.target }}
-          cmake_osx_arch: ${{ matrix.cmake_osx_arch }}
-          lipo_arch: ${{ matrix.lipo_arch }}
-          bin_url: ${{ matrix.bin_url }}
-          bin_lib: ${{ matrix.bin_lib }}
+          mac_url: "https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.bin.MACOS.zip"
+          mac_lib: "glfw-3.4.bin.MACOS/lib-universal/libglfw3.a"
+          win_url: "https://github.com/glfw/glfw/releases/download/3.4/glfw-3.4.bin.WIN64.zip"
+          win_lib: "glfw-3.4.bin.WIN64/lib-vc2022/glfw3.lib"
+          os: ${{ matrix.os }}
           after_build: |
              # Normalize libglfw3 -> libglfw for C3
              find "upload_stage/" -type f \( -name "libglfw3.a" -o -name "glfw3.lib" \) | while read f; do
@@ -250,7 +207,7 @@ jobs:
   build-ktx:
     strategy:
       matrix:
-        include: *dual-arch-include
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -261,41 +218,13 @@ jobs:
           repo: https://github.com/KhronosGroup/KTX-Software.git
           tag: v4.4.2
           c3l: ktx.c3l
-          cmake_flags: "-DKTX_FEATURE_TESTS=OFF"
-          target: ${{ matrix.target }}
-          cmake_osx_arch: ${{ matrix.cmake_osx_arch }}
+          cmake_flags: "-DKTX_FEATURE_TESTS=OFF -DKTX_FEATURE_TOOLS=OFF -DBASISU_SUPPORT_SSE=OFF"
+          os: ${{ matrix.os }}
 
   build-raylib6:
     strategy:
       matrix:
-        include:
-          - os: ubuntu-latest
-            target: linux-x64
-            bin_url: "https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_linux_amd64.tar.gz"
-            bin_lib: "raylib-6.0_linux_amd64/lib/libraylib.a"
-          - os: ubuntu-24.04-arm
-            target: linux-aarch64
-            bin_url: "https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_linux_arm64.tar.gz"
-            bin_lib: "raylib-6.0_linux_arm64/lib/libraylib.a"
-          - os: macos-latest
-            target: macos-aarch64
-            lipo_arch: arm64
-            bin_url: "https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_macos.tar.gz"
-            bin_lib: "raylib-6.0_macos/lib/libraylib.a"
-          - os: macos-latest
-            target: macos-x64
-            cmake_osx_arch: x86_64
-            lipo_arch: x86_64
-            bin_url: "https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_macos.tar.gz"
-            bin_lib: "raylib-6.0_macos/lib/libraylib.a"
-          - os: windows-latest
-            target: windows-x64
-            bin_url: "https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_win64_msvc16.zip"
-            bin_lib: "raylib-6.0_win64_msvc16/lib/raylib.lib"
-          - os: windows-11-arm
-            target: windows-aarch64
-            bin_url: "https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_winarm64_msvc16.zip"
-            bin_lib: "raylib-6.0_winarm64_msvc16/lib/raylib.lib"
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -303,10 +232,10 @@ jobs:
         if: runner.os == 'Windows'
         uses: TheMrMilchmann/setup-msvc-dev@v4
         with:
-          arch: ${{ matrix.target == 'windows-aarch64' && 'arm64' || 'x64' }}
+          arch: x64
 
       - name: Setup emsdk
-        if: matrix.target == 'linux-x64'
+        if: runner.os == 'Linux'
         uses: emscripten-core/setup-emsdk@v16
         with:
           actions-cache-folder: 'emsdk-cache'
@@ -317,16 +246,23 @@ jobs:
           name: raylib6
           tag: "6"
           c3l: raylib6.c3l
-          target: ${{ matrix.target }}
-          lipo_arch: ${{ matrix.lipo_arch }}
-          bin_url: ${{ matrix.bin_url }}
-          bin_lib: ${{ matrix.bin_lib }}
+          linux_url: "https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_linux_amd64.tar.gz"
+          linux_lib: "raylib-6.0_linux_amd64/lib/libraylib.a"
+          mac_url: "https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_macos.tar.gz"
+          mac_lib: "raylib-6.0_macos/lib/libraylib.a"
+          win_url: "https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_win64_msvc16.zip"
+          win_lib: "raylib-6.0_win64_msvc16/lib/raylib.lib"
+          os: ${{ matrix.os }}
           after_build: |
             set -x
-            TARGET_DIR="${{ matrix.target }}"
-            if [[ "$TARGET_DIR" == windows-* ]]; then
+            if [ "${{ runner.os }}" == "Windows" ]; then
+              TARGET_DIR="windows-x64"
               LIB_NAME="raygui.lib"
+            elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+              TARGET_DIR="macos-aarch64"
+              LIB_NAME="libraygui.a"
             else
+              TARGET_DIR="linux-x64"
               LIB_NAME="libraygui.a"
             fi
 
@@ -349,17 +285,21 @@ jobs:
               export MSYS2_ARG_CONV_EXCL="*"
               cl -c -O2 -I. -Ibuild_raygui/src raygui_impl.c
               lib raygui_impl.obj -out:"$LIB_NAME"
-            elif [ -n "${{ matrix.cmake_osx_arch }}" ]; then
-              clang -arch ${{ matrix.cmake_osx_arch }} -c -O2 -I"." -I"build_raygui/src" raygui_impl.c -o raygui_impl.o
-              ar rcs "$LIB_NAME" raygui_impl.o
             else
               gcc -c -O2 -I"." -I"build_raygui/src" raygui_impl.c -o raygui_impl.o
               ar rcs "$LIB_NAME" raygui_impl.o
             fi
             cp "$LIB_NAME" "$TARGET_BASE/$TARGET_DIR/"
 
+            if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+              clang -arch x86_64 -c -O2 -I"." -I"build_raygui/src" raygui_impl.c -o raygui_impl_x64.o
+              ar rcs "$LIB_NAME" raygui_impl_x64.o
+              mkdir -p "$TARGET_BASE/macos-x64"
+              cp "$LIB_NAME" "$TARGET_BASE/macos-x64/"
+            fi
+
             # Fetch the WebAssembly build and install to emscripten & wasm-32
-            if [[ "${{ matrix.target }}" == "linux-x64" ]]; then
+            if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
               curl -fsSL -o raylib_webassembly.zip https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_webassembly.zip
               unzip -j raylib_webassembly.zip raylib-6.0_webassembly/lib/libraylib.web.a
               mkdir -p "$TARGET_BASE/emscripten" "$TARGET_BASE/wasm-32"
@@ -382,26 +322,7 @@ jobs:
   build-raylib55:
     strategy:
       matrix:
-        include:
-          - os: ubuntu-latest
-            target: linux-x64
-            bin_url: "https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_linux_amd64.tar.gz"
-            bin_lib: "raylib-5.5_linux_amd64/lib/libraylib.a"
-          - os: macos-latest
-            target: macos-aarch64
-            lipo_arch: arm64
-            bin_url: "https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_macos.tar.gz"
-            bin_lib: "raylib-5.5_macos/lib/libraylib.a"
-          - os: macos-latest
-            target: macos-x64
-            cmake_osx_arch: x86_64
-            lipo_arch: x86_64
-            bin_url: "https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_macos.tar.gz"
-            bin_lib: "raylib-5.5_macos/lib/libraylib.a"
-          - os: windows-latest
-            target: windows-x64
-            bin_url: "https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_win64_msvc16.zip"
-            bin_lib: "raylib-5.5_win64_msvc16/lib/raylib.lib"
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -411,34 +332,18 @@ jobs:
           name: raylib55
           tag: "5.5"
           c3l: raylib55.c3l
-          target: ${{ matrix.target }}
-          lipo_arch: ${{ matrix.lipo_arch }}
-          bin_url: ${{ matrix.bin_url }}
-          bin_lib: ${{ matrix.bin_lib }}
+          linux_url: "https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_linux_amd64.tar.gz"
+          linux_lib: "raylib-5.5_linux_amd64/lib/libraylib.a"
+          mac_url: "https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_macos.tar.gz"
+          mac_lib: "raylib-5.5_macos/lib/libraylib.a"
+          win_url: "https://github.com/raysan5/raylib/releases/download/5.5/raylib-5.5_win64_msvc16.zip"
+          win_lib: "raylib-5.5_win64_msvc16/lib/raylib.lib"
+          os: ${{ matrix.os }}
 
   build-raylib5:
     strategy:
       matrix:
-        include:
-          - os: ubuntu-latest
-            target: linux-x64
-            bin_url: "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_linux_amd64.tar.gz"
-            bin_lib: "raylib-5.0_linux_amd64/lib/libraylib.a"
-          - os: macos-latest
-            target: macos-aarch64
-            lipo_arch: arm64
-            bin_url: "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_macos.tar.gz"
-            bin_lib: "raylib-5.0_macos/lib/libraylib.a"
-          - os: macos-latest
-            target: macos-x64
-            cmake_osx_arch: x86_64
-            lipo_arch: x86_64
-            bin_url: "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_macos.tar.gz"
-            bin_lib: "raylib-5.0_macos/lib/libraylib.a"
-          - os: windows-latest
-            target: windows-x64
-            bin_url: "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_win64_msvc16.zip"
-            bin_lib: "raylib-5.0_win64_msvc16/lib/raylib.lib"
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -448,38 +353,18 @@ jobs:
           name: raylib5
           tag: "5.0"
           c3l: raylib5.c3l
-          target: ${{ matrix.target }}
-          lipo_arch: ${{ matrix.lipo_arch }}
-          bin_url: ${{ matrix.bin_url }}
-          bin_lib: ${{ matrix.bin_lib }}
+          linux_url: "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_linux_amd64.tar.gz"
+          linux_lib: "raylib-5.0_linux_amd64/lib/libraylib.a"
+          mac_url: "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_macos.tar.gz"
+          mac_lib: "raylib-5.0_macos/lib/libraylib.a"
+          win_url: "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_win64_msvc16.zip"
+          win_lib: "raylib-5.0_win64_msvc16/lib/raylib.lib"
+          os: ${{ matrix.os }}
 
   build-webgpu:
     strategy:
       matrix:
-        include:
-          - os: ubuntu-latest
-            target: linux-x64
-            bin_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-linux-x86_64-release.zip"
-            bin_lib: "libwgpu_native.a"
-          - os: ubuntu-24.04-arm
-            target: linux-aarch64
-            bin_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-linux-aarch64-release.zip"
-            bin_lib: "libwgpu_native.a"
-          - os: macos-latest
-            target: macos-aarch64
-            lipo_arch: arm64
-            bin_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-macos-aarch64-release.zip"
-            bin_lib: "libwgpu_native.a"
-          - os: macos-latest
-            target: macos-x64
-            cmake_osx_arch: x86_64
-            lipo_arch: x86_64
-            bin_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-macos-x86_64-release.zip"
-            bin_lib: "libwgpu_native.a"
-          - os: windows-latest
-            target: windows-x64
-            bin_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-windows-x86_64-release.zip"
-            bin_lib: "wgpu_native.lib"
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -489,15 +374,20 @@ jobs:
           name: webgpu
           tag: v0.19.1.1
           c3l: webgpu.c3l
-          target: ${{ matrix.target }}
-          lipo_arch: ${{ matrix.lipo_arch }}
-          bin_url: ${{ matrix.bin_url }}
-          bin_lib: ${{ matrix.bin_lib }}
+          linux_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-linux-x86_64-release.zip"
+          linux_lib: "libwgpu_native.a"
+          mac_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-macos-aarch64-release.zip"
+          mac_lib: "libwgpu_native.a"
+          mac_x64_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-macos-x86_64-release.zip"
+          mac_x64_lib: "libwgpu_native.a"
+          win_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-windows-x86_64-release.zip"
+          win_lib: "wgpu_native.lib"
+          os: ${{ matrix.os }}
 
   build-tigr:
     strategy:
       matrix:
-        include: *dual-arch-include
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -512,10 +402,14 @@ jobs:
         shell: bash
         run: |
           set -x
-          TARGET_DIR="${{ matrix.target }}"
-          if [[ "$TARGET_DIR" == windows-* ]]; then
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            TARGET_DIR="windows-x64"
             LIB_NAME="tigr.lib"
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            TARGET_DIR="macos-aarch64"
+            LIB_NAME="libtigr.a"
           else
+            TARGET_DIR="linux-x64"
             LIB_NAME="libtigr.a"
           fi
 
@@ -525,24 +419,27 @@ jobs:
           git clone https://github.com/erkkah/tigr.git -b v3.2.2 build_src
           cd build_src
 
-          if [ -n "${{ matrix.cmake_osx_arch }}" ]; then
-            clang -arch ${{ matrix.cmake_osx_arch }} -c tigr.c -o tigr.o
-          else
-            gcc -c tigr.c -o tigr.o
-          fi
+          gcc -c tigr.c -o tigr.o
           ar rcs "$LIB_NAME" tigr.o
           cp "$LIB_NAME" "../$TARGET_BASE/$TARGET_DIR/"
+
+          if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            clang -arch x86_64 -c tigr.c -o tigr_x64.o
+            ar rcs "$LIB_NAME" tigr_x64.o
+            mkdir -p "../$TARGET_BASE/macos-x64"
+            cp "$LIB_NAME" "../$TARGET_BASE/macos-x64/"
+          fi
 
       - name: Upload tigr Artifact
         uses: actions/upload-artifact@v6
         with:
-          name: tigr-statics-${{ matrix.target }}
+          name: tigr-statics-${{ matrix.os }}
           path: upload_stage/
 
   build-tinyfiledialogs:
     strategy:
       matrix:
-        include: *dual-arch-include
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -550,16 +447,20 @@ jobs:
         if: runner.os == 'Windows'
         uses: TheMrMilchmann/setup-msvc-dev@v4
         with:
-          arch: ${{ matrix.target == 'windows-aarch64' && 'arm64' || 'x64' }}
+          arch: x64
 
       - name: Build and Package tinyfiledialogs
         shell: bash
         run: |
           set -x
-          TARGET_DIR="${{ matrix.target }}"
-          if [[ "$TARGET_DIR" == windows-* ]]; then
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            TARGET_DIR="windows-x64"
             LIB_NAME="tinyfiledialogs.lib"
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            TARGET_DIR="macos-aarch64"
+            LIB_NAME="libtinyfiledialogs.a"
           else
+            TARGET_DIR="linux-x64"
             LIB_NAME="libtinyfiledialogs.a"
           fi
 
@@ -573,25 +474,29 @@ jobs:
             export MSYS2_ARG_CONV_EXCL="*"
             cl -c -O2 tinyfiledialogs.c
             lib tinyfiledialogs.obj -out:"$LIB_NAME"
-          elif [ -n "${{ matrix.cmake_osx_arch }}" ]; then
-            clang -arch ${{ matrix.cmake_osx_arch }} -c -O2 tinyfiledialogs.c -o tinyfiledialogs.o
-            ar rcs "$LIB_NAME" tinyfiledialogs.o
           else
             gcc -c -O2 tinyfiledialogs.c -o tinyfiledialogs.o
             ar rcs "$LIB_NAME" tinyfiledialogs.o
           fi
           cp "$LIB_NAME" "$TARGET_BASE/$TARGET_DIR/"
 
+          if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            clang -arch x86_64 -c -O2 tinyfiledialogs.c -o tinyfiledialogs_x64.o
+            ar rcs "$LIB_NAME" tinyfiledialogs_x64.o
+            mkdir -p "$TARGET_BASE/macos-x64"
+            cp "$LIB_NAME" "$TARGET_BASE/macos-x64/"
+          fi
+
       - name: Upload tinyfiledialogs Artifact
         uses: actions/upload-artifact@v6
         with:
-          name: tinyfiledialogs-statics-${{ matrix.target }}
+          name: tinyfiledialogs-statics-${{ matrix.os }}
           path: upload_stage/
 
   build-sqlite3:
     strategy:
       matrix:
-        include: *dual-arch-include
+        os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -599,16 +504,20 @@ jobs:
         if: runner.os == 'Windows'
         uses: TheMrMilchmann/setup-msvc-dev@v4
         with:
-          arch: ${{ matrix.target == 'windows-aarch64' && 'arm64' || 'x64' }}
+          arch: x64
 
       - name: Build and Package sqlite3
         shell: bash
         run: |
           set -x
-          TARGET_DIR="${{ matrix.target }}"
-          if [[ "$TARGET_DIR" == windows-* ]]; then
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            TARGET_DIR="windows-x64"
             LIB_NAME="sqlite3.lib"
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            TARGET_DIR="macos-aarch64"
+            LIB_NAME="libsqlite3.a"
           else
+            TARGET_DIR="linux-x64"
             LIB_NAME="libsqlite3.a"
           fi
 
@@ -621,19 +530,23 @@ jobs:
           if [ "${{ runner.os }}" == "Windows" ]; then
             cl -c -O2 sqlite3.c
             lib sqlite3.obj -out:"$LIB_NAME"
-          elif [ -n "${{ matrix.cmake_osx_arch }}" ]; then
-            clang -arch ${{ matrix.cmake_osx_arch }} -c -O3 -fPIC sqlite3.c -o sqlite3.o
-            ar rcs "$LIB_NAME" sqlite3.o
           else
             gcc -c -O3 -fPIC sqlite3.c -o sqlite3.o
             ar rcs "$LIB_NAME" sqlite3.o
           fi
           cp "$LIB_NAME" "$TARGET_BASE/$TARGET_DIR/"
 
+          if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            clang -arch x86_64 -c -O3 -fPIC sqlite3.c -o sqlite3_x64.o
+            ar rcs "$LIB_NAME" sqlite3_x64.o
+            mkdir -p "$TARGET_BASE/macos-x64"
+            cp "$LIB_NAME" "$TARGET_BASE/macos-x64/"
+          fi
+
       - name: Upload sqlite3 Artifact
         uses: actions/upload-artifact@v6
         with:
-          name: sqlite3-statics-${{ matrix.target }}
+          name: sqlite3-statics-${{ matrix.os }}
           path: upload_stage/
 
   build-and-release:

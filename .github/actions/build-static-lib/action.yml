@@ -8,14 +8,17 @@ inputs:
   c3l: { required: true }
   cmake_flags: { required: false, default: "" }
   src_path: { required: false, default: "." }
-  # C3 target folder, e.g. linux-x64, macos-aarch64, windows-x64
-  target: { required: true }
-  # Optional prebuilt binary for this exact target
-  bin_url: { required: false }
-  bin_lib: { required: false }
-  # macOS cross-compile / lipo thinning (e.g. x86_64 or arm64)
-  cmake_osx_arch: { required: false, default: "" }
-  lipo_arch: { required: false, default: "" }
+  # Downloadable Binary Options
+  linux_url: { required: false }
+  linux_lib: { required: false }
+  mac_url: { required: false }
+  mac_lib: { required: false }
+  # Optional Intel macOS prebuilt (when mac_url is arm-only, e.g. webgpu)
+  mac_x64_url: { required: false }
+  mac_x64_lib: { required: false }
+  win_url: { required: false }
+  win_lib: { required: false }
+  os: { required: true }
   # Post-Processing Options
   after_build: { required: false, default: "" }
 
@@ -38,40 +41,81 @@ runs:
         HOOK_SCRIPT: ${{ inputs.after_build }}
       run: |
         set -x
-        TARGET_DIR="${{ inputs.target }}"
-        TARGET_BASE="upload_stage/libraries/${{ inputs.c3l }}"
+        if [ "${{ runner.os }}" == "Windows" ]; then
+          TARGET_DIR="windows-x64"
+        elif [[ "${{ inputs.os }}" == "macos-latest" ]]; then
+          TARGET_DIR="macos-aarch64"
+        else
+          TARGET_DIR="linux-x64"
+        fi
+
+        TARGET_BASE="$GITHUB_WORKSPACE/upload_stage/libraries/${{ inputs.c3l }}"
         mkdir -p "$TARGET_BASE/$TARGET_DIR"
 
-        BIN_URL="${{ inputs.bin_url }}"
-        BIN_LIB="${{ inputs.bin_lib }}"
-        CMAKE_OSX_ARCH="${{ inputs.cmake_osx_arch }}"
-        LIPO_ARCH="${{ inputs.lipo_arch }}"
+        # Copy (and lipo-thin if needed) a binary into a macOS target folder
+        install_mac_slice() {
+          local src="$1" dest_dir="$2" want_arch="$3"
+          mkdir -p "$TARGET_BASE/$dest_dir"
+          local dest="$TARGET_BASE/$dest_dir/$(basename "$src")"
+          local arches
+          arches=$(lipo -archs "$src" 2>/dev/null || true)
+          if [ -z "$arches" ]; then
+            cp "$src" "$dest"
+            return
+          fi
+          if ! echo " $arches " | grep -q " $want_arch "; then
+            echo "WARNING: $src has [$arches], missing $want_arch — skip $dest_dir"
+            return
+          fi
+          if [ "$(echo "$arches" | wc -w | tr -d ' ')" -gt 1 ]; then
+            lipo -thin "$want_arch" "$src" -output "$dest"
+          else
+            cp "$src" "$dest"
+          fi
+        }
+
+        # Handle pre-compiled binaries if URLs are provided
+        BIN_URL=""
+        BIN_LIB=""
+        if [ "${{ runner.os }}" == "Windows" ]; then
+          BIN_URL="${{ inputs.win_url }}"
+          BIN_LIB="${{ inputs.win_lib }}"
+        elif [[ "${{ inputs.os }}" == "macos-latest" ]]; then
+          BIN_URL="${{ inputs.mac_url }}"
+          BIN_LIB="${{ inputs.mac_lib }}"
+        else
+          BIN_URL="${{ inputs.linux_url }}"
+          BIN_LIB="${{ inputs.linux_lib }}"
+        fi
 
         if [ -n "$BIN_URL" ] && [ -n "$BIN_LIB" ]; then
           ARCHIVE=$(basename "$BIN_URL")
           curl -fsSL -o "$ARCHIVE" "$BIN_URL"
           if [[ "$ARCHIVE" == *.tar.gz ]]; then
             tar -xzf "$ARCHIVE" "$BIN_LIB"
-            cp "$BIN_LIB" "$TARGET_BASE/$TARGET_DIR/"
-            DEST="$TARGET_BASE/$TARGET_DIR/$(basename "$BIN_LIB")"
+            EXTRACTED="$BIN_LIB"
           else
-            unzip -j "$ARCHIVE" "$BIN_LIB" -d "$TARGET_BASE/$TARGET_DIR/"
-            DEST="$TARGET_BASE/$TARGET_DIR/$(basename "$BIN_LIB")"
+            unzip -j "$ARCHIVE" "$BIN_LIB" -d "_bin_extract"
+            EXTRACTED="_bin_extract/$(basename "$BIN_LIB")"
           fi
 
-          if [ -n "$LIPO_ARCH" ] && [ -f "$DEST" ]; then
-            ARCHES=$(lipo -archs "$DEST" 2>/dev/null || true)
-            if [ -n "$ARCHES" ]; then
-              if ! echo " $ARCHES " | grep -q " $LIPO_ARCH "; then
-                echo "ERROR: $DEST does not contain architecture $LIPO_ARCH (has: $ARCHES)"
-                exit 1
+          if [[ "${{ inputs.os }}" == "macos-latest" ]]; then
+            install_mac_slice "$EXTRACTED" "macos-aarch64" "arm64"
+            if [ -n "${{ inputs.mac_x64_url }}" ] && [ -n "${{ inputs.mac_x64_lib }}" ]; then
+              ARCHIVE64=$(basename "${{ inputs.mac_x64_url }}")
+              curl -fsSL -o "$ARCHIVE64" "${{ inputs.mac_x64_url }}"
+              if [[ "$ARCHIVE64" == *.tar.gz ]]; then
+                tar -xzf "$ARCHIVE64" "${{ inputs.mac_x64_lib }}"
+                install_mac_slice "${{ inputs.mac_x64_lib }}" "macos-x64" "x86_64"
+              else
+                unzip -j "$ARCHIVE64" "${{ inputs.mac_x64_lib }}" -d "_bin_extract_x64"
+                install_mac_slice "_bin_extract_x64/$(basename "${{ inputs.mac_x64_lib }}")" "macos-x64" "x86_64"
               fi
-              COUNT=$(echo "$ARCHES" | wc -w | tr -d ' ')
-              if [ "$COUNT" -gt 1 ]; then
-                lipo -thin "$LIPO_ARCH" "$DEST" -output "$DEST.thin"
-                mv "$DEST.thin" "$DEST"
-              fi
+            else
+              install_mac_slice "$EXTRACTED" "macos-x64" "x86_64"
             fi
+          else
+            cp "$EXTRACTED" "$TARGET_BASE/$TARGET_DIR/"
           fi
         else
           # Otherwise build from source
@@ -80,15 +124,23 @@ runs:
           git submodule update --init --recursive
           mkdir -p c3_build_temp && cd c3_build_temp
 
-          OSX_ARCH_FLAG=""
-          if [ -n "$CMAKE_OSX_ARCH" ]; then
-            OSX_ARCH_FLAG="-DCMAKE_OSX_ARCHITECTURES=$CMAKE_OSX_ARCH"
+          OSX_ARCH_FLAG=()
+          if [[ "${{ inputs.os }}" == "macos-latest" ]]; then
+            # Universal build → same .a copied into macos-aarch64 and macos-x64
+            OSX_ARCH_FLAG=(-DCMAKE_OSX_ARCHITECTURES=arm64\;x86_64)
           fi
 
-          cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release $OSX_ARCH_FLAG ${{ inputs.cmake_flags }} "../${{ inputs.src_path }}"
+          cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release "${OSX_ARCH_FLAG[@]}" ${{ inputs.cmake_flags }} "../${{ inputs.src_path }}"
           cmake --build . --config Release --parallel 4
 
-          find . -type f \( -name "*.a" -o -name "*.lib" \) -exec cp {} "../../$TARGET_BASE/$TARGET_DIR/" \;
+          if [[ "${{ inputs.os }}" == "macos-latest" ]]; then
+            find . -type f \( -name "*.a" -o -name "*.lib" \) | while read f; do
+              install_mac_slice "$f" "macos-aarch64" "arm64"
+              install_mac_slice "$f" "macos-x64" "x86_64"
+            done
+          else
+            find . -type f \( -name "*.a" -o -name "*.lib" \) -exec cp {} "../../$TARGET_BASE/$TARGET_DIR/" \;
+          fi
           cd ../..
         fi
 
@@ -101,5 +153,5 @@ runs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v6
       with:
-        name: ${{ inputs.name }}-statics-${{ inputs.target }}
+        name: ${{ inputs.name }}-statics-${{ inputs.os }}
         path: upload_stage/

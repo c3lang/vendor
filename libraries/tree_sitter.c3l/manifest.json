@@ -31,8 +31,5 @@
 		"windows-x64" : {
 			"linked-libraries" : ["tree-sitter"]
 		},
-		"windows-aarch64" : {
-			"linked-libraries" : ["tree-sitter"]
-		}
-	}
+	},
 }

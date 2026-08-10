@@ -16,16 +16,8 @@
 			"dependencies" : [],
 			"linked-libraries" : ["box2d"]
 		},
-		"linux-aarch64" : {
-			"link-args" : [],
-			"dependencies" : [],
-			"linked-libraries" : ["box2d"]
-		},
-		"windows-x64" : {
-			"linked-libraries" : ["box2d"]
-		},
-		"windows-aarch64" : {
-			"linked-libraries" : ["box2d"]
-		}
+	"windows-x64" : {
+		"linked-libraries" : ["box2d"]
+	}
 	}
 }
