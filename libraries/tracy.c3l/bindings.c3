@@ -8,6 +8,19 @@ constdef PlotFormatEnum
 	TRACY_PLOT_FORMAT_WATT
 }
 
+constdef MessageSeverity : inline char
+{
+    TRACY_MESSAGE_SEVERITY_TRACE,   // Broadly track variable states and events in the software program.
+    TRACY_MESSAGE_SEVERITY_DEBUG,   // Describes variable states and details about specific internal events in the software, that are useful for investigations.
+    TRACY_MESSAGE_SEVERITY_INFO,    // Describes normal events, which inform on the expected progress and state of your software.
+    TRACY_MESSAGE_SEVERITY_WARNING, // Describes potentially dangerous situations caused by unexpected events and states.
+    TRACY_MESSAGE_SEVERITY_ERROR,   // Describes the occurance of unexpected behavior. Does not interrupt the execution of the software.
+    TRACY_MESSAGE_SEVERITY_FATAL,   // Describes a critical event that will lead to a software failure/crash.
+}
+
+typedef LockableContextData = inline void*;
+typedef SharedLockableContextData = inline void*;
+
 struct SourceLocationData
 {
 	ZString name;
@@ -54,7 +67,7 @@ struct GpuZoneEndData
 
 struct GpuNewContextData
 {
-	ulong gpuTime;
+	long gpuTime;
 	float period;
 	char context;
 	char flags;
@@ -137,7 +150,8 @@ extern fn void emit_memory_free_callstack_named(void* ptr, int depth, ZString na
 extern fn void emit_memory_discard(ZString name) @cname("___tracy_emit_memory_discard");
 extern fn void emit_memory_discard_callstack(ZString name, int depth) @cname("___tracy_emit_memory_discard_callstack");
 
-extern fn void emit_message(ZString txt, usz size, int callstack_depth) @cname("___tracy_emit_message");
+extern fn void emit_log_string(MessageSeverity severity, int color, int callstack_depth, usz size, ZString txt) @cname("___tracy_emit_logString");
+extern fn void emit_log_stringL(MessageSeverity severity, int color, int callstack_depth, ZString txt) @cname("");
 
 extern fn void emit_frame_mark(ZString name) @cname("___tracy_emit_frame_mark");
 extern fn void emit_frame_mark_start(ZString name) @cname("___tracy_emit_frame_mark_start");
@@ -149,6 +163,28 @@ extern fn void emit_plot_float(ZString name, float val) @cname("___tracy_emit_pl
 extern fn void emit_plot_int(ZString name, long val) @cname("___tracy_emit_plot_int");
 extern fn void emit_plot_config(ZString name, int type, int step, int fill, uint color) @cname("___tracy_emit_plot_config");
 extern fn void emit_message_appinfo(ZString txt, usz size) @cname("___tracy_emit_message_appinfo");
+
+extern fn LockableContextData* announce_lockable_ctx(SourceLocationData* srcloc) @cname("___tracy_announce_lockable_ctx");
+extern fn void terminate_lockable_ctx(LockableContextData* lockdata) @cname("___tracy_terminate_lockable_ctx");
+extern fn int before_lock_lockable_ctx(LockableContextData* lockdata) @cname("___tracy_before_lock_lockable_ctx");
+extern fn void after_lock_lockable_ctx(LockableContextData* lockdata) @cname("___tracy_after_lock_lockable_ctx");
+extern fn void after_unlock_lockable_ctx(LockableContextData* lockdata) @cname("___tracy_after_unlock_lockable_ctx");
+extern fn void after_try_lock_lockable_ctx(LockableContextData* lockdata, int acquired) @cname("___tracy_after_try_lock_lockable_ctx");
+extern fn void mark_lockable_ctx(LockableContextData* lockdata, SourceLocationData* srcloc) @cname("___tracy_mark_lockable_ctx");
+extern fn void custom_name_lockable_ctx(LockableContextData* lockdata, ZString name, usz nameSz) @cname("___tracy_custom_name_lockable_ctx");
+
+extern fn SharedLockableContextData* announce_shared_lockable_ctx(SourceLocationData* srcloc) @cname("___tracy_announce_shared_lockable_ctx");
+extern fn void terminate_shared_lockable_ctx(SharedLockableContextData* lockdata) @cname("___tracy_terminate_shared_lockable_ctx");
+extern fn int before_lock_shared_lockable_ctx(SharedLockableContextData* lockdata) @cname("___tracy_before_lock_shared_lockable_ctx");
+extern fn void after_lock_shared_lockable_ctx(SharedLockableContextData* lockdata) @cname("___tracy_after_lock_shared_lockable_ctx");
+extern fn void after_unlock_shared_lockable_ctx(SharedLockableContextData* lockdata) @cname("___tracy_after_unlock_shared_lockable_ctx");
+extern fn void after_try_lock_shared_lockable_ctx(SharedLockableContextData* lockdata, int acquired) @cname("___tracy_after_try_lock_shared_lockable_ctx");
+extern fn int before_lock_shared_shared_lockable_ctx(SharedLockableContextData* lockdata) @cname("___tracy_before_lock_shared_shared_lockable_ctx");
+extern fn void after_lock_shared_shared_lockable_ctx(SharedLockableContextData* lockdata) @cname("___tracy_after_lock_shared_shared_lockable_ctx");
+extern fn void after_unlock_shared_shared_lockable_ctx(SharedLockableContextData* lockdata) @cname("___tracy_after_unlock_shared_shared_lockable_ctx");
+extern fn void after_try_lock_shared_shared_lockable_ctx(SharedLockableContextData* lockdata, int acquired) @cname("___tracy_after_try_lock_shared_shared_lockable_ctx");
+extern fn void mark_shared_lockable_ctx(SharedLockableContextData* lockdata, SourceLocationData* srcloc) @cname("___tracy_mark_shared_lockable_ctx");
+extern fn void custom_name_shared_lockable_ctx(SharedLockableContextData* lockdata, ZString name, usz nameSz) @cname("___tracy_custom_name_shared_lockable_ctx");
 
 extern fn int begin_sampling_profiling() @cname("___tracy_begin_sampling_profiling");
 extern fn void end_sampling_profiling() @cname("___tracy_end_sampling_profiling");

@@ -11,9 +11,9 @@ For manual lifetimes set `-DTRACY_MANUAL_LIFETIME=ON`.
 There is a Feature `TRACY_ENABLE` that needs to be set for bindings to get called
 
 ```
-git clone -b v0.13.1 --depth 1 https://github.com/wolfpld/tracy
+git clone -b v0.14.0 --depth 1 https://github.com/wolfpld/tracy
 cd tracy
-cmake -B build -DTRACY_ENABLE=ON -DTRACY_STATIC=ON -DTRACY_MANUAL_LIFETIME=ON
+cmake -B build -DTRACY_ENABLE=ON -DTRACY_STATIC=ON
 ```
 
 NOTE: you should have a file named something.something under some/path, you can add the search path with `-L <library-dir>` or in your project.json with `dependency-search-paths`
