@@ -19,7 +19,7 @@ if (mu::begin_window(ctx, "My Window", mu::rect(10, 10, 140, 86)))
   mu::label(ctx, "First:");
   if (mu::button(ctx, "Button1"))
   {
-    printf("Button1 pressed\n");
+    io::printf("Button1 pressed\n");
   }
 
   mu::label(ctx, "Second:");
