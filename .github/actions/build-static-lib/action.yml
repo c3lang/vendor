@@ -8,18 +8,15 @@ inputs:
   c3l: { required: true }
   cmake_flags: { required: false, default: "" }
   src_path: { required: false, default: "." }
-  # Downloadable Binary Options
   linux_url: { required: false }
   linux_lib: { required: false }
   mac_url: { required: false }
   mac_lib: { required: false }
-  # Optional Intel macOS prebuilt (when mac_url is arm-only, e.g. webgpu)
-  mac_x64_url: { required: false }
+  mac_x64_url: { required: false }  # when mac_url is arm-only (webgpu)
   mac_x64_lib: { required: false }
   win_url: { required: false }
   win_lib: { required: false }
   os: { required: true }
-  # Post-Processing Options
   after_build: { required: false, default: "" }
 
 runs:
@@ -51,100 +48,59 @@ runs:
 
         TARGET_BASE="$GITHUB_WORKSPACE/upload_stage/libraries/${{ inputs.c3l }}"
         mkdir -p "$TARGET_BASE/$TARGET_DIR"
+        IS_MAC=0; [[ "${{ inputs.os }}" == "macos-latest" ]] && IS_MAC=1
 
-        # Copy (and lipo-thin if needed) a binary into a macOS target folder
-        install_mac_slice() {
-          local src="$1" dest_dir="$2" want_arch="$3"
-          mkdir -p "$TARGET_BASE/$dest_dir"
-          local dest="$TARGET_BASE/$dest_dir/$(basename "$src")"
-          local arches
-          arches=$(lipo -archs "$src" 2>/dev/null || true)
-          if [ -z "$arches" ]; then
-            cp "$src" "$dest"
-            return
-          fi
-          if ! echo " $arches " | grep -q " $want_arch "; then
-            echo "WARNING: $src has [$arches], missing $want_arch — skip $dest_dir"
-            return
-          fi
-          if [ "$(echo "$arches" | wc -w | tr -d ' ')" -gt 1 ]; then
-            lipo -thin "$want_arch" "$src" -output "$dest"
+        fetch_lib() { # url libpath destdir
+          local url="$1" lib="$2" dest="$3" archive
+          archive=$(basename "$url")
+          curl -fsSL -o "$archive" "$url"
+          mkdir -p "$TARGET_BASE/$dest"
+          if [[ "$archive" == *.tar.gz ]]; then
+            tar -xzf "$archive" "$lib"
+            cp "$lib" "$TARGET_BASE/$dest/"
           else
-            cp "$src" "$dest"
+            unzip -j "$archive" "$lib" -d "$TARGET_BASE/$dest/"
           fi
         }
 
-        # Handle pre-compiled binaries if URLs are provided
-        BIN_URL=""
-        BIN_LIB=""
         if [ "${{ runner.os }}" == "Windows" ]; then
-          BIN_URL="${{ inputs.win_url }}"
-          BIN_LIB="${{ inputs.win_lib }}"
-        elif [[ "${{ inputs.os }}" == "macos-latest" ]]; then
-          BIN_URL="${{ inputs.mac_url }}"
-          BIN_LIB="${{ inputs.mac_lib }}"
+          BIN_URL="${{ inputs.win_url }}"; BIN_LIB="${{ inputs.win_lib }}"
+        elif [ "$IS_MAC" = 1 ]; then
+          BIN_URL="${{ inputs.mac_url }}"; BIN_LIB="${{ inputs.mac_lib }}"
         else
-          BIN_URL="${{ inputs.linux_url }}"
-          BIN_LIB="${{ inputs.linux_lib }}"
+          BIN_URL="${{ inputs.linux_url }}"; BIN_LIB="${{ inputs.linux_lib }}"
         fi
 
         if [ -n "$BIN_URL" ] && [ -n "$BIN_LIB" ]; then
-          ARCHIVE=$(basename "$BIN_URL")
-          curl -fsSL -o "$ARCHIVE" "$BIN_URL"
-          if [[ "$ARCHIVE" == *.tar.gz ]]; then
-            tar -xzf "$ARCHIVE" "$BIN_LIB"
-            EXTRACTED="$BIN_LIB"
-          else
-            unzip -j "$ARCHIVE" "$BIN_LIB" -d "_bin_extract"
-            EXTRACTED="_bin_extract/$(basename "$BIN_LIB")"
-          fi
-
-          if [[ "${{ inputs.os }}" == "macos-latest" ]]; then
-            install_mac_slice "$EXTRACTED" "macos-aarch64" "arm64"
-            if [ -n "${{ inputs.mac_x64_url }}" ] && [ -n "${{ inputs.mac_x64_lib }}" ]; then
-              ARCHIVE64=$(basename "${{ inputs.mac_x64_url }}")
-              curl -fsSL -o "$ARCHIVE64" "${{ inputs.mac_x64_url }}"
-              if [[ "$ARCHIVE64" == *.tar.gz ]]; then
-                tar -xzf "$ARCHIVE64" "${{ inputs.mac_x64_lib }}"
-                install_mac_slice "${{ inputs.mac_x64_lib }}" "macos-x64" "x86_64"
-              else
-                unzip -j "$ARCHIVE64" "${{ inputs.mac_x64_lib }}" -d "_bin_extract_x64"
-                install_mac_slice "_bin_extract_x64/$(basename "${{ inputs.mac_x64_lib }}")" "macos-x64" "x86_64"
-              fi
+          fetch_lib "$BIN_URL" "$BIN_LIB" "$TARGET_DIR"
+          if [ "$IS_MAC" = 1 ]; then
+            if [ -n "${{ inputs.mac_x64_url }}" ]; then
+              fetch_lib "${{ inputs.mac_x64_url }}" "${{ inputs.mac_x64_lib }}" "macos-x64"
             else
-              install_mac_slice "$EXTRACTED" "macos-x64" "x86_64"
+              mkdir -p "$TARGET_BASE/macos-x64"
+              cp "$TARGET_BASE/$TARGET_DIR/$(basename "$BIN_LIB")" "$TARGET_BASE/macos-x64/"
             fi
-          else
-            cp "$EXTRACTED" "$TARGET_BASE/$TARGET_DIR/"
           fi
         else
-          # Otherwise build from source
           git clone ${{ inputs.repo }} -b ${{ inputs.tag }} build_src
           cd build_src
           git submodule update --init --recursive
           mkdir -p c3_build_temp && cd c3_build_temp
 
-          OSX_ARCH_FLAG=()
-          if [[ "${{ inputs.os }}" == "macos-latest" ]]; then
-            # Universal build → same .a copied into macos-aarch64 and macos-x64
-            OSX_ARCH_FLAG=(-DCMAKE_OSX_ARCHITECTURES=arm64\;x86_64)
-          fi
-
-          cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release "${OSX_ARCH_FLAG[@]}" ${{ inputs.cmake_flags }} "../${{ inputs.src_path }}"
+          OSX=()
+          [ "$IS_MAC" = 1 ] && OSX=(-DCMAKE_OSX_ARCHITECTURES=arm64\;x86_64)
+          cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release "${OSX[@]}" ${{ inputs.cmake_flags }} "../${{ inputs.src_path }}"
           cmake --build . --config Release --parallel 4
 
-          if [[ "${{ inputs.os }}" == "macos-latest" ]]; then
-            find . -type f \( -name "*.a" -o -name "*.lib" \) | while read f; do
-              install_mac_slice "$f" "macos-aarch64" "arm64"
-              install_mac_slice "$f" "macos-x64" "x86_64"
-            done
+          if [ "$IS_MAC" = 1 ]; then
+            mkdir -p "$TARGET_BASE/macos-aarch64" "$TARGET_BASE/macos-x64"
+            find . -type f \( -name "*.a" -o -name "*.lib" \) -exec cp {} "$TARGET_BASE/macos-aarch64/" \; -exec cp {} "$TARGET_BASE/macos-x64/" \;
           else
-            find . -type f \( -name "*.a" -o -name "*.lib" \) -exec cp {} "../../$TARGET_BASE/$TARGET_DIR/" \;
+            find . -type f \( -name "*.a" -o -name "*.lib" \) -exec cp {} "$TARGET_BASE/$TARGET_DIR/" \;
           fi
           cd ../..
         fi
 
-        # After Build Hook
         if [ -n "$HOOK_SCRIPT" ]; then
            printf "%s" "$HOOK_SCRIPT" > run_hook.sh
            bash run_hook.sh
