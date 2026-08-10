@@ -1,0 +1,405 @@
+module microui::mu;
+
+const int COMMANDLIST_SIZE = 256 * 1024;
+const int ROOTLIST_SIZE = 32;
+const int CONTAINERSTACK_SIZE = 32;
+const int CLIPSTACK_SIZE = 32;
+const int IDSTACK_SIZE = 32;
+const int LAYOUTSTACK_SIZE = 16;
+const int CONTAINERPOOL_SIZE = 48;
+const int TREENODEPOOL_SIZE = 48;
+const int MAX_WIDTHS = 16;
+const char* REAL_FMT = "%.3g";
+const char* SLIDER_FMT = "%.2f";
+const int MAX_FMT = 127;
+
+macro min(a, b)
+{
+	return a < b ? a : b;
+}
+
+macro max(a, b)
+{
+	return a > b ? a : b;
+}
+
+macro clamp(x, a, b)
+{
+	return min(b, max(a, x));
+}
+
+constdef MuClip : int
+{
+	PART = 1,
+	ALL
+}
+
+constdef MuCommandType : int
+{
+	JUMP = 1,
+	CLIP,
+	RECT,
+	IMAGE,
+	TEXT,
+	ICON,
+	MAX
+}
+
+enum MuColorId : int
+{
+	TEXT,
+	BORDER,
+	WINDOWBG,
+	TITLEBG,
+	TITLETEXT,
+	PANELBG,
+	BUTTON,
+	BUTTONHOVER,
+	BUTTONFOCUS,
+	BASE,
+	BASEHOVER,
+	BASEFOCUS,
+	SCROLLBASE,
+	SCROLLTHUMB,
+	MAX
+}
+
+constdef MuIcon : int
+{
+	CLOSE = 1,
+	CHECK,
+	COLLAPSED,
+	EXPANDED,
+	MAX
+}
+
+constdef MuResourceResult : int
+{
+	ACTIVE = (1 << 0),
+	SUBMIT = (1 << 1),
+	CHANGE = (1 << 2)
+}
+
+constdef MuOption : int
+{
+	ALIGNCENTER = (1 << 0),
+	ALIGNRIGHT  = (1 << 1),
+	NOINTERACT  = (1 << 2),
+	NOFRAME     = (1 << 3),
+	NORESIZE    = (1 << 4),
+	NOSCROLL    = (1 << 5),
+	NOCLOSE     = (1 << 6),
+	NOTITLE     = (1 << 7),
+	HOLDFOCUS   = (1 << 8),
+	AUTOSIZE    = (1 << 9),
+	POPUP		= (1 << 10),
+	CLOSED		= (1 << 11),
+	EXPANDED	= (1 << 12),
+	ALIGNTOP	= (1 << 13),
+	ALIGNBOTTOM	= (1 << 14)
+}
+
+constdef MuMouseButton : int
+{
+	LEFT   = (1 << 0),
+	RIGHT  = (1 << 1),
+	MIDDLE = (1 << 2)
+}
+
+constdef MuKey : int
+{
+	SHIFT     = (1 << 0),
+	CTRL      = (1 << 1),
+	ALT 	  = (1 << 2),
+	BACKSPACE = (1 << 3),
+	RETURN    = (1 << 4),
+	RIGHT     = (1 << 5),
+	LEFT	  = (1 << 6)
+}
+
+alias MuReal = float;
+alias MuId = usz;
+alias MuFont = void*;
+
+struct MuVec2
+{
+	int x;
+	int y;
+}
+
+struct MuRect
+{
+	int x;
+	int y;
+	int w;
+	int h;
+}
+
+struct MuColor
+{
+	char r;
+	char g;
+	char b;
+	char a;
+}
+
+struct MuPoolItem
+{
+	MuId id;
+	int last_update;
+}
+
+struct MuBaseCommand
+{
+	int type;
+	int size;
+}
+
+struct MuJumpCommand
+{
+	MuBaseCommand base;
+	void* dst;
+}
+
+struct MuClipCommand
+{
+	MuBaseCommand base;
+	MuRect rect;
+}
+
+struct MuRectCommand
+{
+	MuBaseCommand base;
+	MuRect rect;
+	MuColor color;
+}
+
+struct MuImageCommand
+{
+	MuBaseCommand base;
+	MuRect rect;
+	void* framebuffer;
+}
+
+struct MuTextCommand
+{
+	MuBaseCommand base;
+	MuFont font;
+	MuVec2 pos;
+	MuColor color;
+	char[1] str;
+}
+
+struct MuIconCommand
+{
+	MuBaseCommand base;
+	MuRect rect;
+	int id;
+	MuColor color;
+}
+
+union MuCommand
+{
+	MuBaseCommand base;
+	MuJumpCommand jump;
+	MuClipCommand clip;
+	MuRectCommand rect;
+	MuImageCommand image;
+	MuTextCommand text;
+	MuIconCommand icon;
+}
+
+struct MuLayout
+{
+	MuRect body;
+	MuRect next;
+	MuVec2 position;
+	MuVec2 size;
+	MuVec2 max;
+	int[MAX_WIDTHS] widths;
+	int items;
+	int item_index;
+	int next_row;
+	int next_type;
+	int indent;
+}
+
+struct MuContainer
+{
+	MuCommand* head;
+	MuCommand* tail;
+	MuRect rect;
+	MuRect body;
+	MuVec2 content_size;
+	MuVec2 scroll;
+	int zindex;
+	int open;
+}
+
+struct MuStyle
+{
+	MuFont font;
+	MuVec2 size;
+	int padding;
+	int spacing;
+	int indent;
+	int title_height;
+	int scrollbar_size;
+	int thumb_size;
+	MuColor[MuColorId.MAX] colors;
+}
+
+alias TextWidth = fn int(MuFont font, char* str, int len);
+alias TextHeight = fn int(MuFont font);
+alias DrawFrame = fn void(MuContext* ctx, MuRect rect, int colorid);
+
+struct MuContext
+{
+	/* callbacks */
+	TextWidth text_width;
+	TextHeight text_height;
+	DrawFrame draw_frame;
+	/* core state */
+	MuStyle _style;
+	MuStyle* style;
+	MuId hover;
+	MuId focus;
+	MuId last_id;
+	MuRect last_rect;
+	int last_zindex;
+	int updated_focus;
+	int frame;
+	MuContainer* hover_root;
+	MuContainer* next_hover_root;
+	MuContainer* scroll_target;
+	char[MAX_FMT] number_edit_buf;
+	MuId number_edit;
+	/* stacks */
+	struct commandlist
+	{
+		int idx;
+		char[COMMANDLIST_SIZE] items;
+	}
+	struct rootlist
+	{
+		int idx;
+		MuContainer*[ROOTLIST_SIZE] items;
+	}
+	struct containerstack
+	{
+		int idx;
+		MuContainer*[CONTAINERSTACK_SIZE] items;
+	}
+	struct clipstack
+	{
+		int idx;
+		MuRect[CLIPSTACK_SIZE] items;
+	}
+	struct idstack
+	{
+		int idx;
+		MuId[IDSTACK_SIZE] items;
+	}
+	struct layoutstack
+	{
+		int idx;
+		MuLayout[LAYOUTSTACK_SIZE] items;
+	}
+	/* retained state pools */
+	MuPoolItem[CONTAINERPOOL_SIZE] container_pool;
+	MuContainer[CONTAINERPOOL_SIZE] containers;
+	MuPoolItem[TREENODEPOOL_SIZE] treenode_pool;
+	/* input state */
+	MuVec2 mouse_pos;
+	MuVec2 last_mouse_pos;
+	MuVec2 mouse_delta;
+	MuVec2 scroll_delta;
+	int mouse_down;
+	int mouse_pressed;
+	int key_down;
+	int key_pressed;
+	char[32] input_text;
+	int input_text_written;
+	int crc;
+}
+
+extern fn MuVec2 vec2(int x, int y) @cname("mu_vec2");
+extern fn MuRect rect(int x, int y, int w, int h) @cname("mu_rect");
+extern fn MuColor color(char r, char g, char b, char a) @cname("mu_color");
+
+extern fn void init(MuContext* ctx) @cname("mu_init");
+extern fn void begin(MuContext* ctx) @cname("mu_begin");
+extern fn void end(MuContext* ctx) @cname("mu_end");
+extern fn void set_focus(MuContext* ctx, MuId id) @cname("mu_set_focus");
+extern fn MuId get_id(MuContext* ctx, void* data, int size) @cname("mu_get_id");
+extern fn void push_id(MuContext* ctx, void* data, int size) @cname("mu_push_id");
+extern fn void pop_id(MuContext* ctx) @cname("mu_pop_id");
+extern fn void push_clip_rect(MuContext* ctx, MuRect rect) @cname("mu_push_clip_rect");
+extern fn void pop_clip_rect(MuContext* ctx) @cname("mu_pop_clip_rect");
+extern fn MuRect get_clip_rect(MuContext* ctx) @cname("mu_get_clip_rect");
+extern fn int check_clip(MuContext* ctx, MuRect r) @cname("mu_check_clip");
+extern fn MuContainer* get_current_container(MuContext* ctx) @cname("mu_get_current_container");
+extern fn MuContainer* get_container(MuContext* ctx, char* name) @cname("mu_get_container");
+extern fn void bring_to_front(MuContext* ctx, MuContainer* cnt) @cname("mu_bring_to_front");
+
+extern fn int pool_init(MuContext* ctx, MuPoolItem* items, int len, MuId id) @cname("mu_pool_init");
+extern fn int pool_get(MuContext* ctx, MuPoolItem* items, int len, MuId id) @cname("mu_pool_get");
+extern fn void pool_update(MuContext* ctx, MuPoolItem* items, int idx) @cname("mu_pool_update");
+
+extern fn void input_mousemove(MuContext* ctx, int x, int y) @cname("mu_input_mousemove");
+extern fn void input_mousedown(MuContext* ctx, int x, int y, int btn) @cname("mu_input_mousedown");
+extern fn void input_mouseup(MuContext* ctx, int x, int y, int btn) @cname("mu_input_mouseup");
+extern fn void input_scroll(MuContext* ctx, int x, int y) @cname("mu_input_scroll");
+extern fn void input_keydown(MuContext* ctx, int key) @cname("mu_input_keydown");
+extern fn void input_keyup(MuContext* ctx, int key) @cname("mu_input_keyup");
+extern fn void input_text(MuContext* ctx, char* text) @cname("mu_input_text");
+
+extern fn MuCommand* push_command(MuContext* ctx, int type, int size) @cname("mu_push_command");
+extern fn int next_command(MuContext* ctx, MuCommand** cmd) @cname("mu_next_command");
+extern fn void set_clip(MuContext* ctx, MuRect rect) @cname("mu_set_clip");
+extern fn void draw_rect(MuContext* ctx, MuRect rect, MuColor color) @cname("mu_draw_rect");
+extern fn void draw_image(MuContext* ctx, MuRect rect, void* framebuffer) @cname("mu_draw_image");
+extern fn void draw_box(MuContext* ctx, MuRect rect, MuColor color) @cname("mu_draw_box");
+extern fn void draw_text(MuContext* ctx, MuFont font, char* str, int len, MuVec2 pos, MuColor color) @cname("mu_draw_text");
+extern fn void draw_icon(MuContext* ctx, int id, MuRect rect, MuColor color) @cname("mu_draw_icon");
+
+extern fn void layout_row(MuContext* ctx, int items, int* widths, int height) @cname("mu_layout_row");
+extern fn void layout_width(MuContext* ctx, int width) @cname("mu_layout_width");
+extern fn void layout_height(MuContext* ctx, int height) @cname("mu_layout_height");
+extern fn void layout_begin_column(MuContext* ctx) @cname("mu_layout_begin_column");
+extern fn void layout_end_column(MuContext* ctx) @cname("mu_layout_end_column");
+extern fn void layout_set_next(MuContext* ctx, MuRect r, int relative) @cname("mu_layout_set_next");
+extern fn MuRect layout_next(MuContext* ctx) @cname("mu_layout_next");
+
+extern fn void draw_control_frame(MuContext* ctx, MuId id, MuRect rect, int colorid, int opt) @cname("mu_draw_control_frame");
+extern fn void draw_control_text(MuContext* ctx, char* str, MuRect rect, int colorid, int opt) @cname("mu_draw_control_text");
+extern fn int mouse_over(MuContext* ctx, MuRect rect) @cname("mu_mouse_over");
+extern fn void update_control(MuContext* ctx, MuId id, MuRect rect, int opt) @cname("mu_update_control");
+
+macro button(ctx, label) { return button_ex(ctx, label, 0, (int)MuOption.ALIGNCENTER); }
+macro textbox(ctx, buf, bufsz, index) { return textbox_ex(ctx, buf, (int)bufsz, index, 0); }
+macro slider(ctx, value, index, lo, hi) { return slider_ex(ctx, (MuReal*)value, index, (MuReal)lo, (MuReal)hi, (MuReal)0, SLIDER_FMT, (int)MuOption.ALIGNCENTER); }
+macro number(ctx, value, index, step) { return number_ex(ctx, value, index, step, SLIDER_FMT, (int)MuOption.ALIGNCENTER); }
+macro header(ctx, label) { return header_ex(ctx, label, 0); }
+macro begin_treenode(ctx, label) { return begin_treenode_ex(ctx, label, 0); }
+macro begin_window(ctx, title, rect) { return begin_window_ex(ctx, title, rect, 0); }
+macro begin_panel(ctx, name) { return begin_panel_ex(ctx, name, 0); }
+
+extern fn void text(MuContext* ctx, char* text) @cname("mu_text");
+extern fn void label(MuContext* ctx, char* text) @cname("mu_label");
+extern fn int button_ex(MuContext* ctx, char* label, int icon, int opt) @cname("mu_button_ex");
+extern fn int checkbox(MuContext* ctx, char* label, int* state) @cname("mu_checkbox");
+extern fn int textbox_raw(MuContext* ctx, char* buf, int bufsz, int* index, MuId id, MuRect r, int opt) @cname("mu_textbox_raw");
+extern fn int textbox_ex(MuContext* ctx, char* buf, int bufsz, int* index, int opt) @cname("mu_textbox_ex");
+extern fn int slider_ex(MuContext* ctx, MuReal* value, int* index, MuReal low, MuReal high, MuReal step, char* fmt, int opt) @cname("mu_slider_ex");
+extern fn int number_ex(MuContext* ctx, MuReal* value, int* index, MuReal step, char* fmt, int opt) @cname("mu_number_ex");
+extern fn int header_ex(MuContext* ctx, char* label, int opt) @cname("mu_header_ex");
+extern fn int begin_treenode_ex(MuContext* ctx, char* label, int opt) @cname("mu_begin_treenode_ex");
+extern fn void end_treenode(MuContext* ctx) @cname("mu_end_treenode");
+extern fn int begin_window_ex(MuContext* ctx, char* title, MuRect rect, int opt) @cname("mu_begin_window_ex");
+extern fn void end_window(MuContext* ctx) @cname("mu_end_window");
+extern fn void open_popup(MuContext* ctx, char* name) @cname("mu_open_popup");
+extern fn int begin_popup(MuContext* ctx, char* name) @cname("mu_begin_popup");
+extern fn void end_popup(MuContext* ctx) @cname("mu_end_popup");
+extern fn void begin_panel_ex(MuContext* ctx, char* name, int opt) @cname("mu_begin_panel_ex");
+extern fn void end_panel(MuContext* ctx) @cname("mu_end_panel");
