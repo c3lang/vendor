@@ -8,15 +8,17 @@ inputs:
   c3l: { required: true }
   cmake_flags: { required: false, default: "" }
   src_path: { required: false, default: "." }
+  # Downloadable Binary Options
   linux_url: { required: false }
   linux_lib: { required: false }
   mac_url: { required: false }
   mac_lib: { required: false }
-  mac_x64_url: { required: false }  # when mac_url is arm-only (webgpu)
+  mac_x64_url: { required: false }
   mac_x64_lib: { required: false }
   win_url: { required: false }
   win_lib: { required: false }
   os: { required: true }
+  # Post-Processing Options
   after_build: { required: false, default: "" }
 
 runs:
@@ -50,19 +52,25 @@ runs:
         mkdir -p "$TARGET_BASE/$TARGET_DIR"
         IS_MAC=0; [[ "${{ inputs.os }}" == "macos-latest" ]] && IS_MAC=1
 
-        fetch_lib() { # url libpath destdir
+        run_hook() {
+          [ -z "$HOOK_SCRIPT" ] && return
+          export TARGET_DIR="$1"
+          ( cd "$GITHUB_WORKSPACE" && printf "%s" "$HOOK_SCRIPT" > run_hook.sh && bash run_hook.sh )
+        }
+
+        fetch_lib() {
           local url="$1" lib="$2" dest="$3" archive
           archive=$(basename "$url")
           curl -fsSL -o "$archive" "$url"
           mkdir -p "$TARGET_BASE/$dest"
           if [[ "$archive" == *.tar.gz ]]; then
-            tar -xzf "$archive" "$lib"
-            cp "$lib" "$TARGET_BASE/$dest/"
+            tar -xzf "$archive" "$lib" && cp "$lib" "$TARGET_BASE/$dest/"
           else
             unzip -j "$archive" "$lib" -d "$TARGET_BASE/$dest/"
           fi
         }
 
+        # Handle pre-compiled binaries if URLs are provided
         if [ "${{ runner.os }}" == "Windows" ]; then
           BIN_URL="${{ inputs.win_url }}"; BIN_LIB="${{ inputs.win_lib }}"
         elif [ "$IS_MAC" = 1 ]; then
@@ -81,29 +89,38 @@ runs:
               cp "$TARGET_BASE/$TARGET_DIR/$(basename "$BIN_LIB")" "$TARGET_BASE/macos-x64/"
             fi
           fi
+          run_hook "$TARGET_DIR"
         else
+          # Otherwise build from source
           git clone ${{ inputs.repo }} -b ${{ inputs.tag }} build_src
           cd build_src
           git submodule update --init --recursive
-          mkdir -p c3_build_temp && cd c3_build_temp
 
-          OSX=()
-          [ "$IS_MAC" = 1 ] && OSX=(-DCMAKE_OSX_ARCHITECTURES=arm64\;x86_64)
-          cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release "${OSX[@]}" ${{ inputs.cmake_flags }} "../${{ inputs.src_path }}"
-          cmake --build . --config Release --parallel 4
+          build_one() {
+            local dest="$1" arch="${2:-}" flags
+            flags="${{ inputs.cmake_flags }}"
+            # Point dependent builds (sdl3_image/ttf) at the matching arch install
+            flags="${flags//sdl3_install/sdl3_install/$dest}"
+            rm -rf c3_build_temp && mkdir c3_build_temp && cd c3_build_temp
+            if [ -n "$arch" ]; then
+              cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="$arch" $flags "../${{ inputs.src_path }}"
+            else
+              cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release $flags "../${{ inputs.src_path }}"
+            fi
+            cmake --build . --config Release --parallel 4
+            mkdir -p "$TARGET_BASE/$dest"
+            find . -type f \( -name "*.a" -o -name "*.lib" \) -exec cp {} "$TARGET_BASE/$dest/" \;
+            cd ..
+            run_hook "$dest"
+          }
 
           if [ "$IS_MAC" = 1 ]; then
-            mkdir -p "$TARGET_BASE/macos-aarch64" "$TARGET_BASE/macos-x64"
-            find . -type f \( -name "*.a" -o -name "*.lib" \) -exec cp {} "$TARGET_BASE/macos-aarch64/" \; -exec cp {} "$TARGET_BASE/macos-x64/" \;
+            build_one macos-aarch64 arm64
+            build_one macos-x64 x86_64
           else
-            find . -type f \( -name "*.a" -o -name "*.lib" \) -exec cp {} "$TARGET_BASE/$TARGET_DIR/" \;
+            build_one "$TARGET_DIR"
           fi
-          cd ../..
-        fi
-
-        if [ -n "$HOOK_SCRIPT" ]; then
-           printf "%s" "$HOOK_SCRIPT" > run_hook.sh
-           bash run_hook.sh
+          cd ..
         fi
 
     - name: Upload Artifact
