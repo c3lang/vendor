@@ -99,6 +99,8 @@ runs:
             local dest="$1" arch="${2:-}" flags
             flags="${{ inputs.cmake_flags }}"
             flags="${flags//sdl3_install/sdl3_install/$dest}"
+            # AVX2 ASTC emits x86_64h on Apple Clang; use SSE4.1 for Intel macOS
+            [ "$arch" = "x86_64" ] && flags="$flags -DASTCENC_ISA_SSE41=ON"
             rm -rf c3_build_temp && mkdir c3_build_temp && cd c3_build_temp
             if [ -n "$arch" ]; then
               cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="$arch" $flags "../${{ inputs.src_path }}"
