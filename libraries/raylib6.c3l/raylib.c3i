@@ -630,7 +630,7 @@ enum RLNPatchLayout
 
 // Callbacks to hook some internal functions
 // WARNING: This callbacks are intended for advance users
-alias RLTraceLogCallback @if($defined(CVaList)) = fn void(RLTraceLogLevel logLevel, ZString text, CVaList args); // Logging: Redirect trace log messages
+alias RLTraceLogCallback @feat(ARCH_32_BIT, WIN32, DARWIN & AARCH64) = fn void(RLTraceLogLevel logLevel, ZString text, CVaList args); // Logging: Redirect trace log messages
 alias RLLoadFileDataCallback = fn char*(ZString file_name, int* data_size);           // FileIO: Load binary data
 alias RLSaveFileDataCallback = fn bool(ZString file_name, void* data, int data_size); // FileIO: Save binary data
 alias RLLoadFileTextCallback = fn char*(ZString file_name);              // FileIO: Load text data
@@ -770,7 +770,7 @@ fn void open_url(ZString url) @cname("OpenURL");                   // Open URL w
 //------------------------------------------------------------------
 fn void set_trace_log_level(RLTraceLogLevel log_level) @cname("SetTraceLogLevel");         // Set the current threshold (minimum) log level
 fn void trace_log(RLTraceLogLevel log_level, ZString text, ...) @cname("TraceLog");        // Show trace log messages (LOG_DEBUG, LOG_INFO, LOG_WARNING, LOG_ERROR...)
-fn void set_trace_log_callback(RLTraceLogCallback callback) @cname("SetTraceLogCallback"); // Set custom trace log
+fn void set_trace_log_callback(RLTraceLogCallback callback) @feat(ARCH_32_BIT, WIN32, DARWIN & AARCH64) @cname("SetTraceLogCallback"); // Set custom trace log
 fn void* mem_alloc(uint size) @cname("MemAlloc");                                         // Internal memory allocator
 fn void* mem_realloc(void* ptr, uint size) @cname("MemRealloc");                          // Internal memory reallocator
 fn void mem_free(void* ptr) @cname("MemFree");                                             // Internal memory free

@@ -12,12 +12,12 @@ fn void test_silent_verbose() @test
 	tinyfd::silent = original_silent;
 }
 
-fn void test_beep() @test @if(false) // makes a beep, little annoying
+fn void test_beep() @test @feat(FALSE) // makes a beep, little annoying
 {
 	tinyfd::beep();
 }
 
-fn void test_notifyPopup() @test @if(false)
+fn void test_notifyPopup() @test @feat(FALSE)
 {
 	tinyfd::notifyPopup("Test", "Test", "info");
 }

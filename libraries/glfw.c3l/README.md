@@ -29,15 +29,8 @@ Simply do `c3c run` to check whether everything is fine (make sure to have `glfw
 
 ## Usage with Vulkan
 
-To use specific features of GLFW for Vulkan (e.g., `glfwCreateWindowSurface`), you need to define `env::GLFW_INCLUDE_VULKAN` as though:
-```c++
-module std::core::env;
-const bool GLFW_INCLUDE_VULKAN = true
-
-module yourmodule;
-import glfw;
-// ...
-```
+To use specific features of GLFW for Vulkan (e.g., `glfwCreateWindowSurface`), you need to pass `-D GLFW_INCLUDE_VULKAN`
+or add `"features" : ["GLFW_INCLUDE_VULKAN"]` to your project.json.
 
 ## Usage with OpenGL
 

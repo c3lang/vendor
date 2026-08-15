@@ -95,12 +95,12 @@ struct RWops
 	uint type;
 	union hidden
 	{
-		struct androidio @if(env::ANDROID)
+		struct androidio @feat(ANDROID)
 		{
 			void *asset;
 		}
 
-		struct windowsio @if(env::WIN32)
+		struct windowsio @feat(WIN32)
 		{
 			bool append;
 			void *h;
