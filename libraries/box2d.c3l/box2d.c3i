@@ -57,10 +57,10 @@ fn B2Version getVersion() @cname("b2GetVersion");
 // Timer for profiling. This has platform specific code and may not work on every platform.
 struct B2Timer
 {
-	long  start      @if(env::WIN32);
-	ulong start_sec  @if(env::LINUX || env::POSIX);
-	ulong start_usec @if(env::LINUX || env::POSIX);
-	int   dummy      @if(!env::WIN32 && !env::LINUX && !env::POSIX);
+	long  start      @feat(WIN32);
+	ulong start_sec  @feat(POSIX);
+	ulong start_usec @feat(POSIX);
+	int   dummy      @feat(!WIN32 & !POSIX);
 }
 
 fn B2Timer createTimer() @cname("b2CreateTimer");

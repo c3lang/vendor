@@ -638,7 +638,7 @@ enum RLNPatchLayout : CInt
 
 // Callbacks to hook some internal functions
 // WARNING: This callbacks are intended for advance users
-alias RLTraceLogCallback @if($defined(CVaList)) = fn void(RLTraceLogLevel logLevel, ZString text, CVaList args); // Logging: Redirect trace log messages
+alias RLTraceLogCallback @feat(ARCH_32_BIT, WIN32, DARWIN & AARCH64) = fn void(RLTraceLogLevel logLevel, ZString text, CVaList args); // Logging: Redirect trace log messages
 alias RLLoadFileDataCallback = fn char*(ZString file_name, CInt* data_size);           // FileIO: Load binary data
 alias RLSaveFileDataCallback = fn bool(ZString file_name, void* data, CInt data_size); // FileIO: Save binary data
 alias RLLoadFileTextCallback = fn char*(ZString file_name);              // FileIO: Load text data
