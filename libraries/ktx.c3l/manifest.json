@@ -44,7 +44,7 @@
 		"macos-x64" : {
 			"link-args" : [],
 			"dependencies" : [],
-			"linked-libraries" : [ "ktx" ]
+			"linked-libraries" : [ "ktx", "astcenc-sse4.1-static", "fmt", "imageio", "ktx_read", "obj_basisu_cbind", "objUtil" ]
 		},
 		"netbsd-aarch64" : {
 			"link-args" : [],

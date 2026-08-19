@@ -77,7 +77,7 @@ jobs:
              if [ "${{ runner.os }}" == "Windows" ]; then
                find "upload_stage/" -type f -name "SDL3-static.lib" -execdir mv {} "SDL3.lib" \; || true
              fi
-             cmake --install build_src/c3_build_temp --config Release --prefix "$GITHUB_WORKSPACE/sdl3_install"
+             cmake --install build_src/c3_build_temp --config Release --prefix "$GITHUB_WORKSPACE/sdl3_install/$TARGET_DIR"
       - name: Upload sdl3 Installation Artifact
         uses: actions/upload-artifact@v6
         with:
@@ -291,6 +291,13 @@ jobs:
             fi
             cp "$LIB_NAME" "$TARGET_BASE/$TARGET_DIR/"
 
+            if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+              clang -arch x86_64 -c -O2 -I"." -I"build_raygui/src" raygui_impl.c -o raygui_impl_x64.o
+              ar rcs "$LIB_NAME" raygui_impl_x64.o
+              mkdir -p "$TARGET_BASE/macos-x64"
+              cp "$LIB_NAME" "$TARGET_BASE/macos-x64/"
+            fi
+
             # Fetch the WebAssembly build and install to emscripten & wasm-32
             if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
               curl -fsSL -o raylib_webassembly.zip https://github.com/raysan5/raylib/releases/download/6.0/raylib-6.0_webassembly.zip
@@ -371,6 +378,8 @@ jobs:
           linux_lib: "libwgpu_native.a"
           mac_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-macos-aarch64-release.zip"
           mac_lib: "libwgpu_native.a"
+          mac_x64_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-macos-x86_64-release.zip"
+          mac_x64_lib: "libwgpu_native.a"
           win_url: "https://github.com/gfx-rs/wgpu-native/releases/download/v0.19.1.1/wgpu-windows-x86_64-release.zip"
           win_lib: "wgpu_native.lib"
           os: ${{ matrix.os }}
@@ -413,6 +422,13 @@ jobs:
           gcc -c tigr.c -o tigr.o
           ar rcs "$LIB_NAME" tigr.o
           cp "$LIB_NAME" "../$TARGET_BASE/$TARGET_DIR/"
+
+          if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            clang -arch x86_64 -c tigr.c -o tigr_x64.o
+            ar rcs "$LIB_NAME" tigr_x64.o
+            mkdir -p "../$TARGET_BASE/macos-x64"
+            cp "$LIB_NAME" "../$TARGET_BASE/macos-x64/"
+          fi
 
       - name: Upload tigr Artifact
         uses: actions/upload-artifact@v6
@@ -464,6 +480,13 @@ jobs:
           fi
           cp "$LIB_NAME" "$TARGET_BASE/$TARGET_DIR/"
 
+          if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            clang -arch x86_64 -c -O2 tinyfiledialogs.c -o tinyfiledialogs_x64.o
+            ar rcs "$LIB_NAME" tinyfiledialogs_x64.o
+            mkdir -p "$TARGET_BASE/macos-x64"
+            cp "$LIB_NAME" "$TARGET_BASE/macos-x64/"
+          fi
+
       - name: Upload tinyfiledialogs Artifact
         uses: actions/upload-artifact@v6
         with:
@@ -512,6 +535,13 @@ jobs:
             ar rcs "$LIB_NAME" sqlite3.o
           fi
           cp "$LIB_NAME" "$TARGET_BASE/$TARGET_DIR/"
+
+          if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            clang -arch x86_64 -c -O3 -fPIC sqlite3.c -o sqlite3_x64.o
+            ar rcs "$LIB_NAME" sqlite3_x64.o
+            mkdir -p "$TARGET_BASE/macos-x64"
+            cp "$LIB_NAME" "$TARGET_BASE/macos-x64/"
+          fi
 
       - name: Upload sqlite3 Artifact
         uses: actions/upload-artifact@v6

@@ -13,6 +13,8 @@ inputs:
   linux_lib: { required: false }
   mac_url: { required: false }
   mac_lib: { required: false }
+  mac_x64_url: { required: false }
+  mac_x64_lib: { required: false }
   win_url: { required: false }
   win_lib: { required: false }
   os: { required: true }
@@ -46,7 +48,7 @@ runs:
           TARGET_DIR="linux-x64"
         fi
 
-        TARGET_BASE="upload_stage/libraries/${{ inputs.c3l }}"
+        TARGET_BASE="$GITHUB_WORKSPACE/upload_stage/libraries/${{ inputs.c3l }}"
         mkdir -p "$TARGET_BASE/$TARGET_DIR"
 
         # Handle pre-compiled binaries if URLs are provided
@@ -72,22 +74,60 @@ runs:
           else
             unzip -j "$ARCHIVE" "$BIN_LIB" -d "$TARGET_BASE/$TARGET_DIR/"
           fi
+          if [[ "${{ inputs.os }}" == "macos-latest" ]]; then
+            mkdir -p "$TARGET_BASE/macos-x64"
+            if [ -n "${{ inputs.mac_x64_url }}" ]; then
+              ARCHIVE=$(basename "${{ inputs.mac_x64_url }}")
+              curl -fsSL -o "$ARCHIVE" "${{ inputs.mac_x64_url }}"
+              if [[ "$ARCHIVE" == *.tar.gz ]]; then
+                tar -xzf "$ARCHIVE" "${{ inputs.mac_x64_lib }}"
+                cp "${{ inputs.mac_x64_lib }}" "$TARGET_BASE/macos-x64/"
+              else
+                unzip -j "$ARCHIVE" "${{ inputs.mac_x64_lib }}" -d "$TARGET_BASE/macos-x64/"
+              fi
+            else
+              cp "$TARGET_BASE/$TARGET_DIR/$(basename "$BIN_LIB")" "$TARGET_BASE/macos-x64/"
+            fi
+          fi
         else
-          # Otherwise build from source
+          # Otherwise build from source (macOS: once per arch)
           git clone ${{ inputs.repo }} -b ${{ inputs.tag }} build_src
           cd build_src
           git submodule update --init --recursive
-          mkdir -p c3_build_temp && cd c3_build_temp
 
-          cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release ${{ inputs.cmake_flags }} "../${{ inputs.src_path }}"
-          cmake --build . --config Release --parallel 4
+          build_one() {
+            local dest="$1" arch="${2:-}" flags
+            flags="${{ inputs.cmake_flags }}"
+            flags="${flags//sdl3_install/sdl3_install/$dest}"
+            # AVX2 ASTC emits x86_64h on Apple Clang; use SSE4.1 for Intel macOS
+            [ "$arch" = "x86_64" ] && flags="$flags -DASTCENC_ISA_SSE41=ON"
+            rm -rf c3_build_temp && mkdir c3_build_temp && cd c3_build_temp
+            if [ -n "$arch" ]; then
+              cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES="$arch" $flags "../${{ inputs.src_path }}"
+            else
+              cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release $flags "../${{ inputs.src_path }}"
+            fi
+            cmake --build . --config Release --parallel 4
+            mkdir -p "$TARGET_BASE/$dest"
+            find . -type f \( -name "*.a" -o -name "*.lib" \) -exec cp {} "$TARGET_BASE/$dest/" \;
+            cd ..
+            if [ -n "$HOOK_SCRIPT" ]; then
+              export TARGET_DIR="$dest"
+              ( cd "$GITHUB_WORKSPACE" && printf "%s" "$HOOK_SCRIPT" > run_hook.sh && bash run_hook.sh )
+            fi
+          }
 
-          find . -type f \( -name "*.a" -o -name "*.lib" \) -exec cp {} "../../$TARGET_BASE/$TARGET_DIR/" \;
-          cd ../..
+          if [[ "${{ inputs.os }}" == "macos-latest" ]]; then
+            build_one macos-aarch64 arm64
+            build_one macos-x64 x86_64
+          else
+            build_one "$TARGET_DIR"
+          fi
+          cd ..
         fi
 
-        # After Build Hook
-        if [ -n "$HOOK_SCRIPT" ]; then
+        # After Build Hook (prebuilt path; source builds run the hook per-arch above)
+        if [ -n "$BIN_URL" ] && [ -n "$HOOK_SCRIPT" ]; then
            printf "%s" "$HOOK_SCRIPT" > run_hook.sh
            bash run_hook.sh
         fi
