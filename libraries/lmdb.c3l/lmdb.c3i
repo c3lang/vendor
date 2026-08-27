@@ -1,0 +1,258 @@
+module lmdb;
+
+constset MdbEnvFlags : uint
+{
+	NONE = 0,
+	FIXEDMAP = 0x01,
+	ENCRYPT = 0x2000,
+	NOSUBDIR = 0x4000,
+	NOSYNC = 0x10000,
+	RDONLY = 0x20000,
+	NOMETASYNC = 0x40000,
+	WRITEMAP = 0x80000,
+	MAPASYNC = 0x100000,
+	NOTLS = 0x200000,
+	NOLOCK = 0x400000,
+	NORDAHEAD = 0x800000,
+	NOMEMINIT = 0x1000000,
+	PREVSNAPSHOT = 0x2000000,
+	REMAP_CHUNKS = 0x4000000,
+}
+
+constset MdbTxnFlags : uint
+{
+	NONE = 0,
+	NOSYNC = 0x10000,
+	RDONLY = 0x20000,
+	NOMETASYNC = 0x40000,
+}
+
+constset MdbDbiFlags : uint
+{
+	NONE = 0,
+	REVERSEKEY = 0x02,
+	DUPSORT = 0x04,
+	INTEGERKEY = 0x08,
+	DUPFIXED = 0x10,
+	INTEGERDUP = 0x20,
+	REVERSEDUP = 0x40,
+	CREATE = 0x40000,
+}
+
+constset MdbWriteFlags : uint
+{
+	NONE = 0,
+	NOOVERWRITE = 0x10,
+	NODUPDATA = 0x20,
+	CURRENT = 0x40,
+	RESERVE = 0x10000,
+	APPEND = 0x20000,
+	APPENDDUP = 0x40000,
+	MULTIPLE = 0x80000,
+}
+
+constset MdbCopyFlags : uint
+{
+	NONE = 0,
+	COMPACT = 0x01,
+}
+
+constset MdbResult : inline int
+{
+	SUCCESS = 0,
+	KEYEXIST = -30799,
+	NOTFOUND = -30798,
+	PAGE_NOTFOUND = -30797,
+	CORRUPTED = -30796,
+	PANIC = -30795,
+	VERSION_MISMATCH = -30794,
+	INVALID = -30793,
+	MAP_FULL = -30792,
+	DBS_FULL = -30791,
+	READERS_FULL = -30790,
+	TLS_FULL = -30789,
+	TXN_FULL = -30788,
+	CURSOR_FULL = -30787,
+	PAGE_FULL = -30786,
+	MAP_RESIZED = -30785,
+	INCOMPATIBLE = -30784,
+	BAD_RSLOT = -30783,
+	BAD_TXN = -30782,
+	BAD_VALSIZE = -30781,
+	BAD_DBI = -30780,
+	PROBLEM = -30779,
+	BAD_CHECKSUM = -30778,
+	CRYPTO_FAIL = -30777,
+	ENV_ENCRYPTION = -30776,
+	TXN_PENDING = -30775,
+	CANT_ROLLBACK = -30774,
+	DBIS_BUSY = -30773,
+	SHORT_WRITE = -30772,
+	ENV_BUSY = -30771,
+	IS_READONLY = -30770,
+	ADDR_BUSY = -30769,
+	LAST_ERRCODE = ADDR_BUSY,
+}
+
+alias MdbEnv = void*;
+alias MdbTxn = void*;
+alias MdbCursor = void*;
+alias MdbDbi = uint;
+alias MdbSize = usz;
+
+// Returned values usually point into the map and expire on update or transaction end.
+struct MdbVal
+{
+	usz size;
+	void* data;
+}
+
+struct MdbStat
+{
+	uint page_size;
+	uint depth;
+	MdbSize branch_pages;
+	MdbSize leaf_pages;
+	MdbSize overflow_pages;
+	MdbSize entries;
+}
+
+struct MdbEnvInfo
+{
+	void* map_address;
+	MdbSize map_size;
+	MdbSize last_page_number;
+	MdbSize last_transaction_id;
+	uint max_readers;
+	uint num_readers;
+}
+
+enum MdbCursorOp
+{
+	FIRST,
+	FIRST_DUP,
+	GET_BOTH,
+	GET_BOTH_RANGE,
+	GET_CURRENT,
+	GET_MULTIPLE,
+	LAST,
+	LAST_DUP,
+	NEXT,
+	NEXT_DUP,
+	NEXT_MULTIPLE,
+	NEXT_NODUP,
+	PREV,
+	PREV_DUP,
+	PREV_NODUP,
+	SET,
+	SET_KEY,
+	SET_RANGE,
+	PREV_MULTIPLE,
+}
+
+alias MdbCmpFunc = fn int(MdbVal* a, MdbVal* b);
+alias MdbRelFunc = fn void(MdbVal* item, void* old_pointer, void* new_pointer, void* context);
+alias MdbEncFunc = fn int(MdbVal* source, MdbVal* destination, MdbVal* key, int encrypt);
+alias MdbSumFunc = fn void(MdbVal* source, MdbVal* destination, MdbVal* key);
+alias MdbAssertFunc = fn void(MdbEnv env, ZString message);
+alias MdbMsgFunc = fn int(ZString message, void* context);
+alias MdbStrToKeyFunc = fn int(ZString password, MdbVal* key);
+
+struct MdbCryptoFuncs
+{
+	MdbStrToKeyFunc str_to_key;
+	MdbEncFunc encrypt;
+	MdbSumFunc checksum;
+	int key_size;
+	int encrypted_checksum_size;
+	int checksum_size;
+}
+
+alias MdbCryptoHooks = fn MdbCryptoFuncs*();
+
+extern fn ZString version(int* major, int* minor, int* patch) @cname("mdb_version");
+extern fn ZString strerror(int error) @cname("mdb_strerror");
+
+extern fn int env_create(MdbEnv* env) @cname("mdb_env_create");
+extern fn int env_open(MdbEnv env, ZString path, MdbEnvFlags flags, uint mode) @cname("mdb_env_open");
+extern fn int env_copy(MdbEnv env, ZString path) @cname("mdb_env_copy");
+extern fn int env_copyfd(MdbEnv env, void* fd) @cname("mdb_env_copyfd") @feat(WIN32);
+extern fn int env_copyfd(MdbEnv env, int fd) @cname("mdb_env_copyfd") @feat(!WIN32);
+extern fn int env_copy2(MdbEnv env, ZString path, MdbCopyFlags flags) @cname("mdb_env_copy2");
+extern fn int env_copyfd2(MdbEnv env, void* fd, MdbCopyFlags flags) @cname("mdb_env_copyfd2") @feat(WIN32);
+extern fn int env_copyfd2(MdbEnv env, int fd, MdbCopyFlags flags) @cname("mdb_env_copyfd2") @feat(!WIN32);
+extern fn int env_incr_dumpfd(MdbEnv env, void* fd, usz transaction_id) @cname("mdb_env_incr_dumpfd") @feat(WIN32);
+extern fn int env_incr_dumpfd(MdbEnv env, int fd, usz transaction_id) @cname("mdb_env_incr_dumpfd") @feat(!WIN32);
+extern fn int env_incr_dump(MdbEnv env, ZString path, usz transaction_id) @cname("mdb_env_incr_dump");
+extern fn int env_incr_loadfd(MdbEnv env, void* fd) @cname("mdb_env_incr_loadfd") @feat(WIN32);
+extern fn int env_incr_loadfd(MdbEnv env, int fd) @cname("mdb_env_incr_loadfd") @feat(!WIN32);
+extern fn int env_stat(MdbEnv env, MdbStat* stat) @cname("mdb_env_stat");
+extern fn int env_info(MdbEnv env, MdbEnvInfo* info) @cname("mdb_env_info");
+extern fn int env_sync(MdbEnv env, int force) @cname("mdb_env_sync");
+extern fn void env_close(MdbEnv env) @cname("mdb_env_close");
+extern fn int env_set_flags(MdbEnv env, MdbEnvFlags flags, int enabled) @cname("mdb_env_set_flags");
+extern fn int env_get_flags(MdbEnv env, MdbEnvFlags* flags) @cname("mdb_env_get_flags");
+extern fn int env_get_path(MdbEnv env, ZString* path) @cname("mdb_env_get_path");
+extern fn int env_get_fd(MdbEnv env, void** fd) @cname("mdb_env_get_fd") @feat(WIN32);
+extern fn int env_get_fd(MdbEnv env, int* fd) @cname("mdb_env_get_fd") @feat(!WIN32);
+extern fn int env_set_mapsize(MdbEnv env, MdbSize size) @cname("mdb_env_set_mapsize");
+extern fn int env_set_pagesize(MdbEnv env, int size) @cname("mdb_env_set_pagesize");
+extern fn int env_set_maxreaders(MdbEnv env, uint readers) @cname("mdb_env_set_maxreaders");
+extern fn int env_get_maxreaders(MdbEnv env, uint* readers) @cname("mdb_env_get_maxreaders");
+extern fn int env_set_maxdbs(MdbEnv env, MdbDbi databases) @cname("mdb_env_set_maxdbs");
+extern fn int env_get_maxkeysize(MdbEnv env) @cname("mdb_env_get_maxkeysize");
+extern fn int env_set_userctx(MdbEnv env, void* context) @cname("mdb_env_set_userctx");
+extern fn void* env_get_userctx(MdbEnv env) @cname("mdb_env_get_userctx");
+extern fn int env_set_assert(MdbEnv env, MdbAssertFunc callback) @cname("mdb_env_set_assert");
+extern fn int env_set_encrypt(MdbEnv env, MdbEncFunc callback, MdbVal* key, uint size) @cname("mdb_env_set_encrypt");
+extern fn int env_set_checksum(MdbEnv env, MdbSumFunc callback, uint size) @cname("mdb_env_set_checksum");
+
+extern fn int txn_begin(MdbEnv env, MdbTxn parent, MdbTxnFlags flags, MdbTxn* transaction) @cname("mdb_txn_begin");
+extern fn MdbEnv txn_env(MdbTxn transaction) @cname("mdb_txn_env");
+extern fn MdbSize txn_id(MdbTxn transaction) @cname("mdb_txn_id");
+extern fn int txn_flags(MdbTxn transaction, MdbTxnFlags* flags) @cname("mdb_txn_flags");
+extern fn int txn_commit(MdbTxn transaction) @cname("mdb_txn_commit");
+extern fn int txn_prepare(MdbTxn transaction) @cname("mdb_txn_prepare");
+extern fn int env_rollback(MdbEnv env, MdbSize transaction_id) @cname("mdb_env_rollback");
+extern fn void txn_abort(MdbTxn transaction) @cname("mdb_txn_abort");
+extern fn void txn_reset(MdbTxn transaction) @cname("mdb_txn_reset");
+extern fn int txn_renew(MdbTxn transaction) @cname("mdb_txn_renew");
+
+extern fn int dbi_open(MdbTxn transaction, ZString name, MdbDbiFlags flags, MdbDbi* database) @cname("mdb_dbi_open");
+extern fn int stat(MdbTxn transaction, MdbDbi database, MdbStat* stat) @cname("mdb_stat");
+extern fn int dbi_flags(MdbTxn transaction, MdbDbi database, MdbDbiFlags* flags) @cname("mdb_dbi_flags");
+extern fn void dbi_close(MdbEnv env, MdbDbi database) @cname("mdb_dbi_close");
+extern fn int drop(MdbTxn transaction, MdbDbi database, int delete_database) @cname("mdb_drop");
+extern fn int set_compare(MdbTxn transaction, MdbDbi database, MdbCmpFunc compare) @cname("mdb_set_compare");
+extern fn int set_dupsort(MdbTxn transaction, MdbDbi database, MdbCmpFunc compare) @cname("mdb_set_dupsort");
+extern fn int set_relfunc(MdbTxn transaction, MdbDbi database, MdbRelFunc relocate) @cname("mdb_set_relfunc");
+extern fn int set_relctx(MdbTxn transaction, MdbDbi database, void* context) @cname("mdb_set_relctx");
+
+extern fn int get(MdbTxn transaction, MdbDbi database, MdbVal* key, MdbVal* data) @cname("mdb_get");
+extern fn int put(MdbTxn transaction, MdbDbi database, MdbVal* key, MdbVal* data, MdbWriteFlags flags) @cname("mdb_put");
+extern fn int del(MdbTxn transaction, MdbDbi database, MdbVal* key, MdbVal* data) @cname("mdb_del");
+
+extern fn int cursor_open(MdbTxn transaction, MdbDbi database, MdbCursor* cursor) @cname("mdb_cursor_open");
+extern fn void cursor_close(MdbCursor cursor) @cname("mdb_cursor_close");
+extern fn int cursor_renew(MdbTxn transaction, MdbCursor cursor) @cname("mdb_cursor_renew");
+extern fn MdbTxn cursor_txn(MdbCursor cursor) @cname("mdb_cursor_txn");
+extern fn MdbDbi cursor_dbi(MdbCursor cursor) @cname("mdb_cursor_dbi");
+extern fn int cursor_is_db(MdbCursor cursor) @cname("mdb_cursor_is_db");
+extern fn int cursor_get(MdbCursor cursor, MdbVal* key, MdbVal* data, MdbCursorOp operation) @cname("mdb_cursor_get");
+extern fn int cursor_put(MdbCursor cursor, MdbVal* key, MdbVal* data, MdbWriteFlags flags) @cname("mdb_cursor_put");
+extern fn int cursor_del(MdbCursor cursor, MdbWriteFlags flags) @cname("mdb_cursor_del");
+extern fn int cursor_count(MdbCursor cursor, MdbSize* count) @cname("mdb_cursor_count");
+extern fn int cmp(MdbTxn transaction, MdbDbi database, MdbVal* a, MdbVal* b) @cname("mdb_cmp");
+extern fn int dcmp(MdbTxn transaction, MdbDbi database, MdbVal* a, MdbVal* b) @cname("mdb_dcmp");
+
+extern fn int reader_list(MdbEnv env, MdbMsgFunc callback, void* context) @cname("mdb_reader_list");
+extern fn int reader_check(MdbEnv env, int* dead) @cname("mdb_reader_check");
+
+extern fn void* modload(ZString file, ZString symbol, MdbCryptoFuncs** functions, ZString* error) @cname("mdb_modload");
+extern fn void modunload(void* handle) @cname("mdb_modunload");
+extern fn void modsetup(MdbEnv env, MdbCryptoFuncs* functions, ZString passphrase) @cname("mdb_modsetup");
+
+macro lmdb::MdbVal String.to_mdbval(&self)
+{
+	return { .size = self.len, .data = self.ptr };
+}

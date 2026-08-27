@@ -1,0 +1,16 @@
+{
+	"provides": "lmdb",
+	"sources": ["lmdb.c3i"],
+	"targets": {
+		"linux-x86": { "linked-libraries": [ "lmdb" ] },
+		"linux-x64": { "linked-libraries": [ "lmdb" ] },
+		"linux-aarch64": { "linked-libraries": [ "lmdb" ] },
+		"macos-x64": { "linked-libraries": [ "lmdb" ] },
+		"macos-aarch64": { "linked-libraries": [ "lmdb" ] },
+		"freebsd-x86": { "link-args": [ "-L /usr/local/lib" ], "linked-libraries": [ "lmdb" ] },
+		"freebsd-x64": { "link-args": [ "-L /usr/local/lib" ], "linked-libraries": [ "lmdb" ] },
+		"openbsd-x86": { "link-args": [ "-L /usr/local/lib" ], "linked-libraries": [ "lmdb" ] },
+		"openbsd-x64": { "link-args": [ "-L /usr/local/lib" ], "linked-libraries": [ "lmdb" ] },
+		"windows-x64": { "linked-libraries": [ "lmdb", "advapi32" ] }
+	}
+}
