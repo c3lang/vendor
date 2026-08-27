@@ -10,6 +10,7 @@
 			"sources": ["test/**"],
 			"dependencies": [
 				"sqlite3",
+				"lmdb",
 				"curl",
 				"lz4",
 			  	"raylib6",
