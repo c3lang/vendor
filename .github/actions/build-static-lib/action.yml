@@ -74,19 +74,16 @@ runs:
           else
             unzip -j "$ARCHIVE" "$BIN_LIB" -d "$TARGET_BASE/$TARGET_DIR/"
           fi
-          if [[ "${{ inputs.os }}" == "macos-latest" ]]; then
+          # Optional separate Intel macOS prebuilt (do not reuse aarch64/generic binaries)
+          if [[ "${{ inputs.os }}" == "macos-latest" ]] && [ -n "${{ inputs.mac_x64_url }}" ]; then
             mkdir -p "$TARGET_BASE/macos-x64"
-            if [ -n "${{ inputs.mac_x64_url }}" ]; then
-              ARCHIVE=$(basename "${{ inputs.mac_x64_url }}")
-              curl -fsSL -o "$ARCHIVE" "${{ inputs.mac_x64_url }}"
-              if [[ "$ARCHIVE" == *.tar.gz ]]; then
-                tar -xzf "$ARCHIVE" "${{ inputs.mac_x64_lib }}"
-                cp "${{ inputs.mac_x64_lib }}" "$TARGET_BASE/macos-x64/"
-              else
-                unzip -j "$ARCHIVE" "${{ inputs.mac_x64_lib }}" -d "$TARGET_BASE/macos-x64/"
-              fi
+            ARCHIVE=$(basename "${{ inputs.mac_x64_url }}")
+            curl -fsSL -o "$ARCHIVE" "${{ inputs.mac_x64_url }}"
+            if [[ "$ARCHIVE" == *.tar.gz ]]; then
+              tar -xzf "$ARCHIVE" "${{ inputs.mac_x64_lib }}"
+              cp "${{ inputs.mac_x64_lib }}" "$TARGET_BASE/macos-x64/"
             else
-              cp "$TARGET_BASE/$TARGET_DIR/$(basename "$BIN_LIB")" "$TARGET_BASE/macos-x64/"
+              unzip -j "$ARCHIVE" "${{ inputs.mac_x64_lib }}" -d "$TARGET_BASE/macos-x64/"
             fi
           fi
         else
