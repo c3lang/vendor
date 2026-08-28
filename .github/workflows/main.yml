@@ -368,7 +368,8 @@ jobs:
           repo: https://github.com/raysan5/raylib.git
           tag: "5.0"
           c3l: raylib5.c3l
-          cmake_flags: "-DBUILD_EXAMPLES=OFF"
+          # raylib 5.0 requires CMake 3.0; modern CMake needs POLICY_VERSION_MINIMUM
+          cmake_flags: "-DBUILD_EXAMPLES=OFF -DCMAKE_POLICY_VERSION_MINIMUM=3.5"
           linux_url: "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_linux_amd64.tar.gz"
           linux_lib: "raylib-5.0_linux_amd64/lib/libraylib.a"
           win_url: "https://github.com/raysan5/raylib/releases/download/5.0/raylib-5.0_win64_msvc16.zip"
