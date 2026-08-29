@@ -1,6 +1,6 @@
 <*
 	Tracy bindings. Converted from:
-	https://github.com/wolfpld/tracy/blob/cae9bf0bef7968c36c5fd254cf89b08596dd45e6/public/tracy/TracyC.h
+	https://github.com/wolfpld/tracy/blob/v0.14.1/public/tracy/TracyC.h
 *>
 module tracy;
 
