@@ -1,0 +1,24 @@
+{
+  "provides" : "tracy",
+  "sources": [ "tracy.c3i", "src/**" ],
+	"targets" : {
+		"linux-x86" : {
+			"linked-libraries" : ["TracyClient", "stdc++"]
+		},
+		"linux-x64" : {
+			"linked-libraries" : ["TracyClient", "stdc++"]
+		},
+		"linux-aarch64": {
+			"linked-libraries" : ["TracyClient", "stdc++"]
+		},
+		"macos-x64" : {
+			"linked-libraries" : ["TracyClient", "c++"]
+		},
+		"macos-aarch64": {
+			"linked-libraries" : ["TracyClient", "c++"]
+		},
+		"windows-x64" : {
+			"linked-libraries" : ["TracyClient"]
+		}
+	}
+}
