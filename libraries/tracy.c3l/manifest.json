@@ -1,0 +1,11 @@
+{
+  "provides" : "tracy",
+  "sources": [ "tracy.c3i", "src/**" ],
+  "targets" : {
+    "linux-x64" : {
+      "link-args" : [],
+      "dependencies" : [],
+      "linked-libraries" : []
+    },
+  }
+}

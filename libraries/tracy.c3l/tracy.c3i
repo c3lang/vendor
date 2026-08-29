@@ -1,0 +1,492 @@
+<*
+	Tracy bindings. Converted from:
+	https://github.com/wolfpld/tracy/blob/cae9bf0bef7968c36c5fd254cf89b08596dd45e6/public/tracy/TracyC.h
+*>
+module tracy;
+
+const ON_DEMAND @weak = false;
+const MANUAL_LIFETIME @weak = false;
+const FIBER @weak = false;
+
+constdef TracyPlotFormatEnum : inline int
+{
+    NUMBER,
+    MEMORY,
+    PERCENTAGE,
+    WATT,
+}
+
+constdef TracyMessageSeverity : inline ichar
+{
+    TRACE,
+    DEBUG,
+    INFO,
+    WARNING,
+    ERROR,
+    FATAL,
+}
+
+module std::core::env;
+const bool TRACY_DISABLE = $feat(TRACY_DISABLE);
+
+module tracy @feat(!TRACY_DISABLE) @link(!$feat(TRACY_DISABLE), "TracyClient");
+import std::collections::list, std::collections::map;
+import std::thread;
+
+extern fn void ___tracy_set_thread_name(ZString name) @builtin;
+
+struct TracySourceLocationData
+{
+    ZString name;
+    ZString function;
+    ZString file;
+    uint line;
+    uint color;
+}
+
+struct TracyCZoneContext
+{
+    uint id;
+    int active;
+    ulong connectionId @feat(ON_DEMAND);
+}
+
+struct TracyGpuTimeData
+{
+    long gpuTime;
+    ushort queryId;
+    char context;
+}
+
+struct TracyGpuZoneBeginData
+{
+    ulong srcloc;
+    ushort queryId;
+    char context;
+}
+
+struct TracyGpuZoneBeginCallstackData
+{
+    ulong srcloc;
+    int depth;
+    ushort queryId;
+    char context;
+}
+
+struct TracyGpuZoneEndData
+{
+    ushort queryId;
+    char context;
+}
+
+struct TracyGpuNewContextData
+{
+    long gpuTime;
+    float period;
+    char context;
+    char flags;
+    char type;
+}
+
+struct TracyGpuContextNameData
+{
+    char context;
+    ZString name;
+    ushort len;
+}
+
+struct TracyGpuCalibrationData
+{
+    long gpuTime;
+    long cpuDelta;
+    char context;
+}
+
+struct TracyGpuTimeSyncData
+{
+    long gpuTime;
+    char context;
+}
+
+alias TracyLockableContextData = void;
+alias TracySharedLockableContextData = void;
+
+alias TracyCZoneCtx = TracyCZoneContext;
+
+alias TracyCLockCtx = TracyLockableContextData*;
+alias TracyCSharedLockCtx = TracySharedLockableContextData*;
+
+extern fn void ___tracy_startup_profiler() @builtin @feat(MANUAL_LIFETIME);
+extern fn void ___tracy_shutdown_profiler() @builtin @feat(MANUAL_LIFETIME);
+extern fn int ___tracy_profiler_started() @builtin @feat(MANUAL_LIFETIME);
+
+extern fn ulong ___tracy_alloc_srcloc(uint line, ZString source, sz sourceSz, ZString function, sz functionSz, uint color) @builtin;
+extern fn ulong ___tracy_alloc_srcloc_name(uint line, ZString source, sz sourceSz, ZString function, sz functionSz, ZString name, sz nameSz, uint color) @builtin;
+
+extern fn TracyCZoneCtx ___tracy_emit_zone_begin(TracySourceLocationData* srcloc, int active) @builtin;
+extern fn TracyCZoneCtx ___tracy_emit_zone_begin_callstack(TracySourceLocationData* srcloc, int depth, int active) @builtin;
+extern fn TracyCZoneCtx ___tracy_emit_zone_begin_alloc(ulong srcloc, int active) @builtin;
+extern fn TracyCZoneCtx ___tracy_emit_zone_begin_alloc_callstack(ulong srcloc, int depth, int active) @builtin;
+extern fn void ___tracy_emit_zone_end(TracyCZoneCtx ctx) @builtin;
+extern fn void ___tracy_emit_zone_text(TracyCZoneCtx ctx, ZString txt, sz size) @builtin;
+extern fn void ___tracy_emit_zone_text_fmt(TracyCZoneCtx ctx, ZString fmt, ...) @builtin;
+extern fn void ___tracy_emit_zone_name(TracyCZoneCtx ctx, ZString txt, sz size) @builtin;
+extern fn void ___tracy_emit_zone_name_fmt(TracyCZoneCtx ctx, ZString fmt, ...) @builtin;
+extern fn void ___tracy_emit_zone_color(TracyCZoneCtx ctx, uint color) @builtin;
+extern fn void ___tracy_emit_zone_value(TracyCZoneCtx ctx, ulong value) @builtin;
+
+extern fn void ___tracy_emit_gpu_zone_begin(TracyGpuZoneBeginData) @builtin;
+extern fn void ___tracy_emit_gpu_zone_begin_callstack(TracyGpuZoneBeginCallstackData) @builtin;
+extern fn void ___tracy_emit_gpu_zone_begin_alloc(TracyGpuZoneBeginData) @builtin;
+extern fn void ___tracy_emit_gpu_zone_begin_alloc_callstack(TracyGpuZoneBeginCallstackData) @builtin;
+extern fn void ___tracy_emit_gpu_zone_end(TracyGpuZoneEndData) @builtin;
+extern fn void ___tracy_emit_gpu_time(TracyGpuTimeData) @builtin;
+extern fn void ___tracy_emit_gpu_new_context(TracyGpuNewContextData) @builtin;
+extern fn void ___tracy_emit_gpu_context_name(TracyGpuContextNameData) @builtin;
+extern fn void ___tracy_emit_gpu_calibration(TracyGpuCalibrationData) @builtin;
+extern fn void ___tracy_emit_gpu_time_sync(TracyGpuTimeSyncData) @builtin;
+
+extern fn void ___tracy_emit_gpu_zone_begin_serial(TracyGpuZoneBeginData) @builtin;
+extern fn void ___tracy_emit_gpu_zone_begin_callstack_serial(TracyGpuZoneBeginCallstackData) @builtin;
+extern fn void ___tracy_emit_gpu_zone_begin_alloc_serial(TracyGpuZoneBeginData) @builtin;
+extern fn void ___tracy_emit_gpu_zone_begin_alloc_callstack_serial(TracyGpuZoneBeginCallstackData) @builtin;
+extern fn void ___tracy_emit_gpu_zone_end_serial(TracyGpuZoneEndData) @builtin;
+extern fn void ___tracy_emit_gpu_time_serial(TracyGpuTimeData) @builtin;
+extern fn void ___tracy_emit_gpu_new_context_serial(TracyGpuNewContextData) @builtin;
+extern fn void ___tracy_emit_gpu_context_name_serial(TracyGpuContextNameData) @builtin;
+extern fn void ___tracy_emit_gpu_calibration_serial(TracyGpuCalibrationData) @builtin;
+extern fn void ___tracy_emit_gpu_time_sync_serial(TracyGpuTimeSyncData) @builtin;
+
+extern fn int ___tracy_connected() @builtin;
+
+extern fn void ___tracy_emit_memory_alloc(void* ptr, sz size) @builtin;
+extern fn void ___tracy_emit_memory_alloc_callstack(void* ptr, sz size, int depth) @builtin;
+extern fn void ___tracy_emit_memory_free(void* ptr) @builtin;
+extern fn void ___tracy_emit_memory_free_callstack(void* ptr, int depth) @builtin;
+extern fn void ___tracy_emit_memory_alloc_named(void* ptr, sz size, ZString name) @builtin;
+extern fn void ___tracy_emit_memory_alloc_callstack_named(void* ptr, sz size, int depth, ZString name) @builtin;
+extern fn void ___tracy_emit_memory_free_named(void* ptr, ZString name) @builtin;
+extern fn void ___tracy_emit_memory_free_callstack_named(void* ptr, int depth, ZString name) @builtin;
+extern fn void ___tracy_emit_memory_discard(ZString name) @builtin;
+extern fn void ___tracy_emit_memory_discard_callstack(ZString name, int depth) @builtin;
+
+extern fn void ___tracy_emit_logString(ichar severity, int color, int callstack_depth, sz size, ZString txt) @builtin;
+extern fn void ___tracy_emit_logStringL(ichar severity, int color, int callstack_depth, ZString txt) @builtin;
+
+extern fn void ___tracy_emit_frame_mark(ZString name) @builtin;
+extern fn void ___tracy_emit_frame_mark_start(ZString name) @builtin;
+extern fn void ___tracy_emit_frame_mark_end(ZString name) @builtin;
+extern fn void ___tracy_emit_frame_image(void* image, ushort w, ushort h, char offset, int flip) @builtin;
+
+extern fn void ___tracy_emit_plot(ZString name, double val) @builtin;
+extern fn void ___tracy_emit_plot_float(ZString name, float val) @builtin;
+extern fn void ___tracy_emit_plot_int(ZString name, long val) @builtin;
+extern fn void ___tracy_emit_plot_config(ZString name, int type, int step, int fill, uint color) @builtin;
+extern fn void ___tracy_emit_message_appinfo(ZString txt, sz size) @builtin;
+
+extern fn TracyLockableContextData* ___tracy_announce_lockable_ctx(TracySourceLocationData* srcloc) @builtin;
+extern fn void ___tracy_terminate_lockable_ctx(TracyLockableContextData* lockdata) @builtin;
+extern fn int ___tracy_before_lock_lockable_ctx(TracyLockableContextData* lockdata) @builtin;
+extern fn void ___tracy_after_lock_lockable_ctx(TracyLockableContextData* lockdata) @builtin;
+extern fn void ___tracy_after_unlock_lockable_ctx(TracyLockableContextData* lockdata) @builtin;
+extern fn void ___tracy_after_try_lock_lockable_ctx(TracyLockableContextData* lockdata, int acquired) @builtin;
+extern fn void ___tracy_mark_lockable_ctx(TracyLockableContextData* lockdata, TracySourceLocationData* srcloc) @builtin;
+extern fn void ___tracy_custom_name_lockable_ctx(TracyLockableContextData* lockdata, ZString name, sz nameSz) @builtin;
+
+extern fn TracySharedLockableContextData* ___tracy_announce_shared_lockable_ctx(TracySourceLocationData* srcloc) @builtin;
+extern fn void ___tracy_terminate_shared_lockable_ctx(TracySharedLockableContextData* lockdata) @builtin;
+extern fn int ___tracy_before_lock_shared_lockable_ctx(TracySharedLockableContextData* lockdata) @builtin;
+extern fn void ___tracy_after_lock_shared_lockable_ctx(TracySharedLockableContextData* lockdata) @builtin;
+extern fn void ___tracy_after_unlock_shared_lockable_ctx(TracySharedLockableContextData* lockdata) @builtin;
+extern fn void ___tracy_after_try_lock_shared_lockable_ctx(TracySharedLockableContextData* lockdata, int acquired) @builtin;
+extern fn int ___tracy_before_lock_shared_shared_lockable_ctx(TracySharedLockableContextData* lockdata) @builtin;
+extern fn void ___tracy_after_lock_shared_shared_lockable_ctx(TracySharedLockableContextData* lockdata) @builtin;
+extern fn void ___tracy_after_unlock_shared_shared_lockable_ctx(TracySharedLockableContextData* lockdata) @builtin;
+extern fn void ___tracy_after_try_lock_shared_shared_lockable_ctx(TracySharedLockableContextData* lockdata, int acquired) @builtin;
+extern fn void ___tracy_mark_shared_lockable_ctx(TracySharedLockableContextData* lockdata, TracySourceLocationData* srcloc) @builtin;
+extern fn void ___tracy_custom_name_shared_lockable_ctx(TracySharedLockableContextData* lockdata, ZString name, sz nameSz) @builtin;
+
+extern fn int ___tracy_begin_sampling_profiling() @builtin;
+extern fn void ___tracy_end_sampling_profiling() @builtin;
+
+extern fn void ___tracy_fiber_enter(ZString fiber) @feat(FIBER);
+extern fn void ___tracy_fiber_leave() @feat(FIBER);
+
+extern fn long ___tracy_get_time() @builtin;
+
+bool initialized @local;
+macro void init() @local
+{
+	lock_map_mutex.init();
+	shared_lock_map_mutex.init();
+}
+
+macro void thread_name(ZString $name) => ___tracy_set_thread_name($name);
+
+macro int is_started() @feat(MANUAL_LIFETIME) => ___tracy_profiler_started();
+macro int is_started() @feat(!MANUAL_LIFETIME) => 1;
+
+const MAX_ZONE_STORAGE @weak = 16384;
+tlocal TracySourceLocationData[MAX_ZONE_STORAGE] zone_source_list;
+tlocal List{TracyCZoneCtx} zone_ctx_queue = list::ONHEAP;
+
+macro void zone(ZString $name = null, uint color = 0, bool active = true)
+{
+	TracySourceLocationData* source = &zone_source_list[@str_hash($$FILEPATH +++ $$LINE) % MAX_ZONE_STORAGE];
+	*source = {
+		.name = $name,
+		.function = $$FUNC,
+		.file = $$FILEPATH,
+		.line = $$LINE,
+		.color = color,
+	};
+	zone_ctx_queue.push(___tracy_emit_zone_begin_callstack(source, 0, (int)active));
+}
+macro void zone_end() => ___tracy_emit_zone_end(zone_ctx_queue.pop()!!);
+macro @zone_scope(ZString $name = null, uint color = 0, bool active = true; @body())
+{
+	zone($name, color, active);
+	defer zone_end();
+	@body();
+}
+/**	These are kept separate for clearer inspection of the code.
+	I did not like having:
+	```
+	tracy::zone("Some Zone");
+	tracy::zone_info(color: 0x89b4fa);
+	// ...compared to:
+	tracy::zone("Some Zone");
+	tracy::zone_color(0x89b4fa);
+	```
+**/
+macro void zone_text(String $text) => ___tracy_emit_zone_text(zone_ctx_queue.last()!!, $text.ptr, $text.len);
+macro void zone_text_f(ZString $fmt, ...) => ___tracy_emit_zone_text_fmt(zone_ctx_queue.last()!!, $fmt, ...$vaarg);
+macro void zone_name(String $text) => ___tracy_emit_zone_name(zone_ctx_queue.last()!!, $text.ptr, $text.len);
+macro void zone_name_f(ZString $fmt, ...) => ___tracy_emit_zone_name_fmt(zone_ctx_queue.last()!!, $fmt, ...$vaarg);
+macro void zone_color(uint color) => ___tracy_emit_zone_color(zone_ctx_queue.last()!!, color);
+macro void zone_value(ulong value) => ___tracy_emit_zone_value(zone_ctx_queue.last()!!, value);
+
+macro void alloc(void* ptr, sz size) => ___tracy_emit_memory_alloc_callstack(ptr, size, 0);
+macro void free(void* ptr) => ___tracy_emit_memory_free_callstack(ptr, 0);
+macro void memory_discard(ZString $name) => ___tracy_emit_memory_discard_callstack($name, 0);
+macro void alloc_n(void* ptr, sz size, ZString $name) => ___tracy_emit_memory_alloc_callstack_named(ptr, size, 0, $name);
+macro void free_n(void* ptr, ZString $name) => ___tracy_emit_memory_free_callstack_named(ptr, 0, $name);
+
+macro void message(String $text, TracyMessageSeverity severity = INFO, int color = 0)
+	=> ___tracy_emit_logString(severity, color, 0, $text.len, (ZString)$text.ptr);
+
+macro void frame_mark(ZString $name = null) => ___tracy_emit_frame_mark($name);
+macro void frame_mark_start(ZString $name) => ___tracy_emit_frame_mark_start($name);
+macro void frame_mark_end(ZString $name) => ___tracy_emit_frame_mark_end($name);
+macro void frame_image(void* image, ushort width, ushort height, char offset, bool flip = false)
+	=> ___tracy_emit_frame_image(image, width, height, offset, (int)flip);
+
+macro type_is_plottable($Type) @const @private
+	=>  $Type == double
+	||| $Type == float
+	||| types::is_intlike($Type);
+<*
+	$require type_is_plottable($Typeof(val)) : "Cannot plot this type of value.";
+*>
+macro void plot(ZString $name, val)
+{
+	$switch $Typeof(val):
+	$case double:
+	___tracy_emit_plot($name, val);
+	$case float:
+	___tracy_emit_plot_float($name, val);
+	$endswitch
+	___tracy_emit_plot_int($name, (int)val);
+}
+macro void plot_config(ZString $name, TracyPlotFormatEnum type = NUMBER, bool step = false, bool fill = true, uint color = 0)
+	=> ___tracy_emit_plot_config($name, type, (int)step, (int)fill, color);
+macro void app_info(String $text) => ___tracy_emit_message_appinfo($text.ptr, $text.len);
+
+macro void zone_s(int depth, ZString $name = null, uint color = 0, bool active = true)
+{
+	TracySourceLocationData source = {
+		.name = $name,
+		.function = $$FUNC,
+		.file = $$FILEPATH,
+		.line = $$LINE,
+		.color = color,
+	};
+	zone_ctx_queue.push(___tracy_emit_zone_begin_callstack(&source, depth, (int)active));
+}
+macro void alloc_s(int depth, void* ptr, sz size) => ___tracy_emit_memory_alloc_callstack(ptr, size, depth);
+macro void free_s(int depth, void* ptr) => ___tracy_emit_memory_free_callstack(ptr, depth);
+macro void memory_discard_s(int depth, ZString $name) => ___tracy_emit_memory_discard_callstack($name, depth);
+macro void alloc_ns(int depth, void* ptr, sz size, ZString $name) => ___tracy_emit_memory_alloc_callstack_named(ptr, size, depth, $name);
+macro void free_ns(int depth, void* ptr, ZString $name) => ___tracy_emit_memory_free_callstack_named(ptr, depth, $name);
+macro void message_s(int depth, TracyMessageSeverity severity = INFO, String $text, uint color = 0)
+	=> ___tracy_emit_logString(severity, color, depth, $text.len, $text.ptr);
+
+Mutex lock_map_mutex;
+HashMap{String, TracyCLockCtx} lock_map = map::ONHEAP;
+Mutex shared_lock_map_mutex;
+HashMap{String, TracyCSharedLockCtx} shared_lock_map = map::ONHEAP;
+
+macro get_lock_ctx(String $lock_name) @local => lock_map_mutex.@in_lock() { return lock_map[$lock_name]; }
+macro get_shared_lock_ctx(String $lock_name) @local => shared_lock_map_mutex.@in_lock() { return shared_lock_map[$lock_name]; }
+
+<*
+	@require !lock_map.has_key(lock_name) : "Lock already announced"
+*>
+macro void lock_announce(String $lock_name)
+{
+	if (!initialized) init();
+	TracySourceLocationData source = {
+		.name = null,
+		.function = $$FUNC,
+		.file = $$FILE,
+		.line = $$LINE,
+		.color = 0,
+	};
+	TracyLockCtx lock_ctx = ___tracy_announce_lockable_ctx(&source);
+	___tracy_custom_name_lockable_ctx(lock_ctx, $lock_name.ptr, $lock_name.len);
+	lock_map_mutex.@in_lock() {
+		lock_map[$lock_name] = lock_ctx;
+	};
+}
+macro void lock_mark(String $lock_name)
+{
+	TracySourceLocationData source = {
+		.name = null,
+		.function = $$FUNC,
+		.file = $$FILE,
+		.line = $$LINE,
+		.color = 0,
+	};
+	___tracy_mark_lockable_ctx(get_lock_ctx($lock_name), &source);
+}
+macro void lock_terminate(String $lock_name) => ___tracy_terminate_lockable_ctx(get_lock_ctx($lock_name));
+macro void lock_before_lock(String $lock_name) => ___tracy_before_lock_lockable_ctx(get_lock_ctx($lock_name));
+macro void lock_after_lock(String $lock_name) => ___tracy_after_lock_lockable_ctx(get_lock_ctx($lock_name));
+macro void lock_after_unlock(String $lock_name) => ___tracy_after_unlock_lockable_ctx(get_lock_ctx($lock_name));
+macro void lock_after_try_lock(String $lock_name, bool acquired) => ___tracy_after_try_lock_lockable_ctx(get_lock_ctx($lock_name), acquired);
+
+<*
+	@require !shared_lock_map.has_key(lock_name) : "Lock already announced"
+*>
+macro void shared_lock_announce(String $lock_name)
+{
+	if (!initialized) init();
+	TracySourceLocationData source = {
+		.name = null,
+		.function = $$FUNC,
+		.file = $$FILE,
+		.line = $$LINE,
+		.color = 0,
+	};
+	TracyLockCtx lock_ctx = ___tracy_announce_shared_lockable_ctx(&source);
+	___tracy_custom_name_shared_lockable_ctx(lock_ctx, $lock_name.ptr, $lock_name.len);
+	lock_map_mutex.@in_lock() {
+		lock_map[$lock_name] = lock_ctx;
+	};
+}
+macro void shared_lock_mark(String $lock_name)
+{
+	TracySourceLocationData source = {
+		.name = null,
+		.function = $$FUNC,
+		.file = $$FILE,
+		.line = $$LINE,
+		.color = 0,
+	};
+	___tracy_mark_shared_lockable_ctx(get_lock_ctx($lock_name), &source);
+}
+macro void shared_lock_terminate(String $lock_name) => ___tracy_terminate_shared_lockable_ctx(get_shared_lock_ctx($lock_name));
+macro void shared_lock_before_lock(String $lock_name) => ___tracy_before_lock_shared_lockable_ctx(get_shared_lock_ctx($lock_name));
+macro void shared_lock_after_lock(String $lock_name) => ___tracy_after_lock_shared_lockable_ctx(get_shared_lock_ctx($lock_name));
+macro void shared_lock_after_unlock(String $lock_name) => ___tracy_after_unlock_shared_lockable_ctx(get_shared_lock_ctx($lock_name));
+macro void shared_lock_after_try_lock(String $lock_name, bool acquired) => ___tracy_after_try_lock_shared_lockable_ctx(get_shared_lock_ctx($lock_name), (int)acquired);
+macro void shared_lock_before_shared_lock(String $lock_name) => ___tracy_before_lock_shared_shared_lockable_ctx(get_shared_lock_ctx($lock_name));
+macro void shared_lock_after_shared_lock(String $lock_name) => ___tracy_after_lock_shared_shared_lockable_ctx(get_shared_lock_ctx($lock_name));
+macro void shared_lock_after_shared_unlock(String $lock_name) => ___tracy_after_unlock_shared_shared_lockable_ctx(get_shared_lock_ctx($lock_name));
+macro void shared_lock_after_try_shared_lock(String $lock_name, bool acquired) => ___tracy_after_try_lock_shared_shared_lockable_ctx(get_shared_lock_ctx($lock_name), (int)acquired);
+
+macro int is_connected() => ___tracy_connected();
+
+macro int begin_sampling_profiling() => ___tracy_begin_sampling_profiling();
+macro void end_sampling_profiling() => ___tracy_end_sampling_profiling();
+
+macro void fiber_enter(ZString fiber) @feat(FIBER) => ___tracy_fiber_enter(fiber);
+macro void fiber_leave() @feat(FIBER) => ___tracy_fiber_leave();
+
+module tracy @feat(TRACY_DISABLE);
+
+macro void thread_name(ZString $name) {}
+
+macro int is_started() @feat(MANUAL_LIFETIME) => 0;
+
+macro void zone(ZString $name = null, uint color = 0, bool active = true) {}
+macro void zone_end() {}
+macro @zone_scope(ZString $name = null, uint color = 0, bool active = true; @body()) => @body();
+macro void zone_text(String $text) {}
+macro void zone_text_f(ZString $fmt, ...) {}
+macro void zone_name(String $text) {}
+macro void zone_name_f(ZString $fmt, ...) {}
+macro void zone_color(uint color) {}
+macro void zone_value(ulong value) {}
+
+macro void alloc(void* ptr, sz size) {}
+macro void free(void* ptr) {}
+macro void memory_discard(ZString $name) {}
+macro void alloc_n(void* ptr, sz size, ZString $name) {}
+macro void free_n(void* ptr, ZString $name) {}
+
+macro void message(String $text, TracyMessageSeverity severity = INFO, int color = 0) {}
+
+macro void frame_mark(ZString $name = null) {}
+macro void frame_mark_start(ZString $name) {}
+macro void frame_mark_end(ZString $name) {}
+macro void frame_image(void* image, ushort width, ushort height, char offset, bool flip) {}
+
+<*
+	$require type_is_plottable($Typeof(val)) : "Cannot plot this type of value.";
+*>
+macro void plot(ZString $name, val) {}
+macro void plot_config(ZString $name, TracyPlotFormatEnum type = NUMBER, bool step = false, bool fill = true, uint color = 0) {}
+macro void app_info(String $text) {}
+
+macro void zone_s(int depth, ZString $name = null, uint color = 0, bool active = true) {}
+macro void alloc_s(int depth, void* ptr, sz size) {}
+macro void free_s(int depth, void* ptr) {}
+macro void memory_discard_s(int depth, ZString $name) {}
+macro void alloc_ns(int depth, void* ptr, sz size, ZString $name) {}
+macro void free_ns(int depth, void* ptr, ZString $name) {}
+macro void message_s(int depth, TracyMessageSeverity severity = INFO, String $text, uint color = 0) {}
+
+<*
+	@require !lock_map.has_key(lock_name) : "Lock already announced"
+*>
+macro void lock_announce(String $lock_name) {}
+macro void lock_mark(String $lock_name) {}
+macro void lock_terminate(String $lock_name) {}
+macro void lock_before_lock(String $lock_name) {}
+macro void lock_after_lock(String $lock_name) {}
+macro void lock_after_unlock(String $lock_name) {}
+macro void lock_after_try_lock(String $lock_name, bool acquired) {}
+
+<*
+	@require !shared_lock_map.has_key(lock_name) : "Lock already announced"
+*>
+macro void shared_lock_announce(String $lock_name) {}
+macro void shared_lock_mark(String $lock_name) {}
+macro void shared_lock_terminate(String $lock_name) {}
+macro void shared_lock_before_lock(String $lock_name) {}
+macro void shared_lock_after_lock(String $lock_name) {}
+macro void shared_lock_after_unlock(String $lock_name) {}
+macro void shared_lock_after_try_lock(String $lock_name, bool acquired) {}
+macro void shared_lock_before_shared_lock(String $lock_name) {}
+macro void shared_lock_after_shared_lock(String $lock_name) {}
+macro void shared_lock_after_shared_unlock(String $lock_name) {}
+macro void shared_lock_after_try_shared_lock(String $lock_name, bool acquired) {}
+
+macro int is_connected() => 0;
+
+macro int begin_sampling_profiling() => 0;
+macro void end_sampling_profiling() {}
+
+macro void fiber_enter(ZString fiber) @feat(FIBER) {}
+macro void fiber_leave() @feat(FIBER) {}

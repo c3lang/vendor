@@ -28,6 +28,7 @@
 				"vulkan",
 				"tinyfiledialogs",
 				"ktx",
+				"tracy",
 				"clang",
 				"tigr",
 				"webgpu",
