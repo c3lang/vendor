@@ -13,8 +13,10 @@ inputs:
   linux_lib: { required: false }
   mac_url: { required: false }
   mac_lib: { required: false }
-  win_url: { required: false }
-  win_lib: { required: false }
+  win_arm64_url: { required: false }
+  win_arm64_lib: { required: false }
+  win_amd64_url: { required: false }
+  win_amd64_lib: { required: false }
   os: { required: true }
   # Post-Processing Options
   after_build: { required: false, default: "" }
@@ -39,7 +41,11 @@ runs:
       run: |
         set -x
         if [ "${{ runner.os }}" == "Windows" ]; then
-          TARGET_DIR="windows-x64"
+          if [[ "${{ inputs.os }}" == "windows-11-arm" ]]; then
+            TARGET_DIR="windows-aarch64"
+          else
+            TARGET_DIR="windows-x64"
+          fi
         elif [[ "${{ inputs.os }}" == "macos-latest" ]]; then
           TARGET_DIR="macos-aarch64"
         else
@@ -53,8 +59,13 @@ runs:
         BIN_URL=""
         BIN_LIB=""
         if [ "${{ runner.os }}" == "Windows" ]; then
-          BIN_URL="${{ inputs.win_url }}"
-          BIN_LIB="${{ inputs.win_lib }}"
+          if [[ "${{ inputs.os }}" == "windows-11-arm" ]]; then
+            BIN_URL="${{ inputs.win_arm64_url }}"
+            BIN_LIB="${{ inputs.win_arm64_lib }}"
+          else
+            BIN_URL="${{ inputs.win_amd64_url }}"
+            BIN_LIB="${{ inputs.win_amd64_lib }}"
+          fi
         elif [[ "${{ inputs.os }}" == "macos-latest" ]]; then
           BIN_URL="${{ inputs.mac_url }}"
           BIN_LIB="${{ inputs.mac_lib }}"
