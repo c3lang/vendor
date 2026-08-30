@@ -18,6 +18,9 @@
 		},
 		"windows-x64" : {
 			"linked-libraries" : ["lz4"]
+		},
+		"windows-aarch64" : {
+			"linked-libraries" : ["lz4"]
 		}
 	}
 }

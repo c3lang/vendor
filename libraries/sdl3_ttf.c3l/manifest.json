@@ -80,6 +80,6 @@
 			"link-args" : [],
 			"dependencies" : [],
 			"linked-libraries" : [ "SDL3", "SDL3_ttf", "freetype", "harfbuzz", "plutosvg", "plutovg", "usp10", "rpcrt4" ]
-		},
+		}
 	}
 }
