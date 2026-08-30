@@ -80,6 +80,6 @@
 			"link-args" : [],
 			"dependencies" : [],
 			"linked-libraries" : [ "ktx", "astcenc-avx2-static", "fmt", "imageio", "ktx_read", "obj_basisu_cbind", "objUtil" ]
-		},
+		}
 	}
 }
