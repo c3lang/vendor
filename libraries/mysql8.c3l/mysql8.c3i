@@ -122,6 +122,7 @@ extern fn Mysql         real_connect(Mysql mysql, ZString host, ZString user, ZS
 extern fn CInt          real_query(Mysql mysql, ZString stmt_str, CULong length) @cname("mysql_real_query");
 extern fn bool          rollback(Mysql mysql) @cname("mysql_rollback");
 extern fn MysqlRes      use_result(Mysql mysql) @cname("mysql_use_result");
+extern fn void*         fetch_field_direct(MysqlRes result, CUInt field_offset) @cname("mysql_fetch_field_direct");
 
 // Prepared Statement Functions
 
@@ -163,3 +164,5 @@ extern fn CInt          stmt_next_result(MysqlStmt stmt) @cname("mysql_stmt_next
 extern fn CInt          stmt_prepare(MysqlStmt stmt, ZString stmt_str, CULong length) @cname("mysql_stmt_prepare");
 extern fn CInt          stmt_store_result(MysqlStmt stmt) @cname("mysql_stmt_store_result");
 extern fn bool          stmt_bind_result(MysqlStmt stmt, MysqlBind *bind) @cname("mysql_stmt_bind_result");
+extern fn MysqlRes      stmt_result_metadata(MysqlStmt stmt) @cname("mysql_stmt_result_metadata");
+extern fn CInt          stmt_next_result(MysqlStmt stmt) @cname("mysql_stmt_next_result");
