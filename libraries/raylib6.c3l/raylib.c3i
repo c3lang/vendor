@@ -1883,9 +1883,11 @@ fn void gl_copy_framebuffer(int x, int y, int width, int height, int format, voi
 fn void gl_resize_framebuffer(int width, int height) @cname("rlResizeFramebuffer");                    // Resize internal framebuffer
 
 // Shaders management
-fn uint gl_load_shader_code(char* vs_code, char* fs_code) @cname("rlLoadShaderCode");    // Load shader from code strings
-fn uint gl_compile_shader(char* shader_code, int type) @cname("rlCompileShader");           // Compile custom shader and return shader id (type: RL_VERTEX_SHADER, RL_FRAGMENT_SHADER, RL_COMPUTE_SHADER)
-fn uint gl_load_shader_program(uint vshader_id, uint fshader_id) @cname("rlLoadShaderProgram"); // Load custom shader program
+fn uint gl_load_shader(char* code, int type) @cname("rlLoadShader");                    // Load (compile) shader and return shader id (type: RL_VERTEX_SHADER, RL_FRAGMENT_SHADER, RL_COMPUTE_SHADER)
+fn uint gl_load_shader_program(char* vs_code, char* fs_code) @cname("rlLoadShaderProgram"); // Load shader from code strings
+fn uint gl_load_shader_program_ex(uint vs_id, uint fs_id) @cname("rlLoadShaderProgramEx"); // Load shader program, using already loaded shader ids
+fn uint gl_load_shader_program_compute(uint cs_id) @cname("rlLoadShaderProgramCompute");               // Load compute shader program
+fn void gl_unload_shader(uint id) @cname("rlUnloadShader");                                     // Unload shader, loaded with rlLoadShader()
 fn void gl_unload_shader_program(uint id) @cname("rlUnloadShaderProgram");                              // Unload shader program
 fn int gl_get_location_uniform(uint shader_id, char* uniform_name) @cname("rlGetLocationUniform"); // Get shader location uniform
 fn int gl_get_location_attrib(uint shader_id, char* attrib_name) @cname("rlGetLocationAttrib");   // Get shader location attribute
@@ -1896,7 +1898,6 @@ fn void gl_set_uniform_sampler(int loc_index, uint texture_id) @cname("rlSetUnif
 fn void gl_set_shader(uint id, int* locs) @cname("rlSetShader");                             // Set shader currently active (id and locations)
 
 // Compute shader management
-fn uint gl_load_compute_shader_program(uint shader_id) @cname("rlLoadComputeShaderProgram");           // Load compute shader program
 fn void gl_compute_shader_dispatch(uint group_x, uint group_y, uint group_z) @cname("rlComputeShaderDispatch"); // Dispatch compute shader (equivalent to *draw* for graphics pipeline)
 
 // Shader buffer storage object management (ssbo)
