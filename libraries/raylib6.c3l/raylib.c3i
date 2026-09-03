@@ -1840,6 +1840,9 @@ fn int* gl_get_shader_locs_default() @cname("rlGetShaderLocsDefault"); // Get de
 // Render batch management
 // NOTE: rlgl provides a default render batch to behave like OpenGL 1.1 immediate mode
 // but this render batch API is exposed in case of custom batches are required
+fn void gl_draw_render_batch_active() @cname("rlDrawRenderBatchActive");               // Update and draw internal render batch
+fn bool gl_check_render_batch_limit(int v_count) @cname("rlCheckRenderBatchLimit");         // Check internal buffer overflow for a given number of vertex
+
 fn void gl_set_texture(uint id) @cname("rlSetTexture"); // Set current texture for render batch and check buffers limits
 
 // Vertex buffers management
