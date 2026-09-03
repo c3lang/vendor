@@ -1797,9 +1797,11 @@ fn void gl_set_cull_face(int mode) @cname("rlSetCullFace"); // Set face culling 
 fn void gl_enable_scissor_test() @cname("rlEnableScissorTest");                 // Enable scissor test
 fn void gl_disable_scissor_test() @cname("rlDisableScissorTest");              // Disable scissor test
 fn void gl_scissor(int x, int y, int width, int height) @cname("rlScissor"); // Scissor test
-fn void gl_enable_wire_mode() @cname("rlEnableWireMode");               // Enable wire mode
 fn void gl_enable_point_mode() @cname("rlEnablePointMode");        // Enable point mode
-fn void gl_disable_point_mode() @cname("rlDisablePointMode");                  // Disable point mode
+fn void gl_disable_point_mode() @cname("rlDisablePointMode");      // Disable point mode
+fn void gl_set_point_size(float size) @cname("rlSetPointSize");    // Set the point drawing size
+fn float gl_get_point_size() @cname("rlGetPointSize");             // Get the point drawing size
+fn void gl_enable_wire_mode() @cname("rlEnableWireMode");               // Enable wire mode
 fn void gl_disable_wire_mode() @cname("rlDisableWireMode");              // Disable wire mode
 fn void gl_set_line_width(float width) @cname("rlSetLineWidth");    // Set the line drawing width
 fn float gl_get_line_width() @cname("rlGetLineWidth");             // Get the line drawing width
@@ -1823,7 +1825,8 @@ fn void gl_set_blend_factors_separate(int gl_src_rgb, int gl_dst_rgb, int gl_src
 // rlgl initialization functions
 fn void gl_init(int width, int height) @cname("rlglInit");         // Initialize rlgl (buffers, shaders, textures, states)
 fn void gl_close() @cname("rlglClose");                       // De-initialize rlgl (buffers, shaders, textures)
-fn void gl_load_extensions(void* loader) @cname("rlglInit");                    // Load OpenGL extensions (loader function required)
+fn void gl_load_extensions(void* loader) @cname("rlLoadExtensions");                    // Load OpenGL extensions (loader function required)
+fn void* gl_get_proc_address(char* proc_name) @cname("rlGetProcAddress");   // Get OpenGL procedure address
 fn int gl_get_version() @cname("rlGetVersion");                            // Get current OpenGL version
 fn void gl_set_framebuffer_width(int width) @cname("rlSetFramebufferWidth");        // Set current framebuffer width
 fn int gl_get_framebuffer_width() @cname("rlGetFramebufferWidth");                      // Get default framebuffer width
@@ -1837,6 +1840,9 @@ fn int* gl_get_shader_locs_default() @cname("rlGetShaderLocsDefault"); // Get de
 // Render batch management
 // NOTE: rlgl provides a default render batch to behave like OpenGL 1.1 immediate mode
 // but this render batch API is exposed in case of custom batches are required
+fn void gl_draw_render_batch_active() @cname("rlDrawRenderBatchActive");               // Update and draw internal render batch
+fn bool gl_check_render_batch_limit(int v_count) @cname("rlCheckRenderBatchLimit");         // Check internal buffer overflow for a given number of vertex
+
 fn void gl_set_texture(uint id) @cname("rlSetTexture"); // Set current texture for render batch and check buffers limits
 
 // Vertex buffers management
@@ -1872,11 +1878,16 @@ fn uint gl_load_framebuffer() @cname("rlLoadFramebuffer");                      
 fn void gl_framebuffer_attach(uint fbo_id, uint tex_id, int attach_type, int tex_type, int mip_level) @cname("rlFramebufferAttach"); // Attach texture/renderbuffer to a framebuffer
 fn bool gl_framebuffer_complete(uint id) @cname("rlFramebufferComplete");                        // Verify framebuffer is complete
 fn void gl_unload_framebuffer(uint id) @cname("rlUnloadFramebuffer");                          // Delete framebuffer from GPU
+// WARNING: Copy and resize framebuffer functionality only defined for software backend
+fn void gl_copy_framebuffer(int x, int y, int width, int height, int format, void *pixels) @cname("rlCopyFramebuffer"); // Copy framebuffer pixel data to internal buffer
+fn void gl_resize_framebuffer(int width, int height) @cname("rlResizeFramebuffer");                    // Resize internal framebuffer
 
 // Shaders management
-fn uint gl_load_shader_code(char* vs_code, char* fs_code) @cname("rlLoadShaderCode");    // Load shader from code strings
-fn uint gl_compile_shader(char* shader_code, int type) @cname("rlCompileShader");           // Compile custom shader and return shader id (type: RL_VERTEX_SHADER, RL_FRAGMENT_SHADER, RL_COMPUTE_SHADER)
-fn uint gl_load_shader_program(uint vshader_id, uint fshader_id) @cname("rlLoadShaderProgram"); // Load custom shader program
+fn uint gl_load_shader(char* code, int type) @cname("rlLoadShader");                    // Load (compile) shader and return shader id (type: RL_VERTEX_SHADER, RL_FRAGMENT_SHADER, RL_COMPUTE_SHADER)
+fn uint gl_load_shader_program(char* vs_code, char* fs_code) @cname("rlLoadShaderProgram"); // Load shader from code strings
+fn uint gl_load_shader_program_ex(uint vs_id, uint fs_id) @cname("rlLoadShaderProgramEx"); // Load shader program, using already loaded shader ids
+fn uint gl_load_shader_program_compute(uint cs_id) @cname("rlLoadShaderProgramCompute");               // Load compute shader program
+fn void gl_unload_shader(uint id) @cname("rlUnloadShader");                                     // Unload shader, loaded with rlLoadShader()
 fn void gl_unload_shader_program(uint id) @cname("rlUnloadShaderProgram");                              // Unload shader program
 fn int gl_get_location_uniform(uint shader_id, char* uniform_name) @cname("rlGetLocationUniform"); // Get shader location uniform
 fn int gl_get_location_attrib(uint shader_id, char* attrib_name) @cname("rlGetLocationAttrib");   // Get shader location attribute
@@ -1887,7 +1898,6 @@ fn void gl_set_uniform_sampler(int loc_index, uint texture_id) @cname("rlSetUnif
 fn void gl_set_shader(uint id, int* locs) @cname("rlSetShader");                             // Set shader currently active (id and locations)
 
 // Compute shader management
-fn uint gl_load_compute_shader_program(uint shader_id) @cname("rlLoadComputeShaderProgram");           // Load compute shader program
 fn void gl_compute_shader_dispatch(uint group_x, uint group_y, uint group_z) @cname("rlComputeShaderDispatch"); // Dispatch compute shader (equivalent to *draw* for graphics pipeline)
 
 // Shader buffer storage object management (ssbo)
