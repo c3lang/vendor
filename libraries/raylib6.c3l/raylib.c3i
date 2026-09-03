@@ -1826,6 +1826,7 @@ fn void gl_set_blend_factors_separate(int gl_src_rgb, int gl_dst_rgb, int gl_src
 fn void gl_init(int width, int height) @cname("rlglInit");         // Initialize rlgl (buffers, shaders, textures, states)
 fn void gl_close() @cname("rlglClose");                       // De-initialize rlgl (buffers, shaders, textures)
 fn void gl_load_extensions(void* loader) @cname("rlLoadExtensions");                    // Load OpenGL extensions (loader function required)
+fn void* gl_get_proc_address(char* proc_name) @cname("rlGetProcAddress");   // Get OpenGL procedure address
 fn int gl_get_version() @cname("rlGetVersion");                            // Get current OpenGL version
 fn void gl_set_framebuffer_width(int width) @cname("rlSetFramebufferWidth");        // Set current framebuffer width
 fn int gl_get_framebuffer_width() @cname("rlGetFramebufferWidth");                      // Get default framebuffer width
