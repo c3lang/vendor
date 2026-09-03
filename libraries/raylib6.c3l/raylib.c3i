@@ -1878,6 +1878,9 @@ fn uint gl_load_framebuffer() @cname("rlLoadFramebuffer");                      
 fn void gl_framebuffer_attach(uint fbo_id, uint tex_id, int attach_type, int tex_type, int mip_level) @cname("rlFramebufferAttach"); // Attach texture/renderbuffer to a framebuffer
 fn bool gl_framebuffer_complete(uint id) @cname("rlFramebufferComplete");                        // Verify framebuffer is complete
 fn void gl_unload_framebuffer(uint id) @cname("rlUnloadFramebuffer");                          // Delete framebuffer from GPU
+// WARNING: Copy and resize framebuffer functionality only defined for software backend
+fn void gl_copy_framebuffer(int x, int y, int width, int height, int format, void *pixels) @cname("rlCopyFramebuffer"); // Copy framebuffer pixel data to internal buffer
+fn void gl_resize_framebuffer(int width, int height) @cname("rlResizeFramebuffer");                    // Resize internal framebuffer
 
 // Shaders management
 fn uint gl_load_shader_code(char* vs_code, char* fs_code) @cname("rlLoadShaderCode");    // Load shader from code strings
