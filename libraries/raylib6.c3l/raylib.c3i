@@ -1797,9 +1797,11 @@ fn void gl_set_cull_face(int mode) @cname("rlSetCullFace"); // Set face culling 
 fn void gl_enable_scissor_test() @cname("rlEnableScissorTest");                 // Enable scissor test
 fn void gl_disable_scissor_test() @cname("rlDisableScissorTest");              // Disable scissor test
 fn void gl_scissor(int x, int y, int width, int height) @cname("rlScissor"); // Scissor test
-fn void gl_enable_wire_mode() @cname("rlEnableWireMode");               // Enable wire mode
 fn void gl_enable_point_mode() @cname("rlEnablePointMode");        // Enable point mode
-fn void gl_disable_point_mode() @cname("rlDisablePointMode");                  // Disable point mode
+fn void gl_disable_point_mode() @cname("rlDisablePointMode");      // Disable point mode
+fn void gl_set_point_size(float size) @cname("rlSetPointSize");    // Set the point drawing size
+fn float gl_get_point_size() @cname("rlGetPointSize");             // Get the point drawing size
+fn void gl_enable_wire_mode() @cname("rlEnableWireMode");               // Enable wire mode
 fn void gl_disable_wire_mode() @cname("rlDisableWireMode");              // Disable wire mode
 fn void gl_set_line_width(float width) @cname("rlSetLineWidth");    // Set the line drawing width
 fn float gl_get_line_width() @cname("rlGetLineWidth");             // Get the line drawing width
