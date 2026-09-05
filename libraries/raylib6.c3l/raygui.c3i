@@ -181,7 +181,7 @@ extern fn void disable() @cname("GuiDisable");                                //
 extern fn void lock() @cname("GuiLock");                                   // Lock gui controls (global state)
 extern fn void unlock() @cname("GuiUnlock");                                 // Unlock gui controls (global state)
 extern fn bool is_locked() @cname("GuiIsLocked");                               // Check if gui is locked (global state)
-extern fn void set_alpha(float alpha) @cname("GuiSetState");                        // Set gui controls alpha (global state), alpha goes from 0.0f to 1.0f
+extern fn void set_alpha(float alpha) @cname("GuiSetAlpha");                        // Set gui controls alpha (global state), alpha goes from 0.0f to 1.0f
 extern fn void set_state(RGGuiState state) @cname("GuiSetState");                          // Set gui state (global state)
 extern fn RGGuiState get_state() @cname("GuiGetState");                                // Get gui state (global state)
 
