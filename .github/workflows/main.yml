@@ -278,7 +278,7 @@ jobs:
             curl -fsSLO https://github.com/raysan5/raylib/raw/refs/tags/6.0/src/raylib.h
             git clone https://github.com/raysan5/raygui.git build_raygui
             cd build_raygui
-            git checkout b256d4552b4105912d0556541a03862bdc5c0777
+            git checkout 30e303400781d3ef6e81f01e1b95cdf3b19386df
             cd ..
 
             echo '#define RAYGUI_IMPLEMENTATION' > raygui_impl.c

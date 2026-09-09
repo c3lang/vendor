@@ -5,7 +5,16 @@ import std::math;
 const RAYGUI_VERSION_MAJOR = 5;
 const RAYGUI_VERSION_MINOR = 0;
 const RAYGUI_VERSION_PATCH = 0;
-const RAYGUI_VERSION = "5.0-dev";
+const RAYGUI_VERSION = "5.0";
+
+// Gui control result
+constdef RGGuiResult : inline int
+{
+	NONE = 0,
+	PRESSED,
+	CHANGED,
+	TAB_CLOSE = 4, // GuiTabBar(), tab close request
+}
 
 // Style property
 // NOTE: Used when exporting style as code for convenience
@@ -68,7 +77,7 @@ enum RGGuiControl
 	DROPDOWNBOX,
 	TEXTBOX,        // Used also for: TEXTBOXMULTI
 	VALUEBOX,
-	CONTROL11,
+	TABBAR,
 	LISTVIEW,
 	COLORPICKER,
 	SCROLLBAR,
@@ -109,6 +118,7 @@ constdef RGGuiProperty
 	Toggle/ToggleGroup
 	******************/
 	GROUP_PADDING = 16,         // ToggleGroup separation between toggles
+	GROUP_WIDTH_FULL,           // ToggleGroup bounds width considers all items: 0-Width per item, 1-Full width
 	/***************
 	Slider/SliderBar
 	****************/
@@ -153,6 +163,12 @@ constdef RGGuiProperty
 	****************/
 	SPINNER_BUTTON_WIDTH = 16,  // Spinner left/right buttons width
 	SPINNER_BUTTON_SPACING,     // Spinner buttons separation
+	/*****************
+	TabBar
+	******************/
+	TAB_ITEMS_WIDTH = 16,       // TabBar tab items width
+	TAB_CLOSE_BUTTON,           // TabBar tab close button: 0-Not shown, 1-Shown
+	TAB_LINE_SIDE,              // TabBar tabs side: 0-Bottom, 1-Top
 	/*******
 	ListView
 	********/
@@ -181,7 +197,7 @@ extern fn void disable() @cname("GuiDisable");                                //
 extern fn void lock() @cname("GuiLock");                                   // Lock gui controls (global state)
 extern fn void unlock() @cname("GuiUnlock");                                 // Unlock gui controls (global state)
 extern fn bool is_locked() @cname("GuiIsLocked");                               // Check if gui is locked (global state)
-extern fn void set_alpha(float alpha) @cname("GuiSetState");                        // Set gui controls alpha (global state), alpha goes from 0.0f to 1.0f
+extern fn void set_alpha(float alpha) @cname("GuiSetAlpha");                        // Set gui controls alpha (global state), alpha goes from 0.0f to 1.0f
 extern fn void set_state(RGGuiState state) @cname("GuiSetState");                          // Set gui state (global state)
 extern fn RGGuiState get_state() @cname("GuiGetState");                                // Get gui state (global state)
 
@@ -229,15 +245,16 @@ extern fn int window_box(Rect bounds, ZString title) @cname("GuiWindowBox");    
 extern fn int group_box(Rect bounds, ZString text) @cname("GuiGroupBox");                                         // Group Box control with text name
 extern fn int line(Rect bounds, ZString text) @cname("GuiLine");                                             // Line separator control, could contain text
 extern fn int panel(Rect bounds, ZString text) @cname("GuiPanel");                                            // Panel control, useful to group controls
-extern fn int _tab_bar(Rect bounds, ZString* text, int count, int* active) @cname("GuiTabBar");                        // Tab Bar control, returns TAB to be closed or -1
+extern fn int tab_bar(Rect bounds, ZString text, int* hscroll, int* active) @cname("GuiTabBar");              // Tab Bar control
+extern fn int _tab_bar_ex(Rect bounds, ZString* text, int count, int* hscroll, int* active, int* focus) @cname("GuiTabBarEx"); // Tab Bar control, using text entries list
 extern fn int scroll_panel(Rect bounds, ZString text, Rect content, RLVector2* scroll, Rect* view) @cname("GuiScrollPanel"); // Scroll Panel control
 
 <*
  @require text.len <= int::max
 *>
-macro int tab_bar(Rect bounds, ZString[] text, int* active)
+macro int tab_bar_ex(Rect bounds, ZString[] text, int* hscroll, int* active, int* focus)
 {
-	return _tab_bar(bounds, text.ptr, text.len, active);
+	return _tab_bar_ex(bounds, text.ptr, text.len, hscroll, active, focus);
 }
 
 
@@ -267,8 +284,8 @@ extern fn int grid(Rect bounds, ZString text, float spacing, int subdivs, RLVect
 // Advance controls set
 extern fn int list_view(Rect bounds, ZString text, int* scroll_index, int* active) @cname("GuiListView");          // List View control
 extern fn int _list_view_ex(Rect bounds, ZString* text, int count, int* scroll_index, int* active, int* focus) @cname("GuiListViewEx"); // List View with extended parameters
-extern fn int message_box(Rect bounds, ZString title, ZString message, ZString buttons) @cname("GuiMessageBox"); // Message Box control, displays a message
-extern fn int text_input_box(Rect bounds, ZString title, ZString message, ZString buttons, ZString text, int text_max_size, bool* secret_view_active) @cname("GuiTextInputBox"); // Text Input Box control, ask for text, supports secret
+extern fn int message_box(Rect bounds, ZString title, ZString message, ZString buttons, int* btn_active) @cname("GuiMessageBox"); // Message Box control, displays a message
+extern fn int text_input_box(Rect bounds, ZString title, ZString message, char* text, int text_size, ZString buttons, int* btn_active, bool* secret_view_active) @cname("GuiTextInputBox"); // Text Input Box control, ask for text, supports secret
 extern fn int color_picker(Rect bounds, ZString text, RLColor* color) @cname("GuiColorPicker");                        // Color Picker control (multiple color controls)
 extern fn int color_panel(Rect bounds, ZString text, RLColor* color) @cname("GuiColorPanel");                         // Color Panel control
 extern fn int color_bar_alpha(Rect bounds, ZString text, float* alpha) @cname("GuiColorBarAlpha");                      // Color Bar Alpha control
@@ -540,10 +557,11 @@ constdef RGGuiIconName
 	CONE                     = 247,
 	ELLIPSOID                = 248,
 	CAPSULE                  = 249,
-	ICON_250                 = 250,
-	ICON_251                 = 251,
-	ICON_252                 = 252,
-	ICON_253                 = 253,
-	ICON_254                 = 254,
-	ICON_255                 = 255,
+	FILETYPE_FONT            = 250,
+	FILETYPE_3D              = 251,
+	FILETYPE_CODE_XML        = 252,
+	FILETYPE_CODE_C          = 253,
+	FILETYPE_CODE_PYTHON     = 254,
+	FILETYPE_CODE_JS         = 255,
+	FILETYPE_ICON            = 256,
 }

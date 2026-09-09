@@ -9,7 +9,7 @@ This repository contains external libraries for use with C3.
 
 - Raylib 6 https://www.raylib.com
 - Raylib 5.5 https://www.raylib.com
-- Raygui
+- Raygui (pinned to [30e3034](https://github.com/raysan5/raygui/commit/30e303400781d3ef6e81f01e1b95cdf3b19386df))
 - SDL2 2.28.x https://libsdl.org/ - WIP
 - Tigr https://github.com/erkkah/tigr (Needs Windows & macOS static libraries)
 - Curl https://curl.se/docs/manpage.html
