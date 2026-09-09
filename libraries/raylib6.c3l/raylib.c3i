@@ -151,12 +151,12 @@ struct RLMesh
     // Skin data for animation
     int bone_count;          // Number of bones (MAX: 256 bones)
     char* bone_indices;      // Vertex bone indices, up to 4 bones influence by vertex (skinning) (shader-location = 6)
-    float *bone_weights;     // Vertex bone weight, up to 4 bones influence by vertex (skinning) (shader-location = 7)
+    float* bone_weights;     // Vertex bone weight, up to 4 bones influence by vertex (skinning) (shader-location = 7)
 
     // Runtime animation vertex data (CPU skinning)
     // NOTE: In case of GPU skinning, not used, pointers are NULL
-    float *anim_vertices;    // Animated vertex positions (after bones transformations)
-    float *anim_normals;     // Animated normals (after bones transformations)
+    float* anim_vertices;    // Animated vertex positions (after bones transformations)
+    float* anim_normals;     // Animated normals (after bones transformations)
 
 	// OpenGL identifiers
 	uint vao_id;  // OpenGL Vertex Array Object id
@@ -237,7 +237,7 @@ struct RLModelAnimation
 
     int bone_count;                  // Number of bones (per pose)
     int keyframe_count;              // Number of animation key frames
-    RLModelAnimPose *keyframe_poses; // Animation sequence keyframe poses [keyframe][pose]
+    RLModelAnimPose* keyframe_poses; // Animation sequence keyframe poses [keyframe][pose]
 }
 
 // RLRay, ray for raycasting
@@ -1147,8 +1147,8 @@ fn RLFont load_font_ex(ZString file_name, int font_size, int* codepoints, int co
 fn RLFont load_font_from_image(RLImage image, RLColor key, int firstChar) @cname("LoadFontFromImage");                 // Load font from RLImage (XNA style)
 fn RLFont load_font_from_memory(ZString file_type, char* file_data, int data_size, int font_size, int* codepoints, int codepoint_count) @cname("LoadFontFromMemory"); // Load font from memory buffer, file_type refers to extension: i.e. '.ttf'
 fn bool RLFont.is_valid(RLFont font) @cname("IsFontValid"); // Check if a font is valid (font data loaded, WARNING: GPU texture not checked)
-fn RLGlyphInfo* load_font_data(char* file_data, int data_size, int font_size, int* codepoints, int codepoint_count, RLFontType type, int *glyph_count) @cname("LoadFontData");             // Load font data for further use
-fn RLImage gen_image_font_atlas(RLGlyphInfo* glyphs, Rect* *glyphRecs, int glyph_count, int font_size, int padding, int pack_method) @cname("GenImageFontAtlas"); // Generate image font atlas using chars info
+fn RLGlyphInfo* load_font_data(char* file_data, int data_size, int font_size, int* codepoints, int codepoint_count, RLFontType type, int* glyph_count) @cname("LoadFontData");             // Load font data for further use
+fn RLImage gen_image_font_atlas(RLGlyphInfo* glyphs, Rect** glyphRecs, int glyph_count, int font_size, int padding, int pack_method) @cname("GenImageFontAtlas"); // Generate image font atlas using chars info
 fn void unload_font_data(RLGlyphInfo* glyphs, int glyph_count) @cname("UnloadFontData"); // Unload font chars info data (RAM)
 fn void unload_font(RLFont font) @cname("UnloadFont");                                    // Unload font from GPU memory (VRAM)
 fn bool export_font_as_code(RLFont font, ZString file_name) @cname("ExportFontAsCode");   // Export font as code file, returns true on success
@@ -1186,7 +1186,7 @@ fn ZString codepoint_to_utf8(int codepoint, int* utf8_size) @cname("CodepointToU
 // WARNING 1: Most of these functions use internal static buffers[], it's recommended to store returned data on user-side for re-use
 // WARNING 2: Some strings allocate memory internally for the returned strings, those strings must be free by user using MemFree()
 fn ZString* load_text_lines(ZString text, int* count) @cname("LoadTextLines");                     // Load text as separate lines ('\n')
-fn void unload_text_lines(ZString *text, int line_count) @cname("UnloadTextLines");                // Unload text lines
+fn void unload_text_lines(ZString* text, int line_count) @cname("UnloadTextLines");                // Unload text lines
 fn int text_copy(ZString dst, ZString src) @cname("TextCopy");                                     // Copy one string to another, returns bytes copied
 fn bool text_is_equal(ZString text1, ZString text2) @cname("TextIsEqual");                         // Check if two text string are equal
 fn uint text_length(ZString text) @cname("TextLength");                                            // Get text length, checks for '\0' ending
@@ -1869,7 +1869,7 @@ fn void gl_update_texture(uint id, int offset_x, int offset_y, int width, int he
 fn void gl_get_gl_texture_formats(int format, uint* gl_internal_format, uint* gl_format, uint* gl_type) @cname("rlGetGlTextureFormats"); // Get OpenGL internal formats
 fn char* gl_get_pixel_format_name(uint format) @cname("rlGetPixelFormatName");              // Get name string for pixel format
 fn void gl_unload_texture(uint id) @cname("rlUnloadTexture");                              // Unload texture from GPU memory
-fn void gl_gen_texture_mipmaps(uint id, int width, int height, int format, int *mipmaps) @cname("rlGenTextureMipmaps"); // Generate mipmap data for selected texture
+fn void gl_gen_texture_mipmaps(uint id, int width, int height, int format, int* mipmaps) @cname("rlGenTextureMipmaps"); // Generate mipmap data for selected texture
 fn void* gl_read_texture_pixels(uint id, int width, int height, int format) @cname("rlReadTexturePixels"); // Read texture pixel data
 fn char* gl_read_screen_pixels(int width, int height) @cname("rlReadScreenPixels");           // Read screen pixel data (color buffer)
 
@@ -1879,11 +1879,19 @@ fn void gl_framebuffer_attach(uint fbo_id, uint tex_id, int attach_type, int tex
 fn bool gl_framebuffer_complete(uint id) @cname("rlFramebufferComplete");                        // Verify framebuffer is complete
 fn void gl_unload_framebuffer(uint id) @cname("rlUnloadFramebuffer");                          // Delete framebuffer from GPU
 // WARNING: Copy and resize framebuffer functionality only defined for software backend
-fn void gl_copy_framebuffer(int x, int y, int width, int height, int format, void *pixels) @cname("rlCopyFramebuffer"); // Copy framebuffer pixel data to internal buffer
+fn void gl_copy_framebuffer(int x, int y, int width, int height, int format, void* pixels) @cname("rlCopyFramebuffer"); // Copy framebuffer pixel data to internal buffer
 fn void gl_resize_framebuffer(int width, int height) @cname("rlResizeFramebuffer");                    // Resize internal framebuffer
 
+// Shader compilation type
+constdef RLShaderType : int
+{
+	FRAGMENT = 0x8B30, // GL_FRAGMENT_SHADER
+	VERTEX   = 0x8B31, // GL_VERTEX_SHADER
+	COMPUTE  = 0x91B9  // GL_COMPUTE_SHADER
+}
+
 // Shaders management
-fn uint gl_load_shader(char* code, int type) @cname("rlLoadShader");                    // Load (compile) shader and return shader id (type: RL_VERTEX_SHADER, RL_FRAGMENT_SHADER, RL_COMPUTE_SHADER)
+fn uint gl_load_shader(char* code, RLShaderType type) @cname("rlLoadShader"); // Load (compile) shader and return shader id (type: RL_VERTEX_SHADER, RL_FRAGMENT_SHADER, RL_COMPUTE_SHADER)
 fn uint gl_load_shader_program(char* vs_code, char* fs_code) @cname("rlLoadShaderProgram"); // Load shader from code strings
 fn uint gl_load_shader_program_ex(uint vs_id, uint fs_id) @cname("rlLoadShaderProgramEx"); // Load shader program, using already loaded shader ids
 fn uint gl_load_shader_program_compute(uint cs_id) @cname("rlLoadShaderProgramCompute");               // Load compute shader program
@@ -1905,7 +1913,7 @@ fn uint gl_load_shader_buffer(uint size, void* data, int usage_hint) @cname("rlL
 fn void gl_unload_shader_buffer(uint ssbo_id) @cname("rlUnloadShaderBuffer");                           // Unload shader storage buffer object (SSBO)
 fn void gl_update_shader_buffer(uint id, void* data, uint data_size, uint offset) @cname("rlUpdateShaderBuffer"); // Update SSBO buffer data
 fn void gl_bind_shader_buffer(uint id, uint index) @cname("rlBindShaderBuffer");             // Bind SSBO buffer
-fn void gl_read_shader_buffer(uint id, void *dest, uint count, uint offset) @cname("rlReadShaderBuffer"); // Read SSBO buffer data (GPU->CPU)
+fn void gl_read_shader_buffer(uint id, void* dest, uint count, uint offset) @cname("rlReadShaderBuffer"); // Read SSBO buffer data (GPU->CPU)
 fn void gl_copy_shader_buffer(uint dest_id, uint src_id, uint dest_offset, uint src_offset, uint count) @cname("rlCopyShaderBuffer"); // Copy SSBO data between buffers
 fn uint gl_get_shader_buffer_size(uint id) @cname("rlGetShaderBufferSize");                      // Get SSBO buffer size
 
