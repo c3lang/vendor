@@ -1,0 +1,349 @@
+module libpcap::pcap;
+import libpcap::bpf;
+
+const PCAP_VERSION_MAJOR = 2;
+const PCAP_VERSION_MINOR = 4;
+const PCAP_ERRBUF_SIZE   = 256;
+const MODE_CAPT = 0;
+const MODE_STAT = 1;
+const MODE_MON  = 2;
+
+const PCAP_IF_LOOPBACK                         =  0x00000001;
+const PCAP_IF_UP                               =  0x00000002;
+const PCAP_IF_RUNNING                          =  0x00000004;
+const PCAP_IF_WIRELESS                         =  0x00000008;
+const PCAP_IF_CONNECTION_STATUS                =  0x00000030;
+const PCAP_IF_CONNECTION_STATUS_UNKNOWN        =  0x00000000;
+const PCAP_IF_CONNECTION_STATUS_CONNECTED      =  0x00000010;
+const PCAP_IF_CONNECTION_STATUS_DISCONNECTED   =  0x00000020;
+const PCAP_IF_CONNECTION_STATUS_NOT_APPLICABLE =  0x00000030;
+const PCAP_ERROR                               = -1;
+const PCAP_ERROR_BREAK                         = -2;
+const PCAP_ERROR_NOT_ACTIVATED                 = -3;
+const PCAP_ERROR_ACTIVATED                     = -4;
+const PCAP_ERROR_NO_SUCH_DEVICE                = -5;
+const PCAP_ERROR_RFMON_NOTSUP                  = -6;
+const PCAP_ERROR_NOT_RFMON                     = -7;
+const PCAP_ERROR_PERM_DENIED                   = -8;
+const PCAP_ERROR_IFACE_NOT_UP                  = -9;
+const PCAP_ERROR_CANTSET_TSTAMP_TYPE           = -10;
+const PCAP_ERROR_PROMISC_PERM_DENIED           = -11;
+const PCAP_ERROR_TSTAMP_PRECISION_NOTSUP       = -12;
+const PCAP_ERROR_CAPTURE_NOTSUP                = -13;
+const PCAP_WARNING                             =  1;
+const PCAP_WARNING_PROMISC_NOTSUP              =  2;
+const PCAP_WARNING_TSTAMP_TYPE_NOTSUP          =  3;
+const PCAP_NETMASK_UNKNOWN                     =  0xffffffff;
+const PCAP_CHAR_ENC_LOCAL                      =  0x00000000U;
+const PCAP_CHAR_ENC_UTF_8                      =  0x00000001U;
+const PCAP_MMAP_32BIT                          =  0x00000002U;
+const PCAP_TSTAMP_HOST                         =  0;
+const PCAP_TSTAMP_HOST_LOWPREC                 =  1;
+const PCAP_TSTAMP_HOST_HIPREC                  =  2;
+const PCAP_TSTAMP_ADAPTER                      =  3;
+const PCAP_TSTAMP_ADAPTER_UNSYNCED             =  4;
+const PCAP_TSTAMP_HOST_HIPREC_UNSYNCED         =  5;
+const PCAP_TSTAMP_PRECISION_MICRO              =  0;
+const PCAP_TSTAMP_PRECISION_NANO               =  1;
+const PCAP_BUF_SIZE                            =  1024;
+const PCAP_SRC_FILE                            =  2;
+const PCAP_SRC_IFLOCAL                         =  3;
+const PCAP_SRC_IFREMOTE                        =  4;
+const PCAP_SRC_FILE_STRING                     =  "file://";
+const PCAP_SRC_IF_STRING                       =  "rpcap://";
+const PCAP_OPENFLAG_PROMISCUOUS                =  0x00000001;
+const PCAP_OPENFLAG_DATATX_UDP                 =  0x00000002;
+const PCAP_OPENFLAG_NOCAPTURE_RPCAP            =  0x00000004;
+const PCAP_OPENFLAG_NOCAPTURE_LOCAL            =  0x00000008;
+const PCAP_OPENFLAG_MAX_RESPONSIVENESS         =  0x00000010;
+const RPCAP_RMTAUTH_NULL                       =  0;
+const RPCAP_RMTAUTH_PWD                        =  1;
+const PCAP_SAMP_NOSAMP                         =  0;
+const PCAP_SAMP_1_EVERY_N                      =  1;
+const PCAP_SAMP_FIRST_AFTER_N_MS               =  2;
+const RPCAP_HOSTLIST_SIZE                      =  1024;
+
+alias Pcap_t = void;
+alias Pcap_dumper_t = void;
+alias Pcap_if_t = Pcap_if;
+alias Pcap_addr_t = Pcap_addr;
+alias AirpcapHandle = void;
+alias Pcap_handler = fn void(char*, Pcap_pkthdr*, char*);
+alias File = void;
+alias PAirpcapHandle = AirpcapHandle*;
+alias Handle = void*;
+
+struct Pcap_rmtauth
+{
+    int type;
+    ZString username;
+    ZString password;
+}
+
+struct Pcap_send_queue
+{
+    uint maxlen;
+    uint len;
+    char* buffer;
+}
+
+struct Pcap_samp
+{
+    int method;
+    int value;
+}
+
+struct Pcap_file_header
+{
+    uint magic;
+    ushort version_major;
+    ushort version_minor;
+    int thiszone;
+    uint sigfigs;
+    uint snaplen;
+    uint linktype;
+}
+
+enum Pcap_direction_t 
+{
+  PCAP_D_INOUT,
+  PCAP_D_IN,
+  PCAP_D_OUT
+}
+
+struct Timeval
+{
+    CLong tv_sec;
+    CLong tv_usec;
+}
+
+struct Pcap_pkthdr
+{
+    Timeval ts;
+    uint caplen;
+    uint len;
+}
+
+struct Pcap_stat
+{
+    uint ps_recv;
+    uint ps_drop;
+    uint ps_ifdrop;
+    uint ps_capt @feat(WIN32);
+    uint ps_sent @feat(WIN32);
+    uint ps_netdrop @feat(WIN32);
+}
+
+struct Pcap_if
+{
+    Pcap_if* next;
+    ZString name;
+    ZString description;
+    Pcap_addr* addresses;
+    uint flags;
+}
+
+struct Pcap_sockaddr
+{
+    ushort sa_family;
+    char[14] sa_data;
+}
+
+struct Pcap_addr
+{
+    Pcap_addr* next;
+    Pcap_sockaddr* addr;
+    Pcap_sockaddr* netmask;
+    Pcap_sockaddr* broadaddr;
+    Pcap_sockaddr* dstaddr;
+}
+
+extern fn ZString lookupdev(char*) @cname("pcap_lookupdev");
+extern fn int can_set_rfmon(Pcap_t*) @cname("pcap_can_set_rfmon");
+extern fn int list_tstamp_types(Pcap_t*, int**) @cname("pcap_list_tstamp_types");
+extern fn void free_tstamp_types(int*) @cname("pcap_free_tstamp_types");
+extern fn int tstamp_type_name_to_val(ZString) @cname("pcap_tstamp_type_name_to_val");
+extern fn ZString tstamp_type_val_to_name(int) @cname("pcap_tstamp_type_val_to_name");
+extern fn ZString tstamp_type_val_to_description(int) @cname("pcap_tstamp_type_val_to_description");
+extern fn Pcap_t* open_dead(int, int) @cname("pcap_open_dead");
+extern fn Pcap_t* open_dead_with_tstamp_precision(int, int, uint) @cname("pcap_open_dead_with_tstamp_precision");
+extern fn void close(Pcap_t*) @cname("pcap_close");
+extern fn char* next(Pcap_t*, Pcap_pkthdr*) @cname("pcap_next");
+extern fn int next_ex(Pcap_t*, Pcap_pkthdr**, char**) @cname("pcap_next_ex");
+extern fn void breakloop(Pcap_t*) @cname("pcap_breakloop");
+extern fn int getnonblock(Pcap_t*, char*) @cname("pcap_getnonblock");
+extern fn ZString statustostr(int) @cname("pcap_statustostr");
+extern fn ZString strerror(int) @cname("pcap_strerror");
+extern fn ZString geterr(Pcap_t*) @cname("pcap_geterr");
+extern fn void perror(Pcap_t*, ZString) @cname("pcap_perror");
+
+extern fn void freecode(Bpf_program*) @cname("pcap_freecode");
+extern fn int offline_filter(Bpf_program*, Pcap_pkthdr*, char*) @cname("pcap_offline_filter");
+extern fn int datalink(Pcap_t*) @cname("pcap_datalink");
+extern fn int datalink_ext(Pcap_t*) @cname("pcap_datalink_ext");
+extern fn int list_datalinks(Pcap_t*, int**) @cname("pcap_list_datalinks");
+extern fn void free_datalinks(int*) @cname("pcap_free_datalinks");
+extern fn int datalink_name_to_val(ZString) @cname("pcap_datalink_name_to_val");
+extern fn ZString datalink_val_to_name(int) @cname("pcap_datalink_val_to_name");
+extern fn ZString datalink_val_to_description(int) @cname("pcap_datalink_val_to_description");
+extern fn ZString datalink_val_to_description_or_dlt(int) @cname("pcap_datalink_val_to_description_or_dlt");
+extern fn int snapshot(Pcap_t*) @cname("pcap_snapshot");
+extern fn int is_swapped(Pcap_t*) @cname("pcap_is_swapped");
+extern fn int major_version(Pcap_t*) @cname("pcap_major_version");
+extern fn int minor_version(Pcap_t*) @cname("pcap_minor_version");
+extern fn int bufsize(Pcap_t*) @cname("pcap_bufsize");
+
+extern fn File* file(Pcap_t*) @cname("pcap_file");
+extern fn int fileno(Pcap_t*) @cname("pcap_fileno");
+extern fn Pcap_dumper_t* dump_open(Pcap_t*, ZString) @cname("pcap_dump_open");
+extern fn Pcap_dumper_t* dump_fopen(Pcap_t* pcap, File* fp) @cname("pcap_dump_fopen") @feat(!WIN32);
+extern fn Pcap_dumper_t* dump_open_append(Pcap_t*, ZString) @cname("pcap_dump_open_append");
+extern fn File* dump_file(Pcap_dumper_t*) @cname("pcap_dump_file");
+extern fn CLong dump_ftell(Pcap_dumper_t*) @cname("pcap_dump_ftell");
+extern fn CLong dump_ftell64(Pcap_dumper_t*) @cname("pcap_dump_ftell64");
+extern fn int dump_flush(Pcap_dumper_t*) @cname("pcap_dump_flush");
+extern fn void dump_close(Pcap_dumper_t*) @cname("pcap_dump_close");
+extern fn void dump(char*, Pcap_pkthdr*, char*) @cname("pcap_dump");
+extern fn void freealldevs(Pcap_if_t*) @cname("pcap_freealldevs");
+extern fn ZString lib_version() @cname("pcap_lib_version");
+
+extern fn Pcap_samp* setsampling(Pcap_t* p) @cname("pcap_setsampling");
+extern fn void remoteact_cleanup() @cname("pcap_remoteact_cleanup");
+extern fn Pcap_t* create(ZString device, char* errbuf) @cname("pcap_create");
+extern fn int activate(Pcap_t* pcap) @cname("pcap_activate");
+extern fn Pcap_t* open_live(ZString device, int snaplen, int promisc, int to_ms, char* errbuf) @cname("pcap_open_live");
+extern fn int compile(Pcap_t* pcap, Bpf_program* fp, ZString str, int optimize, uint netmask) @cname("pcap_compile");
+extern fn int compile_nopcap(int, int, Bpf_program*, ZString, int, uint) @cname("pcap_compile_nopcap");
+extern fn int setfilter(Pcap_t* pcap, Bpf_program* fp) @cname("pcap_setfilter");
+extern fn int findalldevs(Pcap_if_t** alldevs, char* errbuf) @cname("pcap_findalldevs");
+extern fn int set_snaplen(Pcap_t* pcap, int snaplen) @cname("pcap_set_snaplen");
+extern fn int set_promisc(Pcap_t* pcap, int promisc) @cname("pcap_set_promisc");
+extern fn int set_timeout(Pcap_t* pcap, int to_ms) @cname("pcap_set_timeout");
+extern fn int set_immediate_mode(Pcap_t* pcap, int immediate) @cname("pcap_set_immediate_mode");
+extern fn int set_buffer_size(Pcap_t* pcap, int size) @cname("pcap_set_buffer_size");
+extern fn int set_tstamp_type(Pcap_t* pcap, int tstamp_type) @cname("pcap_set_tstamp_type");
+extern fn int set_tstamp_precision(Pcap_t* pcap, int precision) @cname("pcap_set_tstamp_precision");
+extern fn int set_rfmon(Pcap_t* pcap, int rfmon) @cname("pcap_set_rfmon");
+extern fn int setnonblock(Pcap_t* pcap, int nonblock, char* errbuf) @cname("pcap_setnonblock");
+extern fn int loop(Pcap_t* pcap, int cnt, Pcap_handler callback, char* user) @cname("pcap_loop");
+
+extern fn int dispatch(Pcap_t* pcap, int cnt, Pcap_handler callback, CUChar* user) @cname("pcap_dispatch");
+
+extern fn int get_tstamp_precision(Pcap_t* pcap) @cname("pcap_get_tstamp_precision");
+
+extern fn int stats(Pcap_t* pcap, Pcap_stat* stats) @cname("pcap_stats");
+
+extern fn Pcap_t* open_offline(ZString fname, char* errbuf) @cname("pcap_open_offline");
+
+extern fn Pcap_t* open_offline_with_tstamp_precision(
+    ZString fname,
+    uint precision,
+    char* errbuf
+) @cname("pcap_open_offline_with_tstamp_precision");
+
+extern fn Pcap_t* hopen_offline_with_tstamp_precision(
+    iptr osfd,
+    uint precision,
+    char* errbuf
+) @cname("pcap_hopen_offline_with_tstamp_precision") @feat(WIN32);
+
+extern fn Pcap_t* hopen_offline(iptr osfd, char* errbuf) @cname("pcap_hopen_offline") @feat(WIN32);
+
+extern fn Pcap_t* fopen_offline(File* fp, char* errbuf) @cname("pcap_fopen_offline") @feat(!WIN32);
+
+extern fn Pcap_t* fopen_offline_with_tstamp_precision(
+    File* fp,
+    uint precision,
+    char* errbuf
+) @cname("pcap_fopen_offline_with_tstamp_precision") @feat(!WIN32);
+
+extern fn int inject(Pcap_t* pcap, void* buf, ulong size) @cname("pcap_inject");
+
+extern fn int sendpacket(Pcap_t* pcap, CUChar* buf, int size) @cname("pcap_sendpacket");
+
+extern fn int setdirection(Pcap_t* pcap, Pcap_direction_t direction) @cname("pcap_setdirection");
+
+extern fn int set_protocol_linux(Pcap_t*, int) @cname("pcap_set_protocol_linux") @feat(LINUX);
+extern fn int wsockinit() @cname("pcap_wsockinit") @feat(WIN32);
+extern fn Pcap_dumper_t* dump_hopen(Pcap_t* pcap, iptr fd) @cname("pcap_dump_hopen") @feat(WIN32);
+
+extern fn int setbuff(Pcap_t*, int) @cname("pcap_setbuff") @feat(WIN32);
+extern fn int setmode(Pcap_t*, int) @cname("pcap_setmode") @feat(WIN32);
+extern fn int setmintocopy(Pcap_t*, int) @cname("pcap_setmintocopy") @feat(WIN32);
+
+extern fn Handle getevent(Pcap_t* p) @cname("pcap_getevent") @feat(WIN32);
+
+extern fn int oid_get_request(Pcap_t*, uint, void*, usz*) @cname("pcap_oid_get_request") @feat(WIN32);
+extern fn int oid_set_request(Pcap_t*, uint, void*, usz*) @cname("pcap_oid_set_request") @feat(WIN32);
+extern fn Pcap_send_queue* sendqueue_alloc(uint) @cname("pcap_sendqueue_alloc") @feat(WIN32);
+extern fn void sendqueue_destroy(Pcap_send_queue*) @cname("pcap_sendqueue_destroy") @feat(WIN32);
+extern fn int sendqueue_queue(Pcap_send_queue*, Pcap_pkthdr*, CUChar*) @cname("pcap_sendqueue_queue") @feat(WIN32);
+extern fn uint sendqueue_transmit(Pcap_t*, Pcap_send_queue*, int) @cname("pcap_sendqueue_transmit") @feat(WIN32);
+extern fn Pcap_stat* stats_ex(Pcap_t*, int*) @cname("pcap_stats_ex") @feat(WIN32);
+
+extern fn int setuserbuffer(Pcap_t*, int) @cname("pcap_setuserbuffer") @feat(WIN32);
+extern fn int live_dump(Pcap_t*, char*, int, int) @cname("pcap_live_dump") @feat(WIN32);
+extern fn int live_dump_ended(Pcap_t*, int) @cname("pcap_live_dump_ended") @feat(WIN32);
+extern fn int start_oem(char*, int) @cname("pcap_start_oem") @feat(WIN32);
+
+extern fn PAirpcapHandle get_airpcap_handle(Pcap_t*) @cname("pcap_get_airpcap_handle") @feat(WIN32);
+
+extern fn int get_selectable_fd(Pcap_t*) @cname("pcap_get_selectable_fd") @feat(!WIN32);
+
+extern fn Timeval* get_required_select_timeout(Pcap_t*) @cname("pcap_get_required_select_timeout") @feat(!WIN32);
+
+extern fn Pcap_t* open(
+    ZString source,
+    int snaplen,
+    int flags,
+    int read_timeout,
+    Pcap_rmtauth* auth,
+    char* errbuf
+) @cname("pcap_open");
+
+extern fn int createsrcstr(
+    char* source,
+    int type,
+    ZString host,
+    ZString port,
+    ZString name,
+    char* errbuf
+) @cname("pcap_createsrcstr");
+
+extern fn int parsesrcstr(
+    ZString source,
+    int* type,
+    char* host,
+    char* port,
+    char* name,
+    char* errbuf
+) @cname("pcap_parsesrcstr");
+
+extern fn int findalldevs_ex(
+    ZString source,
+    Pcap_rmtauth* auth,
+    Pcap_if** alldevs,
+    char* errbuf
+) @cname("pcap_findalldevs_ex");
+
+extern fn CLong remoteact_accept(
+    ZString address,
+    ZString port,
+    ZString hostlist,
+    char* connectinghost,
+    Pcap_rmtauth* auth,
+    char* errbuf
+) @cname("pcap_remoteact_accept");
+
+extern fn CLong remoteact_accept_ex(
+    ZString address,
+    ZString port,
+    ZString hostlist,
+    char* connectinghost,
+    Pcap_rmtauth* auth,
+    int uses_ssl,
+    char* errbuf
+) @cname("pcap_remoteact_accept_ex");
+
+extern fn int remoteact_list(char* hostlist, char sep, int size, char* errbuf) @cname("pcap_remoteact_list");
+extern fn int remoteact_close(ZString host, char* errbuf) @cname("pcap_remoteact_close");

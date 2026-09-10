@@ -1,40 +1,49 @@
 {
-	"langrev": "1",
-	"authors": ["mb"],
-	"version": "0.1.0",
-	"dependency-search-paths": ["libraries"],
-	"output": "build",
-	"targets": {
-		"all_tests": {
-			"type": "test",
-			"sources": ["test/**"],
-			"dependencies": [
-				"sqlite3",
-				"lmdb",
-				"curl",
-				"lz4",
-			  	"raylib6",
-				"glfw",
-				"glfw34",
-				"sdl2",
-				"sdl3",
-				"sdl3_image",
-				"sdl3_ttf",
-				"box2d",
-				"tree_sitter",
-				"pq",
-				"mysql8",
-				"opengl",
-				"vulkan",
-				"tinyfiledialogs",
-				"ktx",
-				"tracy",
-				"clang",
-				"tigr",
-				"webgpu",
-				"spng"
-			],
-			"link-args": ["-Wl,--allow-multiple-definition"]
-		}
-	}
+  "langrev": "1",
+  "authors": [
+    "mb"
+  ],
+  "version": "0.1.0",
+  "dependency-search-paths": [
+    "libraries"
+  ],
+  "output": "build",
+  "targets": {
+    "all_tests": {
+      "type": "test",
+      "sources": [
+        "test/**"
+      ],
+      "dependencies": [
+        "sqlite3",
+        "lmdb",
+        "curl",
+        "lz4",
+        "raylib6",
+        "glfw",
+        "glfw34",
+        "sdl2",
+        "sdl3",
+        "sdl3_image",
+        "sdl3_ttf",
+        "box2d",
+        "tree_sitter",
+        "pq",
+        "mysql8",
+        "opengl",
+        "vulkan",
+        "tinyfiledialogs",
+        "ktx",
+        "tracy",
+        "clang",
+        "tigr",
+        "webgpu",
+        "spng",
+        "libpcap"
+      ],
+      "link-args": [
+        "-Wl,--allow-multiple-definition"
+      ]
+    }
+  }
 }
