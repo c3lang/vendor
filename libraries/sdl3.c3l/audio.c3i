@@ -56,13 +56,13 @@ constdef SdlAudioFormat : CInt
 
 
 // Macros
-macro define_audio_format(signed, bigendian, flt, size) => ((ushort)signed << 15) | ((ushort)bigendian << 12) | ((ushort)flt << 8) | (size & SDL_AUDIO_MASK_BITSIZE);
-macro audio_bitsize(x) => x & SDL_AUDIO_MASK_BITSIZE;
+macro define_audio_format(signed, bigendian, flt, size) => ((ushort)signed << 15) | ((ushort)bigendian << 12) | ((ushort)flt << 8) | (size & AUDIO_MASK_BITSIZE);
+macro audio_bitsize(x) => x & AUDIO_MASK_BITSIZE;
 macro audio_bytesize(x) => audio_bitsize(x) / 8;
-macro audio_isfloat(x) => x & SDL_AUDIO_MASK_FLOAT;
-macro audio_isbigendian(x) => x & SDL_AUDIO_MASK_BIG_ENDIAN;
+macro audio_isfloat(x) => x & AUDIO_MASK_FLOAT;
+macro audio_isbigendian(x) => x & AUDIO_MASK_BIG_ENDIAN;
 macro audio_islittleendian(x) => !audio_isbigendian(x);
-macro audio_issigned(x) => x & SDL_AUDIO_MASK_SIGNED;
+macro audio_issigned(x) => x & AUDIO_MASK_SIGNED;
 macro audio_isint(x) => !audio_isfloat(x);
 macro audio_isunsigned(x) => !audio_issigned(x);
 macro audio_framesize(SdlAudioSpec x) => (int)audio_bytesize(x.format) * x.channels;
