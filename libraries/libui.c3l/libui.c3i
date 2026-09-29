@@ -1,0 +1,624 @@
+// libui.c3i
+// C3 bindings for libui-ng
+// https://github.com/libui-ng/libui-ng
+// https://libui-ng.github.io/libui-ng
+
+
+module libui;
+
+
+// Types
+struct UiInitOptions
+{
+  usz size;
+}
+struct UiTime
+{
+  int tm_sec;
+  int tm_min;
+  int tm_hour;
+  int tm_mday;
+  int tm_mon;
+  int tm_year;
+  int tm_wday;
+  int tm_yday;
+  int tm_isdst;
+}
+alias UiControl = void*;
+alias UiWindow = void*;
+alias UiButton = void*;
+alias UiBox = void*;
+alias UiCheckbox = void*;
+alias UiEntry = void*;
+alias UiLabel = void*;
+alias UiTab = void*;
+alias UiGroup = void*;
+alias UiSpinbox = void*;
+alias UiSlider = void*;
+alias UiProgressBar = void*;
+alias UiSeparator = void*;
+alias UiCombobox = void*;
+alias UiEditableCombobox = void*;
+alias UiRadioButtons = void*;
+alias UiDateTimePicker = void*;
+alias UiMultilineEntry = void*;
+alias UiMenuItem = void*;
+alias UiMenu = void*;
+alias UiArea = void*;
+alias UiAreaHandler = void*;
+alias UiAreaDrawParams = void*;
+alias UiAreaMouseEvent = void*;
+alias UiAreaKeyEvent = void*;
+alias UiDrawContext = void*;
+alias UiDrawPath = void*;
+alias UiDrawBrush = void*;
+alias UiDrawStrokeParams = void*;
+alias UiDrawMatrix = void*;
+alias UiDrawBrushGradientStop = void*;
+alias UiAttribute = void*;
+alias UiOpenTypeFeatures = void*;
+alias UiAttributedString = void*;
+alias UiFontDescriptor = void*;
+alias UiDrawTextLayout = void*;
+alias UiDrawTextLayoutParams = void*;
+alias UiFontButton = void*;
+alias UiColorButton = void*;
+alias UiForm = void*;
+alias UiGrid = void*;
+alias UiImage = void*;
+alias UiTableValue = void*;
+alias UiTableModel = void*;
+alias UiTableModelHandler = void*;
+alias UiTableTextColumnOptionalParams = void*;
+alias UiTableParams = void*;
+alias UiTable = void*;
+alias UiTableSelection = void*;
+alias UiCallback = fn void(void* data);
+alias UiCallbackI = fn int(void* data);
+alias UiControlCallback = fn void(UiControl sender, void *senderData);
+alias UiWindowCallback = fn void(UiWindow sender, void *senderData);
+alias UiWindowCallbackI = fn int(UiWindow sender, void *senderData);
+alias UiButtonCallback = fn void(UiButton sender, void *senderData);
+alias UiBoxCallback = fn void(UiBox sender, void *senderData);
+alias UiCheckboxCallback = fn void(UiCheckbox sender, void *senderData);
+alias UiEntryCallback = fn void(UiEntry sender, void *senderData);
+alias UiLabelCallback = fn void(UiLabel sender, void *senderData);
+alias UiTabCallback = fn void(UiTab sender, void *senderData);
+alias UiGroupCallback = fn void(UiGroup sender, void *senderData);
+alias UiSpinboxCallback = fn void(UiSpinbox sender, void *senderData);
+alias UiSliderCallback = fn void(UiSlider sender, void *senderData);
+alias UiProgressBarCallback = fn void(UiProgressBar sender, void *senderData);
+alias UiSeparatorCallback = fn void(UiSeparator sender, void *senderData);
+alias UiComboboxCallback = fn void(UiCombobox sender, void *senderData);
+alias UiEditableComboboxCallback = fn void(UiEditableCombobox sender, void *senderData);
+alias UiRadioButtonsCallback = fn void(UiRadioButtons sender, void *senderData);
+alias UiDateTimePickerCallback = fn void(UiDateTimePicker sender, void *senderData);
+alias UiMultilineEntryCallback = fn void(UiMultilineEntry sender, void *senderData);
+alias UiMenuItemCallback = fn void(UiMenuItem sender, void *senderData);
+alias UiMenuItemCallbackW = fn void(UiMenuItem sender, UiWindow window, void *senderData);
+alias UiMenuCallback = fn void(UiMenu sender, void *senderData);
+alias UiAreaCallback = fn void(UiArea sender, void *senderData);
+alias UiAreaHandlerCallback = fn void(UiAreaHandler sender, void *senderData);
+alias UiAreaDrawParamsCallback = fn void(UiAreaDrawParams sender, void *senderData);
+alias UiAreaMouseEventCallback = fn void(UiAreaMouseEvent sender, void *senderData);
+alias UiAreaKeyEventCallback = fn void(UiAreaKeyEvent sender, void *senderData);
+alias UiDrawContextCallback = fn void(UiDrawContext sender, void *senderData);
+alias UiDrawPathCallback = fn void(UiDrawPath sender, void *senderData);
+alias UiDrawBrushCallback = fn void(UiDrawBrush sender, void *senderData);
+alias UiDrawStrokeParamsCallback = fn void(UiDrawStrokeParams sender, void *senderData);
+alias UiDrawMatrixCallback = fn void(UiDrawMatrix sender, void *senderData);
+alias UiDrawBrushGradientStopCallback = fn void(UiDrawBrushGradientStop sender, void *senderData);
+alias UiAttributeCallback = fn void(UiAttribute sender, void *senderData);
+alias UiOpenTypeFeaturesCallback = fn void(UiOpenTypeFeatures sender, void *senderData);
+alias UiAttributedStringCallback = fn void(UiAttributedString sender, void *senderData);
+alias UiAttributedStringForEachAttributeFunc = fn UiForEach(UiAttributedString sender, UiAttribute a, sz start, sz end, void *data);
+alias UiFontDescriptorCallback = fn void(UiFontDescriptor sender, void *senderData);
+alias UiDrawTextLayoutCallback = fn void(UiDrawTextLayout sender, void *senderData);
+alias UiDrawTextLayoutParamsCallback = fn void(UiDrawTextLayoutParams sender, void *senderData);
+alias UiFontButtonCallback = fn void(UiFontButton sender, void *senderData);
+alias UiColorButtonCallback = fn void(UiColorButton sender, void *senderData);
+alias UiFormCallback = fn void(UiForm sender, void *senderData);
+alias UiGridCallback = fn void(UiGrid sender, void *senderData);
+alias UiImageCallback = fn void(UiImage sender, void *senderData);
+alias UiTableValueCallback = fn void(UiTableValue sender, void *senderData);
+alias UiTableModelCallback = fn void(UiTableModel sender, void *senderData);
+alias UiTableModelHandlerCallback = fn void(UiTableModelHandler sender, void *senderData);
+alias UiTableTextColumnOptionalParamsCallback = fn void(UiTableTextColumnOptionalParams sender, void *senderData);
+alias UiTableParamsCallback = fn void(UiTableParams sender, void *senderData);
+alias UiTableCallback = fn void(UiTable sender, void *senderData);
+alias UiTableCallbackR = fn void(UiTable sender, int row, void *senderData);
+alias UiTableCallbackC = fn void(UiTable sender, int column, void *senderData);
+alias UiTableSelectionCallback = fn void(UiTableSelection sender, void *senderData);
+
+// Enums
+enum UiForEach
+{
+  UIFOREACHCONTINUE,
+  UIFOREACHSTOP,
+}
+enum UiWindowResizeEdge
+{
+  UIWINDOWRESIZEEDGELEFT,
+  UIWINDOWRESIZEEDGETOP,
+  UIWINDOWRESIZEEDGERIGHT,
+  UIWINDOWRESIZEEDGEBOTTOM,
+  UIWINDOWRESIZEEDGETOPLEFT,
+  UIWINDOWRESIZEEDGETOPRIGHT,
+  UIWINDOWRESIZEEDGEBOTTOMLEFT,
+  UIWINDOWRESIZEEDGEBOTTOMRIGHT,
+}
+enum UiDrawBrushType
+{
+  UIDRAWBRUSHTYPESOLID,
+  UIDRAWBRUSHTYPELINEARGRADIENT,
+  UIDRAWBRUSHTYPERADIALGRADIENT,
+  UIDRAWBRUSHTYPEIMAGE,
+}
+enum UiDrawLineCap
+{
+  UIDRAWLINECAPFLAT,
+  UIDRAWLINECAPROUND,
+  UIDRAWLINECAPSQUARE,
+}
+enum UiDrawLineJoin
+{
+  UIDRAWLINEJOINMITER,
+  UIDRAWLINEJOINROUND,
+  UIDRAWLINEJOINBEVEL,
+}
+enum UiDrawFillMode
+{
+  UIDRAWFILLMODEWINDING,
+  UIDRAWFILLMODEALTERNATE,
+}
+enum UiAttributeType
+{
+  UIATTRIBUTETYPEFAMILY,
+  UIATTRIBUTETYPESIZE,
+  UIATTRIBUTETYPEWEIGHT,
+  UIATTRIBUTETYPEITALIC,
+  UIATTRIBUTETYPESTRETCH,
+  UIATTRIBUTETYPECOLOR,
+  UIATTRIBUTETYPEBACKGROUND,
+  UIATTRIBUTETYPEUNDERLINE,
+  UIATTRIBUTETYPEUNDERLINECOLOR,
+  UIATTRIBUTETYPEFEATURES,
+}
+constdef UiTextWeight
+{
+  UITEXTWEIGHTMINIMUM = 0,
+  UITEXTWEIGHTTHIN = 100,
+  UITEXTWEIGHTULTRALIGHT = 200,
+  UITEXTWEIGHTLIGHT = 300,
+  UITEXTWEIGHTBOOK = 350,
+  UITEXTWEIGHTNORMAL = 400,
+  UITEXTWEIGHTMEDIUM = 500,
+  UITEXTWEIGHTSEMIBOLD = 600,
+  UITEXTWEIGHTBOLD = 700,
+  UITEXTWEIGHTULTRABOLD = 800,
+  UITEXTWEIGHTHEAVY = 900,
+  UITEXTWEIGHTULTRAHEAVY = 950,
+  UITEXTWEIGHTMAXIMUM = 1000,
+}
+enum UiTextItalic
+{
+  UITEXTITALICNORMAL,
+  UITEXTITALICOBLIQUE,
+  UITEXTITALICITALIC,
+}
+enum UiTextStretch
+{
+  UITEXTSTRETCHULTRACONDENSED,
+  UITEXTSTRETCHEXTRACONDENSED,
+  UITEXTSTRETCHCONDENSED,
+  UITEXTSTRETCHSEMICONDENSED,
+  UITEXTSTRETCHNORMAL,
+  UITEXTSTRETCHSEMIEXPANDED,
+  UITEXTSTRETCHEXPANDED,
+  UITEXTSTRETCHEXTRAEXPANDED,
+  UITEXTSTRETCHULTRAEXPANDED,
+}
+enum UiUnderline
+{
+  UIUNDERLINENONE,
+  UIUNDERLINESINGLE,
+  UIUNDERLINEDOUBLE,
+  UIUNDERLINESUGGESTION,
+}
+enum UiUnderlineColor
+{
+  UIUNDERLINECOLORCUSTOM,
+  UIUNDERLINECOLORSPELLING,
+  UIUNDERLINECOLORGRAMMAR,
+  UIUNDERLINECOLORAUXILIARY,
+}
+enum UiDrawTextAlign
+{
+  UIDRAWTEXTALIGNLEFT,
+  UIDRAWTEXTALIGNCENTER,
+  UIDRAWTEXTALIGNRIGHT,
+}
+constdef UiModifiers
+{
+  UIMODIFIERCTRL = 1 << 0,
+  UIMODIFIERALT = 1 << 1,
+  UIMODIFIERSHIFT = 1 << 2,
+  UIMODIFIERSUPER = 1 << 3,
+}
+constdef UiExtKey
+{
+  UIEXTKEYESCAPE = 1,
+  UIEXTKEYINSERT,
+  UIEXTKEYDELETE,
+  UIEXTKEYHOME,
+  UIEXTKEYEND,
+  UIEXTKEYPAGEUP,
+  UIEXTKEYPAGEDOWN,
+  UIEXTKEYUP,
+  UIEXTKEYDOWN,
+  UIEXTKEYLEFT,
+  UIEXTKEYRIGHT,
+  UIEXTKEYF1,
+  UIEXTKEYF2,
+  UIEXTKEYF3,
+  UIEXTKEYF4,
+  UIEXTKEYF5,
+  UIEXTKEYF6,
+  UIEXTKEYF7,
+  UIEXTKEYF8,
+  UIEXTKEYF9,
+  UIEXTKEYF10,
+  UIEXTKEYF11,
+  UIEXTKEYF12,
+  UIEXTKEYN0,
+  UIEXTKEYN1,
+  UIEXTKEYN2,
+  UIEXTKEYN3,
+  UIEXTKEYN4,
+  UIEXTKEYN5,
+  UIEXTKEYN6,
+  UIEXTKEYN7,
+  UIEXTKEYN8,
+  UIEXTKEYN9,
+  UIEXTKEYNDOT,
+  UIEXTKEYNENTER,
+  UIEXTKEYNADD,
+  UIEXTKEYNSUBTRACT,
+  UIEXTKEYNMULTIPLY,
+  UIEXTKEYNDIVIDE,
+}
+enum UiAlign
+{
+  UIALIGNFILL,
+  UIALIGNSTART,
+  UIALIGNCENTER,
+  UIALIGNEND,
+}
+enum UiAt
+{
+  UIATLEADING,
+  UIATTOP,
+  UIATTRAILING,
+  UIATBOTTOM,
+}
+enum UiTableValueType
+{
+  UITABLEVALUETYPESTRING,
+  UITABLEVALUETYPEIMAGE,
+  UITABLEVALUETYPEINT,
+  UITABLEVALUETYPECOLOR,
+}
+enum UiSortIndicator
+{
+  UISORTINDICATORNONE,
+  UISORTINDICATORASCENDING,
+  UISORTINDICATORDESCENDING,
+}
+enum UiTableSelectionMode
+{
+  UITABLESELECTIONMODENONE,
+  UITABLESELECTIONMODEZEROORONE,
+  UITABLESELECTIONMODEONE,
+  UITABLESELECTIONMODEZEROORMANY,
+}
+
+// Methods
+extern fn ZString uiInit(UiInitOptions *options) @cname("uiInit");
+extern fn void uiUninit() @cname("uiUninit");
+extern fn void uiFreeInitError(ZString err) @cname("uiFreeInitError");
+extern fn void uiMain() @cname("uiMain");
+extern fn void uiMainSteps() @cname("uiMainSteps");
+extern fn int uiMainStep(int wait) @cname("uiMainStep");
+extern fn void uiQuit() @cname("uiQuit");
+extern fn void uiQueueMain(UiCallback callback, void *data) @cname("uiQueueMain");
+extern fn void uiTimer(int milliseconds, UiCallbackI callback, void *data) @cname("uiTimer");
+extern fn void uiOnShouldQuit(UiCallbackI callback, void *data) @cname("uiOnShouldQuit");
+extern fn void uiFreeText(ZString text) @cname("uiFreeText");
+extern fn void uiControlDestroy(UiControl c) @cname("uiControlDestroy");
+extern fn uptr uiControlHandle(UiControl c) @cname("uiControlHandle");
+extern fn UiControl uiControlParent(UiControl c) @cname("uiControlParent");
+extern fn void uiControlSetParent(UiControl c, UiControl parent) @cname("uiControlSetParent");
+extern fn int uiControlToplevel(UiControl c) @cname("uiControlToplevel");
+extern fn int uiControlVisible(UiControl c) @cname("uiControlVisible");
+extern fn void uiControlShow(UiControl c) @cname("uiControlShow");
+extern fn void uiControlHide(UiControl c) @cname("uiControlHide");
+extern fn int uiControlEnabled(UiControl c) @cname("uiControlEnabled");
+extern fn void uiControlEnable(UiControl c) @cname("uiControlEnable");
+extern fn void uiControlDisable(UiControl c) @cname("uiControlDisable");
+//extern fn UiControl uiAllocControl(usz n, uint32_t OSsig, uint32_t typesig, ZString typenamestr) @cname("uiAllocControl");
+extern fn void uiFreeControl(UiControl c) @cname("uiFreeControl");
+extern fn void uiControlVerifySetParent(UiControl c, UiControl parent) @cname("uiControlVerifySetParent");
+extern fn int uiControlEnabledToUser(UiControl c) @cname("uiControlEnabledToUser");
+extern fn void uiUserBugCannotSetParentOnToplevel(ZString type) @cname("uiUserBugCannotSetParentOnToplevel");
+extern fn ZString uiWindowTitle(UiWindow w) @cname("uiWindowTitle");
+extern fn void uiWindowSetTitle(UiWindow w, ZString title) @cname("uiWindowSetTitle");
+extern fn void uiWindowPosition(UiWindow w, int *x, int *y) @cname("uiWindowPosition");
+extern fn void uiWindowSetPosition(UiWindow w, int x, int y) @cname("uiWindowSetPosition");
+extern fn void uiWindowOnPositionChanged(UiWindow w, UiWindowCallback callback, void *data) @cname("uiWindowOnPositionChanged");
+extern fn void uiWindowContentSize(UiWindow w, int *width, int *height) @cname("uiWindowContentSize");
+extern fn void uiWindowSetContentSize(UiWindow w, int width, int height) @cname("uiWindowSetContentSize");
+extern fn int uiWindowFullscreen(UiWindow w) @cname("uiWindowFullscreen");
+extern fn void uiWindowSetFullscreen(UiWindow w, int fullscreen) @cname("uiWindowSetFullscreen");
+extern fn void uiWindowOnContentSizeChanged(UiWindow w, UiWindowCallback callback, void *data) @cname("uiWindowOnContentSizeChanged");
+extern fn void uiWindowOnClosing(UiWindow w, UiWindowCallbackI callback, void *data) @cname("uiWindowOnClosing");
+extern fn void uiWindowOnFocusChanged(UiWindow w, UiWindowCallback callback, void *data) @cname("uiWindowOnFocusChanged");
+extern fn int uiWindowFocused(UiWindow w) @cname("uiWindowFocused");
+extern fn int uiWindowBorderless(UiWindow w) @cname("uiWindowBorderless");
+extern fn void uiWindowSetBorderless(UiWindow w, int borderless) @cname("uiWindowSetBorderless");
+extern fn void uiWindowSetChild(UiWindow w, UiControl child) @cname("uiWindowSetChild");
+extern fn int uiWindowMargined(UiWindow w) @cname("uiWindowMargined");
+extern fn void uiWindowSetMargined(UiWindow w, int margined) @cname("uiWindowSetMargined");
+extern fn int uiWindowResizeable(UiWindow w) @cname("uiWindowResizeable");
+extern fn void uiWindowSetResizeable(UiWindow w, int resizeable) @cname("uiWindowSetResizeable");
+extern fn UiWindow uiNewWindow(ZString title, int width, int height, int hasMenubar) @cname("uiNewWindow");
+extern fn ZString uiButtonText(UiButton b) @cname("uiButtonText");
+extern fn void uiButtonSetText(UiButton b, ZString text) @cname("uiButtonSetText");
+extern fn void uiButtonOnClicked(UiButton b, UiButtonCallback callback, void *data) @cname("uiButtonOnClicked");
+extern fn UiButton uiNewButton(ZString text) @cname("uiNewButton");
+extern fn void uiBoxAppend(UiBox b, UiControl child, int stretchy) @cname("uiBoxAppend");
+extern fn int uiBoxNumChildren(UiBox b) @cname("uiBoxNumChildren");
+extern fn void uiBoxDelete(UiBox b, int index) @cname("uiBoxDelete");
+extern fn int uiBoxPadded(UiBox b) @cname("uiBoxPadded");
+extern fn void uiBoxSetPadded(UiBox b, int padded) @cname("uiBoxSetPadded");
+extern fn UiBox uiNewHorizontalBox() @cname("uiNewHorizontalBox");
+extern fn UiBox uiNewVerticalBox() @cname("uiNewVerticalBox");
+extern fn ZString uiCheckboxText(UiCheckbox c) @cname("uiCheckboxText");
+extern fn void uiCheckboxSetText(UiCheckbox c, ZString text) @cname("uiCheckboxSetText");
+extern fn void uiCheckboxOnToggled(UiCheckbox c, UiCheckboxCallback callback, void *data) @cname("uiCheckboxOnToggled");
+extern fn int uiCheckboxChecked(UiCheckbox c) @cname("uiCheckboxChecked");
+extern fn void uiCheckboxSetChecked(UiCheckbox c, int checked) @cname("uiCheckboxSetChecked");
+extern fn UiCheckbox uiNewCheckbox(ZString text) @cname("uiNewCheckbox");
+extern fn ZString uiEntryText(UiEntry e) @cname("uiEntryText");
+extern fn void uiEntrySetText(UiEntry e, ZString text) @cname("uiEntrySetText");
+extern fn void uiEntryOnChanged(UiEntry e, UiEntryCallback callback, void *data) @cname("uiEntryOnChanged");
+extern fn int uiEntryReadOnly(UiEntry e) @cname("uiEntryReadOnly");
+extern fn void uiEntrySetReadOnly(UiEntry e, int readonly) @cname("uiEntrySetReadOnly");
+extern fn UiEntry uiNewEntry() @cname("uiNewEntry");
+extern fn UiEntry uiNewPasswordEntry() @cname("uiNewPasswordEntry");
+extern fn UiEntry uiNewSearchEntry() @cname("uiNewSearchEntry");
+extern fn ZString uiLabelText(UiLabel l) @cname("uiLabelText");
+extern fn void uiLabelSetText(UiLabel l, ZString text) @cname("uiLabelSetText");
+extern fn UiLabel uiNewLabel(ZString text) @cname("uiNewLabel");
+extern fn int uiTabSelected(UiTab t) @cname("uiTabSelected");
+extern fn void uiTabSetSelected(UiTab t, int index) @cname("uiTabSetSelected");
+extern fn void uiTabOnSelected(UiTab t, UiTabCallback callback, void *data) @cname("uiTabOnSelected");
+extern fn void uiTabAppend(UiTab t, ZString name, UiControl c) @cname("uiTabAppend");
+extern fn void uiTabInsertAt(UiTab t, ZString name, int index, UiControl c) @cname("uiTabInsertAt");
+extern fn void uiTabDelete(UiTab t, int index) @cname("uiTabDelete");
+extern fn int uiTabNumPages(UiTab t) @cname("uiTabNumPages");
+extern fn int uiTabMargined(UiTab t, int index) @cname("uiTabMargined");
+extern fn void uiTabSetMargined(UiTab t, int index, int margined) @cname("uiTabSetMargined");
+extern fn UiTab uiNewTab() @cname("uiNewTab");
+extern fn ZString uiGroupTitle(UiGroup g) @cname("uiGroupTitle");
+extern fn void uiGroupSetTitle(UiGroup g, ZString title) @cname("uiGroupSetTitle");
+extern fn void uiGroupSetChild(UiGroup g, UiControl c) @cname("uiGroupSetChild");
+extern fn int uiGroupMargined(UiGroup g) @cname("uiGroupMargined");
+extern fn void uiGroupSetMargined(UiGroup g, int margined) @cname("uiGroupSetMargined");
+extern fn UiGroup uiNewGroup(ZString title) @cname("uiNewGroup");
+extern fn int uiSpinboxValue(UiSpinbox s) @cname("uiSpinboxValue");
+extern fn void uiSpinboxSetValue(UiSpinbox s, int value) @cname("uiSpinboxSetValue");
+extern fn void uiSpinboxOnChanged(UiSpinbox s, UiSpinboxCallback callback, void *data) @cname("uiSpinboxOnChanged");
+extern fn UiSpinbox uiNewSpinbox(int min, int max) @cname("uiNewSpinbox");
+extern fn int uiSliderValue(UiSlider s) @cname("uiSliderValue");
+extern fn void uiSliderSetValue(UiSlider s, int value) @cname("uiSliderSetValue");
+extern fn int uiSliderHasToolTip(UiSlider s) @cname("uiSliderHasToolTip");
+extern fn void uiSliderSetHasToolTip(UiSlider s, int hasToolTip) @cname("uiSliderSetHasToolTip");
+extern fn void uiSliderOnChanged(UiSlider s, UiSliderCallback callback, void *data) @cname("uiSliderOnChanged");
+extern fn void uiSliderOnReleased(UiSlider s, UiSliderCallback callback, void *data) @cname("uiSliderOnReleased");
+extern fn void uiSliderSetRange(UiSlider s, int min, int max) @cname("uiSliderSetRange");
+extern fn UiSlider uiNewSlider(int min, int max) @cname("uiNewSlider");
+extern fn int uiProgressBarValue(UiProgressBar p) @cname("uiProgressBarValue");
+extern fn void uiProgressBarSetValue(UiProgressBar p, int n) @cname("uiProgressBarSetValue");
+extern fn UiProgressBar uiNewProgressBar() @cname("uiNewProgressBar");
+extern fn UiSeparator uiNewHorizontalSeparator() @cname("uiNewHorizontalSeparator");
+extern fn UiSeparator uiNewVerticalSeparator() @cname("uiNewVerticalSeparator");
+extern fn void uiComboboxAppend(UiCombobox c, ZString text) @cname("uiComboboxAppend");
+extern fn void uiComboboxInsertAt(UiCombobox c, int index, ZString text) @cname("uiComboboxInsertAt");
+extern fn void uiComboboxDelete(UiCombobox c, int index) @cname("uiComboboxDelete");
+extern fn void uiComboboxClear(UiCombobox c) @cname("uiComboboxClear");
+extern fn int uiComboboxNumItems(UiCombobox c) @cname("uiComboboxNumItems");
+extern fn int uiComboboxSelected(UiCombobox c) @cname("uiComboboxSelected");
+extern fn void uiComboboxSetSelected(UiCombobox c, int index) @cname("uiComboboxSetSelected");
+extern fn void uiComboboxOnSelected(UiCombobox c, UiComboboxCallback callback, void *data) @cname("uiComboboxOnSelected");
+extern fn UiCombobox uiNewCombobox() @cname("uiNewCombobox");
+extern fn void uiEditableComboboxAppend(UiEditableCombobox c, ZString text) @cname("uiEditableComboboxAppend");
+extern fn ZString uiEditableComboboxText(UiEditableCombobox c) @cname("uiEditableComboboxText");
+extern fn void uiEditableComboboxSetText(UiEditableCombobox c, ZString text) @cname("uiEditableComboboxSetText");
+extern fn void uiEditableComboboxOnChanged(UiEditableCombobox c, UiEditableComboboxCallback callback, void *data) @cname("uiEditableComboboxOnChanged");
+extern fn UiEditableCombobox uiNewEditableCombobox() @cname("uiNewEditableCombobox");
+extern fn void uiRadioButtonsAppend(UiRadioButtons r, ZString text) @cname("uiRadioButtonsAppend");
+extern fn int uiRadioButtonsSelected(UiRadioButtons r) @cname("uiRadioButtonsSelected");
+extern fn void uiRadioButtonsSetSelected(UiRadioButtons r, int index) @cname("uiRadioButtonsSetSelected");
+extern fn void uiRadioButtonsOnSelected(UiRadioButtons r, UiRadioButtonsCallback callback, void *data) @cname("uiRadioButtonsOnSelected");
+extern fn UiRadioButtons uiNewRadioButtons() @cname("uiNewRadioButtons");
+extern fn void uiDateTimePickerTime(UiDateTimePicker d, UiTime time) @cname("uiDateTimePickerTime");
+extern fn void uiDateTimePickerSetTime(UiDateTimePicker d, UiTime time) @cname("uiDateTimePickerSetTime");
+extern fn void uiDateTimePickerOnChanged(UiDateTimePicker d, UiDateTimePickerCallback callback, void *data) @cname("uiDateTimePickerOnChanged");
+extern fn UiDateTimePicker uiNewDateTimePicker() @cname("uiNewDateTimePicker");
+extern fn UiDateTimePicker uiNewDatePicker() @cname("uiNewDatePicker");
+extern fn UiDateTimePicker uiNewTimePicker() @cname("uiNewTimePicker");
+extern fn ZString uiMultilineEntryText(UiMultilineEntry e) @cname("uiMultilineEntryText");
+extern fn void uiMultilineEntrySetText(UiMultilineEntry e, ZString text) @cname("uiMultilineEntrySetText");
+extern fn void uiMultilineEntryAppend(UiMultilineEntry e, ZString text) @cname("uiMultilineEntryAppend");
+extern fn void uiMultilineEntryOnChanged(UiMultilineEntry e, UiMultilineEntryCallback callback, void *data) @cname("uiMultilineEntryOnChanged");
+extern fn int uiMultilineEntryReadOnly(UiMultilineEntry e) @cname("uiMultilineEntryReadOnly");
+extern fn void uiMultilineEntrySetReadOnly(UiMultilineEntry e, int readonly) @cname("uiMultilineEntrySetReadOnly");
+extern fn UiMultilineEntry uiNewMultilineEntry() @cname("uiNewMultilineEntry");
+extern fn UiMultilineEntry uiNewNonWrappingMultilineEntry() @cname("uiNewNonWrappingMultilineEntry");
+extern fn void uiMenuItemEnable(UiMenuItem m) @cname("uiMenuItemEnable");
+extern fn void uiMenuItemDisable(UiMenuItem m) @cname("uiMenuItemDisable");
+extern fn void uiMenuItemOnClicked(UiMenuItem m, UiMenuItemCallbackW callback, void *data) @cname("uiMenuItemOnClicked");
+extern fn int uiMenuItemChecked(UiMenuItem m) @cname("uiMenuItemChecked");
+extern fn void uiMenuItemSetChecked(UiMenuItem m, int checked) @cname("uiMenuItemSetChecked");
+extern fn UiMenuItem uiMenuAppendItem(UiMenu m, ZString name) @cname("uiMenuAppendItem");
+extern fn UiMenuItem uiMenuAppendCheckItem(UiMenu m, ZString name) @cname("uiMenuAppendCheckItem");
+extern fn UiMenuItem uiMenuAppendQuitItem(UiMenu m) @cname("uiMenuAppendQuitItem");
+extern fn UiMenuItem uiMenuAppendPreferencesItem(UiMenu m) @cname("uiMenuAppendPreferencesItem");
+extern fn UiMenuItem uiMenuAppendAboutItem(UiMenu m) @cname("uiMenuAppendAboutItem");
+extern fn void uiMenuAppendSeparator(UiMenu m) @cname("uiMenuAppendSeparator");
+extern fn UiMenu uiNewMenu(ZString name) @cname("uiNewMenu");
+extern fn ZString uiOpenFile(UiWindow parent) @cname("uiOpenFile");
+extern fn ZString uiOpenFolder(UiWindow parent) @cname("uiOpenFolder");
+extern fn ZString uiSaveFile(UiWindow parent) @cname("uiSaveFile");
+extern fn void uiMsgBox(UiWindow parent, ZString title, ZString description) @cname("uiMsgBox");
+extern fn void uiMsgBoxError(UiWindow parent, ZString title, ZString description) @cname("uiMsgBoxError");
+extern fn void uiAreaSetSize(UiArea a, int width, int height) @cname("uiAreaSetSize");
+extern fn void uiAreaQueueRedrawAll(UiArea a) @cname("uiAreaQueueRedrawAll");
+extern fn void uiAreaScrollTo(UiArea a, double x, double y, double width, double height) @cname("uiAreaScrollTo");
+extern fn void uiAreaBeginUserWindowMove(UiArea a) @cname("uiAreaBeginUserWindowMove");
+extern fn void uiAreaBeginUserWindowResize(UiArea a, UiWindowResizeEdge edge) @cname("uiAreaBeginUserWindowResize");
+extern fn UiArea uiNewArea(UiAreaHandler ah) @cname("uiNewArea");
+extern fn UiArea uiNewScrollingArea(UiAreaHandler ah, int width, int height) @cname("uiNewScrollingArea");
+extern fn UiDrawPath uiDrawNewPath(UiDrawFillMode fillMode) @cname("uiDrawNewPath");
+extern fn void uiDrawFreePath(UiDrawPath p) @cname("uiDrawFreePath");
+extern fn void uiDrawPathNewFigure(UiDrawPath p, double x, double y) @cname("uiDrawPathNewFigure");
+extern fn void uiDrawPathNewFigureWithArc(UiDrawPath p, double xCenter, double yCenter, double radius, double startAngle, double sweep, int negative) @cname("uiDrawPathNewFigureWithArc");
+extern fn void uiDrawPathLineTo(UiDrawPath p, double x, double y) @cname("uiDrawPathLineTo");
+extern fn void uiDrawPathArcTo(UiDrawPath p, double xCenter, double yCenter, double radius, double startAngle, double sweep, int negative) @cname("uiDrawPathArcTo");
+extern fn void uiDrawPathBezierTo(UiDrawPath p, double c1x, double c1y, double c2x, double c2y, double endX, double endY) @cname("uiDrawPathBezierTo");
+extern fn void uiDrawPathCloseFigure(UiDrawPath p) @cname("uiDrawPathCloseFigure");
+extern fn void uiDrawPathAddRectangle(UiDrawPath p, double x, double y, double width, double height) @cname("uiDrawPathAddRectangle");
+extern fn int uiDrawPathEnded(UiDrawPath p) @cname("uiDrawPathEnded");
+extern fn void uiDrawPathEnd(UiDrawPath p) @cname("uiDrawPathEnd");
+extern fn void uiDrawStroke(UiDrawContext c, UiDrawPath path, UiDrawBrush b, UiDrawStrokeParams p) @cname("uiDrawStroke");
+extern fn void uiDrawFill(UiDrawContext c, UiDrawPath path, UiDrawBrush b) @cname("uiDrawFill");
+extern fn void uiDrawMatrixSetIdentity(UiDrawMatrix m) @cname("uiDrawMatrixSetIdentity");
+extern fn void uiDrawMatrixTranslate(UiDrawMatrix m, double x, double y) @cname("uiDrawMatrixTranslate");
+extern fn void uiDrawMatrixScale(UiDrawMatrix m, double xCenter, double yCenter, double x, double y) @cname("uiDrawMatrixScale");
+extern fn void uiDrawMatrixRotate(UiDrawMatrix m, double x, double y, double amount) @cname("uiDrawMatrixRotate");
+extern fn void uiDrawMatrixSkew(UiDrawMatrix m, double x, double y, double xamount, double yamount) @cname("uiDrawMatrixSkew");
+extern fn void uiDrawMatrixMultiply(UiDrawMatrix dest, UiDrawMatrix src) @cname("uiDrawMatrixMultiply");
+extern fn int uiDrawMatrixInvertible(UiDrawMatrix m) @cname("uiDrawMatrixInvertible");
+extern fn int uiDrawMatrixInvert(UiDrawMatrix m) @cname("uiDrawMatrixInvert");
+extern fn void uiDrawMatrixTransformPoint(UiDrawMatrix m, double *x, double *y) @cname("uiDrawMatrixTransformPoint");
+extern fn void uiDrawMatrixTransformSize(UiDrawMatrix m, double *x, double *y) @cname("uiDrawMatrixTransformSize");
+extern fn void uiDrawTransform(UiDrawContext c, UiDrawMatrix m) @cname("uiDrawTransform");
+extern fn void uiDrawClip(UiDrawContext c, UiDrawPath path) @cname("uiDrawClip");
+extern fn void uiDrawSave(UiDrawContext c) @cname("uiDrawSave");
+extern fn void uiDrawRestore(UiDrawContext c) @cname("uiDrawRestore");
+extern fn void uiFreeAttribute(UiAttribute a) @cname("uiFreeAttribute");
+extern fn UiAttributeType uiAttributeGetType(UiAttribute a) @cname("UiAttributeGetType");
+extern fn UiAttribute uiNewFamilyAttribute(ZString family) @cname("uiNewFamilyAttribute");
+extern fn ZString uiAttributeFamily(UiAttribute a) @cname("UiAttributeFamily");
+extern fn UiAttribute uiNewSizeAttribute(double size) @cname("uiNewSizeAttribute");
+extern fn double uiAttributeSize(UiAttribute a) @cname("UiAttributeSize");
+extern fn UiAttribute uiNewWeightAttribute(UiTextWeight weight) @cname("uiNewWeightAttribute");
+extern fn UiTextWeight uiAttributeWeight(UiAttribute a) @cname("UiAttributeWeight");
+extern fn UiAttribute uiNewItalicAttribute(UiTextItalic italic) @cname("uiNewItalicAttribute");
+extern fn UiTextItalic uiAttributeItalic(UiAttribute a) @cname("UiAttributeItalic");
+extern fn UiAttribute uiNewStretchAttribute(UiTextStretch stretch) @cname("uiNewStretchAttribute");
+extern fn UiTextStretch uiAttributeStretch(UiAttribute a) @cname("UiAttributeStretch");
+extern fn UiAttribute uiNewColorAttribute(double r, double g, double b, double a) @cname("uiNewColorAttribute");
+extern fn void uiAttributeColor(UiAttribute a, double *r, double *g, double *b, double *alpha) @cname("UiAttributeColor");
+extern fn UiAttribute uiNewBackgroundAttribute(double r, double g, double b, double a) @cname("uiNewBackgroundAttribute");
+extern fn UiAttribute uiNewUnderlineAttribute(UiUnderline u) @cname("uiNewUnderlineAttribute");
+extern fn UiUnderline uiAttributeUnderline(UiAttribute a) @cname("UiAttributeUnderline");
+extern fn UiAttribute uiNewUnderlineColorAttribute(UiUnderlineColor u, double r, double g, double b, double a) @cname("uiNewUnderlineColorAttribute");
+extern fn void uiAttributeUnderlineColor(UiAttribute a, UiUnderlineColor *u, double *r, double *g, double *b, double *alpha) @cname("UiAttributeUnderlineColor");
+//extern fn UiOpenTypeFeatures uiNewOpenTypeFeatures() @cname("uiNewOpenTypeFeatures");
+//extern fn void uiFreeOpenTypeFeatures(UiOpenTypeFeatures otf) @cname("uiFreeOpenTypeFeatures");
+//extern fn UiOpenTypeFeatures uiOpenTypeFeaturesClone(UiOpenTypeFeatures otf) @cname("uiOpenTypeFeaturesClone");
+//extern fn void uiOpenTypeFeaturesAdd(UiOpenTypeFeatures otf, char a, char b, char c, char d, uint32_t value) @cname("uiOpenTypeFeaturesAdd");
+//extern fn void uiOpenTypeFeaturesRemove(UiOpenTypeFeatures otf, char a, char b, char c, char d) @cname("uiOpenTypeFeaturesRemove");
+//extern fn int uiOpenTypeFeaturesGet(UiOpenTypeFeatures otf, char a, char b, char c, char d, uint32_t *value) @cname("uiOpenTypeFeaturesGet");
+//extern fn void uiOpenTypeFeaturesForEach(UiOpenTypeFeatures otf, uiOpenTypeFeaturesForEachFunc f, void *data) @cname("uiOpenTypeFeaturesForEach");
+extern fn UiAttribute uiNewFeaturesAttribute(UiOpenTypeFeatures otf) @cname("uiNewFeaturesAttribute");
+extern fn UiOpenTypeFeatures uiAttributeFeatures(UiAttribute a) @cname("UiAttributeFeatures");
+extern fn UiAttributedString uiNewAttributedString(ZString initialString) @cname("uiNewAttributedString");
+extern fn void uiFreeAttributedString(UiAttributedString s) @cname("uiFreeAttributedString");
+extern fn ZString uiAttributedStringString(UiAttributedString s) @cname("UiAttributedStringString");
+extern fn usz uiAttributedStringLen(UiAttributedString s) @cname("UiAttributedStringLen");
+extern fn void uiAttributedStringAppendUnattributed(UiAttributedString s, ZString str) @cname("UiAttributedStringAppendUnattributed");
+extern fn void uiAttributedStringInsertAtUnattributed(UiAttributedString s, ZString str, usz at) @cname("UiAttributedStringInsertAtUnattributed");
+extern fn void uiAttributedStringDelete(UiAttributedString s, usz start, usz end) @cname("UiAttributedStringDelete");
+extern fn void uiAttributedStringSetAttribute(UiAttributedString s, UiAttribute a, usz start, usz end) @cname("UiAttributedStringSetAttribute");
+extern fn void uiAttributedStringForEachAttribute(UiAttributedString s, UiAttributedStringForEachAttributeFunc f, void *data) @cname("UiAttributedStringForEachAttribute");
+extern fn usz uiAttributedStringNumGraphemes(UiAttributedString s) @cname("UiAttributedStringNumGraphemes");
+extern fn usz uiAttributedStringByteIndexToGrapheme(UiAttributedString s, usz pos) @cname("UiAttributedStringByteIndexToGrapheme");
+extern fn usz uiAttributedStringGraphemeToByteIndex(UiAttributedString s, usz pos) @cname("UiAttributedStringGraphemeToByteIndex");
+extern fn void uiLoadControlFont(UiFontDescriptor f) @cname("uiLoadControlFont");
+extern fn void uiFreeFontDescriptor(UiFontDescriptor desc) @cname("uiFreeFontDescriptor");
+extern fn UiDrawTextLayout uiDrawNewTextLayout(UiDrawTextLayoutParams params) @cname("uiDrawNewTextLayout");
+extern fn void uiDrawFreeTextLayout(UiDrawTextLayout tl) @cname("uiDrawFreeTextLayout");
+extern fn void uiDrawText(UiDrawContext c, UiDrawTextLayout tl, double x, double y) @cname("uiDrawText");
+extern fn void uiDrawTextLayoutExtents(UiDrawTextLayout tl, double *width, double *height) @cname("uiDrawTextLayoutExtents");
+extern fn void uiFontButtonFont(UiFontButton b, UiFontDescriptor desc) @cname("uiFontButtonFont");
+extern fn void uiFontButtonOnChanged(UiFontButton b, UiFontButtonCallback callback, void *data) @cname("uiFontButtonOnChanged");
+extern fn UiFontButton uiNewFontButton() @cname("uiNewFontButton");
+extern fn void uiFreeFontButtonFont(UiFontDescriptor desc) @cname("uiFreeFontButtonFont");
+extern fn void uiColorButtonColor(UiColorButton b, double *r, double *g, double *bl, double *a) @cname("uiColorButtonColor");
+extern fn void uiColorButtonSetColor(UiColorButton b, double r, double g, double bl, double a) @cname("uiColorButtonSetColor");
+extern fn void uiColorButtonOnChanged(UiColorButton b, UiColorButtonCallback callback, void *data) @cname("uiColorButtonOnChanged");
+extern fn UiColorButton uiNewColorButton() @cname("uiNewColorButton");
+extern fn void uiFormAppend(UiForm f, ZString label, UiControl c, int stretchy) @cname("uiFormAppend");
+extern fn int uiFormNumChildren(UiForm f) @cname("uiFormNumChildren");
+extern fn void uiFormDelete(UiForm f, int index) @cname("uiFormDelete");
+extern fn int uiFormPadded(UiForm f) @cname("uiFormPadded");
+extern fn void uiFormSetPadded(UiForm f, int padded) @cname("uiFormSetPadded");
+extern fn UiForm uiNewForm() @cname("uiNewForm");
+extern fn void uiGridAppend(UiGrid g, UiControl c, int left, int top, int xspan, int yspan, int hexpand, UiAlign halign, int vexpand, UiAlign valign) @cname("uiGridAppend");
+extern fn void uiGridInsertAt(UiGrid g, UiControl c, UiControl existing, UiAt at, int xspan, int yspan, int hexpand, UiAlign halign, int vexpand, UiAlign valign) @cname("uiGridInsertAt");
+extern fn int uiGridPadded(UiGrid g) @cname("uiGridPadded");
+extern fn void uiGridSetPadded(UiGrid g, int padded) @cname("uiGridSetPadded");
+extern fn UiGrid uiNewGrid() @cname("uiNewGrid");
+extern fn UiImage uiNewImage(double width, double height) @cname("uiNewImage");
+extern fn void uiFreeImage(UiImage i) @cname("uiFreeImage");
+extern fn void uiImageAppend(UiImage i, void *pixels, int pixelWidth, int pixelHeight, int byteStride) @cname("uiImageAppend");
+extern fn void uiFreeTableValue(UiTableValue v) @cname("uiFreeTableValue");
+extern fn UiTableValueType uiTableValueGetType(UiTableValue v) @cname("uiTableValueGetType");
+extern fn UiTableValue uiNewTableValueString(ZString str) @cname("uiNewTableValueString");
+extern fn ZString uiTableValueString(UiTableValue v) @cname("uiTableValueString");
+extern fn UiTableValue uiNewTableValueImage(UiImage img) @cname("uiNewTableValueImage");
+extern fn UiImage uiTableValueImage(UiTableValue v) @cname("uiTableValueImage");
+extern fn UiTableValue uiNewTableValueInt(int i) @cname("uiNewTableValueInt");
+extern fn int uiTableValueInt(UiTableValue v) @cname("uiTableValueInt");
+extern fn UiTableValue uiNewTableValueColor(double r, double g, double b, double a) @cname("uiNewTableValueColor");
+extern fn void uiTableValueColor(UiTableValue v, double *r, double *g, double *b, double *a) @cname("uiTableValueColor");
+extern fn UiTableModel uiNewTableModel(UiTableModelHandler mh) @cname("uiNewTableModel");
+extern fn void uiFreeTableModel(UiTableModel m) @cname("uiFreeTableModel");
+extern fn void uiTableModelRowInserted(UiTableModel m, int newIndex) @cname("uiTableModelRowInserted");
+extern fn void uiTableModelRowChanged(UiTableModel m, int index) @cname("uiTableModelRowChanged");
+extern fn void uiTableModelRowDeleted(UiTableModel m, int oldIndex) @cname("uiTableModelRowDeleted");
+extern fn void uiTableAppendTextColumn(UiTable t, ZString name, int textModelColumn, int textEditableModelColumn, UiTableTextColumnOptionalParams textParams) @cname("uiTableAppendTextColumn");
+extern fn void uiTableAppendImageColumn(UiTable t, ZString name, int imageModelColumn) @cname("uiTableAppendImageColumn");
+extern fn void uiTableAppendImageTextColumn(UiTable t, ZString name, int imageModelColumn, int textModelColumn, int textEditableModelColumn, UiTableTextColumnOptionalParams textParams) @cname("uiTableAppendImageTextColumn");
+extern fn void uiTableAppendCheckboxColumn(UiTable t, ZString name, int checkboxModelColumn, int checkboxEditableModelColumn) @cname("uiTableAppendCheckboxColumn");
+extern fn void uiTableAppendCheckboxTextColumn(UiTable t, ZString name, int checkboxModelColumn, int checkboxEditableModelColumn, int textModelColumn, int textEditableModelColumn, UiTableTextColumnOptionalParams textParams) @cname("uiTableAppendCheckboxTextColumn");
+extern fn void uiTableAppendProgressBarColumn(UiTable t, ZString name, int progressModelColumn) @cname("uiTableAppendProgressBarColumn");
+extern fn void uiTableAppendButtonColumn(UiTable t, ZString name, int buttonModelColumn, int buttonClickableModelColumn) @cname("uiTableAppendButtonColumn");
+extern fn int uiTableHeaderVisible(UiTable t) @cname("uiTableHeaderVisible");
+extern fn void uiTableHeaderSetVisible(UiTable t, int visible) @cname("uiTableHeaderSetVisible");
+extern fn UiTable uiNewTable(UiTableParams params) @cname("uiNewTable");
+extern fn void uiTableOnRowClicked(UiTable t, UiTableCallbackR callback, void *data) @cname("uiTableOnRowClicked");
+extern fn void uiTableOnRowDoubleClicked(UiTable t, UiTableCallbackR callback, void *data) @cname("uiTableOnRowDoubleClicked");
+extern fn void uiTableHeaderSetSortIndicator(UiTable t, int column, UiSortIndicator indicator) @cname("uiTableHeaderSetSortIndicator");
+extern fn UiSortIndicator uiTableHeaderSortIndicator(UiTable t, int column) @cname("uiTableHeaderSortIndicator");
+extern fn void uiTableHeaderOnClicked(UiTable t, UiTableCallbackC callback, void *data) @cname("uiTableHeaderOnClicked");
+extern fn int uiTableColumnWidth(UiTable t, int column) @cname("uiTableColumnWidth");
+extern fn void uiTableColumnSetWidth(UiTable t, int column, int width) @cname("uiTableColumnSetWidth");
+extern fn UiTableSelectionMode uiTableGetSelectionMode(UiTable t) @cname("uiTableGetSelectionMode");
+extern fn void uiTableSetSelectionMode(UiTable t, UiTableSelectionMode mode) @cname("uiTableSetSelectionMode");
+extern fn void uiTableOnSelectionChanged(UiTable t, UiTableCallback callback, void *data) @cname("uiTableOnSelectionChanged");
+extern fn UiTableSelection uiTableGetSelection(UiTable t) @cname("uiTableGetSelection");
+extern fn void uiTableSetSelection(UiTable t, UiTableSelection sel) @cname("uiTableSetSelection");
+extern fn void uiFreeTableSelection(UiTableSelection s) @cname("uiFreeTableSelection");
