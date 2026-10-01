@@ -4,104 +4,182 @@
 module mysql8;
 
 alias Mysql = void*;
-alias MysqlRes = void*;
+// alias MysqlRes = void*;
 alias MysqlRow = void**;
 alias MysqlStmt = void*;
+alias MysqlRows = void*;
+alias MysqlData = void*;
+alias MysqlMethods = void*;
+alias MysqlMemRoot = void*;
 
 const int MYSQL_NO_DATA = 100;
 
 constdef FieldType : int
 {
-	DECIMAL = 0,
-	TINY = 1,
-	SHORT = 2,
-	LONG = 3,
-	FLOAT = 4,
-	DOUBLE = 5,
-	NULL = 6,
-	TIMESTAMP = 7,
-	LONGLONG = 8,
-	INT24 = 9,
-	DATE = 10,
-	TIME = 11,
-	DATETIME = 12,
-	YEAR = 13,
-	NEWDATE = 14, // Unused
-	VARCHAR = 15,
-	BIT = 16,
-	TIMESTAMP2 = 17,
-	DATETIME2 = 18, /**< Internal to MySQL. Not used in protocol */
-	TIME2 = 19,  /**< Internal to MySQL. Not used in protocol */
-	TYPED_ARRAY = 20, /**< Used for replication only */
-	INVALID = 243,
-	JSON = 245,
-	NEWDECIMAL = 246,
-	ENUM = 247,
-	SET = 248,
-	TINY_BLOB = 249,
-	MEDIUM_BLOB = 250,
-	LONG_BLOB = 251,
-	BLOB = 252,
-	VAR_STRING = 253,
-	STRING = 254,
-	GEOMETRY = 255
+    DECIMAL = 0,
+    TINY = 1,
+    SHORT = 2,
+    LONG = 3,
+    FLOAT = 4,
+    DOUBLE = 5,
+    NULL = 6,
+    TIMESTAMP = 7,
+    LONGLONG = 8,
+    INT24 = 9,
+    DATE = 10,
+    TIME = 11,
+    DATETIME = 12,
+    YEAR = 13,
+    NEWDATE = 14, // Unused
+    VARCHAR = 15,
+    BIT = 16,
+    TIMESTAMP2 = 17,
+    DATETIME2 = 18, /**< Internal to MySQL. Not used in protocol */
+    TIME2 = 19,  /**< Internal to MySQL. Not used in protocol */
+    TYPED_ARRAY = 20, /**< Used for replication only */
+    INVALID = 243,
+    JSON = 245,
+    NEWDECIMAL = 246,
+    ENUM = 247,
+    SET = 248,
+    TINY_BLOB = 249,
+    MEDIUM_BLOB = 250,
+    LONG_BLOB = 251,
+    BLOB = 252,
+    VAR_STRING = 253,
+    STRING = 254,
+    GEOMETRY = 255
 }
 
 enum MysqlOption : CInt
 {
-  OPT_CONNECT_TIMEOUT,
-  OPT_COMPRESS,
-  OPT_NAMED_PIPE,
-  INIT_COMMAND,
-  READ_DEFAULT_FILE,
-  READ_DEFAULT_GROUP,
-  SET_CHARSET_DIR,
-  SET_CHARSET_NAME,
-  OPT_LOCAL_INFILE,
-  OPT_PROTOCOL,
-  SHARED_MEMORY_BASE_NAME,
-  OPT_READ_TIMEOUT,
-  OPT_WRITE_TIMEOUT,
-  OPT_USE_RESULT,
-  REPORT_DATA_TRUNCATION,
-  OPT_RECONNECT,
-  PLUGIN_DIR,
-  DEFAULT_AUTH,
-  OPT_BIND,
-  OPT_SSL_KEY,
-  OPT_SSL_CERT,
-  OPT_SSL_CA,
-  OPT_SSL_CAPATH,
-  OPT_SSL_CIPHER,
-  OPT_SSL_CRL,
-  OPT_SSL_CRLPATH,
-  OPT_CONNECT_ATTR_RESET,
-  OPT_CONNECT_ATTR_ADD,
-  OPT_CONNECT_ATTR_DELETE,
-  SERVER_PUBLIC_KEY,
-  ENABLE_CLEARTEXT_PLUGIN,
-  OPT_CAN_HANDLE_EXPIRED_PASSWORDS,
-  OPT_MAX_ALLOWED_PACKET,
-  OPT_NET_BUFFER_LENGTH,
-  OPT_TLS_VERSION,
-  OPT_SSL_MODE,
-  OPT_GET_SERVER_PUBLIC_KEY,
-  OPT_RETRY_COUNT,
-  OPT_OPTIONAL_RESULTSET_METADATA,
-  OPT_SSL_FIPS_MODE,
-  OPT_TLS_CIPHERSUITES,
-  OPT_COMPRESSION_ALGORITHMS,
-  OPT_ZSTD_COMPRESSION_LEVEL,
-  OPT_LOAD_DATA_LOCAL_DIR,
-  OPT_USER_PASSWORD,
-  OPT_SSL_SESSION_DATA,
-  OPT_TLS_SNI_SERVERNAME
+    OPT_CONNECT_TIMEOUT,
+    OPT_COMPRESS,
+    OPT_NAMED_PIPE,
+    INIT_COMMAND,
+    READ_DEFAULT_FILE,
+    READ_DEFAULT_GROUP,
+    SET_CHARSET_DIR,
+    SET_CHARSET_NAME,
+    OPT_LOCAL_INFILE,
+    OPT_PROTOCOL,
+    SHARED_MEMORY_BASE_NAME,
+    OPT_READ_TIMEOUT,
+    OPT_WRITE_TIMEOUT,
+    OPT_USE_RESULT,
+    REPORT_DATA_TRUNCATION,
+    OPT_RECONNECT,
+    PLUGIN_DIR,
+    DEFAULT_AUTH,
+    OPT_BIND,
+    OPT_SSL_KEY,
+    OPT_SSL_CERT,
+    OPT_SSL_CA,
+    OPT_SSL_CAPATH,
+    OPT_SSL_CIPHER,
+    OPT_SSL_CRL,
+    OPT_SSL_CRLPATH,
+    OPT_CONNECT_ATTR_RESET,
+    OPT_CONNECT_ATTR_ADD,
+    OPT_CONNECT_ATTR_DELETE,
+    SERVER_PUBLIC_KEY,
+    ENABLE_CLEARTEXT_PLUGIN,
+    OPT_CAN_HANDLE_EXPIRED_PASSWORDS,
+    OPT_MAX_ALLOWED_PACKET,
+    OPT_NET_BUFFER_LENGTH,
+    OPT_TLS_VERSION,
+    OPT_SSL_MODE,
+    OPT_GET_SERVER_PUBLIC_KEY,
+    OPT_RETRY_COUNT,
+    OPT_OPTIONAL_RESULTSET_METADATA,
+    OPT_SSL_FIPS_MODE,
+    OPT_TLS_CIPHERSUITES,
+    OPT_COMPRESSION_ALGORITHMS,
+    OPT_ZSTD_COMPRESSION_LEVEL,
+    OPT_LOAD_DATA_LOCAL_DIR,
+    OPT_USER_PASSWORD,
+    OPT_SSL_SESSION_DATA,
+    OPT_TLS_SNI_SERVERNAME
+}
+
+constdef TimestampType : CInt
+{
+    TIMESTAMP_NONE = -2,
+    TIMESTAMP_ERROR = -1,
+    TIMESTAMP_DATE = 0,	/// Stores year, month and day components.
+    TIMESTAMP_DATETIME = 1, /// Stores all date and time components. Value is in UTC for `TIMESTAMP` type. Value is in local time zone for `DATETIME` type.
+    TIMESTAMP_TIME = 2,	/// Stores hour, minute, second and microsecond.
+    /**
+    A temporary type for `DATETIME` or `TIMESTAMP` types equipped with time
+    zone information. After the time zone information is reconciled, the type is
+    converted to MYSQL_TIMESTAMP_DATETIME.
+    */
+    TIMESTAMP_DATETIME_TZ = 3
 }
 
 enum Autocommit : CInt
 {
     AUTOCOMMIT_OFF,
     AUTOCOMMIT_ON
+}
+
+constdef StatusCode : CInt
+{
+    SUCCESS = 0,
+    NO_DATA = 100,
+    DATA_TRUNCATED = 101
+}
+
+enum ResultSetMetaData : CInt
+{
+  RESULTSET_METADATA_NONE,  /** No metadata will be sent. */
+  RESULTSET_METADATA_FULL   /** The server will send all metadata. */
+}
+
+struct MysqlField
+{
+    ZString         name;             /* Name of column */
+    ZString         org_name;         /* Original column name, if an alias */
+    ZString         table;            /* Table of column if column was a field */
+    ZString         org_table;        /* Org table name, if table was an alias */
+    ZString         db;               /* Database for table */
+    ZString         catalog;          /* Catalog for table */
+    ZString         def;              /* Default value (set by mysql_list_fields) */
+    CULong          length;            /* Width of column (create length) */
+    CULong          max_length;        /* Max width for selected set */
+    CUInt           name_length;
+    CUInt           org_name_length;
+    CUInt           table_length;
+    CUInt           org_table_length;
+    CUInt           db_length;
+    CUInt           catalog_length;
+    CUInt           def_length;
+    CUInt           flags;              /* Div flags */
+    CUInt           decimals;           /* Number of decimals in field */
+    CUInt           charsetnr;          /* Character set */
+    FieldType       type;           /* Type of field. See mysql_com.h for types */
+    void*           extension;
+}
+
+struct MysqlRes
+{
+    CULong          row_count;
+    MysqlField*     fields;
+    MysqlData       data;           // TODO: Convert MYSQL_DATA struct
+    MysqlRows       data_cursor;    // TODO: Convert MYSQL_ROWS struct
+    CULong*         lengths;        /* column lengths of current row */
+    Mysql           handle;         /* for unbuffered reads */
+    MysqlMethods    methods;        // TODO: MYSQL_METHODS
+    MysqlRow        row;                   /* If unbuffered read */
+    MysqlRow        current_row;           /* buffer to current row */
+    MysqlMemRoot    field_alloc;              // TODO: Convert MEM_ROOT struct
+    CUInt           field_count;
+    CUInt           current_field;
+    bool            eof; /* Used by mysql_fetch_row */
+    /* mysql_stmt_close() had to cancel this result */
+    bool            unbuffered_fetch_cancelled;
+    ResultSetMetaData metadata;
+    void*           extension;
 }
 
 extern fn CULong        affected_rows(Mysql mysql) @cname("mysql_affected_rows");
@@ -111,51 +189,67 @@ extern fn bool          commit(Mysql mysql) @cname("mysql_commit");
 extern fn Mysql         init(Mysql mysql) @cname("mysql_init");
 extern fn CUInt         errno(Mysql mysql) @cname("mysql_errno");
 extern fn ZString       error(Mysql mysql) @cname("mysql_error");
-extern fn MysqlRow      fetch_row(MysqlRes result) @cname("mysql_fetch_row");
-extern fn void          free_result(MysqlRes result) @cname("mysql_free_result");
+extern fn MysqlRow      fetch_row(MysqlRes* result) @cname("mysql_fetch_row");
+extern fn void          free_result(MysqlRes* result) @cname("mysql_free_result");
 extern fn void          library_end() @cname("mysql_server_end");
 extern fn CInt          library_init(CInt argc, void* argv, void* groups) @cname("mysql_server_init");
-extern fn CUInt         num_fields(MysqlRes result) @cname("mysql_num_fields");
-extern fn CInt          options(Mysql *mysql, MysqlOption option, void *arg) @cname("mysql_options");
+extern fn CUInt         num_fields(MysqlRes *result) @cname("mysql_num_fields");
+extern fn CInt          options(Mysql* mysql, MysqlOption option, void* arg) @cname("mysql_options");
 extern fn CInt          ping(Mysql mysql) @cname("mysql_ping");
 extern fn Mysql         real_connect(Mysql mysql, ZString host, ZString user, ZString passwd, ZString db, CUInt port, ZString unix_socket, CULong client_flag) @cname("mysql_real_connect");
 extern fn CInt          real_query(Mysql mysql, ZString stmt_str, CULong length) @cname("mysql_real_query");
 extern fn bool          rollback(Mysql mysql) @cname("mysql_rollback");
-extern fn MysqlRes      use_result(Mysql mysql) @cname("mysql_use_result");
-extern fn void*         fetch_field_direct(MysqlRes result, CUInt field_offset) @cname("mysql_fetch_field_direct");
+extern fn MysqlRes*     store_result(Mysql mysql) @cname("mysql_store_result");
+extern fn MysqlRes*     use_result(Mysql mysql) @cname("mysql_use_result");
+extern fn void*         fetch_field_direct(MysqlRes* result, CUInt field_offset) @cname("mysql_fetch_field_direct");
+extern fn CInt          select_db(Mysql mysql, ZString db) @cname("mysql_select_db");
 
 // Prepared Statement Functions
 
 struct MysqlBind 
 {
-  CULong *length;   /* output length pointer */
-  bool   *is_null;  /* Pointer to null indicator */
-  void*   buffer;   /* buffer to get/put data */
+    CULong *length;   /* output length pointer */
+    bool   *is_null;  /* Pointer to null indicator */
+    void*   buffer;   /* buffer to get/put data */
                     /* set this if you want to track data truncations happened during fetch */
-  bool *error;
-  CUChar *row_ptr;  /* for the current data position */
-  void* store_param_func;
-  void* fetch_result;
-  void* skip_result;
+    bool *error;
+    CUChar *row_ptr;  /* for the current data position */
+    void* store_param_func;
+    void* fetch_result;
+    void* skip_result;
 
-  CULong buffer_length;                 /* output buffer length, must be set when fetching str/binary */
-  CULong offset;                        /* offset position for char/binary fetch */
-  CULong length_value;                  /* Used if length is 0 */
-  CUInt  param_number;                  /* For null count and error messages */
-  CUInt  pack_length;                   /* Internal length for packed data */
-  FieldType buffer_type;                   /* buffer type */ // ENUM enum_field_types
-  bool   error_value;                   /* used if error is 0 */
-  bool   is_unsigned;                   /* set if integer type is unsigned */
-  bool   long_data_used;                /* If used with mysql_send_long_data */
-  bool   is_null_value;                 /* Used if is_null is 0 */
-  void *extension;
+    CULong buffer_length;                 /* output buffer length, must be set when fetching str/binary */
+    CULong offset;                        /* offset position for char/binary fetch */
+    CULong length_value;                  /* Used if length is 0 */
+    CUInt  param_number;                  /* For null count and error messages */
+    CUInt  pack_length;                   /* Internal length for packed data */
+    FieldType buffer_type;                   /* buffer type */ // ENUM enum_field_types
+    bool   error_value;                   /* used if error is 0 */
+    bool   is_unsigned;                   /* set if integer type is unsigned */
+    bool   long_data_used;                /* If used with mysql_send_long_data */
+    bool   is_null_value;                 /* Used if is_null is 0 */
+    void *extension;
+}
+
+struct MysqlTime 
+{
+    CUInt   year;
+    CUInt   month;
+    CUInt   day;
+    CUInt   hour;
+    CUInt   minute;
+    CUInt   second;
+    CULong  second_part;  // microseconds
+    bool    neg;
+    TimestampType time_type;
+    CInt    time_zone_displacement;
 }
 
 extern fn CULong        stmt_affected_rows(MysqlStmt stmt) @cname("mysql_stmt_affected_rows");
 extern fn bool          stmt_bind_param(MysqlStmt stmt, MysqlBind* bind) @cname("mysql_stmt_bind_param");
 extern fn bool          stmt_close(MysqlStmt stmt) @cname("mysql_stmt_close");
 extern fn CInt          stmt_execute(MysqlStmt stmt) @cname("mysql_stmt_execute");
-extern fn CInt          stmt_fetch(MysqlStmt stmt) @cname("mysql_stmt_fetch");
+extern fn StatusCode    stmt_fetch(MysqlStmt stmt) @cname("mysql_stmt_fetch");
 extern fn CInt          stmt_fetch_column(MysqlStmt stmt, MysqlBind* bind, CUInt column, CULong offset) @cname("mysql_stmt_fetch_column");
 extern fn CUInt         stmt_field_count(MysqlStmt stmt) @cname("mysql_stmt_field_count");
 extern fn bool          stmt_free_result(MysqlStmt stmt) @cname("mysql_stmt_free_result");
