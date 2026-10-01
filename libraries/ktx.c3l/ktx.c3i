@@ -632,7 +632,7 @@ macro @check(KtxErrorCode result; @body(KtxErrorCode result, String str))
 	}
 }
 
-module khr::ktx @feat(!NO_VULKAN);
+module khr::ktx @feat(VULKAN);
 import vulkan;
 
 struct KtxVulkanFunctions
