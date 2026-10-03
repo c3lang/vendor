@@ -26,6 +26,7 @@ This repository contains external libraries for use with C3.
 - KTX https://github.com/KhronosGroup/KTX-Software
 - Tracy https://github.com/wolfpld/tracy
 - libSpng https://libspng.org/
+- libpcap https://github.com/the-tcpdump-group/libpcap
 
 ## Installing libraries from vendor
 

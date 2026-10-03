@@ -1,0 +1,40 @@
+{
+  "provides": "libpcap",
+  "sources": [
+    "libpcap.c3i",
+    "pcap.c3i",
+    "bpf.c3i"
+  ],
+  "targets": {
+    "linux-x86": {
+      "linked-libraries": [
+        "pcap"
+      ]
+    },
+    "linux-x64": {
+      "linked-libraries": [
+        "pcap"
+      ]
+    },
+    "linux-aarch64": {
+      "linked-libraries": [
+        "pcap"
+      ]
+    },
+    "macos-x64": {
+      "linked-libraries": [
+        "pcap"
+      ]
+    },
+    "macos-aarch64": {
+      "linked-libraries": [
+        "pcap"
+      ]
+    },
+    "windows-x64": {
+      "linked-libraries": [
+        "wpcap"
+      ]
+    }
+  }
+}
