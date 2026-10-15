@@ -26,6 +26,11 @@ constdef TracyMessageSeverity : inline ichar
     FATAL,
 }
 
+macro type_is_plottable($Type) @const @private
+	=>  $Type == double
+	||| $Type == float
+	||| types::is_intlike($Type);
+
 module std::core::env;
 const bool TRACY_DISABLE = $feat(TRACY_DISABLE);
 
@@ -288,10 +293,6 @@ macro void frame_mark_end(ZString $name) => ___tracy_emit_frame_mark_end($name);
 macro void frame_image(void* image, ushort width, ushort height, char offset, bool flip = false)
 	=> ___tracy_emit_frame_image(image, width, height, offset, (int)flip);
 
-macro type_is_plottable($Type) @const @private
-	=>  $Type == double
-	||| $Type == float
-	||| types::is_intlike($Type);
 <*
 	$require type_is_plottable($Typeof(val)) : "Cannot plot this type of value.";
 *>
