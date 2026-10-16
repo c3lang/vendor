@@ -1,0 +1,50 @@
+{
+	"provides": "libui",
+	"targets": {
+		"macos-aarch64": {
+			"linked-libraries": [
+				"ui"
+			]
+		},
+		"macos-x64": {
+			"linked-libraries": [
+				"ui"
+			]
+		},
+		"linux-x64": {
+			"linked-libraries": [
+				"ui"
+			]
+		},
+		"linux-x86": {
+			"linked-libraries": [
+				"ui"
+			]
+		},
+		"openbsd-x86": {
+			"linked-libraries": [
+				"ui"
+			]
+		},
+		"openbsd-x64": {
+			"linked-libraries": [
+				"ui"
+			]
+		},
+		"freebsd-x64": {
+			"linked-libraries": [
+				"ui"
+			]
+		},
+		"freebsd-x86": {
+			"linked-libraries": [
+				"ui"
+			]
+		},
+		"windows-x64": {
+			"linked-libraries": [
+				"ui"
+			]
+		}
+	}
+}
