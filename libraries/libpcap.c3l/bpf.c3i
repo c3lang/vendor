@@ -1,0 +1,62 @@
+module libpcap::bpf;
+
+const BPF_RELEASE   = 199606;
+const BPF_ALIGNMENT = int::size;
+const BPF_LD        = 0x00;
+const BPF_LDX       = 0x01;
+const BPF_ST        = 0x02;
+const BPF_STX       = 0x03;
+const BPF_ALU       = 0x04;
+const BPF_JMP       = 0x05;
+const BPF_RET       = 0x06;
+const BPF_MISC      = 0x07;
+const BPF_W         = 0x00;
+const BPF_H         = 0x08;
+const BPF_B         = 0x10;
+const BPF_IMM       = 0x00;
+const BPF_ABS       = 0x20;
+const BPF_IND       = 0x40;
+const BPF_MEM       = 0x60;
+const BPF_LEN       = 0x80;
+const BPF_MSH       = 0xa0;
+const BPF_ADD       = 0x00;
+const BPF_SUB       = 0x10;
+const BPF_MUL       = 0x20;
+const BPF_DIV       = 0x30;
+const BPF_OR        = 0x40;
+const BPF_AND       = 0x50;
+const BPF_LSH       = 0x60;
+const BPF_RSH       = 0x70;
+const BPF_NEG       = 0x80;
+const BPF_MOD       = 0x90;
+const BPF_XOR       = 0xa0;
+const BPF_JA        = 0x00;
+const BPF_JEQ       = 0x10;
+const BPF_JGT       = 0x20;
+const BPF_JGE       = 0x30;
+const BPF_JSET      = 0x40;
+const BPF_K         = 0x00;
+const BPF_X         = 0x08;
+const BPF_A         = 0x10;
+const BPF_TAX       = 0x00;
+const BPF_TXA       = 0x80;
+const BPF_MEMWORDS  = 16;
+
+struct Bpf_program
+{
+    uint bf_len;
+    Bpf_insn* bf_insns;
+}
+
+struct Bpf_insn
+{
+    CUShort code;
+    CUChar jt;
+    CUChar jf;
+    uint k;
+}
+
+extern fn uint filter(Bpf_insn*, CUChar*, uint, uint) @cname("bpf_filter");
+extern fn int validate(Bpf_insn* f, int len) @cname("bpf_validate");
+extern fn ZString image(Bpf_insn*, int) @cname("bpf_image");
+extern fn void dump(Bpf_program*, int) @cname("bpf_dump");
