@@ -14,7 +14,7 @@ alias MysqlMemRoot = void*;
 
 const int MYSQL_NO_DATA = 100;
 
-constdef FieldType : int
+constdef MysqlFieldType : int
 {
     DECIMAL = 0,
     TINY = 1,
@@ -102,7 +102,7 @@ enum MysqlOption : CInt
     OPT_TLS_SNI_SERVERNAME
 }
 
-constdef TimestampType : CInt
+constdef MysqlTimestampType : CInt
 {
     TIMESTAMP_NONE = -2,
     TIMESTAMP_ERROR = -1,
@@ -117,23 +117,23 @@ constdef TimestampType : CInt
     TIMESTAMP_DATETIME_TZ = 3
 }
 
-enum Autocommit : CInt
+enum MysqlAutocommit : CInt
 {
     AUTOCOMMIT_OFF,
     AUTOCOMMIT_ON
 }
 
-constdef StatusCode : CInt
+constdef MysqlStatusCode : CInt
 {
     SUCCESS = 0,
     NO_DATA = 100,
     DATA_TRUNCATED = 101
 }
 
-enum ResultSetMetaData : CInt
+enum MysqlResultSetMetaData : CInt
 {
-  RESULTSET_METADATA_NONE,  /** No metadata will be sent. */
-  RESULTSET_METADATA_FULL   /** The server will send all metadata. */
+	METADATA_NONE,  /** No metadata will be sent. */
+	METADATA_FULL   /** The server will send all metadata. */
 }
 
 struct MysqlField
@@ -157,7 +157,7 @@ struct MysqlField
     CUInt           flags;              /* Div flags */
     CUInt           decimals;           /* Number of decimals in field */
     CUInt           charsetnr;          /* Character set */
-    FieldType       type;           /* Type of field. See mysql_com.h for types */
+    MysqlFieldType       type;           /* Type of field. See mysql_com.h for types */
     void*           extension;
 }
 
@@ -178,12 +178,12 @@ struct MysqlRes
     bool            eof; /* Used by mysql_fetch_row */
     /* mysql_stmt_close() had to cancel this result */
     bool            unbuffered_fetch_cancelled;
-    ResultSetMetaData metadata;
+    MysqlResultSetMetaData metadata;
     void*           extension;
 }
 
 extern fn CULong        affected_rows(Mysql mysql) @cname("mysql_affected_rows");
-extern fn bool          autocommit(Mysql mysql, Autocommit mode) @cname("mysql_autocommit");
+extern fn bool          autocommit(Mysql mysql, MysqlAutocommit mode) @cname("mysql_autocommit");
 extern fn void          close(Mysql mysql) @cname("mysql_close");
 extern fn bool          commit(Mysql mysql) @cname("mysql_commit");
 extern fn Mysql         init(Mysql mysql) @cname("mysql_init");
@@ -223,7 +223,7 @@ struct MysqlBind
     CULong length_value;                  /* Used if length is 0 */
     CUInt  param_number;                  /* For null count and error messages */
     CUInt  pack_length;                   /* Internal length for packed data */
-    FieldType buffer_type;                   /* buffer type */ // ENUM enum_field_types
+    MysqlFieldType buffer_type;                   /* buffer type */ // ENUM enum_field_types
     bool   error_value;                   /* used if error is 0 */
     bool   is_unsigned;                   /* set if integer type is unsigned */
     bool   long_data_used;                /* If used with mysql_send_long_data */
@@ -241,7 +241,7 @@ struct MysqlTime
     CUInt   second;
     CULong  second_part;  // microseconds
     bool    neg;
-    TimestampType time_type;
+    MysqlTimestampType time_type;
     CInt    time_zone_displacement;
 }
 
@@ -249,7 +249,7 @@ extern fn CULong        stmt_affected_rows(MysqlStmt stmt) @cname("mysql_stmt_af
 extern fn bool          stmt_bind_param(MysqlStmt stmt, MysqlBind* bind) @cname("mysql_stmt_bind_param");
 extern fn bool          stmt_close(MysqlStmt stmt) @cname("mysql_stmt_close");
 extern fn CInt          stmt_execute(MysqlStmt stmt) @cname("mysql_stmt_execute");
-extern fn StatusCode    stmt_fetch(MysqlStmt stmt) @cname("mysql_stmt_fetch");
+extern fn MysqlStatusCode    stmt_fetch(MysqlStmt stmt) @cname("mysql_stmt_fetch");
 extern fn CInt          stmt_fetch_column(MysqlStmt stmt, MysqlBind* bind, CUInt column, CULong offset) @cname("mysql_stmt_fetch_column");
 extern fn CUInt         stmt_field_count(MysqlStmt stmt) @cname("mysql_stmt_field_count");
 extern fn bool          stmt_free_result(MysqlStmt stmt) @cname("mysql_stmt_free_result");
