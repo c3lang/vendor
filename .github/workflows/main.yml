@@ -639,7 +639,8 @@ jobs:
             libasound2-dev libpulse-dev libjack-dev libsndio-dev \
             xorg-dev libxkbcommon-x11-dev \
             xvfb libgl1-mesa-dri \
-            libspng-dev
+            libspng-dev \
+            libpcap-dev
 
       - name: Prepare System Libraries
         run: |
