@@ -162,7 +162,7 @@ struct MysqlField
 
 struct MysqlRes
 {
-    CULong          row_count;
+    ulong           row_count;
     MysqlField*     fields;
     MysqlData       data;           // TODO: Convert MYSQL_DATA struct
     MysqlRows       data_cursor;    // TODO: Convert MYSQL_ROWS struct
