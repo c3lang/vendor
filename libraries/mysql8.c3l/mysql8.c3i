@@ -4,7 +4,6 @@
 module mysql8;
 
 alias Mysql = void*;
-// alias MysqlRes = void*;
 alias MysqlRow = void**;
 alias MysqlStmt = void*;
 alias MysqlRows = void*;
@@ -258,5 +257,5 @@ extern fn CInt          stmt_next_result(MysqlStmt stmt) @cname("mysql_stmt_next
 extern fn CInt          stmt_prepare(MysqlStmt stmt, ZString stmt_str, CULong length) @cname("mysql_stmt_prepare");
 extern fn CInt          stmt_store_result(MysqlStmt stmt) @cname("mysql_stmt_store_result");
 extern fn bool          stmt_bind_result(MysqlStmt stmt, MysqlBind *bind) @cname("mysql_stmt_bind_result");
-extern fn MysqlRes      stmt_result_metadata(MysqlStmt stmt) @cname("mysql_stmt_result_metadata");
-extern fn CInt          stmt_next_result(MysqlStmt stmt) @cname("mysql_stmt_next_result");
+extern fn MysqlRes*     stmt_result_metadata(MysqlStmt stmt) @cname("mysql_stmt_result_metadata");
+
