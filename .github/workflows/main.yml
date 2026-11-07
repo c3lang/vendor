@@ -218,7 +218,7 @@ jobs:
           repo: https://github.com/KhronosGroup/KTX-Software.git
           tag: v4.4.2
           c3l: ktx.c3l
-          cmake_flags: "-DKTX_FEATURE_TESTS=OFF"
+          cmake_flags: "-DKTX_FEATURE_TESTS=OFF -DBASISU_SUPPORT_SSE=OFF"
           os: ${{ matrix.os }}
 
   build-raylib6:
