@@ -98,19 +98,23 @@ def main():
                 with open(info_file, "r", encoding="utf-8") as f:
                     existing = json.load(f)
                     info_data["versions"] = existing.get("versions", {})
+                    info_data["updated"] = existing.get("updated", now)
+                    info_data["latest"] = existing.get("latest", version)
             except Exception:
                 pass
 
-        info_data["latest"] = version
-        info_data["updated"] = now
         info_data["description"] = description
         info_data["tags"] = tags
-        info_data["versions"][version] = {
-            "url": download_url,
-            "checksum": checksum,
-            "size": size,
-            "published": now,
-        }
+
+        if version not in info_data["versions"]:
+            info_data["versions"][version] = {
+                "url": download_url,
+                "checksum": checksum,
+                "size": size,
+                "published": now,
+            }
+            info_data["updated"] = now
+            info_data["latest"] = version
 
         with open(info_file, "w", encoding="utf-8") as f:
             json.dump(info_data, f, indent=2)
@@ -119,8 +123,8 @@ def main():
         index_map[lib_id] = {
             "library": lib_id,
             "description": description,
-            "latest": version,
-            "updated": now,
+            "latest": info_data["latest"],
+            "updated": info_data["updated"],
             "tags": tags,
             "versions": sorted(list(info_data["versions"].keys())),
         }
