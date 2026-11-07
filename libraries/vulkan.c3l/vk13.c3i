@@ -49,7 +49,7 @@ const VK_REMAINING_MIP_LEVELS = (~0U);
 const VK_SUBPASS_EXTERNAL = (~0U);
 const VK_TRUE = 1;
 const VK_UUID_SIZE = 16;
-const ulong VK_WHOLE_SIZE = (~0);
+const ulong VK_WHOLE_SIZE = (~0UL);
 
 typedef VkInstance = uptr;
 typedef VkPhysicalDevice = uptr;
