@@ -47,7 +47,7 @@ def main():
             print(f"Warning: could not parse existing index.json: {e}", file=sys.stderr)
             index_data = {"libraries": []}
 
-    index_map = {lib["name"]: lib for lib in index_data.get("libraries", [])}
+    index_map = {lib.get("library") or lib.get("name"): lib for lib in index_data.get("libraries", [])}
 
     for c3l_dir in sorted(LIBRARIES_DIR.glob("*.c3l")):
         if not c3l_dir.is_dir():
@@ -117,7 +117,7 @@ def main():
 
         lib_id = f"{NAMESPACE}/{name}"
         index_map[lib_id] = {
-            "name": lib_id,
+            "library": lib_id,
             "description": description,
             "latest": version,
             "updated": now,
@@ -125,7 +125,7 @@ def main():
             "versions": sorted(list(info_data["versions"].keys())),
         }
 
-    index_data["libraries"] = sorted(list(index_map.values()), key=lambda x: x["name"])
+    index_data["libraries"] = sorted(list(index_map.values()), key=lambda x: x["library"])
     with open(index_file, "w", encoding="utf-8") as f:
         json.dump(index_data, f, indent=2)
 
