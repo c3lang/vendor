@@ -642,7 +642,10 @@ jobs:
         run: |
           # System Fixes - Ubuntu
           sudo cp -r /usr/local/lib/x86_64-linux-gnu/* /usr/local/lib/ 2>/dev/null || true
-          sudo ln -sf /usr/lib/llvm-18/lib/libclang.so /usr/lib/libclang.so || true
+          CLANG_LIB=$(find /usr/lib/llvm-*/lib /usr/lib/x86_64-linux-gnu -name "libclang.so*" 2>/dev/null | head -n 1)
+          if [ -n "$CLANG_LIB" ]; then
+            sudo ln -sf "$CLANG_LIB" /usr/lib/libclang.so
+          fi
           sudo ldconfig
 
       - name: Run Tests
