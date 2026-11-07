@@ -670,6 +670,63 @@ jobs:
           name: packaged-c3l-libraries
           path: temp/
 
+      - name: Checkout or Initialize Registry Branch
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git clone --depth 1 -b registry "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" registry_branch || {
+            mkdir registry_branch
+            cd registry_branch
+            git init
+            git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+            git checkout -b registry
+          }
+
+      - name: Generate Registry Files
+        if: github.ref == 'refs/heads/main'
+        run: |
+          python3 generate_registry.py --registry-dir registry_branch
+
+      - name: Publish Versioned Releases
+        if: github.ref == 'refs/heads/main'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for folder in libraries/*.c3l; do
+            if [ -d "$folder" ]; then
+              manifest="$folder/manifest.json"
+              if [ ! -f "$manifest" ]; then
+                echo "Missing manifest.json in $folder"
+                exit 1
+              fi
+
+              pkg=$(jq -e -r '.provides' "$manifest") || { echo "Missing 'provides' in $manifest"; exit 1; }
+              ver=$(jq -e -r '.version' "$manifest") || { echo "Missing 'version' in $manifest"; exit 1; }
+              tag="${pkg}-v${ver}"
+              asset="temp/$(basename "$folder")"
+
+              if ! gh release view "$tag" >/dev/null 2>&1; then
+                echo "Creating release $tag..."
+                gh release create "$tag" "$asset#${pkg}.c3l" \
+                  --title "$pkg $ver" \
+                  --notes "Automated release for $pkg $ver"
+              else
+                echo "Release $tag already exists. Preserving immutable release."
+              fi
+            fi
+          done
+
+      - name: Commit and Push to Registry Branch
+        if: github.ref == 'refs/heads/main'
+        run: |
+          cd registry_branch
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "Update registry metadata"
+            git push -u origin registry
+          fi
+
       - name: Create or Update Tag
         if: github.ref == 'refs/heads/main'
         uses: actions/github-script@v8
