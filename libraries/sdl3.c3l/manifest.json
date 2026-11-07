@@ -43,7 +43,35 @@
 			"linked-libraries" : [ "SDL3" ]
 		},
 		"macos-aarch64" : {
-			"link-args" : [],
+			"link-args" : 
+			[
+				"-framework",
+				"Cocoa",
+				"-framework",
+				"CoreAudio",
+				"-framework",
+				"AudioToolbox",
+				"-framework",
+				"CoreMedia",
+				"-framework",
+				"CoreHaptics",
+				"-framework",
+				"ForceFeedback",
+				"-framework",
+				"GameController",
+				"-framework",
+				"IOKit",
+				"-framework",
+				"Metal",
+				"-framework",
+				"QuartzCore",
+				"-framework",
+				"AVFoundation",
+				"-framework",
+				"UniformTypeIdentifiers",
+				"-framework",
+				"Carbon"
+			],
 			"dependencies" : [],
 			"linked-libraries" : [ "SDL3" ]
 		},
