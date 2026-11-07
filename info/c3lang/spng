@@ -2,14 +2,14 @@
   "library": "c3lang/spng",
   "description": "",
   "latest": "1.0.0",
-  "updated": "2026-11-07T02:35:12.926097+00:00",
+  "updated": "2026-11-07T02:54:12.926195+00:00",
   "tags": [],
   "versions": {
     "1.0.0": {
       "url": "https://github.com/c3lang/vendor/releases/download/spng-v1.0.0/spng.c3l",
-      "checksum": "sha256:8d800b2ec800a3960ce9e7fdb4037469ad30f94d9b94420e2eb48b5f6f0bcf85",
+      "checksum": "sha256:d45273aff85a6d30341ad5a7c1125738de54fe4c42162fab1b45213c6cfe581f",
       "size": 5109,
-      "published": "2026-11-07T02:35:12.926097+00:00"
+      "published": "2026-11-07T02:54:12.926195+00:00"
     }
   }
 }

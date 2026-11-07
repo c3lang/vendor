@@ -2,14 +2,14 @@
   "library": "c3lang/curl",
   "description": "",
   "latest": "1.0.0",
-  "updated": "2026-11-07T02:35:12.926097+00:00",
+  "updated": "2026-11-07T02:54:12.926195+00:00",
   "tags": [],
   "versions": {
     "1.0.0": {
       "url": "https://github.com/c3lang/vendor/releases/download/curl-v1.0.0/curl.c3l",
-      "checksum": "sha256:e41f457bc9ccb0a49d24e49e5e8ee9ef14ad6cad5dbe442c9c56f711f9ac2ddc",
+      "checksum": "sha256:2a3934ec3f1a627739be781ae1a4a010501f76b4897e7fa6c8ba417c9dcaec38",
       "size": 9718,
-      "published": "2026-11-07T02:35:12.926097+00:00"
+      "published": "2026-11-07T02:54:12.926195+00:00"
     }
   }
 }

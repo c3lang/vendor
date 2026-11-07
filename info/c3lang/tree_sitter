@@ -2,14 +2,14 @@
   "library": "c3lang/tree_sitter",
   "description": "",
   "latest": "1.0.0",
-  "updated": "2026-11-07T02:35:12.926097+00:00",
+  "updated": "2026-11-07T02:54:12.926195+00:00",
   "tags": [],
   "versions": {
     "1.0.0": {
       "url": "https://github.com/c3lang/vendor/releases/download/tree_sitter-v1.0.0/tree_sitter.c3l",
-      "checksum": "sha256:0644d99d967508016c98ca9cd8284a8f496a396f697a95cdf454d8e39bb75217",
+      "checksum": "sha256:b7cdb9893fca5e781a1111e47915256064b5149c33400b37c51c88434a375289",
       "size": 634247,
-      "published": "2026-11-07T02:35:12.926097+00:00"
+      "published": "2026-11-07T02:54:12.926195+00:00"
     }
   }
 }

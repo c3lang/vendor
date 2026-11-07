@@ -2,14 +2,14 @@
   "library": "c3lang/pq",
   "description": "",
   "latest": "1.0.0",
-  "updated": "2026-11-07T02:35:12.926097+00:00",
+  "updated": "2026-11-07T02:54:12.926195+00:00",
   "tags": [],
   "versions": {
     "1.0.0": {
       "url": "https://github.com/c3lang/vendor/releases/download/pq-v1.0.0/pq.c3l",
-      "checksum": "sha256:6b8bae64c90ba63c9168cef37e2eb7fcd41257829f96dbd137f83d125b863eca",
+      "checksum": "sha256:52349fc3118a037f4fe6439f5f245a4bcc3d197566972709346f9b9372166f9e",
       "size": 3415,
-      "published": "2026-11-07T02:35:12.926097+00:00"
+      "published": "2026-11-07T02:54:12.926195+00:00"
     }
   }
 }

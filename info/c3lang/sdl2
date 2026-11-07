@@ -2,14 +2,14 @@
   "library": "c3lang/sdl2",
   "description": "",
   "latest": "1.0.0",
-  "updated": "2026-11-07T02:35:12.926097+00:00",
+  "updated": "2026-11-07T02:54:12.926195+00:00",
   "tags": [],
   "versions": {
     "1.0.0": {
       "url": "https://github.com/c3lang/vendor/releases/download/sdl2-v1.0.0/sdl2.c3l",
-      "checksum": "sha256:529ae45613fb6afc6a88f19afa177a2994e1eb862aec66c4cd0b33545c4448a2",
+      "checksum": "sha256:07a136bc60ce9ff053a06579e65662c62a25e5a1989ce38b4c205fdaae7ab9b0",
       "size": 4909659,
-      "published": "2026-11-07T02:35:12.926097+00:00"
+      "published": "2026-11-07T02:54:12.926195+00:00"
     }
   }
 }
