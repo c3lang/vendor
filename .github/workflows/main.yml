@@ -745,6 +745,19 @@ jobs:
               sha: context.sha
             });
 
+      # --- LEGACY COMPATIBILITY: Strip "version" for 'latest' release ---
+      # To remove later: delete this step and change artifacts back to "temp/*.c3l" below.
+      - name: Strip version from manifests for latest release
+        if: github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p temp_latest
+          cp temp/*.c3l temp_latest/
+          for z in temp_latest/*.c3l; do
+            unzip -q -p "$z" manifest.json | jq 'del(.version)' > manifest.json
+            zip -q -u "$z" manifest.json
+            rm -f manifest.json
+          done
+
       - name: Create or Update Release
         if: github.ref == 'refs/heads/main'
         uses: ncipollo/release-action@v1
@@ -753,7 +766,8 @@ jobs:
           name: Latest
           draft: false
           prerelease: false
-          artifacts: "temp/*.c3l"
+          # LEGACY: Revert to "temp/*.c3l" once versioned manifests are supported across all clients.
+          artifacts: "temp_latest/*.c3l"
           token: ${{ secrets.GITHUB_TOKEN }}
           allowUpdates: true
           replacesArtifacts: true
