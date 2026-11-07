@@ -2,14 +2,14 @@
   "library": "c3lang/tinyfiledialogs",
   "description": "",
   "latest": "1.0.0",
-  "updated": "2026-11-07T02:54:12.926195+00:00",
+  "updated": "2026-11-07T02:35:12.926097+00:00",
   "tags": [],
   "versions": {
     "1.0.0": {
       "url": "https://github.com/c3lang/vendor/releases/download/tinyfiledialogs-v1.0.0/tinyfiledialogs.c3l",
-      "checksum": "sha256:b22fcc8dce4ab664c633cb2447638d6200c3446a1d25a28ae1a1da23131f13be",
-      "size": 156521,
-      "published": "2026-11-07T02:54:12.926195+00:00"
+      "checksum": "sha256:e6f0eb5a881d1c0bdff1b90c04f3fdc144203162fd2e5d6ed6afe2a23e7a42fb",
+      "size": 156520,
+      "published": "2026-11-07T02:35:12.926097+00:00"
     }
   }
 }

@@ -2,14 +2,14 @@
   "library": "c3lang/ktx",
   "description": "",
   "latest": "1.0.0",
-  "updated": "2026-11-07T02:54:12.926195+00:00",
+  "updated": "2026-11-07T02:35:12.926097+00:00",
   "tags": [],
   "versions": {
     "1.0.0": {
       "url": "https://github.com/c3lang/vendor/releases/download/ktx-v1.0.0/ktx.c3l",
-      "checksum": "sha256:bed8a3cfe0ba645ad19f796b2becfe09784b26410ec14b37145d956f01bc850c",
+      "checksum": "sha256:bdae7821568cb9ffbd7db47c088dcd9390883d2803891df981cb836814c76e20",
       "size": 18509474,
-      "published": "2026-11-07T02:54:12.926195+00:00"
+      "published": "2026-11-07T02:35:12.926097+00:00"
     }
   }
 }

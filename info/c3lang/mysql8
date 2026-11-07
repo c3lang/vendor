@@ -2,14 +2,14 @@
   "library": "c3lang/mysql8",
   "description": "",
   "latest": "1.0.0",
-  "updated": "2026-11-07T02:54:12.926195+00:00",
+  "updated": "2026-11-07T02:35:12.926097+00:00",
   "tags": [],
   "versions": {
     "1.0.0": {
       "url": "https://github.com/c3lang/vendor/releases/download/mysql8-v1.0.0/mysql8.c3l",
-      "checksum": "sha256:8de0d80ab0d3f8804395d937093da231c502cf8ab1bba6b7eb9d7eb17a574856",
+      "checksum": "sha256:145eb64c9d54fc238310e51394a129a590edb48b3940b5f813ce2acc1b58412e",
       "size": 2479,
-      "published": "2026-11-07T02:54:12.926195+00:00"
+      "published": "2026-11-07T02:35:12.926097+00:00"
     }
   }
 }
