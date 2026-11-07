@@ -1,4 +1,5 @@
 {
+	"version": "1.0.0",
 	"provides" : "sdl3",
 	"targets" : {
 		"android-aarch64" : {

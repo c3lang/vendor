@@ -1,4 +1,5 @@
-{ 
+{
+	"version": "1.0.0", 
 	"provides" : "lz4",
 	"targets" : {
 		"macos-x64" : {

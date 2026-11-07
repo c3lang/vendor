@@ -1,4 +1,5 @@
 {
+	"version": "1.0.0",
 	"provides" : "tree_sitter",
 	"targets" : {
 		"linux-aarch64" : {

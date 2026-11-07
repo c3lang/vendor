@@ -1,4 +1,5 @@
 {
+	"version": "1.0.0",
 	"provides" : "vulkan",
 	"targets" : {
 		"freebsd-x64" : {
@@ -70,6 +71,6 @@
 			"link-args" : [],
 			"dependencies" : [],
 			"linked-libraries" : ["vulkan-1"]
-		},
+		}
 	}
 }
