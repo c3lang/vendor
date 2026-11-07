@@ -1,0 +1,15 @@
+{
+  "library": "c3lang/sdl3_image",
+  "description": "",
+  "latest": "1.0.0",
+  "updated": "2026-11-07T02:35:12.926097+00:00",
+  "tags": [],
+  "versions": {
+    "1.0.0": {
+      "url": "https://github.com/c3lang/vendor/releases/download/sdl3_image-v1.0.0/sdl3_image.c3l",
+      "checksum": "sha256:c1fdfa9c664f4e9219b4514192eaf444e58f1c9b0c6a20c92cdf2e5b1f274b70",
+      "size": 2461374,
+      "published": "2026-11-07T02:35:12.926097+00:00"
+    }
+  }
+}

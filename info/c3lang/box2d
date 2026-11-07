@@ -1,0 +1,15 @@
+{
+  "library": "c3lang/box2d",
+  "description": "",
+  "latest": "1.0.0",
+  "updated": "2026-11-07T02:35:12.926097+00:00",
+  "tags": [],
+  "versions": {
+    "1.0.0": {
+      "url": "https://github.com/c3lang/vendor/releases/download/box2d-v1.0.0/box2d.c3l",
+      "checksum": "sha256:8873d88fdefc266da1c91d36d7fea0d18e31ea5c4edd6c49229cacc1d8ed09ad",
+      "size": 948873,
+      "published": "2026-11-07T02:35:12.926097+00:00"
+    }
+  }
+}

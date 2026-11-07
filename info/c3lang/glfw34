@@ -1,0 +1,15 @@
+{
+  "library": "c3lang/glfw34",
+  "description": "",
+  "latest": "1.0.0",
+  "updated": "2026-11-07T02:35:12.926097+00:00",
+  "tags": [],
+  "versions": {
+    "1.0.0": {
+      "url": "https://github.com/c3lang/vendor/releases/download/glfw34-v1.0.0/glfw34.c3l",
+      "checksum": "sha256:c7afe7a64878b93d3cc287f82cf0934e658fb25242c2fe99a4b49ca44efedf2b",
+      "size": 576612,
+      "published": "2026-11-07T02:35:12.926097+00:00"
+    }
+  }
+}
