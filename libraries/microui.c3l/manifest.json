@@ -1,7 +1,6 @@
 {
 	"version": "1.0.0",
   "provides" : "microui",
-  "linklib-dir" : "linked-libs",
   "targets" : {
     "android-aarch64" : {
       "link-args" : [],
