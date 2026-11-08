@@ -39,5 +39,6 @@ if (mu::begin_window(ctx, "My Window", mu::rect(10, 10, 140, 86)))
 ```
 
 ## Notes
-The library expects the user to provide input and handle the resultant drawing
+- The library expects the user to provide input and handle the resultant drawing
 commands; it does not do any drawing itself.
+- The bindings are to a maintained fork of rxi’s microui repo. The fork can be found here: https://github.com/awschult002/microui
