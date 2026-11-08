@@ -118,7 +118,7 @@ constdef MuKey : int
 }
 
 alias MuReal = float;
-alias MuId = usz;
+alias MuId = uint;
 alias MuFont = void*;
 
 struct MuVec2
